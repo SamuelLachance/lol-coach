@@ -1,0 +1,62 @@
+{
+  "title": "Guide macro League of Legends",
+  "subtitle": "Fondamentaux pour SoloQ et draft",
+  "sections": [
+    {
+      "id": "intro",
+      "title": "Introduction",
+      "html": "<p>Ce dashboard t'aide à <strong>draft</strong>, comparer des comps et planifier la <strong>macro</strong> en partie. Les données viennent de Riot Data Dragon ; les tiers et le pool se configurent dans l'onglet Patch.</p>"
+    },
+    {
+      "id": "lanes",
+      "title": "Priorité de lanes",
+      "html": "<p>La priorité détermine qui peut <strong>roamer</strong>, <strong>contester l'herald/drake</strong> ou <strong>invade</strong>. Push → ward → reset. Si tu perds la prio, joue safe et farm sous tourelle.</p><ul><li><strong>Top prio</strong> : herald, invade topside, TP plays.</li><li><strong>Mid prio</strong> : roams jungle, vision rivière, setup skirmish.</li><li><strong>Bot prio</strong> : drake, dive bot, swap lanes.</li></ul>"
+    },
+    {
+      "id": "jungle",
+      "title": "Jungle & tempo",
+      "html": "<p>Full clear vs gank early vs invade — adapte-toi au matchup jungle et aux lanes gagnantes. Track le jungler ennemi (timers camps, deep wards). Objectif : être là où l'ennemi <em>n'est pas</em>.</p>"
+    },
+    {
+      "id": "objectives",
+      "title": "Objectifs",
+      "html": "<p><strong>Drakes</strong> : stack si comp scale TF ; trade herald si besoin de plates. <strong>Herald</strong> : press top/mid, pas forcément tourelle bot. <strong>Baron</strong> : setup vision 30s avant, clear side lane, force ennemi à répondre.</p>"
+    },
+    {
+      "id": "draft",
+      "title": "Draft & comps",
+      "html": "<p>Équilibre <strong>engage / disengage</strong>, <strong>AD/AP</strong>, frontline et wave clear. En fearles, diversifie les win conditions. Utilise l'onglet Draft pour simuler et l'onglet Tactiques pour le plan de match.</p>"
+    },
+    {
+      "id": "kazewa-principles",
+      "title": "Méthode Kazewa — principes",
+      "html": "<table><tbody><tr><td><strong>Avantage de lane = map</strong></td><td>Convertir un lead top en pression side, plates, vision profonde — pas en kills vanity.</td></tr><tr><td><strong>Trade court, décision longue</strong></td><td>Micro trades gagnants → tempo → reset → objectif ; éviter les all-in random sans wave.</td></tr><tr><td><strong>Annuler le kit adverse</strong></td><td>Identifier la win condition ennemie (scale, teamfight, split) et la rendre inutile.</td></tr><tr><td><strong>Spacing &amp; patience</strong></td><td>Duelists : punir les cooldowns, refuser les fights perdus, split avec info.</td></tr><tr><td><strong>Review orientée macro</strong></td><td>Une erreur macro par game (wave, TP, objectif) &gt; focus KDA.</td></tr><tr><td><strong>Draft pro = plan de match</strong></td><td>Bans/picks servent la win condition ; patterns flex/blind en BO.</td></tr></tbody></table><p>Source : synthèse <a href=\"https://www.youtube.com/@kazewalol\" target=\"_blank\" rel=\"noopener\">@kazewalol</a> (620 vidéos indexées).</p>"
+    },
+    {
+      "id": "kazewa-top",
+      "title": "Toplane (Kazewa)",
+      "html": "<ul><li><strong>Fiora Method</strong> — carry même 0-4 : spacing, parry windows, split avec info.</li><li><strong>Annuler le scale</strong> — Nasus/Garen : deny ressource early, pas all-in random.</li><li><strong>Vs tanks (Ornn)</strong> — spacing et %HP ; le tank ne « stop » pas un duelist bien joué.</li><li><strong>Vs duelists (Irelia)</strong> — punir cooldowns, refuser extended trades perdus.</li><li><strong>Trade → plates</strong> — win court trade → push → herald/plates → vision topside.</li></ul>"
+    },
+    {
+      "id": "kazewa-wave",
+      "title": "Waves & tempo lane",
+      "html": "<ul><li>Ne pas fight sans lire crash / slow push / freeze.</li><li>2 waves de retard valent parfois plus qu'un kill early (tempo).</li><li>Lead lane → convertir en objectif, pas en chase vanity.</li><li>Wave control duel = avantage macro avant le teamfight.</li></ul>"
+    },
+    {
+      "id": "kazewa-draft",
+      "title": "Draft pro (analyses Kazewa)",
+      "html": "<ul><li>Ban la <strong>win condition</strong>, pas le comfort pick cosmétique.</li><li>Flex top/jungle/mid en BO pour cacher le plan.</li><li>Side win (blue/red) influence les priorités — contexte BO.</li><li>Draft → gameplan → Nashor/Drake : chaîne causale explicitée dans les analyses KCORP/G2/T1.</li><li>Comp poke/disengage : éviter last pick hard engage sans setup.</li></ul>"
+    },
+    {
+      "id": "kazewa-climb",
+      "title": "Climb & mental",
+      "html": "<ul><li>Review : <strong>une</strong> erreur macro par game à corriger.</li><li>Rôle du coach : pattern récurrent, pas une mécanique isolée.</li><li>Unranked→Master VODs : progression par champion (Fiora, Riven, Camille…).</li><li>Mental &amp; process &gt; ego ranking / KDA vanity.</li></ul>"
+    },
+    {
+      "id": "kaze-colors-draft",
+      "title": "Couleurs MTG & draft Kaze",
+      "html": "<p>Identité couleur inspirée de Magic : <strong>W</strong> altruisme, <strong>U</strong> contrôle, <strong>B</strong> snowball, <strong>R</strong> agression, <strong>G</strong> scale.</p><ul><li>Somme 24 points par champion — voir fiche champion.</li><li>Draft : couleurs alliées (W+G, W+U) = bonus ; W+B = conflit.</li><li>Source : transcripts Kaze LoL Database + oracle MTG.</li></ul><ul><li>Ban la win condition, pas le comfort pick.</li><li>Flex top/jungle/mid pour cacher le plan en BO.</li><li>Double enchanter requis si hypercarry immobile (ex. Zinghao B1 → Sejuani R1 sans double enchanter = next).</li><li>Comp poke/disengage : Braum/Taric > Leona/Nautilus.</li><li>Side win (blue/red) influence priorités — ne pas ignorer le contexte BO.</li><li>TF full tank (Dopa) : si tu n'attaques pas TF tank, tu perds — win condition différente.</li></ul>"
+    }
+  ],
+  "kazewaKnowledge": "kazewa-lol-knowledge.md"
+}

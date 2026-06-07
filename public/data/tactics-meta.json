@@ -1,0 +1,7977 @@
+{
+  "version": "16.11.1",
+  "source": "Data Dragon + heuristiques",
+  "champions": {
+    "Aatrox": {
+      "tags": [
+        "aoe",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "peel",
+        "percent_hp",
+        "wants_cc_ally"
+      ],
+      "type": "Combattant",
+      "worstMatchups": [
+        "Jhin",
+        "Caitlyn",
+        "Varus",
+        "Senna",
+        "Ashe"
+      ],
+      "bestPairings": [
+        "Ambessa",
+        "Pyke",
+        "Nautilus",
+        "Rakan",
+        "Alistar"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Jhin",
+        "Caitlyn",
+        "Varus",
+        "Senna",
+        "Ashe"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Ahri": {
+      "tags": [
+        "assassin",
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "mobility",
+        "pick",
+        "ranged",
+        "utility"
+      ],
+      "type": "Mage / Assassin",
+      "worstMatchups": [
+        "Syndra",
+        "Garen",
+        "Yasuo",
+        "Riven",
+        "Azir"
+      ],
+      "bestPairings": [
+        "Taliyah",
+        "Pantheon",
+        "Fizz",
+        "Vi",
+        "LeBlanc"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Syndra",
+        "Garen",
+        "Yasuo",
+        "Riven",
+        "Azir"
+      ],
+      "family": "assassin_ap_pick",
+      "familyLabel": "Assassin AP (pick)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Akali": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "execute",
+        "melee",
+        "mobility",
+        "pick",
+        "stealth",
+        "utility"
+      ],
+      "type": "Assassin",
+      "worstMatchups": [
+        "Azir",
+        "Aurelion Sol",
+        "Cassiopeia",
+        "Anivia",
+        "Orianna"
+      ],
+      "bestPairings": [
+        "Ahri",
+        "Taliyah",
+        "Ekko",
+        "LeBlanc",
+        "Katarina"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Top"
+      ],
+      "bestCounters": [
+        "Azir",
+        "Aurelion Sol",
+        "Cassiopeia",
+        "Anivia",
+        "Orianna"
+      ],
+      "family": "assassin_ap_pick",
+      "familyLabel": "Assassin AP (pick)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Akshan": {
+      "tags": [
+        "assassin",
+        "dps",
+        "marksman",
+        "mobility",
+        "peel",
+        "pick",
+        "ranged",
+        "scaling",
+        "stealth"
+      ],
+      "type": "Tireur / Assassin",
+      "worstMatchups": [
+        "Poppy",
+        "Briar",
+        "Gnar",
+        "K'Santé",
+        "Sion"
+      ],
+      "bestPairings": [
+        "Karthus",
+        "Galio",
+        "Kai'Sa",
+        "Kled",
+        "Xayah"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid",
+        "Bot"
+      ],
+      "bestCounters": [
+        "Poppy",
+        "Briar",
+        "Gnar",
+        "K'Santé",
+        "Sion"
+      ],
+      "family": "adc_tempo",
+      "familyLabel": "ADC tempo",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Alistar": {
+      "tags": [
+        "cc",
+        "engage",
+        "frontline",
+        "knockup",
+        "melee",
+        "mobility",
+        "peel",
+        "support"
+      ],
+      "type": "Tank / Support",
+      "worstMatchups": [
+        "Braum",
+        "Taric",
+        "Morgana",
+        "Varus",
+        "K'Santé"
+      ],
+      "bestPairings": [
+        "Aatrox",
+        "Kalista",
+        "Ambessa",
+        "Yone",
+        "Galio"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Braum",
+        "Taric",
+        "Morgana",
+        "Varus",
+        "K'Santé"
+      ],
+      "family": "support_engage",
+      "familyLabel": "Support engage",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Ambessa": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "cc",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "knockup",
+        "melee",
+        "mobility",
+        "peel",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Varus",
+        "Ashe"
+      ],
+      "bestPairings": [
+        "Aatrox",
+        "Yasuo",
+        "Yone",
+        "Leona",
+        "Galio"
+      ],
+      "optimalSlots": [
+        "Top"
+      ],
+      "bestCounters": [
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Varus",
+        "Ashe"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Amumu": {
+      "tags": [
+        "cc",
+        "enchanter",
+        "engage",
+        "frontline",
+        "melee",
+        "peel",
+        "percent_hp",
+        "support",
+        "utility"
+      ],
+      "type": "Tank / Support",
+      "worstMatchups": [
+        "Cho'Gath",
+        "Dr. Mundo",
+        "K'Santé",
+        "Poppy",
+        "Gragas"
+      ],
+      "bestPairings": [
+        "Aatrox",
+        "Brand",
+        "Miss Fortune",
+        "Samira",
+        "Smolder"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Cho'Gath",
+        "Dr. Mundo",
+        "K'Santé",
+        "Poppy",
+        "Gragas"
+      ],
+      "family": "tank_engage",
+      "familyLabel": "Tank engage",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Anivia": {
+      "tags": [
+        "anti_mobility",
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "ranged",
+        "utility"
+      ],
+      "type": "Mage",
+      "worstMatchups": [
+        "Irelia",
+        "Akshan",
+        "Aurora",
+        "Evelynn",
+        "Camille"
+      ],
+      "bestPairings": [
+        "Jhin",
+        "Ashe",
+        "Caitlyn",
+        "Zoé",
+        "Corki"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Irelia",
+        "Akshan",
+        "Aurora",
+        "Evelynn",
+        "Camille"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Annie": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "knockup",
+        "mage",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Zed",
+        "Kassadin",
+        "LeBlanc",
+        "Ahri",
+        "Diana"
+      ],
+      "bestPairings": [
+        "Kalista",
+        "Samira",
+        "Sion",
+        "Leona",
+        "Galio"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Zed",
+        "Kassadin",
+        "LeBlanc",
+        "Ahri",
+        "Diana"
+      ],
+      "family": "mage_dps",
+      "familyLabel": "Mage burst",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Aphelios": {
+      "tags": [
+        "aoe",
+        "cc",
+        "dps",
+        "marksman",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur",
+      "worstMatchups": [
+        "Talon",
+        "Qiyana",
+        "Zaahen",
+        "Zed",
+        "Ahri"
+      ],
+      "bestPairings": [
+        "Karma",
+        "Lulu",
+        "Sona",
+        "Janna",
+        "Milio"
+      ],
+      "optimalSlots": [
+        "Bot"
+      ],
+      "bestCounters": [
+        "Talon",
+        "Qiyana",
+        "Zaahen",
+        "Zed",
+        "Ahri"
+      ],
+      "family": "adc_hypercarry",
+      "familyLabel": "ADC hypercarry",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Ashe": {
+      "tags": [
+        "aoe",
+        "cc",
+        "dps",
+        "high_damage",
+        "marksman",
+        "peel",
+        "ranged",
+        "scaling",
+        "support"
+      ],
+      "type": "Tireur / Support",
+      "worstMatchups": [
+        "Nocturne",
+        "Akshan",
+        "Aurora",
+        "Evelynn",
+        "Vayne"
+      ],
+      "bestPairings": [
+        "Jhin",
+        "Senna",
+        "Varus",
+        "Taric",
+        "Anivia"
+      ],
+      "optimalSlots": [
+        "Bot",
+        "Support"
+      ],
+      "bestCounters": [
+        "Nocturne",
+        "Akshan",
+        "Aurora",
+        "Evelynn",
+        "Vayne"
+      ],
+      "family": "adc_poke",
+      "familyLabel": "ADC poke / siege",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Aurelion Sol": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "execute",
+        "knockup",
+        "mage",
+        "percent_hp",
+        "ranged",
+        "utility"
+      ],
+      "type": "Mage",
+      "worstMatchups": [
+        "Aurora",
+        "Evelynn",
+        "Akshan",
+        "Diana",
+        "LeBlanc"
+      ],
+      "bestPairings": [
+        "Braum",
+        "Kindred",
+        "Kog'Maw",
+        "Xin Zhao",
+        "Vayne"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Aurora",
+        "Evelynn",
+        "Akshan",
+        "Diana",
+        "LeBlanc"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Aurora": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "burst",
+        "enchanter",
+        "mage",
+        "mobility",
+        "peel",
+        "pick",
+        "ranged",
+        "stealth",
+        "utility"
+      ],
+      "type": "Mage / Assassin",
+      "worstMatchups": [
+        "Poppy",
+        "Vex",
+        "Fizz",
+        "K'Santé",
+        "LeBlanc"
+      ],
+      "bestPairings": [
+        "Annie",
+        "Kalista",
+        "Syndra",
+        "Lux",
+        "Kennen"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Poppy",
+        "Vex",
+        "Fizz",
+        "K'Santé",
+        "LeBlanc"
+      ],
+      "family": "mage_dps",
+      "familyLabel": "Mage burst",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Azir": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "burst",
+        "disengage",
+        "dive",
+        "dps",
+        "mage",
+        "marksman",
+        "mobility",
+        "peel",
+        "ranged",
+        "scaling",
+        "utility"
+      ],
+      "type": "Mage / Tireur",
+      "worstMatchups": [
+        "Cassiopeia",
+        "Briar",
+        "LeBlanc",
+        "Rengar",
+        "Evelynn"
+      ],
+      "bestPairings": [
+        "Braum",
+        "Taric",
+        "Ornn",
+        "Sion",
+        "Maître Yi"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Bot",
+        "Support"
+      ],
+      "bestCounters": [
+        "Cassiopeia",
+        "Briar",
+        "LeBlanc",
+        "Rengar",
+        "Evelynn"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Bard": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "burst",
+        "cc",
+        "mage",
+        "peel",
+        "ranged",
+        "support"
+      ],
+      "type": "Support / Mage",
+      "worstMatchups": [
+        "Vayne",
+        "Tristana",
+        "Akshan",
+        "Aurora",
+        "Evelynn"
+      ],
+      "bestPairings": [
+        "Caitlyn",
+        "Pantheon",
+        "Galio",
+        "Nocturne",
+        "Taliyah"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Vayne",
+        "Tristana",
+        "Akshan",
+        "Aurora",
+        "Evelynn"
+      ],
+      "family": "global_pick",
+      "familyLabel": "Global / pick",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Bel'Veth": {
+      "tags": [
+        "aoe",
+        "cc",
+        "enchanter",
+        "fighter",
+        "frontline",
+        "knockup",
+        "melee",
+        "mobility",
+        "percent_hp",
+        "utility"
+      ],
+      "type": "Combattant",
+      "worstMatchups": [
+        "Poppy",
+        "Anivia",
+        "Ryze",
+        "Swain",
+        "Jhin"
+      ],
+      "bestPairings": [
+        "Talon",
+        "Zaahen",
+        "Lee Sin",
+        "Lulu",
+        "Rek'Sai"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Poppy",
+        "Anivia",
+        "Ryze",
+        "Swain",
+        "Jhin"
+      ],
+      "family": "jungle_offensive",
+      "familyLabel": "Jungle offensif (invader)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Blitzcrank": {
+      "tags": [
+        "cc",
+        "engage",
+        "frontline",
+        "knockup",
+        "melee",
+        "mobility",
+        "peel",
+        "support"
+      ],
+      "type": "Tank / Support",
+      "worstMatchups": [
+        "Braum",
+        "Taric",
+        "Morgana",
+        "Varus",
+        "Lillia"
+      ],
+      "bestPairings": [
+        "Aatrox",
+        "Ambessa",
+        "Kalista",
+        "Yasuo",
+        "Yone"
+      ],
+      "optimalSlots": [
+        "Support"
+      ],
+      "bestCounters": [
+        "Braum",
+        "Taric",
+        "Morgana",
+        "Varus",
+        "Lillia"
+      ],
+      "family": "support_engage",
+      "familyLabel": "Support engage",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Brand": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "mobility",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Sona",
+        "Briar",
+        "Evelynn",
+        "Irelia",
+        "Rengar"
+      ],
+      "bestPairings": [
+        "Jhin",
+        "Amumu",
+        "K'Santé",
+        "Zoé",
+        "Hwei"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Sona",
+        "Briar",
+        "Evelynn",
+        "Irelia",
+        "Rengar"
+      ],
+      "family": "support_poke",
+      "familyLabel": "Support poke",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Braum": {
+      "tags": [
+        "anti_mobility",
+        "cc",
+        "engage",
+        "frontline",
+        "knockup",
+        "melee",
+        "mobility",
+        "peel",
+        "support",
+        "wants_peel"
+      ],
+      "type": "Tank / Support",
+      "worstMatchups": [
+        "Briar",
+        "Brand",
+        "Rengar",
+        "Sett",
+        "Viego"
+      ],
+      "bestPairings": [
+        "Senna",
+        "Jhin",
+        "Orianna",
+        "Hwei",
+        "Vel'Koz"
+      ],
+      "optimalSlots": [
+        "Support"
+      ],
+      "bestCounters": [
+        "Briar",
+        "Brand",
+        "Rengar",
+        "Sett",
+        "Viego"
+      ],
+      "family": "support_disengage",
+      "familyLabel": "Support disengage",
+      "compTypes": [
+        "hypercarry",
+        "poke_disengage"
+      ]
+    },
+    "Briar": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "assassin",
+        "cc",
+        "disengage",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "peel",
+        "percent_hp",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Poppy",
+        "K'Santé",
+        "Dr. Mundo",
+        "Bel'Veth",
+        "Maokai"
+      ],
+      "bestPairings": [
+        "Smolder",
+        "Kog'Maw",
+        "Sivir",
+        "Jinx",
+        "Kindred"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Poppy",
+        "K'Santé",
+        "Dr. Mundo",
+        "Bel'Veth",
+        "Maokai"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Caitlyn": {
+      "tags": [
+        "cc",
+        "dps",
+        "high_damage",
+        "knockup",
+        "marksman",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur",
+      "worstMatchups": [
+        "Nocturne",
+        "Akshan",
+        "Aurora",
+        "Vayne",
+        "Evelynn"
+      ],
+      "bestPairings": [
+        "Vel'Koz",
+        "Senna",
+        "Poppy",
+        "K'Santé",
+        "Maokai"
+      ],
+      "optimalSlots": [
+        "Bot"
+      ],
+      "bestCounters": [
+        "Nocturne",
+        "Akshan",
+        "Aurora",
+        "Vayne",
+        "Evelynn"
+      ],
+      "family": "adc_poke",
+      "familyLabel": "ADC poke / siege",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Camille": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "assassin",
+        "cc",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "knockup",
+        "melee",
+        "mobility",
+        "peel",
+        "percent_hp",
+        "pick",
+        "wants_cc_ally"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Taliyah",
+        "Bard",
+        "Nocturne",
+        "Pantheon",
+        "Karthus"
+      ],
+      "bestPairings": [
+        "Fiora",
+        "Irelia",
+        "Nocturne",
+        "Galio",
+        "Jax"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Taliyah",
+        "Bard",
+        "Nocturne",
+        "Pantheon",
+        "Karthus"
+      ],
+      "family": "bruiser_split",
+      "familyLabel": "Bruiser split",
+      "compTypes": [
+        "split_push"
+      ]
+    },
+    "Cassiopeia": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "knockup",
+        "mage",
+        "ranged",
+        "utility"
+      ],
+      "type": "Mage",
+      "worstMatchups": [
+        "Evelynn",
+        "Aurora",
+        "LeBlanc",
+        "Lucian",
+        "Samira"
+      ],
+      "bestPairings": [
+        "Braum",
+        "Kindred",
+        "Kog'Maw",
+        "Xin Zhao",
+        "Vayne"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Evelynn",
+        "Aurora",
+        "LeBlanc",
+        "Lucian",
+        "Samira"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Cho'Gath": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "engage",
+        "frontline",
+        "mage",
+        "melee",
+        "percent_hp",
+        "utility"
+      ],
+      "type": "Tank / Mage",
+      "worstMatchups": [
+        "Vayne",
+        "Kog'Maw",
+        "Aurelion Sol",
+        "Pyke",
+        "Viego"
+      ],
+      "bestPairings": [
+        "Jhin",
+        "Caitlyn",
+        "Ashe",
+        "Corki",
+        "Ezreal"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Vayne",
+        "Kog'Maw",
+        "Aurelion Sol",
+        "Pyke",
+        "Viego"
+      ],
+      "family": "tank_disengage",
+      "familyLabel": "Tank disengage",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Corki": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "burst",
+        "dps",
+        "high_damage",
+        "mage",
+        "marksman",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur / Mage",
+      "worstMatchups": [
+        "Akshan",
+        "Aurora",
+        "Vayne",
+        "Evelynn",
+        "LeBlanc"
+      ],
+      "bestPairings": [
+        "Braum",
+        "Taric",
+        "Anivia",
+        "Gragas",
+        "Zoé"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Bot"
+      ],
+      "bestCounters": [
+        "Akshan",
+        "Aurora",
+        "Vayne",
+        "Evelynn",
+        "LeBlanc"
+      ],
+      "family": "adc_poke",
+      "familyLabel": "ADC poke / siege",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Darius": {
+      "tags": [
+        "anti_mobility",
+        "dive",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "wants_cc_ally"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Varus",
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Corki"
+      ],
+      "bestPairings": [
+        "Alistar",
+        "Ambessa",
+        "Blitzcrank",
+        "Garen",
+        "Gnar"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Varus",
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Corki"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Diana": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "peel",
+        "pick",
+        "utility"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Ryze",
+        "Anivia",
+        "Azir",
+        "Ziggs",
+        "Aurelion Sol"
+      ],
+      "bestPairings": [
+        "Galio",
+        "Yasuo",
+        "Kalista",
+        "Annie",
+        "Lucian"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Ryze",
+        "Anivia",
+        "Azir",
+        "Ziggs",
+        "Aurelion Sol"
+      ],
+      "family": "assassin_ap_pick",
+      "familyLabel": "Assassin AP (pick)",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Dr. Mundo": {
+      "tags": [
+        "cc",
+        "disengage",
+        "engage",
+        "fighter",
+        "frontline",
+        "melee",
+        "peel",
+        "percent_hp"
+      ],
+      "type": "Tank / Combattant",
+      "worstMatchups": [
+        "Vayne",
+        "Kog'Maw",
+        "Pyke",
+        "Viego",
+        "Aurelion Sol"
+      ],
+      "bestPairings": [
+        "Jhin",
+        "Smolder",
+        "Caitlyn",
+        "Corki",
+        "Ezreal"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Vayne",
+        "Kog'Maw",
+        "Pyke",
+        "Viego",
+        "Aurelion Sol"
+      ],
+      "family": "tank_disengage",
+      "familyLabel": "Tank disengage",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Draven": {
+      "tags": [
+        "disengage",
+        "dps",
+        "execute",
+        "high_damage",
+        "marksman",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur",
+      "worstMatchups": [
+        "Braum",
+        "Taric",
+        "K'Santé",
+        "Vayne",
+        "Morgana"
+      ],
+      "bestPairings": [
+        "Blitzcrank",
+        "Leona",
+        "Alistar",
+        "Nautilus",
+        "Rell"
+      ],
+      "optimalSlots": [
+        "Bot"
+      ],
+      "bestCounters": [
+        "Braum",
+        "Taric",
+        "K'Santé",
+        "Vayne",
+        "Morgana"
+      ],
+      "family": "adc_short_allin",
+      "familyLabel": "ADC all-in (short range)",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Ekko": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "burst",
+        "cc",
+        "mage",
+        "melee",
+        "mobility",
+        "peel",
+        "pick",
+        "utility"
+      ],
+      "type": "Assassin / Mage",
+      "worstMatchups": [
+        "Anivia",
+        "Aurelion Sol",
+        "Azir",
+        "Cassiopeia",
+        "Ryze"
+      ],
+      "bestPairings": [
+        "Galio",
+        "Pantheon",
+        "Ahri",
+        "Rek'Sai",
+        "Fizz"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Anivia",
+        "Aurelion Sol",
+        "Azir",
+        "Cassiopeia",
+        "Ryze"
+      ],
+      "family": "assassin_ap_pick",
+      "familyLabel": "Assassin AP (pick)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Elise": {
+      "tags": [
+        "assassin",
+        "burst",
+        "cc",
+        "mage",
+        "peel",
+        "pick",
+        "ranged",
+        "utility"
+      ],
+      "type": "Assassin / Mage",
+      "worstMatchups": [
+        "Lee Sin",
+        "Malzahar",
+        "Ziggs",
+        "Garen",
+        "Azir"
+      ],
+      "bestPairings": [
+        "Lucian",
+        "Talon",
+        "Graves",
+        "Rek'Sai",
+        "Shaco"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Lee Sin",
+        "Malzahar",
+        "Ziggs",
+        "Garen",
+        "Azir"
+      ],
+      "family": "jungle_offensive",
+      "familyLabel": "Jungle offensif (invader)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Evelynn": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "melee",
+        "mobility",
+        "peel",
+        "pick",
+        "stealth",
+        "utility"
+      ],
+      "type": "Assassin / Mage",
+      "worstMatchups": [
+        "Briar",
+        "Taliyah",
+        "Elise",
+        "Samira",
+        "Vayne"
+      ],
+      "bestPairings": [
+        "Kha'Zix",
+        "Rengar",
+        "Smolder",
+        "Udyr",
+        "Aatrox"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Briar",
+        "Taliyah",
+        "Elise",
+        "Samira",
+        "Vayne"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Ezreal": {
+      "tags": [
+        "aoe",
+        "burst",
+        "dive",
+        "dps",
+        "high_damage",
+        "mage",
+        "marksman",
+        "mobility",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur / Mage",
+      "worstMatchups": [
+        "Nautilus",
+        "Briar",
+        "K'Santé",
+        "Vi",
+        "Hecarim"
+      ],
+      "bestPairings": [
+        "Taric",
+        "Anivia",
+        "Gragas",
+        "Zoé",
+        "Braum"
+      ],
+      "optimalSlots": [
+        "Bot",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Nautilus",
+        "Briar",
+        "K'Santé",
+        "Vi",
+        "Hecarim"
+      ],
+      "family": "adc_poke",
+      "familyLabel": "ADC poke / siege",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Fiddlesticks": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "execute",
+        "mage",
+        "peel",
+        "support",
+        "utility"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Corki",
+        "Ezreal",
+        "Varus",
+        "Jhin",
+        "Ashe"
+      ],
+      "bestPairings": [
+        "Galio",
+        "Aatrox",
+        "Illaoi",
+        "Darius",
+        "Pantheon"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Corki",
+        "Ezreal",
+        "Varus",
+        "Jhin",
+        "Ashe"
+      ],
+      "family": "global_pick",
+      "familyLabel": "Global / pick",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Fiora": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "cc",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "peel",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Taliyah",
+        "Bard",
+        "Twisted Fate",
+        "Nocturne",
+        "Pantheon"
+      ],
+      "bestPairings": [
+        "Camille",
+        "Irelia",
+        "Twisted Fate",
+        "Jax",
+        "Pantheon"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Taliyah",
+        "Bard",
+        "Twisted Fate",
+        "Nocturne",
+        "Pantheon"
+      ],
+      "family": "bruiser_split",
+      "familyLabel": "Bruiser split",
+      "compTypes": [
+        "split_push"
+      ]
+    },
+    "Fizz": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "cc",
+        "disengage",
+        "dive",
+        "fighter",
+        "frontline",
+        "knockup",
+        "melee",
+        "mobility",
+        "pick",
+        "utility",
+        "wants_cc_ally"
+      ],
+      "type": "Assassin / Combattant",
+      "worstMatchups": [
+        "Ryze",
+        "Anivia",
+        "Aurelion Sol",
+        "Cassiopeia",
+        "Azir"
+      ],
+      "bestPairings": [
+        "Katarina",
+        "Taliyah",
+        "Nocturne",
+        "Galio",
+        "Rek'Sai"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Ryze",
+        "Anivia",
+        "Aurelion Sol",
+        "Cassiopeia",
+        "Azir"
+      ],
+      "family": "assassin_ap_pick",
+      "familyLabel": "Assassin AP (pick)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Galio": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "engage",
+        "frontline",
+        "knockup",
+        "mage",
+        "melee",
+        "mobility",
+        "peel",
+        "wants_cc_ally",
+        "wants_peel"
+      ],
+      "type": "Tank / Mage",
+      "worstMatchups": [
+        "Cho'Gath",
+        "Varus",
+        "Jhin",
+        "K'Santé",
+        "Lillia"
+      ],
+      "bestPairings": [
+        "Yasuo",
+        "Ambessa",
+        "Yone",
+        "Katarina",
+        "Pantheon"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Cho'Gath",
+        "Varus",
+        "Jhin",
+        "K'Santé",
+        "Lillia"
+      ],
+      "family": "global_pick",
+      "familyLabel": "Global / pick",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Gangplank": {
+      "tags": [
+        "aoe",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee"
+      ],
+      "type": "Combattant",
+      "worstMatchups": [
+        "Pantheon",
+        "Bard",
+        "Taliyah",
+        "Nocturne",
+        "Twisted Fate"
+      ],
+      "bestPairings": [
+        "Quinn",
+        "Singed",
+        "Camille",
+        "Fiora",
+        "Irelia"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Pantheon",
+        "Bard",
+        "Taliyah",
+        "Nocturne",
+        "Twisted Fate"
+      ],
+      "family": "ovni",
+      "familyLabel": "Ovni / spécialiste",
+      "compTypes": [
+        "split_push"
+      ]
+    },
+    "Garen": {
+      "tags": [
+        "anti_mobility",
+        "cc",
+        "engage",
+        "execute",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "peel"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Varus",
+        "Ashe",
+        "Caitlyn",
+        "Corki",
+        "Ezreal"
+      ],
+      "bestPairings": [
+        "Aatrox",
+        "Ambessa",
+        "Yasuo",
+        "Yone",
+        "Pyke"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Varus",
+        "Ashe",
+        "Caitlyn",
+        "Corki",
+        "Ezreal"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Gnar": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "cc",
+        "dive",
+        "engage",
+        "fighter",
+        "frontline",
+        "knockup",
+        "melee",
+        "mobility"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Varus",
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Ashe"
+      ],
+      "bestPairings": [
+        "Aatrox",
+        "Ambessa",
+        "Urgot",
+        "Yasuo",
+        "Yone"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Varus",
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Ashe"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Gragas": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "disengage",
+        "enchanter",
+        "fighter",
+        "frontline",
+        "mage",
+        "melee",
+        "mobility"
+      ],
+      "type": "Combattant / Mage",
+      "worstMatchups": [
+        "Kog'Maw",
+        "Vayne",
+        "Garen",
+        "Aphelios",
+        "Jinx"
+      ],
+      "bestPairings": [
+        "Jhin",
+        "Corki",
+        "Ezreal",
+        "Hwei",
+        "Varus"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Kog'Maw",
+        "Vayne",
+        "Garen",
+        "Aphelios",
+        "Jinx"
+      ],
+      "family": "tank_disengage",
+      "familyLabel": "Tank disengage",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Graves": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "disengage",
+        "dive",
+        "dps",
+        "high_damage",
+        "marksman",
+        "mobility",
+        "scaling",
+        "stealth"
+      ],
+      "type": "Tireur",
+      "worstMatchups": [
+        "Rammus",
+        "Briar",
+        "K'Santé",
+        "Poppy",
+        "Azir"
+      ],
+      "bestPairings": [
+        "Nautilus",
+        "Elise",
+        "Bel'Veth",
+        "Nidalee",
+        "Ahri"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Rammus",
+        "Briar",
+        "K'Santé",
+        "Poppy",
+        "Azir"
+      ],
+      "family": "jungle_offensive",
+      "familyLabel": "Jungle offensif (invader)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Gwen": {
+      "tags": [
+        "aoe",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility"
+      ],
+      "type": "Combattant",
+      "worstMatchups": [
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Varus",
+        "Ashe"
+      ],
+      "bestPairings": [
+        "Alistar",
+        "Ambessa",
+        "Blitzcrank",
+        "Garen",
+        "Leona"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Varus",
+        "Ashe"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Hecarim": {
+      "tags": [
+        "anti_mobility",
+        "cc",
+        "disengage",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Poppy",
+        "Vex",
+        "Bel'Veth",
+        "Varus",
+        "Briar"
+      ],
+      "bestPairings": [
+        "Kog'Maw",
+        "Twitch",
+        "Vayne",
+        "Anivia",
+        "Smolder"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Poppy",
+        "Vex",
+        "Bel'Veth",
+        "Varus",
+        "Briar"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Heimerdinger": {
+      "tags": [
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Syndra",
+        "Miss Fortune",
+        "Quinn",
+        "Camille",
+        "Fiora"
+      ],
+      "bestPairings": [
+        "Jhin",
+        "Corki",
+        "Ezreal",
+        "Varus",
+        "Ashe"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Mid",
+        "Bot"
+      ],
+      "bestCounters": [
+        "Syndra",
+        "Miss Fortune",
+        "Quinn",
+        "Camille",
+        "Fiora"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Hwei": {
+      "tags": [
+        "aoe",
+        "burst",
+        "high_damage",
+        "mage",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Zed",
+        "Irelia",
+        "Evelynn",
+        "Fiora",
+        "Vayne"
+      ],
+      "bestPairings": [
+        "Braum",
+        "Taric",
+        "Senna",
+        "Varus",
+        "Gragas"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Zed",
+        "Irelia",
+        "Evelynn",
+        "Fiora",
+        "Vayne"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Illaoi": {
+      "tags": [
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "peel",
+        "percent_hp"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Varus",
+        "Jhin",
+        "Senna",
+        "Caitlyn",
+        "Corki"
+      ],
+      "bestPairings": [
+        "Leona",
+        "Ambessa",
+        "Pyke",
+        "Galio",
+        "Malphite"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Varus",
+        "Jhin",
+        "Senna",
+        "Caitlyn",
+        "Corki"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Irelia": {
+      "tags": [
+        "anti_mobility",
+        "assassin",
+        "cc",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "mobility",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Taliyah",
+        "Nocturne",
+        "Bard",
+        "Pantheon",
+        "Karthus"
+      ],
+      "bestPairings": [
+        "Camille",
+        "Fiora",
+        "Tryndamere",
+        "Trundle",
+        "Jax"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Taliyah",
+        "Nocturne",
+        "Bard",
+        "Pantheon",
+        "Karthus"
+      ],
+      "family": "bruiser_split",
+      "familyLabel": "Bruiser split",
+      "compTypes": [
+        "split_push"
+      ]
+    },
+    "Ivern": {
+      "tags": [
+        "burst",
+        "cc",
+        "enchanter",
+        "knockup",
+        "mage",
+        "peel",
+        "support",
+        "utility"
+      ],
+      "type": "Support / Mage",
+      "worstMatchups": [
+        "Bel'Veth",
+        "Graves",
+        "Lee Sin",
+        "Nidalee",
+        "Miss Fortune"
+      ],
+      "bestPairings": [
+        "Vayne",
+        "Kog'Maw",
+        "Smolder",
+        "Twitch",
+        "Kindred"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Bel'Veth",
+        "Graves",
+        "Lee Sin",
+        "Nidalee",
+        "Miss Fortune"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Janna": {
+      "tags": [
+        "burst",
+        "cc",
+        "disengage",
+        "enchanter",
+        "knockup",
+        "mage",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Support / Mage",
+      "worstMatchups": [
+        "Leona",
+        "Zed",
+        "Kennen",
+        "Miss Fortune",
+        "Annie"
+      ],
+      "bestPairings": [
+        "Smolder",
+        "Kog'Maw",
+        "Vayne",
+        "Twitch",
+        "Jinx"
+      ],
+      "optimalSlots": [
+        "Support"
+      ],
+      "bestCounters": [
+        "Leona",
+        "Zed",
+        "Kennen",
+        "Miss Fortune",
+        "Annie"
+      ],
+      "family": "support_enchanter",
+      "familyLabel": "Support enchanter",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Jarvan IV": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "cc",
+        "engage",
+        "fighter",
+        "frontline",
+        "knockup",
+        "melee",
+        "mobility"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Poppy",
+        "Bel'Veth",
+        "Varus",
+        "Jhin",
+        "Briar"
+      ],
+      "bestPairings": [
+        "Kog'Maw",
+        "Anivia",
+        "Galio",
+        "Lissandra",
+        "Orianna"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Poppy",
+        "Bel'Veth",
+        "Varus",
+        "Jhin",
+        "Briar"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Jax": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "cc",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "utility"
+      ],
+      "type": "Combattant",
+      "worstMatchups": [
+        "Taliyah",
+        "Bard",
+        "Pantheon",
+        "Nocturne",
+        "Karthus"
+      ],
+      "bestPairings": [
+        "Camille",
+        "Fiora",
+        "Irelia",
+        "Tryndamere",
+        "Nasus"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Taliyah",
+        "Bard",
+        "Pantheon",
+        "Nocturne",
+        "Karthus"
+      ],
+      "family": "bruiser_split",
+      "familyLabel": "Bruiser split",
+      "compTypes": [
+        "split_push"
+      ]
+    },
+    "Jayce": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "disengage",
+        "dive",
+        "dps",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "marksman",
+        "melee",
+        "mobility",
+        "scaling",
+        "wants_cc_ally"
+      ],
+      "type": "Combattant / Tireur",
+      "worstMatchups": [
+        "Renekton",
+        "Taliyah",
+        "Tristana",
+        "LeBlanc",
+        "Bard"
+      ],
+      "bestPairings": [
+        "Taliyah",
+        "Singed",
+        "Zac",
+        "Galio",
+        "Anivia"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Bot"
+      ],
+      "bestCounters": [
+        "Renekton",
+        "Taliyah",
+        "Tristana",
+        "LeBlanc",
+        "Bard"
+      ],
+      "family": "ovni",
+      "familyLabel": "Ovni / spécialiste",
+      "compTypes": [
+        "poke_siege"
+      ]
+    },
+    "Jhin": {
+      "tags": [
+        "anti_mobility",
+        "burst",
+        "cc",
+        "dps",
+        "high_damage",
+        "mage",
+        "marksman",
+        "ranged",
+        "scaling",
+        "stealth",
+        "wants_cc_ally"
+      ],
+      "type": "Tireur / Mage",
+      "worstMatchups": [
+        "Evelynn",
+        "Lucian",
+        "Samira",
+        "Aurora",
+        "Vayne"
+      ],
+      "bestPairings": [
+        "Braum",
+        "K'Santé",
+        "Taric",
+        "Anivia",
+        "Gragas"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Bot",
+        "Support"
+      ],
+      "bestCounters": [
+        "Evelynn",
+        "Lucian",
+        "Samira",
+        "Aurora",
+        "Vayne"
+      ],
+      "family": "adc_poke",
+      "familyLabel": "ADC poke / siege",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Jinx": {
+      "tags": [
+        "aoe",
+        "cc",
+        "dps",
+        "high_damage",
+        "marksman",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur",
+      "worstMatchups": [
+        "Talon",
+        "Qiyana",
+        "Zaahen",
+        "Zed",
+        "Diana"
+      ],
+      "bestPairings": [
+        "Karma",
+        "Sona",
+        "Janna",
+        "Nami",
+        "Soraka"
+      ],
+      "optimalSlots": [
+        "Bot"
+      ],
+      "bestCounters": [
+        "Talon",
+        "Qiyana",
+        "Zaahen",
+        "Zed",
+        "Diana"
+      ],
+      "family": "adc_hypercarry",
+      "familyLabel": "ADC hypercarry",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "K'Santé": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "cc",
+        "disengage",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "peel",
+        "utility"
+      ],
+      "type": "Tank / Combattant",
+      "worstMatchups": [
+        "Vayne",
+        "Briar",
+        "Varus",
+        "Aphelios",
+        "Kog'Maw"
+      ],
+      "bestPairings": [
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Varus",
+        "Smolder"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Vayne",
+        "Briar",
+        "Varus",
+        "Aphelios",
+        "Kog'Maw"
+      ],
+      "family": "tank_disengage",
+      "familyLabel": "Tank disengage",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Kai'Sa": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "dive",
+        "dps",
+        "high_damage",
+        "mage",
+        "marksman",
+        "mobility",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur / Mage",
+      "worstMatchups": [
+        "Briar",
+        "K'Santé",
+        "Qiyana",
+        "Hecarim",
+        "Poppy"
+      ],
+      "bestPairings": [
+        "Alistar",
+        "Nautilus",
+        "Renekton",
+        "Briar",
+        "Vi"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Bot",
+        "Support"
+      ],
+      "bestCounters": [
+        "Briar",
+        "K'Santé",
+        "Qiyana",
+        "Hecarim",
+        "Poppy"
+      ],
+      "family": "adc_tempo",
+      "familyLabel": "ADC tempo",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Kalista": {
+      "tags": [
+        "aoe",
+        "cc",
+        "disengage",
+        "dive",
+        "dps",
+        "high_damage",
+        "knockup",
+        "marksman",
+        "mobility",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur",
+      "worstMatchups": [
+        "Braum",
+        "Taric",
+        "Nautilus",
+        "K'Santé",
+        "Poppy"
+      ],
+      "bestPairings": [
+        "Alistar",
+        "Blitzcrank",
+        "Leona",
+        "Nautilus",
+        "Rell"
+      ],
+      "optimalSlots": [
+        "Bot"
+      ],
+      "bestCounters": [
+        "Braum",
+        "Taric",
+        "Nautilus",
+        "K'Santé",
+        "Poppy"
+      ],
+      "family": "adc_short_allin",
+      "familyLabel": "ADC all-in (short range)",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Karma": {
+      "tags": [
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "peel",
+        "ranged",
+        "support",
+        "utility",
+        "wants_cc_ally"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Mel",
+        "Syndra",
+        "Lux",
+        "Annie",
+        "Qiyana"
+      ],
+      "bestPairings": [
+        "Smolder",
+        "Kog'Maw",
+        "Vayne",
+        "Jinx",
+        "Twitch"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Mel",
+        "Syndra",
+        "Lux",
+        "Annie",
+        "Qiyana"
+      ],
+      "family": "support_enchanter",
+      "familyLabel": "Support enchanter",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Karthus": {
+      "tags": [
+        "anti_mobility",
+        "burst",
+        "enchanter",
+        "mage",
+        "utility"
+      ],
+      "type": "Mage",
+      "worstMatchups": [
+        "Nocturne",
+        "Aurora",
+        "Vayne",
+        "Tristana",
+        "Ahri"
+      ],
+      "bestPairings": [
+        "Akshan",
+        "Taliyah",
+        "Twisted Fate",
+        "Pantheon",
+        "Galio"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Nocturne",
+        "Aurora",
+        "Vayne",
+        "Tristana",
+        "Ahri"
+      ],
+      "family": "global_pick",
+      "familyLabel": "Global / pick",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Kassadin": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "burst",
+        "enchanter",
+        "mage",
+        "melee",
+        "mobility",
+        "peel",
+        "pick",
+        "utility"
+      ],
+      "type": "Assassin / Mage",
+      "worstMatchups": [
+        "Sett",
+        "Renekton",
+        "Briar",
+        "Hecarim",
+        "Taliyah"
+      ],
+      "bestPairings": [
+        "Galio",
+        "Smolder",
+        "Braum",
+        "Pantheon",
+        "Aphelios"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Sett",
+        "Renekton",
+        "Briar",
+        "Hecarim",
+        "Taliyah"
+      ],
+      "family": "assassin_ap_pick",
+      "familyLabel": "Assassin AP (pick)",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Katarina": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "burst",
+        "cc",
+        "enchanter",
+        "knockup",
+        "mage",
+        "melee",
+        "mobility",
+        "pick",
+        "utility",
+        "wants_cc_ally"
+      ],
+      "type": "Assassin / Mage",
+      "worstMatchups": [
+        "Anivia",
+        "Galio",
+        "Kassadin",
+        "Malzahar",
+        "Azir"
+      ],
+      "bestPairings": [
+        "Fizz",
+        "Rek'Sai",
+        "Galio",
+        "Taliyah",
+        "Talon"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Anivia",
+        "Galio",
+        "Kassadin",
+        "Malzahar",
+        "Azir"
+      ],
+      "family": "assassin_ap_pick",
+      "familyLabel": "Assassin AP (pick)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Kayle": {
+      "tags": [
+        "burst",
+        "dps",
+        "mage",
+        "marksman",
+        "melee",
+        "peel",
+        "scaling",
+        "utility"
+      ],
+      "type": "Mage / Tireur",
+      "worstMatchups": [
+        "Talon",
+        "Qiyana",
+        "Zaahen",
+        "Zed",
+        "Ahri"
+      ],
+      "bestPairings": [
+        "Janna",
+        "Karma",
+        "Milio",
+        "Sona",
+        "Soraka"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Bot",
+        "Support"
+      ],
+      "bestCounters": [
+        "Talon",
+        "Qiyana",
+        "Zaahen",
+        "Zed",
+        "Ahri"
+      ],
+      "family": "adc_hypercarry",
+      "familyLabel": "ADC hypercarry",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Kayn": {
+      "tags": [
+        "assassin",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "peel",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Poppy",
+        "K'Santé",
+        "Bel'Veth",
+        "Hecarim",
+        "Sion"
+      ],
+      "bestPairings": [
+        "Kha'Zix",
+        "Rengar",
+        "Smolder",
+        "Aphelios",
+        "Jinx"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Poppy",
+        "K'Santé",
+        "Bel'Veth",
+        "Hecarim",
+        "Sion"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Kennen": {
+      "tags": [
+        "burst",
+        "cc",
+        "mage",
+        "ranged",
+        "utility"
+      ],
+      "type": "Mage",
+      "worstMatchups": [
+        "Kassadin",
+        "LeBlanc",
+        "Ahri",
+        "Diana",
+        "Vayne"
+      ],
+      "bestPairings": [
+        "Sylas",
+        "Aurora",
+        "Mel",
+        "Miss Fortune",
+        "Annie"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Kassadin",
+        "LeBlanc",
+        "Ahri",
+        "Diana",
+        "Vayne"
+      ],
+      "family": "mage_dps",
+      "familyLabel": "Mage burst",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Kha'Zix": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "cc",
+        "dive",
+        "high_damage",
+        "knockup",
+        "melee",
+        "mobility",
+        "pick",
+        "stealth"
+      ],
+      "type": "Assassin",
+      "worstMatchups": [
+        "Taliyah",
+        "Rengar",
+        "Poppy",
+        "K'Santé",
+        "Briar"
+      ],
+      "bestPairings": [
+        "Wukong",
+        "Katarina",
+        "Evelynn",
+        "Vi",
+        "Aurelion Sol"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Taliyah",
+        "Rengar",
+        "Poppy",
+        "K'Santé",
+        "Briar"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Kindred": {
+      "tags": [
+        "aoe",
+        "dps",
+        "high_damage",
+        "marksman",
+        "ranged",
+        "scaling",
+        "wants_cc_ally"
+      ],
+      "type": "Tireur",
+      "worstMatchups": [
+        "Rengar",
+        "Shaco",
+        "Aurora",
+        "Elise",
+        "Lee Sin"
+      ],
+      "bestPairings": [
+        "Viktor",
+        "Zac",
+        "Aurelion Sol",
+        "Cassiopeia",
+        "Ivern"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Rengar",
+        "Shaco",
+        "Aurora",
+        "Elise",
+        "Lee Sin"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Kled": {
+      "tags": [
+        "aoe",
+        "cc",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "knockup",
+        "melee",
+        "mobility",
+        "peel"
+      ],
+      "type": "Combattant",
+      "worstMatchups": [
+        "Jhin",
+        "Caitlyn",
+        "Varus",
+        "Ashe",
+        "Senna"
+      ],
+      "bestPairings": [
+        "Ambessa",
+        "Yasuo",
+        "Yone",
+        "Renekton",
+        "Galio"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Jhin",
+        "Caitlyn",
+        "Varus",
+        "Ashe",
+        "Senna"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Kog'Maw": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "burst",
+        "cc",
+        "dps",
+        "high_damage",
+        "knockup",
+        "mage",
+        "marksman",
+        "percent_hp",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur / Mage",
+      "worstMatchups": [
+        "Talon",
+        "Qiyana",
+        "Zaahen",
+        "Zed",
+        "LeBlanc"
+      ],
+      "bestPairings": [
+        "Janna",
+        "Karma",
+        "Nami",
+        "Wukong",
+        "Zac"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Bot",
+        "Support"
+      ],
+      "bestCounters": [
+        "Talon",
+        "Qiyana",
+        "Zaahen",
+        "Zed",
+        "LeBlanc"
+      ],
+      "family": "adc_hypercarry",
+      "familyLabel": "ADC hypercarry",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "LeBlanc": {
+      "tags": [
+        "assassin",
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "percent_hp",
+        "pick",
+        "ranged",
+        "stealth",
+        "utility"
+      ],
+      "type": "Assassin / Mage",
+      "worstMatchups": [
+        "Kassadin",
+        "Lissandra",
+        "Vex",
+        "Malzahar",
+        "Riven"
+      ],
+      "bestPairings": [
+        "Ahri",
+        "Fizz",
+        "Rek'Sai",
+        "Katarina",
+        "Pantheon"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Kassadin",
+        "Lissandra",
+        "Vex",
+        "Malzahar",
+        "Riven"
+      ],
+      "family": "assassin_ap_pick",
+      "familyLabel": "Assassin AP (pick)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Lee Sin": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "cc",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "knockup",
+        "melee",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Ziggs",
+        "Azir",
+        "Hwei",
+        "K'Santé",
+        "Xin Zhao"
+      ],
+      "bestPairings": [
+        "Rek'Sai",
+        "Talon",
+        "Zaahen",
+        "Bel'Veth",
+        "Yasuo"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Ziggs",
+        "Azir",
+        "Hwei",
+        "K'Santé",
+        "Xin Zhao"
+      ],
+      "family": "jungle_offensive",
+      "familyLabel": "Jungle offensif (invader)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Leona": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "cc",
+        "engage",
+        "frontline",
+        "knockup",
+        "melee",
+        "peel",
+        "support",
+        "wants_peel"
+      ],
+      "type": "Tank / Support",
+      "worstMatchups": [
+        "Morgana",
+        "Braum",
+        "Taric",
+        "Cho'Gath",
+        "Dr. Mundo"
+      ],
+      "bestPairings": [
+        "Ambessa",
+        "Yasuo",
+        "Yone",
+        "Kalista",
+        "Urgot"
+      ],
+      "optimalSlots": [
+        "Support"
+      ],
+      "bestCounters": [
+        "Morgana",
+        "Braum",
+        "Taric",
+        "Cho'Gath",
+        "Dr. Mundo"
+      ],
+      "family": "support_engage",
+      "familyLabel": "Support engage",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Lillia": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "burst",
+        "enchanter",
+        "fighter",
+        "frontline",
+        "mage",
+        "percent_hp",
+        "utility"
+      ],
+      "type": "Combattant / Mage",
+      "worstMatchups": [
+        "Akshan",
+        "Aurora",
+        "Irelia",
+        "Vayne",
+        "LeBlanc"
+      ],
+      "bestPairings": [
+        "Braum",
+        "Taric",
+        "Caitlyn",
+        "Ashe",
+        "Senna"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Akshan",
+        "Aurora",
+        "Irelia",
+        "Vayne",
+        "LeBlanc"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Lissandra": {
+      "tags": [
+        "burst",
+        "cc",
+        "enchanter",
+        "knockup",
+        "mage",
+        "peel",
+        "ranged",
+        "utility"
+      ],
+      "type": "Mage",
+      "worstMatchups": [
+        "Cho'Gath",
+        "Caitlyn",
+        "Anivia",
+        "Ashe",
+        "Brand"
+      ],
+      "bestPairings": [
+        "Galio",
+        "Aatrox",
+        "Sion",
+        "Leona",
+        "Neeko"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Cho'Gath",
+        "Caitlyn",
+        "Anivia",
+        "Ashe",
+        "Brand"
+      ],
+      "family": "mage_dps",
+      "familyLabel": "Mage burst",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Lucian": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "cc",
+        "dps",
+        "high_damage",
+        "marksman",
+        "peel",
+        "pick",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur / Assassin",
+      "worstMatchups": [
+        "Nautilus",
+        "Braum",
+        "Taric",
+        "K'Santé",
+        "Dr. Mundo"
+      ],
+      "bestPairings": [
+        "Pyke",
+        "Braum",
+        "Elise",
+        "Nami",
+        "Nautilus"
+      ],
+      "optimalSlots": [
+        "Bot",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Nautilus",
+        "Braum",
+        "Taric",
+        "K'Santé",
+        "Dr. Mundo"
+      ],
+      "family": "adc_short_allin",
+      "familyLabel": "ADC all-in (short range)",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Lulu": {
+      "tags": [
+        "burst",
+        "cc",
+        "enchanter",
+        "knockup",
+        "mage",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Support / Mage",
+      "worstMatchups": [
+        "Blitzcrank",
+        "Annie",
+        "Aurora",
+        "Lux",
+        "Mel"
+      ],
+      "bestPairings": [
+        "Smolder",
+        "Yunara",
+        "Janna",
+        "Aphelios",
+        "Nami"
+      ],
+      "optimalSlots": [
+        "Support",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Blitzcrank",
+        "Annie",
+        "Aurora",
+        "Lux",
+        "Mel"
+      ],
+      "family": "support_enchanter",
+      "familyLabel": "Support enchanter",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Lux": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "knockup",
+        "mage",
+        "mobility",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Fizz",
+        "Kassadin",
+        "Zed",
+        "LeBlanc",
+        "Ekko"
+      ],
+      "bestPairings": [
+        "Kalista",
+        "Samira",
+        "Annie",
+        "Galio",
+        "Miss Fortune"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Fizz",
+        "Kassadin",
+        "Zed",
+        "LeBlanc",
+        "Ekko"
+      ],
+      "family": "mage_dps",
+      "familyLabel": "Mage burst",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Malphite": {
+      "tags": [
+        "anti_mobility",
+        "burst",
+        "cc",
+        "engage",
+        "frontline",
+        "knockup",
+        "mage",
+        "melee",
+        "mobility",
+        "peel",
+        "percent_hp",
+        "utility"
+      ],
+      "type": "Tank / Mage",
+      "worstMatchups": [
+        "Cho'Gath",
+        "K'Santé",
+        "Dr. Mundo",
+        "Maokai",
+        "Poppy"
+      ],
+      "bestPairings": [
+        "Aatrox",
+        "Galio",
+        "Sion",
+        "Ambessa",
+        "Yone"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Cho'Gath",
+        "K'Santé",
+        "Dr. Mundo",
+        "Maokai",
+        "Poppy"
+      ],
+      "family": "tank_engage",
+      "familyLabel": "Tank engage",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Malzahar": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "ranged",
+        "utility"
+      ],
+      "type": "Mage",
+      "worstMatchups": [
+        "Aurora",
+        "Evelynn",
+        "Akshan",
+        "LeBlanc",
+        "Lucian"
+      ],
+      "bestPairings": [
+        "Kindred",
+        "Maître Yi",
+        "Aatrox",
+        "Jhin",
+        "Hecarim"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Aurora",
+        "Evelynn",
+        "Akshan",
+        "LeBlanc",
+        "Lucian"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Maokai": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "cc",
+        "enchanter",
+        "engage",
+        "frontline",
+        "knockup",
+        "melee",
+        "peel",
+        "support"
+      ],
+      "type": "Tank / Support",
+      "worstMatchups": [
+        "Brand",
+        "Kog'Maw",
+        "Vayne",
+        "Smolder",
+        "Varus"
+      ],
+      "bestPairings": [
+        "Caitlyn",
+        "Senna",
+        "Jhin",
+        "Cassiopeia",
+        "Corki"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Support",
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Brand",
+        "Kog'Maw",
+        "Vayne",
+        "Smolder",
+        "Varus"
+      ],
+      "family": "tank_disengage",
+      "familyLabel": "Tank disengage",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Maître Yi": {
+      "tags": [
+        "assassin",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "peel",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Taliyah",
+        "Elise",
+        "Lux",
+        "Samira",
+        "Syndra"
+      ],
+      "bestPairings": [
+        "Smolder",
+        "Aphelios",
+        "Jinx",
+        "Kog'Maw",
+        "Kayle"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Taliyah",
+        "Elise",
+        "Lux",
+        "Samira",
+        "Syndra"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Mel": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "execute",
+        "mage",
+        "peel",
+        "ranged",
+        "support",
+        "utility",
+        "wants_cc_ally"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Zed",
+        "Kassadin",
+        "Diana",
+        "Akali",
+        "LeBlanc"
+      ],
+      "bestPairings": [
+        "Kalista",
+        "Lucian",
+        "Miss Fortune",
+        "Samira",
+        "Draven"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Zed",
+        "Kassadin",
+        "Diana",
+        "Akali",
+        "LeBlanc"
+      ],
+      "family": "mage_dps",
+      "familyLabel": "Mage burst",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Milio": {
+      "tags": [
+        "aoe",
+        "burst",
+        "disengage",
+        "enchanter",
+        "mage",
+        "mobility",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Support / Mage",
+      "worstMatchups": [
+        "Qiyana",
+        "Aurora",
+        "Leona",
+        "Talon",
+        "Zed"
+      ],
+      "bestPairings": [
+        "Smolder",
+        "Vayne",
+        "Aphelios",
+        "Kayle",
+        "Twitch"
+      ],
+      "optimalSlots": [
+        "Support"
+      ],
+      "bestCounters": [
+        "Qiyana",
+        "Aurora",
+        "Leona",
+        "Talon",
+        "Zed"
+      ],
+      "family": "support_enchanter",
+      "familyLabel": "Support enchanter",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Miss Fortune": {
+      "tags": [
+        "aoe",
+        "burst",
+        "dps",
+        "high_damage",
+        "mage",
+        "marksman",
+        "ranged",
+        "scaling",
+        "wants_cc_ally"
+      ],
+      "type": "Tireur / Mage",
+      "worstMatchups": [
+        "Braum",
+        "Taric",
+        "K'Santé",
+        "Vayne",
+        "Cho'Gath"
+      ],
+      "bestPairings": [
+        "Alistar",
+        "Blitzcrank",
+        "Nautilus",
+        "Rell",
+        "Amumu"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Bot",
+        "Support"
+      ],
+      "bestCounters": [
+        "Braum",
+        "Taric",
+        "K'Santé",
+        "Vayne",
+        "Cho'Gath"
+      ],
+      "family": "adc_short_allin",
+      "familyLabel": "ADC all-in (short range)",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Mordekaiser": {
+      "tags": [
+        "aoe",
+        "burst",
+        "enchanter",
+        "fighter",
+        "frontline",
+        "mage",
+        "melee",
+        "peel",
+        "utility"
+      ],
+      "type": "Combattant / Mage",
+      "worstMatchups": [
+        "Caitlyn",
+        "Jhin",
+        "Ashe",
+        "Senna",
+        "Varus"
+      ],
+      "bestPairings": [
+        "Leona",
+        "Aatrox",
+        "Yasuo",
+        "Ambessa",
+        "Pyke"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Caitlyn",
+        "Jhin",
+        "Ashe",
+        "Senna",
+        "Varus"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Morgana": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "peel",
+        "support",
+        "utility"
+      ],
+      "type": "Support / Mage",
+      "worstMatchups": [
+        "Sona",
+        "Malzahar",
+        "Soraka",
+        "Kai'Sa",
+        "Cho'Gath"
+      ],
+      "bestPairings": [
+        "Jhin",
+        "Senna",
+        "Varus",
+        "Hwei",
+        "Caitlyn"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Sona",
+        "Malzahar",
+        "Soraka",
+        "Kai'Sa",
+        "Cho'Gath"
+      ],
+      "family": "support_disengage",
+      "familyLabel": "Support disengage",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Naafiri": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "peel",
+        "pick"
+      ],
+      "type": "Assassin / Combattant",
+      "worstMatchups": [
+        "Poppy",
+        "K'Santé",
+        "Dr. Mundo",
+        "Bel'Veth",
+        "Maokai"
+      ],
+      "bestPairings": [
+        "Kha'Zix",
+        "Rengar",
+        "Smolder",
+        "Aphelios",
+        "Jinx"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Poppy",
+        "K'Santé",
+        "Dr. Mundo",
+        "Bel'Veth",
+        "Maokai"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Nami": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "knockup",
+        "mage",
+        "mobility",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Support / Mage",
+      "worstMatchups": [
+        "Qiyana",
+        "Aurora",
+        "Talon",
+        "Briar",
+        "Evelynn"
+      ],
+      "bestPairings": [
+        "Vayne",
+        "Kog'Maw",
+        "Twitch",
+        "Smolder",
+        "Jinx"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Qiyana",
+        "Aurora",
+        "Talon",
+        "Briar",
+        "Evelynn"
+      ],
+      "family": "support_enchanter",
+      "familyLabel": "Support enchanter",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Nasus": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Quinn",
+        "Teemo",
+        "Nocturne",
+        "Pantheon",
+        "Twisted Fate"
+      ],
+      "bestPairings": [
+        "Camille",
+        "Jax",
+        "Fiora",
+        "Irelia",
+        "Bard"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Quinn",
+        "Teemo",
+        "Nocturne",
+        "Pantheon",
+        "Twisted Fate"
+      ],
+      "family": "bruiser_split",
+      "familyLabel": "Bruiser split",
+      "compTypes": [
+        "split_push"
+      ]
+    },
+    "Nautilus": {
+      "tags": [
+        "cc",
+        "enchanter",
+        "engage",
+        "frontline",
+        "knockup",
+        "melee",
+        "peel",
+        "support"
+      ],
+      "type": "Tank / Support",
+      "worstMatchups": [
+        "Morgana",
+        "Taric",
+        "Braum",
+        "Cho'Gath",
+        "Lillia"
+      ],
+      "bestPairings": [
+        "Aatrox",
+        "Kalista",
+        "Yasuo",
+        "Ambessa",
+        "Yone"
+      ],
+      "optimalSlots": [
+        "Support"
+      ],
+      "bestCounters": [
+        "Morgana",
+        "Taric",
+        "Braum",
+        "Cho'Gath",
+        "Lillia"
+      ],
+      "family": "support_engage",
+      "familyLabel": "Support engage",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Neeko": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "knockup",
+        "mage",
+        "mobility",
+        "peel",
+        "ranged",
+        "support",
+        "utility",
+        "wants_cc_ally"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Morgana",
+        "Jhin",
+        "LeBlanc",
+        "Corki",
+        "Cho'Gath"
+      ],
+      "bestPairings": [
+        "Galio",
+        "Sion",
+        "Leona",
+        "Lissandra",
+        "Blitzcrank"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Morgana",
+        "Jhin",
+        "LeBlanc",
+        "Corki",
+        "Cho'Gath"
+      ],
+      "family": "mage_dps",
+      "familyLabel": "Mage burst",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Nidalee": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "burst",
+        "mage",
+        "mobility",
+        "peel",
+        "pick",
+        "ranged",
+        "utility"
+      ],
+      "type": "Assassin / Mage",
+      "worstMatchups": [
+        "Briar",
+        "Vi",
+        "Viego",
+        "Poppy",
+        "Irelia"
+      ],
+      "bestPairings": [
+        "Rek'Sai",
+        "Shaco",
+        "Talon",
+        "Graves",
+        "Bel'Veth"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Briar",
+        "Vi",
+        "Viego",
+        "Poppy",
+        "Irelia"
+      ],
+      "family": "jungle_offensive",
+      "familyLabel": "Jungle offensif (invader)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Nilah": {
+      "tags": [
+        "assassin",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "mobility",
+        "peel",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Braum",
+        "Taric",
+        "K'Santé",
+        "Poppy",
+        "Dr. Mundo"
+      ],
+      "bestPairings": [
+        "Lulu",
+        "Leona",
+        "Lucian",
+        "Kalista",
+        "Pyke"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Braum",
+        "Taric",
+        "K'Santé",
+        "Poppy",
+        "Dr. Mundo"
+      ],
+      "family": "adc_short_allin",
+      "familyLabel": "ADC all-in (short range)",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Nocturne": {
+      "tags": [
+        "assassin",
+        "cc",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "knockup",
+        "melee",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Dr. Mundo",
+        "K'Santé",
+        "Syndra",
+        "Tristana",
+        "Xin Zhao"
+      ],
+      "bestPairings": [
+        "Galio",
+        "Fizz",
+        "Katarina",
+        "Camille",
+        "Taliyah"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Dr. Mundo",
+        "K'Santé",
+        "Syndra",
+        "Tristana",
+        "Xin Zhao"
+      ],
+      "family": "global_pick",
+      "familyLabel": "Global / pick",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Nunu et Willump": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "engage",
+        "frontline",
+        "knockup",
+        "mage",
+        "melee",
+        "utility"
+      ],
+      "type": "Tank / Mage",
+      "worstMatchups": [
+        "Cho'Gath",
+        "Dr. Mundo",
+        "Varus",
+        "Lillia",
+        "Caitlyn"
+      ],
+      "bestPairings": [
+        "Kog'Maw",
+        "Vayne",
+        "Twitch",
+        "Aatrox",
+        "Zac"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Cho'Gath",
+        "Dr. Mundo",
+        "Varus",
+        "Lillia",
+        "Caitlyn"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Olaf": {
+      "tags": [
+        "anti_mobility",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "peel"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Varus",
+        "Aurelion Sol",
+        "Caitlyn",
+        "Jhin",
+        "Senna"
+      ],
+      "bestPairings": [
+        "Kled",
+        "Smolder",
+        "Renekton",
+        "Anivia",
+        "Kog'Maw"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Varus",
+        "Aurelion Sol",
+        "Caitlyn",
+        "Jhin",
+        "Senna"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Orianna": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "knockup",
+        "mage",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Syndra",
+        "Aurora",
+        "Evelynn",
+        "Diana",
+        "Lucian"
+      ],
+      "bestPairings": [
+        "Braum",
+        "Xin Zhao",
+        "Smolder",
+        "Vayne",
+        "Jarvan IV"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Syndra",
+        "Aurora",
+        "Evelynn",
+        "Diana",
+        "Lucian"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Ornn": {
+      "tags": [
+        "anti_mobility",
+        "cc",
+        "engage",
+        "frontline",
+        "knockup",
+        "melee",
+        "mobility"
+      ],
+      "type": "Tank",
+      "worstMatchups": [
+        "K'Santé",
+        "Cho'Gath",
+        "Dr. Mundo",
+        "Maokai",
+        "Poppy"
+      ],
+      "bestPairings": [
+        "Azir",
+        "Sejuani",
+        "Séraphine",
+        "Neeko",
+        "Aatrox"
+      ],
+      "optimalSlots": [
+        "Top"
+      ],
+      "bestCounters": [
+        "K'Santé",
+        "Cho'Gath",
+        "Dr. Mundo",
+        "Maokai",
+        "Poppy"
+      ],
+      "family": "tank_engage",
+      "familyLabel": "Tank engage",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Pantheon": {
+      "tags": [
+        "assassin",
+        "cc",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "peel",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Taliyah",
+        "Jhin",
+        "Vayne",
+        "Poppy",
+        "Caitlyn"
+      ],
+      "bestPairings": [
+        "Galio",
+        "Ahri",
+        "Aatrox",
+        "Ekko",
+        "Katarina"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Mid",
+        "Support",
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Taliyah",
+        "Jhin",
+        "Vayne",
+        "Poppy",
+        "Caitlyn"
+      ],
+      "family": "global_pick",
+      "familyLabel": "Global / pick",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Poppy": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "cc",
+        "disengage",
+        "engage",
+        "fighter",
+        "frontline",
+        "knockup",
+        "melee",
+        "mobility",
+        "peel"
+      ],
+      "type": "Tank / Combattant",
+      "worstMatchups": [
+        "Vayne",
+        "Aphelios",
+        "Kog'Maw",
+        "Aurelion Sol",
+        "Varus"
+      ],
+      "bestPairings": [
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Kog'Maw",
+        "Smolder"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Vayne",
+        "Aphelios",
+        "Kog'Maw",
+        "Aurelion Sol",
+        "Varus"
+      ],
+      "family": "tank_disengage",
+      "familyLabel": "Tank disengage",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Pyke": {
+      "tags": [
+        "assassin",
+        "cc",
+        "execute",
+        "high_damage",
+        "melee",
+        "peel",
+        "percent_hp",
+        "pick",
+        "support"
+      ],
+      "type": "Support / Assassin",
+      "worstMatchups": [
+        "Zoé",
+        "K'Santé",
+        "Ziggs",
+        "Braum",
+        "Vel'Koz"
+      ],
+      "bestPairings": [
+        "Aatrox",
+        "Ambessa",
+        "Yasuo",
+        "Yone",
+        "Leona"
+      ],
+      "optimalSlots": [
+        "Support"
+      ],
+      "bestCounters": [
+        "Zoé",
+        "K'Santé",
+        "Ziggs",
+        "Braum",
+        "Vel'Koz"
+      ],
+      "family": "support_engage",
+      "familyLabel": "Support engage",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Qiyana": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "cc",
+        "melee",
+        "mobility",
+        "pick"
+      ],
+      "type": "Assassin",
+      "worstMatchups": [
+        "Poppy",
+        "Sion",
+        "Briar",
+        "Gnar",
+        "Anivia"
+      ],
+      "bestPairings": [
+        "Rek'Sai",
+        "Elise",
+        "Lee Sin",
+        "Shaco",
+        "Talon"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Poppy",
+        "Sion",
+        "Briar",
+        "Gnar",
+        "Anivia"
+      ],
+      "family": "assassin_ad_pick",
+      "familyLabel": "Assassin AD (pick)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Quinn": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "cc",
+        "dive",
+        "dps",
+        "high_damage",
+        "knockup",
+        "marksman",
+        "mobility",
+        "pick",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur / Assassin",
+      "worstMatchups": [
+        "Nocturne",
+        "Taliyah",
+        "Pantheon",
+        "Poppy",
+        "Fizz"
+      ],
+      "bestPairings": [
+        "Singed",
+        "Camille",
+        "Udyr",
+        "Taliyah",
+        "Galio"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Bot"
+      ],
+      "bestCounters": [
+        "Nocturne",
+        "Taliyah",
+        "Pantheon",
+        "Poppy",
+        "Fizz"
+      ],
+      "family": "ovni",
+      "familyLabel": "Ovni / spécialiste",
+      "compTypes": [
+        "split_push"
+      ]
+    },
+    "Rakan": {
+      "tags": [
+        "cc",
+        "enchanter",
+        "knockup",
+        "peel",
+        "support",
+        "utility"
+      ],
+      "type": "Support",
+      "worstMatchups": [
+        "Morgana",
+        "Corki",
+        "Ezreal",
+        "Hwei",
+        "Taric"
+      ],
+      "bestPairings": [
+        "Aatrox",
+        "Yasuo",
+        "Ambessa",
+        "Yone",
+        "Leona"
+      ],
+      "optimalSlots": [
+        "Support"
+      ],
+      "bestCounters": [
+        "Morgana",
+        "Corki",
+        "Ezreal",
+        "Hwei",
+        "Taric"
+      ],
+      "family": "support_engage",
+      "familyLabel": "Support engage",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Rammus": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "cc",
+        "engage",
+        "frontline",
+        "knockup",
+        "melee",
+        "mobility"
+      ],
+      "type": "Tank",
+      "worstMatchups": [
+        "Kindred",
+        "Varus",
+        "Jhin",
+        "K'Santé",
+        "Lillia"
+      ],
+      "bestPairings": [
+        "Zac",
+        "Kog'Maw",
+        "Twitch",
+        "Vayne",
+        "Nunu et Willump"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Kindred",
+        "Varus",
+        "Jhin",
+        "K'Santé",
+        "Lillia"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Rek'Sai": {
+      "tags": [
+        "cc",
+        "dive",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "knockup",
+        "melee",
+        "mobility",
+        "percent_hp"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Poppy",
+        "Aurelion Sol",
+        "Briar",
+        "Dr. Mundo",
+        "Swain"
+      ],
+      "bestPairings": [
+        "Katarina",
+        "Talon",
+        "Zaahen",
+        "Lee Sin",
+        "Fizz"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Poppy",
+        "Aurelion Sol",
+        "Briar",
+        "Dr. Mundo",
+        "Swain"
+      ],
+      "family": "jungle_offensive",
+      "familyLabel": "Jungle offensif (invader)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Rell": {
+      "tags": [
+        "anti_mobility",
+        "cc",
+        "engage",
+        "frontline",
+        "knockup",
+        "melee",
+        "peel",
+        "support"
+      ],
+      "type": "Tank / Support",
+      "worstMatchups": [
+        "Braum",
+        "Morgana",
+        "Taric",
+        "Cho'Gath",
+        "Dr. Mundo"
+      ],
+      "bestPairings": [
+        "Aatrox",
+        "Kalista",
+        "Ambessa",
+        "Yasuo",
+        "Yone"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Braum",
+        "Morgana",
+        "Taric",
+        "Cho'Gath",
+        "Dr. Mundo"
+      ],
+      "family": "support_engage",
+      "familyLabel": "Support engage",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Renata Glasc": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Support / Mage",
+      "worstMatchups": [
+        "Blitzcrank",
+        "Annie",
+        "Aurora",
+        "Lux",
+        "Mel"
+      ],
+      "bestPairings": [
+        "Smolder",
+        "Vayne",
+        "Twitch",
+        "Yunara",
+        "Zeri"
+      ],
+      "optimalSlots": [
+        "Support"
+      ],
+      "bestCounters": [
+        "Blitzcrank",
+        "Annie",
+        "Aurora",
+        "Lux",
+        "Mel"
+      ],
+      "family": "support_enchanter",
+      "familyLabel": "Support enchanter",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Renekton": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "cc",
+        "dive",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "peel",
+        "wants_cc_ally"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Varus",
+        "Jhin",
+        "Aurelion Sol",
+        "Caitlyn",
+        "Senna"
+      ],
+      "bestPairings": [
+        "Kled",
+        "Kog'Maw",
+        "Aatrox",
+        "Sivir",
+        "Jhin"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Varus",
+        "Jhin",
+        "Aurelion Sol",
+        "Caitlyn",
+        "Senna"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Rengar": {
+      "tags": [
+        "anti_mobility",
+        "assassin",
+        "cc",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "pick"
+      ],
+      "type": "Assassin / Combattant",
+      "worstMatchups": [
+        "Kha'Zix",
+        "Poppy",
+        "Taliyah",
+        "Elise",
+        "K'Santé"
+      ],
+      "bestPairings": [
+        "Evelynn",
+        "Swain",
+        "Aatrox",
+        "Ahri",
+        "Kayn"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Kha'Zix",
+        "Poppy",
+        "Taliyah",
+        "Elise",
+        "K'Santé"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Riven": {
+      "tags": [
+        "assassin",
+        "cc",
+        "disengage",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Varus",
+        "Ashe"
+      ],
+      "bestPairings": [
+        "Aatrox",
+        "Garen",
+        "Swain",
+        "Blitzcrank",
+        "Ambessa"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Varus",
+        "Ashe"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Rumble": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "burst",
+        "enchanter",
+        "fighter",
+        "frontline",
+        "mage",
+        "melee",
+        "peel",
+        "utility"
+      ],
+      "type": "Combattant / Mage",
+      "worstMatchups": [
+        "Kassadin",
+        "Diana",
+        "Fizz",
+        "Braum",
+        "Cho'Gath"
+      ],
+      "bestPairings": [
+        "Annie",
+        "Lux",
+        "Draven",
+        "Kalista",
+        "Lucian"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Kassadin",
+        "Diana",
+        "Fizz",
+        "Braum",
+        "Cho'Gath"
+      ],
+      "family": "mage_dps",
+      "familyLabel": "Mage burst",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Ryze": {
+      "tags": [
+        "burst",
+        "cc",
+        "enchanter",
+        "knockup",
+        "mage",
+        "mobility",
+        "ranged",
+        "utility"
+      ],
+      "type": "Mage",
+      "worstMatchups": [
+        "Kassadin",
+        "LeBlanc",
+        "Rengar",
+        "Briar",
+        "Evelynn"
+      ],
+      "bestPairings": [
+        "Braum",
+        "Kindred",
+        "Kog'Maw",
+        "Xin Zhao",
+        "Vayne"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Top"
+      ],
+      "bestCounters": [
+        "Kassadin",
+        "LeBlanc",
+        "Rengar",
+        "Briar",
+        "Evelynn"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Samira": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "cc",
+        "dive",
+        "dps",
+        "high_damage",
+        "knockup",
+        "marksman",
+        "mobility",
+        "pick",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur / Assassin",
+      "worstMatchups": [
+        "Braum",
+        "Taric",
+        "Poppy",
+        "K'Santé",
+        "Maokai"
+      ],
+      "bestPairings": [
+        "Blitzcrank",
+        "Annie",
+        "Kalista",
+        "Alistar",
+        "Rakan"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid",
+        "Bot"
+      ],
+      "bestCounters": [
+        "Braum",
+        "Taric",
+        "Poppy",
+        "K'Santé",
+        "Maokai"
+      ],
+      "family": "adc_short_allin",
+      "familyLabel": "ADC all-in (short range)",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Sejuani": {
+      "tags": [
+        "anti_mobility",
+        "cc",
+        "engage",
+        "frontline",
+        "knockup",
+        "melee",
+        "mobility"
+      ],
+      "type": "Tank",
+      "worstMatchups": [
+        "Olaf",
+        "Trundle",
+        "Varus",
+        "Braum",
+        "K'Santé"
+      ],
+      "bestPairings": [
+        "Kog'Maw",
+        "Zac",
+        "Orianna",
+        "Ornn",
+        "Vayne"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Olaf",
+        "Trundle",
+        "Varus",
+        "Braum",
+        "K'Santé"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Senna": {
+      "tags": [
+        "aoe",
+        "cc",
+        "dps",
+        "high_damage",
+        "knockup",
+        "marksman",
+        "peel",
+        "ranged",
+        "scaling",
+        "support"
+      ],
+      "type": "Support / Tireur",
+      "worstMatchups": [
+        "Aurora",
+        "Evelynn",
+        "Tristana",
+        "Akshan",
+        "Vayne"
+      ],
+      "bestPairings": [
+        "Braum",
+        "Vel'Koz",
+        "Taric",
+        "Caitlyn",
+        "Poppy"
+      ],
+      "optimalSlots": [
+        "Support",
+        "Bot"
+      ],
+      "bestCounters": [
+        "Aurora",
+        "Evelynn",
+        "Tristana",
+        "Akshan",
+        "Vayne"
+      ],
+      "family": "adc_poke",
+      "familyLabel": "ADC poke / siege",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Sett": {
+      "tags": [
+        "aoe",
+        "cc",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "peel",
+        "percent_hp"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Varus",
+        "Vayne",
+        "Aurelion Sol",
+        "Ashe",
+        "Caitlyn"
+      ],
+      "bestPairings": [
+        "Aatrox",
+        "Kog'Maw",
+        "Smolder",
+        "Kalista",
+        "Ambessa"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Varus",
+        "Vayne",
+        "Aurelion Sol",
+        "Ashe",
+        "Caitlyn"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Shaco": {
+      "tags": [
+        "assassin",
+        "cc",
+        "dive",
+        "high_damage",
+        "melee",
+        "mobility",
+        "pick",
+        "stealth"
+      ],
+      "type": "Assassin",
+      "worstMatchups": [
+        "Taliyah",
+        "Poppy",
+        "Aurelion Sol",
+        "Cassiopeia",
+        "K'Santé"
+      ],
+      "bestPairings": [
+        "Ahri",
+        "Elise",
+        "Katarina",
+        "Bel'Veth",
+        "Rek'Sai"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Taliyah",
+        "Poppy",
+        "Aurelion Sol",
+        "Cassiopeia",
+        "K'Santé"
+      ],
+      "family": "jungle_offensive",
+      "familyLabel": "Jungle offensif (invader)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Shen": {
+      "tags": [
+        "aoe",
+        "engage",
+        "frontline",
+        "melee",
+        "mobility",
+        "peel",
+        "percent_hp"
+      ],
+      "type": "Tank",
+      "worstMatchups": [
+        "Rengar",
+        "Briar",
+        "Skarner",
+        "Rek'Sai",
+        "Graves"
+      ],
+      "bestPairings": [
+        "Jinx",
+        "Twisted Fate",
+        "Irelia",
+        "Pantheon",
+        "Fiora"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Rengar",
+        "Briar",
+        "Skarner",
+        "Rek'Sai",
+        "Graves"
+      ],
+      "family": "global_pick",
+      "familyLabel": "Global / pick",
+      "compTypes": [
+        "split_push"
+      ]
+    },
+    "Shyvana": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "peel"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Varus",
+        "Jhin",
+        "Olaf",
+        "Senna",
+        "Dr. Mundo"
+      ],
+      "bestPairings": [
+        "Smolder",
+        "Kog'Maw",
+        "Zac",
+        "Anivia",
+        "Aphelios"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Varus",
+        "Jhin",
+        "Olaf",
+        "Senna",
+        "Dr. Mundo"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Singed": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "engage",
+        "frontline",
+        "knockup",
+        "mage",
+        "melee",
+        "utility"
+      ],
+      "type": "Tank / Mage",
+      "worstMatchups": [
+        "Teemo",
+        "Twisted Fate",
+        "Fiddlesticks",
+        "LeBlanc",
+        "Nocturne"
+      ],
+      "bestPairings": [
+        "Quinn",
+        "Camille",
+        "Kog'Maw",
+        "Caitlyn",
+        "Vayne"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Teemo",
+        "Twisted Fate",
+        "Fiddlesticks",
+        "LeBlanc",
+        "Nocturne"
+      ],
+      "family": "ovni",
+      "familyLabel": "Ovni / spécialiste",
+      "compTypes": [
+        "split_push"
+      ]
+    },
+    "Sion": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "cc",
+        "engage",
+        "fighter",
+        "frontline",
+        "knockup",
+        "melee",
+        "mobility",
+        "peel",
+        "percent_hp"
+      ],
+      "type": "Tank / Combattant",
+      "worstMatchups": [
+        "Dr. Mundo",
+        "K'Santé",
+        "Maokai",
+        "Cho'Gath",
+        "Poppy"
+      ],
+      "bestPairings": [
+        "Aatrox",
+        "Galio",
+        "Ambessa",
+        "Kog'Maw",
+        "Malphite"
+      ],
+      "optimalSlots": [
+        "Top"
+      ],
+      "bestCounters": [
+        "Dr. Mundo",
+        "K'Santé",
+        "Maokai",
+        "Cho'Gath",
+        "Poppy"
+      ],
+      "family": "tank_engage",
+      "familyLabel": "Tank engage",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Sivir": {
+      "tags": [
+        "dive",
+        "dps",
+        "high_damage",
+        "marksman",
+        "mobility",
+        "ranged",
+        "scaling",
+        "wants_cc_ally"
+      ],
+      "type": "Tireur",
+      "worstMatchups": [
+        "Nautilus",
+        "Briar",
+        "Qiyana",
+        "K'Santé",
+        "Talon"
+      ],
+      "bestPairings": [
+        "Renekton",
+        "Sona",
+        "Volibear",
+        "Wukong",
+        "Karma"
+      ],
+      "optimalSlots": [
+        "Bot"
+      ],
+      "bestCounters": [
+        "Nautilus",
+        "Briar",
+        "Qiyana",
+        "K'Santé",
+        "Talon"
+      ],
+      "family": "adc_tempo",
+      "familyLabel": "ADC tempo",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Skarner": {
+      "tags": [
+        "anti_mobility",
+        "cc",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "peel",
+        "percent_hp"
+      ],
+      "type": "Tank / Combattant",
+      "worstMatchups": [
+        "Varus",
+        "Jhin",
+        "K'Santé",
+        "Olaf",
+        "Dr. Mundo"
+      ],
+      "bestPairings": [
+        "Kog'Maw",
+        "Smolder",
+        "Galio",
+        "Aatrox",
+        "Swain"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Varus",
+        "Jhin",
+        "K'Santé",
+        "Olaf",
+        "Dr. Mundo"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Smolder": {
+      "tags": [
+        "burst",
+        "dps",
+        "high_damage",
+        "mage",
+        "marksman",
+        "ranged",
+        "scaling",
+        "wants_cc_ally",
+        "wants_peel"
+      ],
+      "type": "Tireur / Mage",
+      "worstMatchups": [
+        "Talon",
+        "Qiyana",
+        "Zed",
+        "Zaahen",
+        "Diana"
+      ],
+      "bestPairings": [
+        "Karma",
+        "Janna",
+        "Soraka",
+        "Renata Glasc",
+        "Séraphine"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Bot",
+        "Support"
+      ],
+      "bestCounters": [
+        "Talon",
+        "Qiyana",
+        "Zed",
+        "Zaahen",
+        "Diana"
+      ],
+      "family": "adc_hypercarry",
+      "familyLabel": "ADC hypercarry",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Sona": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "mage",
+        "peel",
+        "ranged",
+        "support",
+        "utility",
+        "wants_cc_ally"
+      ],
+      "type": "Support / Mage",
+      "worstMatchups": [
+        "Aurora",
+        "Talon",
+        "Qiyana",
+        "Zed",
+        "Evelynn"
+      ],
+      "bestPairings": [
+        "Smolder",
+        "Kog'Maw",
+        "Vayne",
+        "Jinx",
+        "Twitch"
+      ],
+      "optimalSlots": [
+        "Support"
+      ],
+      "bestCounters": [
+        "Aurora",
+        "Talon",
+        "Qiyana",
+        "Zed",
+        "Evelynn"
+      ],
+      "family": "support_enchanter",
+      "familyLabel": "Support enchanter",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Soraka": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Support / Mage",
+      "worstMatchups": [
+        "Brand",
+        "Gwen",
+        "Leona",
+        "Annie",
+        "Aurora"
+      ],
+      "bestPairings": [
+        "Smolder",
+        "Kog'Maw",
+        "Vayne",
+        "Jinx",
+        "Twitch"
+      ],
+      "optimalSlots": [
+        "Support"
+      ],
+      "bestCounters": [
+        "Brand",
+        "Gwen",
+        "Leona",
+        "Annie",
+        "Aurora"
+      ],
+      "family": "support_enchanter",
+      "familyLabel": "Support enchanter",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Swain": {
+      "tags": [
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "peel",
+        "percent_hp",
+        "ranged",
+        "support",
+        "utility",
+        "wants_cc_ally"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Kassadin",
+        "Cho'Gath",
+        "Varus",
+        "Jhin",
+        "Corki"
+      ],
+      "bestPairings": [
+        "Jhin",
+        "Aatrox",
+        "Skarner",
+        "Sion",
+        "Yasuo"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support",
+        "Bot"
+      ],
+      "bestCounters": [
+        "Kassadin",
+        "Cho'Gath",
+        "Varus",
+        "Jhin",
+        "Corki"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Sylas": {
+      "tags": [
+        "assassin",
+        "burst",
+        "enchanter",
+        "mage",
+        "melee",
+        "mobility",
+        "pick",
+        "utility"
+      ],
+      "type": "Mage / Assassin",
+      "worstMatchups": [
+        "LeBlanc",
+        "Orianna",
+        "Fizz",
+        "Vayne",
+        "Twitch"
+      ],
+      "bestPairings": [
+        "Jarvan IV",
+        "Lux",
+        "Annie",
+        "Kalista",
+        "Kennen"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Jungle"
+      ],
+      "bestCounters": [
+        "LeBlanc",
+        "Orianna",
+        "Fizz",
+        "Vayne",
+        "Twitch"
+      ],
+      "family": "mage_dps",
+      "familyLabel": "Mage burst",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Syndra": {
+      "tags": [
+        "burst",
+        "cc",
+        "disengage",
+        "enchanter",
+        "execute",
+        "mage",
+        "mobility",
+        "ranged",
+        "utility"
+      ],
+      "type": "Mage",
+      "worstMatchups": [
+        "Zed",
+        "LeBlanc",
+        "Kassadin",
+        "Ahri",
+        "Ekko"
+      ],
+      "bestPairings": [
+        "Jarvan IV",
+        "Miss Fortune",
+        "Draven",
+        "Kalista",
+        "Lucian"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Zed",
+        "LeBlanc",
+        "Kassadin",
+        "Ahri",
+        "Ekko"
+      ],
+      "family": "mage_dps",
+      "familyLabel": "Mage burst",
+      "compTypes": [
+        "all_in"
+      ]
+    },
+    "Séraphine": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "mage",
+        "peel",
+        "ranged",
+        "support"
+      ],
+      "type": "Support / Mage",
+      "worstMatchups": [
+        "Leona",
+        "Annie",
+        "Aurora",
+        "Kennen",
+        "Lux"
+      ],
+      "bestPairings": [
+        "Smolder",
+        "Kog'Maw",
+        "Jinx",
+        "Twitch",
+        "Vayne"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Leona",
+        "Annie",
+        "Aurora",
+        "Kennen",
+        "Lux"
+      ],
+      "family": "support_enchanter",
+      "familyLabel": "Support enchanter",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Tahm Kench": {
+      "tags": [
+        "aoe",
+        "cc",
+        "enchanter",
+        "engage",
+        "frontline",
+        "knockup",
+        "melee",
+        "peel",
+        "support",
+        "wants_peel"
+      ],
+      "type": "Tank / Support",
+      "worstMatchups": [
+        "Vayne",
+        "Kog'Maw",
+        "Varus",
+        "Pyke",
+        "Aphelios"
+      ],
+      "bestPairings": [
+        "Braum",
+        "Caitlyn",
+        "Jhin",
+        "Poppy",
+        "K'Santé"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Vayne",
+        "Kog'Maw",
+        "Varus",
+        "Pyke",
+        "Aphelios"
+      ],
+      "family": "tank_disengage",
+      "familyLabel": "Tank disengage",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Taliyah": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "knockup",
+        "mage",
+        "mobility",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Briar",
+        "Sion",
+        "Garen",
+        "Cho'Gath",
+        "Kog'Maw"
+      ],
+      "bestPairings": [
+        "Katarina",
+        "Fizz",
+        "Ahri",
+        "Galio",
+        "Twisted Fate"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Briar",
+        "Sion",
+        "Garen",
+        "Cho'Gath",
+        "Kog'Maw"
+      ],
+      "family": "global_pick",
+      "familyLabel": "Global / pick",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Talon": {
+      "tags": [
+        "assassin",
+        "cc",
+        "dive",
+        "high_damage",
+        "knockup",
+        "melee",
+        "mobility",
+        "pick",
+        "stealth"
+      ],
+      "type": "Assassin",
+      "worstMatchups": [
+        "Sion",
+        "Briar",
+        "Gnar",
+        "Taliyah",
+        "Aurelion Sol"
+      ],
+      "bestPairings": [
+        "Bel'Veth",
+        "Rek'Sai",
+        "Katarina",
+        "Lee Sin",
+        "Zaahen"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Sion",
+        "Briar",
+        "Gnar",
+        "Taliyah",
+        "Aurelion Sol"
+      ],
+      "family": "assassin_ad_pick",
+      "familyLabel": "Assassin AD (pick)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Taric": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "cc",
+        "engage",
+        "frontline",
+        "melee",
+        "mobility",
+        "peel",
+        "support"
+      ],
+      "type": "Support / Tank",
+      "worstMatchups": [
+        "Briar",
+        "Sett",
+        "Rengar",
+        "Viego",
+        "Hecarim"
+      ],
+      "bestPairings": [
+        "Jhin",
+        "Senna",
+        "Hwei",
+        "Corki",
+        "Ezreal"
+      ],
+      "optimalSlots": [
+        "Support"
+      ],
+      "bestCounters": [
+        "Briar",
+        "Sett",
+        "Rengar",
+        "Viego",
+        "Hecarim"
+      ],
+      "family": "support_disengage",
+      "familyLabel": "Support disengage",
+      "compTypes": [
+        "hypercarry",
+        "poke_disengage"
+      ]
+    },
+    "Teemo": {
+      "tags": [
+        "burst",
+        "dps",
+        "mage",
+        "marksman",
+        "mobility",
+        "ranged",
+        "scaling",
+        "stealth",
+        "utility"
+      ],
+      "type": "Tireur / Mage",
+      "worstMatchups": [
+        "Briar",
+        "Bard",
+        "Fiddlesticks",
+        "Nocturne",
+        "Pantheon"
+      ],
+      "bestPairings": [
+        "Gragas",
+        "Dr. Mundo",
+        "K'Santé",
+        "Poppy",
+        "Zoé"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Bot"
+      ],
+      "bestCounters": [
+        "Briar",
+        "Bard",
+        "Fiddlesticks",
+        "Nocturne",
+        "Pantheon"
+      ],
+      "family": "ovni",
+      "familyLabel": "Ovni / spécialiste",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Thresh": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "engage",
+        "frontline",
+        "mobility",
+        "peel",
+        "support"
+      ],
+      "type": "Support / Tank",
+      "worstMatchups": [
+        "Taric",
+        "Braum",
+        "Morgana",
+        "K'Santé",
+        "Maokai"
+      ],
+      "bestPairings": [
+        "Aphelios",
+        "Jhin",
+        "Jinx",
+        "Aatrox",
+        "Draven"
+      ],
+      "optimalSlots": [
+        "Support"
+      ],
+      "bestCounters": [
+        "Taric",
+        "Braum",
+        "Morgana",
+        "K'Santé",
+        "Maokai"
+      ],
+      "family": "support_engage",
+      "familyLabel": "Support engage",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Tristana": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "disengage",
+        "dive",
+        "dps",
+        "high_damage",
+        "marksman",
+        "mobility",
+        "pick",
+        "ranged",
+        "scaling",
+        "wants_cc_ally"
+      ],
+      "type": "Tireur / Assassin",
+      "worstMatchups": [
+        "Leona",
+        "Poppy",
+        "Briar",
+        "K'Santé",
+        "Viego"
+      ],
+      "bestPairings": [
+        "Lulu",
+        "Rek'Sai",
+        "Karma",
+        "Janna",
+        "Soraka"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid",
+        "Bot"
+      ],
+      "bestCounters": [
+        "Leona",
+        "Poppy",
+        "Briar",
+        "K'Santé",
+        "Viego"
+      ],
+      "family": "adc_tempo",
+      "familyLabel": "ADC tempo",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Trundle": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "peel",
+        "percent_hp"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Bard",
+        "Fiddlesticks",
+        "Karthus",
+        "Nocturne",
+        "Pantheon"
+      ],
+      "bestPairings": [
+        "Fiora",
+        "Irelia",
+        "Jax",
+        "Camille",
+        "Quinn"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Top"
+      ],
+      "bestCounters": [
+        "Bard",
+        "Fiddlesticks",
+        "Karthus",
+        "Nocturne",
+        "Pantheon"
+      ],
+      "family": "bruiser_split",
+      "familyLabel": "Bruiser split",
+      "compTypes": [
+        "split_push"
+      ]
+    },
+    "Tryndamere": {
+      "tags": [
+        "assassin",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "peel",
+        "pick",
+        "wants_cc_ally"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Taliyah",
+        "Malphite",
+        "Teemo",
+        "Bard",
+        "Nocturne"
+      ],
+      "bestPairings": [
+        "Nocturne",
+        "Fiora",
+        "Irelia",
+        "Jax",
+        "Camille"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Taliyah",
+        "Malphite",
+        "Teemo",
+        "Bard",
+        "Nocturne"
+      ],
+      "family": "bruiser_split",
+      "familyLabel": "Bruiser split",
+      "compTypes": [
+        "split_push"
+      ]
+    },
+    "Twisted Fate": {
+      "tags": [
+        "burst",
+        "dive",
+        "dps",
+        "mage",
+        "marksman",
+        "mobility",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Mage / Tireur",
+      "worstMatchups": [
+        "Nocturne",
+        "Briar",
+        "LeBlanc",
+        "Rengar",
+        "Garen"
+      ],
+      "bestPairings": [
+        "Taliyah",
+        "Camille",
+        "Fiora",
+        "Nocturne",
+        "Yorick"
+      ],
+      "optimalSlots": [
+        "Mid"
+      ],
+      "bestCounters": [
+        "Nocturne",
+        "Briar",
+        "LeBlanc",
+        "Rengar",
+        "Garen"
+      ],
+      "family": "global_pick",
+      "familyLabel": "Global / pick",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Twitch": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "cc",
+        "dps",
+        "high_damage",
+        "knockup",
+        "marksman",
+        "pick",
+        "ranged",
+        "scaling",
+        "stealth"
+      ],
+      "type": "Tireur / Assassin",
+      "worstMatchups": [
+        "Qiyana",
+        "Zed",
+        "Talon",
+        "Zaahen",
+        "Diana"
+      ],
+      "bestPairings": [
+        "Janna",
+        "Nami",
+        "Karma",
+        "Wukong",
+        "Zac"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid",
+        "Bot"
+      ],
+      "bestCounters": [
+        "Qiyana",
+        "Zed",
+        "Talon",
+        "Zaahen",
+        "Diana"
+      ],
+      "family": "adc_hypercarry",
+      "familyLabel": "ADC hypercarry",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Udyr": {
+      "tags": [
+        "cc",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "peel",
+        "percent_hp"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Bel'Veth",
+        "Elise",
+        "Rek'Sai",
+        "Graves",
+        "Nidalee"
+      ],
+      "bestPairings": [
+        "Kog'Maw",
+        "Smolder",
+        "Twitch",
+        "Vayne",
+        "Jinx"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Top"
+      ],
+      "bestCounters": [
+        "Bel'Veth",
+        "Elise",
+        "Rek'Sai",
+        "Graves",
+        "Nidalee"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "split_push"
+      ]
+    },
+    "Urgot": {
+      "tags": [
+        "aoe",
+        "cc",
+        "dive",
+        "engage",
+        "execute",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "knockup",
+        "mobility",
+        "peel"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Varus",
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Ashe"
+      ],
+      "bestPairings": [
+        "Ambessa",
+        "Yasuo",
+        "Yone",
+        "Galio",
+        "Leona"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Varus",
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Ashe"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Varus": {
+      "tags": [
+        "burst",
+        "cc",
+        "dive",
+        "dps",
+        "high_damage",
+        "mage",
+        "marksman",
+        "mobility",
+        "peel",
+        "percent_hp",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur / Mage",
+      "worstMatchups": [
+        "Yasuo",
+        "Briar",
+        "K'Santé",
+        "Hecarim",
+        "Poppy"
+      ],
+      "bestPairings": [
+        "K'Santé",
+        "Jhin",
+        "Ashe",
+        "Zoé",
+        "Hwei"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Bot",
+        "Support"
+      ],
+      "bestCounters": [
+        "Yasuo",
+        "Briar",
+        "K'Santé",
+        "Hecarim",
+        "Poppy"
+      ],
+      "family": "adc_poke",
+      "familyLabel": "ADC poke / siege",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Vayne": {
+      "tags": [
+        "assassin",
+        "cc",
+        "dps",
+        "high_damage",
+        "knockup",
+        "marksman",
+        "percent_hp",
+        "pick",
+        "ranged",
+        "scaling",
+        "stealth"
+      ],
+      "type": "Tireur / Assassin",
+      "worstMatchups": [
+        "Qiyana",
+        "Zed",
+        "Talon",
+        "Zaahen",
+        "Diana"
+      ],
+      "bestPairings": [
+        "Janna",
+        "Nami",
+        "Karma",
+        "Ivern",
+        "Zac"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid",
+        "Bot"
+      ],
+      "bestCounters": [
+        "Qiyana",
+        "Zed",
+        "Talon",
+        "Zaahen",
+        "Diana"
+      ],
+      "family": "adc_hypercarry",
+      "familyLabel": "ADC hypercarry",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Veigar": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "ranged",
+        "utility"
+      ],
+      "type": "Mage",
+      "worstMatchups": [
+        "Cassiopeia",
+        "Fizz",
+        "Zed",
+        "Lucian",
+        "Samira"
+      ],
+      "bestPairings": [
+        "Kindred",
+        "Poppy",
+        "Maître Yi",
+        "Aatrox",
+        "Jhin"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Cassiopeia",
+        "Fizz",
+        "Zed",
+        "Lucian",
+        "Samira"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Vel'Koz": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "disengage",
+        "enchanter",
+        "knockup",
+        "mage",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Fizz",
+        "Irelia",
+        "Evelynn",
+        "Fiora",
+        "Vayne"
+      ],
+      "bestPairings": [
+        "Caitlyn",
+        "Senna",
+        "Braum",
+        "Jhin",
+        "Xin Zhao"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Fizz",
+        "Irelia",
+        "Evelynn",
+        "Fiora",
+        "Vayne"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Vex": {
+      "tags": [
+        "aoe",
+        "burst",
+        "mage",
+        "mobility",
+        "peel",
+        "ranged"
+      ],
+      "type": "Mage",
+      "worstMatchups": [
+        "Irelia",
+        "Jax",
+        "Garen",
+        "Camille",
+        "Nasus"
+      ],
+      "bestPairings": [
+        "Braum",
+        "Corki",
+        "Ezreal",
+        "Jhin",
+        "Varus"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Irelia",
+        "Jax",
+        "Garen",
+        "Camille",
+        "Nasus"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Vi": {
+      "tags": [
+        "anti_mobility",
+        "assassin",
+        "cc",
+        "disengage",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "knockup",
+        "melee",
+        "mobility",
+        "peel",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Poppy",
+        "K'Santé",
+        "Briar",
+        "Gnar",
+        "Hecarim"
+      ],
+      "bestPairings": [
+        "Kog'Maw",
+        "Wukong",
+        "Xin Zhao",
+        "Kled",
+        "Twitch"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Poppy",
+        "K'Santé",
+        "Briar",
+        "Gnar",
+        "Hecarim"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Viego": {
+      "tags": [
+        "assassin",
+        "cc",
+        "disengage",
+        "dive",
+        "execute",
+        "fighter",
+        "frontline",
+        "knockup",
+        "mobility",
+        "percent_hp",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Poppy",
+        "Leona",
+        "Maokai",
+        "Gnar",
+        "Hecarim"
+      ],
+      "bestPairings": [
+        "Wukong",
+        "Xin Zhao",
+        "Kog'Maw",
+        "Vi",
+        "Jarvan IV"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Poppy",
+        "Leona",
+        "Maokai",
+        "Gnar",
+        "Hecarim"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Viktor": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "peel",
+        "ranged",
+        "utility"
+      ],
+      "type": "Mage",
+      "worstMatchups": [
+        "Syndra",
+        "Aurora",
+        "Evelynn",
+        "Akshan",
+        "Diana"
+      ],
+      "bestPairings": [
+        "Kindred",
+        "Smolder",
+        "Braum",
+        "Nunu et Willump",
+        "Taric"
+      ],
+      "optimalSlots": [
+        "Mid"
+      ],
+      "bestCounters": [
+        "Syndra",
+        "Aurora",
+        "Evelynn",
+        "Akshan",
+        "Diana"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Vladimir": {
+      "tags": [
+        "aoe",
+        "burst",
+        "enchanter",
+        "fighter",
+        "frontline",
+        "mage",
+        "mobility",
+        "utility"
+      ],
+      "type": "Mage / Combattant",
+      "worstMatchups": [
+        "Gwen",
+        "Rengar",
+        "LeBlanc",
+        "Bard",
+        "Lucian"
+      ],
+      "bestPairings": [
+        "Azir",
+        "Kindred",
+        "Maître Yi",
+        "Braum",
+        "Taric"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Top"
+      ],
+      "bestCounters": [
+        "Gwen",
+        "Rengar",
+        "LeBlanc",
+        "Bard",
+        "Lucian"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Volibear": {
+      "tags": [
+        "aoe",
+        "cc",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "peel"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Bel'Veth",
+        "Aurelion Sol",
+        "Viego",
+        "Briar",
+        "Mel"
+      ],
+      "bestPairings": [
+        "Kog'Maw",
+        "Smolder",
+        "Twitch",
+        "Vayne",
+        "Sivir"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Bel'Veth",
+        "Aurelion Sol",
+        "Viego",
+        "Briar",
+        "Mel"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Warwick": {
+      "tags": [
+        "dive",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "melee",
+        "mobility",
+        "percent_hp"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Olaf",
+        "Graves",
+        "Briar",
+        "Viego",
+        "Bel'Veth"
+      ],
+      "bestPairings": [
+        "Anivia",
+        "Kog'Maw",
+        "Aurelion Sol",
+        "Cassiopeia",
+        "Malzahar"
+      ],
+      "optimalSlots": [
+        "Jungle",
+        "Top"
+      ],
+      "bestCounters": [
+        "Olaf",
+        "Graves",
+        "Briar",
+        "Viego",
+        "Bel'Veth"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Wukong": {
+      "tags": [
+        "anti_mobility",
+        "cc",
+        "dive",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "knockup",
+        "melee",
+        "mobility",
+        "peel",
+        "stealth"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Bel'Veth",
+        "Briar",
+        "Aurelion Sol",
+        "Viego",
+        "Mel"
+      ],
+      "bestPairings": [
+        "Kog'Maw",
+        "Twitch",
+        "Vayne",
+        "Smolder",
+        "Vi"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Bel'Veth",
+        "Briar",
+        "Aurelion Sol",
+        "Viego",
+        "Mel"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Xayah": {
+      "tags": [
+        "cc",
+        "dps",
+        "high_damage",
+        "marksman",
+        "mobility",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur",
+      "worstMatchups": [
+        "Thresh",
+        "Qiyana",
+        "Briar",
+        "K'Santé",
+        "Irelia"
+      ],
+      "bestPairings": [
+        "Rakan",
+        "Renekton",
+        "Briar",
+        "Vi",
+        "Akshan"
+      ],
+      "optimalSlots": [
+        "Bot"
+      ],
+      "bestCounters": [
+        "Thresh",
+        "Qiyana",
+        "Briar",
+        "K'Santé",
+        "Irelia"
+      ],
+      "family": "adc_tempo",
+      "familyLabel": "ADC tempo",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Xerath": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Fizz",
+        "Zed",
+        "Aurora",
+        "Evelynn",
+        "Tristana"
+      ],
+      "bestPairings": [
+        "Braum",
+        "Maokai",
+        "Jhin",
+        "Zoé",
+        "Hwei"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Fizz",
+        "Zed",
+        "Aurora",
+        "Evelynn",
+        "Tristana"
+      ],
+      "family": "support_poke",
+      "familyLabel": "Support poke",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Xin Zhao": {
+      "tags": [
+        "aoe",
+        "cc",
+        "disengage",
+        "engage",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "knockup",
+        "melee",
+        "mobility"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Bel'Veth",
+        "Briar",
+        "Varus",
+        "Viego",
+        "Graves"
+      ],
+      "bestPairings": [
+        "Kog'Maw",
+        "Twitch",
+        "Vayne",
+        "Vi",
+        "Viego"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Bel'Veth",
+        "Briar",
+        "Varus",
+        "Viego",
+        "Graves"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "lane_tempo"
+      ]
+    },
+    "Yasuo": {
+      "tags": [
+        "anti_mobility",
+        "aoe",
+        "assassin",
+        "cc",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "knockup",
+        "melee",
+        "mobility",
+        "peel",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Jhin",
+        "Caitlyn",
+        "Varus",
+        "Senna",
+        "Ashe"
+      ],
+      "bestPairings": [
+        "Ambessa",
+        "Galio",
+        "Yone",
+        "Leona",
+        "Urgot"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Top"
+      ],
+      "bestCounters": [
+        "Jhin",
+        "Caitlyn",
+        "Varus",
+        "Senna",
+        "Ashe"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Yone": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "cc",
+        "dive",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "knockup",
+        "melee",
+        "mobility",
+        "peel",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Varus",
+        "Ashe"
+      ],
+      "bestPairings": [
+        "Ambessa",
+        "Yasuo",
+        "Leona",
+        "Galio",
+        "Urgot"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Top"
+      ],
+      "bestCounters": [
+        "Jhin",
+        "Caitlyn",
+        "Senna",
+        "Varus",
+        "Ashe"
+      ],
+      "family": "bruiser_teamfight",
+      "familyLabel": "Bruiser teamfight",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Yorick": {
+      "tags": [
+        "anti_mobility",
+        "engage",
+        "fighter",
+        "frontline",
+        "melee",
+        "peel"
+      ],
+      "type": "Combattant / Tank",
+      "worstMatchups": [
+        "Bard",
+        "Taliyah",
+        "Twisted Fate",
+        "Fiddlesticks",
+        "Karthus"
+      ],
+      "bestPairings": [
+        "Twisted Fate",
+        "Fiora",
+        "Irelia",
+        "Camille",
+        "Jax"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Support"
+      ],
+      "bestCounters": [
+        "Bard",
+        "Taliyah",
+        "Twisted Fate",
+        "Fiddlesticks",
+        "Karthus"
+      ],
+      "family": "bruiser_split",
+      "familyLabel": "Bruiser split",
+      "compTypes": [
+        "split_push"
+      ]
+    },
+    "Yunara": {
+      "tags": [
+        "aoe",
+        "dive",
+        "dps",
+        "high_damage",
+        "marksman",
+        "mobility",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur",
+      "worstMatchups": [
+        "Qiyana",
+        "Talon",
+        "Zaahen",
+        "Zed",
+        "LeBlanc"
+      ],
+      "bestPairings": [
+        "Karma",
+        "Janna",
+        "Lulu",
+        "Soraka",
+        "Nami"
+      ],
+      "optimalSlots": [
+        "Bot"
+      ],
+      "bestCounters": [
+        "Qiyana",
+        "Talon",
+        "Zaahen",
+        "Zed",
+        "LeBlanc"
+      ],
+      "family": "adc_hypercarry",
+      "familyLabel": "ADC hypercarry",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Yuumi": {
+      "tags": [
+        "burst",
+        "mage",
+        "mobility",
+        "peel",
+        "support",
+        "utility"
+      ],
+      "type": "Support / Mage",
+      "worstMatchups": [
+        "Qiyana",
+        "Aurora",
+        "Brand",
+        "Talon",
+        "Zed"
+      ],
+      "bestPairings": [
+        "Smolder",
+        "Kog'Maw",
+        "Kayle",
+        "Vayne",
+        "Aphelios"
+      ],
+      "optimalSlots": [
+        "Support"
+      ],
+      "bestCounters": [
+        "Qiyana",
+        "Aurora",
+        "Brand",
+        "Talon",
+        "Zed"
+      ],
+      "family": "support_enchanter",
+      "familyLabel": "Support enchanter",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Zaahen": {
+      "tags": [
+        "assassin",
+        "cc",
+        "fighter",
+        "frontline",
+        "high_damage",
+        "knockup",
+        "melee",
+        "mobility",
+        "pick"
+      ],
+      "type": "Combattant / Assassin",
+      "worstMatchups": [
+        "Sion",
+        "Hecarim",
+        "Braum",
+        "Gnar",
+        "Garen"
+      ],
+      "bestPairings": [
+        "Rek'Sai",
+        "Lee Sin",
+        "Talon",
+        "Bel'Veth",
+        "Fizz"
+      ],
+      "optimalSlots": [
+        "Top",
+        "Jungle",
+        "Mid"
+      ],
+      "bestCounters": [
+        "Sion",
+        "Hecarim",
+        "Braum",
+        "Gnar",
+        "Garen"
+      ],
+      "family": "assassin_ad_pick",
+      "familyLabel": "Assassin AD (pick)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Zac": {
+      "tags": [
+        "anti_mobility",
+        "cc",
+        "enchanter",
+        "engage",
+        "fighter",
+        "frontline",
+        "knockup",
+        "melee",
+        "mobility",
+        "percent_hp",
+        "utility"
+      ],
+      "type": "Tank / Combattant",
+      "worstMatchups": [
+        "Gwen",
+        "Varus",
+        "Dr. Mundo",
+        "Jhin",
+        "Maokai"
+      ],
+      "bestPairings": [
+        "Kog'Maw",
+        "Vayne",
+        "Twitch",
+        "Smolder",
+        "Kindred"
+      ],
+      "optimalSlots": [
+        "Jungle"
+      ],
+      "bestCounters": [
+        "Gwen",
+        "Varus",
+        "Dr. Mundo",
+        "Jhin",
+        "Maokai"
+      ],
+      "family": "jungle_defensive",
+      "familyLabel": "Jungle défensif",
+      "compTypes": [
+        "teamfight_engage"
+      ]
+    },
+    "Zed": {
+      "tags": [
+        "aoe",
+        "assassin",
+        "high_damage",
+        "melee",
+        "pick"
+      ],
+      "type": "Assassin",
+      "worstMatchups": [
+        "Malzahar",
+        "Vex",
+        "Zoé",
+        "Tristana",
+        "Ziggs"
+      ],
+      "bestPairings": [
+        "Bel'Veth",
+        "Elise",
+        "Rek'Sai",
+        "Nidalee",
+        "Lee Sin"
+      ],
+      "optimalSlots": [
+        "Mid"
+      ],
+      "bestCounters": [
+        "Malzahar",
+        "Vex",
+        "Zoé",
+        "Tristana",
+        "Ziggs"
+      ],
+      "family": "assassin_ad_pick",
+      "familyLabel": "Assassin AD (pick)",
+      "compTypes": [
+        "pick_global"
+      ]
+    },
+    "Zeri": {
+      "tags": [
+        "anti_mobility",
+        "dive",
+        "dps",
+        "high_damage",
+        "marksman",
+        "mobility",
+        "ranged",
+        "scaling"
+      ],
+      "type": "Tireur",
+      "worstMatchups": [
+        "Qiyana",
+        "Talon",
+        "Zaahen",
+        "Zed",
+        "Fizz"
+      ],
+      "bestPairings": [
+        "Janna",
+        "Soraka",
+        "Karma",
+        "Nami",
+        "Renata Glasc"
+      ],
+      "optimalSlots": [
+        "Bot"
+      ],
+      "bestCounters": [
+        "Qiyana",
+        "Talon",
+        "Zaahen",
+        "Zed",
+        "Fizz"
+      ],
+      "family": "adc_hypercarry",
+      "familyLabel": "ADC hypercarry",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Ziggs": {
+      "tags": [
+        "aoe",
+        "burst",
+        "disengage",
+        "enchanter",
+        "mage",
+        "mobility",
+        "ranged",
+        "utility"
+      ],
+      "type": "Mage",
+      "worstMatchups": [
+        "Fizz",
+        "Irelia",
+        "Camille",
+        "Fiora",
+        "Briar"
+      ],
+      "bestPairings": [
+        "Braum",
+        "Poppy",
+        "Sion",
+        "Zoé",
+        "Ashe"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Bot"
+      ],
+      "bestCounters": [
+        "Fizz",
+        "Irelia",
+        "Camille",
+        "Fiora",
+        "Briar"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Zilean": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "mage",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Support / Mage",
+      "worstMatchups": [
+        "Zed",
+        "Annie",
+        "Aurora",
+        "Lux",
+        "Mel"
+      ],
+      "bestPairings": [
+        "Smolder",
+        "Kog'Maw",
+        "Vayne",
+        "Jinx",
+        "Twitch"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Zed",
+        "Annie",
+        "Aurora",
+        "Lux",
+        "Mel"
+      ],
+      "family": "support_enchanter",
+      "familyLabel": "Support enchanter",
+      "compTypes": [
+        "hypercarry"
+      ]
+    },
+    "Zoé": {
+      "tags": [
+        "burst",
+        "enchanter",
+        "mage",
+        "mobility",
+        "ranged",
+        "utility"
+      ],
+      "type": "Mage",
+      "worstMatchups": [
+        "Syndra",
+        "Garen",
+        "Camille",
+        "Trundle",
+        "Briar"
+      ],
+      "bestPairings": [
+        "Jhin",
+        "Varus",
+        "Ashe",
+        "Caitlyn",
+        "Anivia"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Syndra",
+        "Garen",
+        "Camille",
+        "Trundle",
+        "Briar"
+      ],
+      "family": "mage_control",
+      "familyLabel": "Mage DPS",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    },
+    "Zyra": {
+      "tags": [
+        "aoe",
+        "burst",
+        "cc",
+        "enchanter",
+        "knockup",
+        "mage",
+        "mobility",
+        "peel",
+        "ranged",
+        "support",
+        "utility"
+      ],
+      "type": "Mage / Support",
+      "worstMatchups": [
+        "Briar",
+        "Evelynn",
+        "Irelia",
+        "Rengar",
+        "Camille"
+      ],
+      "bestPairings": [
+        "Caitlyn",
+        "Senna",
+        "Jhin",
+        "Tahm Kench",
+        "Poppy"
+      ],
+      "optimalSlots": [
+        "Mid",
+        "Support"
+      ],
+      "bestCounters": [
+        "Briar",
+        "Evelynn",
+        "Irelia",
+        "Rengar",
+        "Camille"
+      ],
+      "family": "support_poke",
+      "familyLabel": "Support poke",
+      "compTypes": [
+        "poke_disengage"
+      ]
+    }
+  },
+  "tacticOptions": {
+    "lanePriority": {
+      "label": "Priorité de lane",
+      "values": [
+        "Top side",
+        "Bot side",
+        "Mid prio",
+        "Équilibré"
+      ]
+    },
+    "junglePath": {
+      "label": "Plan jungle early",
+      "values": [
+        "Full clear → gank",
+        "Gank lvl 3",
+        "Invade / tempo",
+        "Couverture lanes faibles"
+      ]
+    },
+    "heraldDrake": {
+      "label": "Objectif early (14 min)",
+      "values": [
+        "Drake stack",
+        "Herald → plate",
+        "Trade flexible",
+        "Contest si avantage"
+      ]
+    },
+    "waveState": {
+      "label": "Gestion de vague",
+      "values": [
+        "Slow push → roam",
+        "Freeze / deny",
+        "Fast push → reset"
+      ]
+    },
+    "midGame": {
+      "label": "Mid game (15–25 min)",
+      "values": [
+        "Group 4 mid",
+        "Split side lane",
+        "Pick vision / bush",
+        "Shadow jungler"
+      ]
+    },
+    "baronDrake": {
+      "label": "Setup objectif late",
+      "values": [
+        "Baron setup",
+        "Fight soul / elder",
+        "Contest seulement",
+        "Split press"
+      ]
+    },
+    "teamfight": {
+      "label": "Style teamfight",
+      "values": [
+        "Front to back",
+        "Flank / dive backline",
+        "Poke siege",
+        "Reset / pick"
+      ]
+    },
+    "vision": {
+      "label": "Vision & contrôle",
+      "values": [
+        "Deep enemy jungle",
+        "River / pixel",
+        "Lane tri-bush prio",
+        "Sweep avant objectif"
+      ]
+    },
+    "winCondition": {
+      "label": "Win condition",
+      "values": [
+        "Teamfight 5v5",
+        "Split push",
+        "Pick / pickoff",
+        "Scale late"
+      ]
+    }
+  },
+  "matchupVersion": "families-v5",
+  "compGuide": {
+    "compTypes": {
+      "poke_siege": {
+        "label": "Poke / Siege",
+        "teamfight": "Siege towers — pressure without hard engage",
+        "needsDisengage": false
+      },
+      "poke_disengage": {
+        "label": "Poke + Disengage",
+        "teamfight": "Poke then disengage — never force all-in",
+        "needsDisengage": true,
+        "avoidEngageSupport": true
+      },
+      "teamfight_engage": {
+        "label": "Teamfight / Engage",
+        "teamfight": "Forcer le 5v5 sur objectif avec wombo",
+        "needsFrontline": true
+      },
+      "split_push": {
+        "label": "Split push (1-3)",
+        "teamfight": "Pression side + retirer 4 mid",
+        "needsSidePressure": true
+      },
+      "hypercarry": {
+        "label": "Hypercarry",
+        "teamfight": "Front-to-back, peel total",
+        "needsEnchanter": true
+      },
+      "lane_tempo": {
+        "label": "Lane tempo / early",
+        "teamfight": "Snowball avant scale adverse"
+      },
+      "all_in": {
+        "label": "All-in / Catch",
+        "teamfight": "CC lock + burst coordonné"
+      },
+      "pick_global": {
+        "label": "Pick / Global",
+        "teamfight": "Vision profonde, punir rotations"
+      }
+    },
+    "families": {
+      "tank_engage": {
+        "label": "Tank engage",
+        "compTypes": [
+          "teamfight_engage"
+        ]
+      },
+      "tank_disengage": {
+        "label": "Tank disengage",
+        "compTypes": [
+          "poke_disengage"
+        ]
+      },
+      "bruiser_teamfight": {
+        "label": "Bruiser teamfight",
+        "compTypes": [
+          "teamfight_engage"
+        ]
+      },
+      "bruiser_split": {
+        "label": "Bruiser split",
+        "compTypes": [
+          "split_push"
+        ]
+      },
+      "mage_control": {
+        "label": "Mage DPS",
+        "compTypes": [
+          "poke_disengage"
+        ]
+      },
+      "mage_dps": {
+        "label": "Mage burst",
+        "compTypes": [
+          "all_in"
+        ]
+      },
+      "assassin_ad_pick": {
+        "label": "Assassin AD (pick)",
+        "compTypes": [
+          "pick_global"
+        ]
+      },
+      "assassin_ap_pick": {
+        "label": "Assassin AP (pick)",
+        "compTypes": [
+          "pick_global"
+        ]
+      },
+      "adc_hypercarry": {
+        "label": "ADC hypercarry",
+        "compTypes": [
+          "hypercarry"
+        ]
+      },
+      "adc_short_allin": {
+        "label": "ADC all-in (short range)",
+        "compTypes": [
+          "all_in"
+        ]
+      },
+      "adc_poke": {
+        "label": "ADC poke / siege",
+        "compTypes": [
+          "poke_disengage"
+        ]
+      },
+      "adc_tempo": {
+        "label": "ADC tempo",
+        "compTypes": [
+          "lane_tempo"
+        ]
+      },
+      "support_enchanter": {
+        "label": "Support enchanter",
+        "compTypes": [
+          "hypercarry"
+        ]
+      },
+      "support_engage": {
+        "label": "Support engage",
+        "compTypes": [
+          "teamfight_engage"
+        ]
+      },
+      "support_poke": {
+        "label": "Support poke",
+        "compTypes": [
+          "poke_disengage"
+        ]
+      },
+      "support_disengage": {
+        "label": "Support disengage",
+        "compTypes": [
+          "poke_disengage"
+        ]
+      },
+      "jungle_defensive": {
+        "label": "Jungle défensif",
+        "compTypes": [
+          "hypercarry"
+        ]
+      },
+      "jungle_offensive": {
+        "label": "Jungle offensif (invader)",
+        "compTypes": [
+          "pick_global"
+        ]
+      },
+      "jungle_hypercarry": {
+        "label": "Jungle hypercarry",
+        "compTypes": [
+          "hypercarry",
+          "split_push"
+        ]
+      },
+      "global_pick": {
+        "label": "Global / pick",
+        "compTypes": [
+          "pick_global"
+        ]
+      },
+      "ovni": {
+        "label": "Ovni / spécialiste",
+        "compTypes": [
+          "split_push"
+        ]
+      }
+    }
+  },
+  "mtgColors": {
+    "label": "Identité couleur (MTG)",
+    "description": "Chaque champion a un profil W/U/B/R/G (somme 24). La draft favorise les couleurs alliées et pénalise les conflits.",
+    "colors": {
+      "W": {
+        "label": "Blanc",
+        "labelEn": "White",
+        "philosophy": "Structure & altruisme",
+        "hex": "#f5f0dc"
+      },
+      "U": {
+        "label": "Bleu",
+        "labelEn": "Blue",
+        "philosophy": "Connaissance & contrôle",
+        "hex": "#4a9fd4"
+      },
+      "B": {
+        "label": "Noir",
+        "labelEn": "Black",
+        "philosophy": "Pouvoir & sacrifice",
+        "hex": "#6b6b7a"
+      },
+      "R": {
+        "label": "Rouge",
+        "labelEn": "Red",
+        "philosophy": "Liberté & destruction",
+        "hex": "#e05238"
+      },
+      "G": {
+        "label": "Vert",
+        "labelEn": "Green",
+        "philosophy": "Croissance & tradition",
+        "hex": "#3d9e5a"
+      }
+    },
+    "pairs": {
+      "allied": [
+        [
+          "W",
+          "G"
+        ],
+        [
+          "W",
+          "U"
+        ],
+        [
+          "U",
+          "G"
+        ],
+        [
+          "W",
+          "R"
+        ],
+        [
+          "G",
+          "R"
+        ]
+      ],
+      "enemy": [
+        [
+          "W",
+          "B"
+        ],
+        [
+          "U",
+          "R"
+        ],
+        [
+          "B",
+          "G"
+        ]
+      ]
+    },
+    "tips": [
+      "Blanc (W) : peel, vision, objectifs d'équipe.",
+      "Bleu (U) : wave, contrôle, scaling calculé.",
+      "Noir (B) : snowball, assassin, win condition solo.",
+      "Rouge (R) : early bully, engage, tempo agressif.",
+      "Vert (G) : scale late, frontline, synergy 5v5."
+    ]
+  }
+}

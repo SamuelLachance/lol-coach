@@ -1,0 +1,1639 @@
+{
+  "version": "16.11.1",
+  "scope": "Summoner's Rift ranked — objets de build (légendaires ≥2600 or + support)",
+  "itemCount": 96,
+  "items": [
+    {
+      "id": "3089",
+      "name": "Coiffe de Rabadon",
+      "tier": 5,
+      "gold": 3500,
+      "description": "+130 puissanceOpus magiqueVous augmentez votre puissance totale de 30%.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3089.png",
+      "tags": [
+        "SpellDamage"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3031",
+      "name": "Lame d'infini",
+      "tier": 5,
+      "gold": 3500,
+      "description": "+75 dégâts d'attaque+25% de chances de coup critique+30% de dégâts de coup critique",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3031.png",
+      "tags": [
+        "CriticalStrike",
+        "Damage"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Crit / AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3072",
+      "name": "Soif-de-sang",
+      "tier": 5,
+      "gold": 3400,
+      "description": "+80 dégâts d'attaque+15% de vol de vieBouclier d'ichorConvertit les soins excédentaires reçus grâce à votre vol de vie en un bouclier.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3072.png",
+      "tags": [
+        "Damage",
+        "LifeSteal"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3078",
+      "name": "Force de la trinité",
+      "tier": 5,
+      "gold": 3333,
+      "description": "+36 dégâts d'attaque+30% de vitesse d'attaque+333 PV+15 accélération de compétenceLame enchantéeAprès avoir utilisé une de vos compétences, votre prochaine attaque inflige des dégâts physiques bonus à l'impact. Accélérat",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3078.png",
+      "tags": [
+        "Health",
+        "Damage",
+        "AttackSpeed",
+        "CooldownReduction",
+        "OnHit",
+        "NonbootsMovement",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "2501",
+      "name": "Armure sanguine",
+      "tier": 5,
+      "gold": 3300,
+      "description": "+30 dégâts d'attaque+550 PVTyrannieVous gagnez des dégâts d'attaque équivalents à 2.5% de vos PV bonus. ReprésaillesVous gagnez jusqu'à +12% de dégâts d'attaque selon un pourcentage de vos PV manquants. ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/2501.png",
+      "tags": [
+        "Health",
+        "Damage"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6333",
+      "name": "Danse de la mort",
+      "tier": 5,
+      "gold": 3300,
+      "description": "+60 dégâts d'attaque+50 armure+15 accélération de compétenceInsensible à la douleurUn pourcentage des dégâts subis vous sont infligés en différé en 3 sec.MassacreQuand un champion meurt dans les 3 sec après que vous l'av",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6333.png",
+      "tags": [
+        "Armor",
+        "Damage",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6631",
+      "name": "Estropieur",
+      "tier": 5,
+      "gold": 3300,
+      "description": "+40 dégâts d'attaque+25% de vitesse d'attaque+450 PVFendoirVos attaques infligent des dégâts physiques aux ennemis proches.Onde de choc entravanteVous infligez des dégâts physiques aux ennemis proches et les ralentissez ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6631.png",
+      "tags": [
+        "Health",
+        "Damage",
+        "AttackSpeed",
+        "Slow"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3748",
+      "name": "Hydre titanesque",
+      "tier": 5,
+      "gold": 3300,
+      "description": "+40 dégâts d'attaque+600 PVFendoirVos attaques infligent des dégâts physiques à l'impact et aux ennemis derrière la cible.Croissant titanesqueVous renforcez votre prochain Fendoir et infligez des dégâts physiques bonus à",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3748.png",
+      "tags": [
+        "Health",
+        "HealthRegen",
+        "Damage",
+        "OnHit"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3074",
+      "name": "Hydre vorace",
+      "tier": 5,
+      "gold": 3300,
+      "description": "+65 dégâts d'attaque+15 accélération de compétence+12% de vol de vieFendoirVos attaques infligent des dégâts physiques aux ennemis proches.Croissant voraceVous infligez des dégâts physiques aux ennemis autour de vous. Le",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3074.png",
+      "tags": [
+        "Damage",
+        "LifeSteal",
+        "CooldownReduction",
+        "OnHit",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3036",
+      "name": "Salutations de Dominik",
+      "tier": 5,
+      "gold": 3300,
+      "description": "+35 dégâts d'attaque+35% de pénétration d'armure+25% de chances de coup critiqueTueur de géantsVous infligez jusqu'à 15% de dégâts bonus aux champions en fonction de leurs PV bonus. Bonus de dégâts maximum atteint à part",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3036.png",
+      "tags": [
+        "Damage",
+        "CriticalStrike",
+        "ArmorPenetration"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Crit / AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3157",
+      "name": "Sablier de Zhonya",
+      "tier": 5,
+      "gold": 3250,
+      "description": "+105 puissance+50 armurePause temporelleVous entrez en stase pendant 2.5 sec.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3157.png",
+      "tags": [
+        "Armor",
+        "SpellDamage",
+        "Active"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3026",
+      "name": "Ange gardien",
+      "tier": 5,
+      "gold": 3200,
+      "description": "+55 dégâts d'attaque+45 armureRenaissanceEn cas de coup fatal, vous revenez à la vie avec 50% de vos PV de base et 100% de votre mana max après 4 sec de stase.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3026.png",
+      "tags": [
+        "Armor",
+        "Damage"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "2520",
+      "name": "Briseur de bastion",
+      "tier": 5,
+      "gold": 3200,
+      "description": "+55 dégâts d'attaque22 létalité+15 accélération de compétenceDouble dégâts (0 sec)Infliger des dégâts de compétence à un champion ou un monstre épique vous permet d'infliger 0 pts de dégâts bruts bonus.SabotageParticiper",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/2520.png",
+      "tags": [
+        "Damage",
+        "ArmorPenetration",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3139",
+      "name": "Cimeterre mercuriel",
+      "tier": 5,
+      "gold": 3200,
+      "description": "+50 dégâts d'attaque+35 résistance magique+10% de vol de viePROPRIÉTÉ ACTIVE MercureVous dissipez tous les contrôles de foule qui vous affectent (sauf les projections dans les airs) et gagnez de la vitesse de déplacement",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3139.png",
+      "tags": [
+        "SpellBlock",
+        "Damage",
+        "LifeSteal",
+        "Active",
+        "NonbootsMovement",
+        "Tenacity"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "4645",
+      "name": "Flamme-ombre",
+      "tier": 5,
+      "gold": 3200,
+      "description": "+110 puissance+15 pénétration magiqueFloraicendreVos dégâts magiques et vos dégâts bruts infligent des coups critiques aux ennemis qui ont moins de 40% de leurs PV, leur infligeant 20% de dégâts bonus. ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/4645.png",
+      "tags": [
+        "SpellDamage",
+        "MagicPenetration"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3053",
+      "name": "Gage de Sterak",
+      "tier": 5,
+      "gold": 3200,
+      "description": "+400 PV+20% de ténacitéGriffes qui happentVous gagnez des dégâts d'attaque bonus.Lien vitalSi des dégâts sont censés vous laisser moins de 30% de vos PV, vous gagnez au préalable un bouclier qui se désagrège progressivem",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3053.png",
+      "tags": [
+        "Health",
+        "Damage",
+        "Tenacity"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6665",
+      "name": "Jak'Sho, le Protéiforme",
+      "tier": 5,
+      "gold": 3200,
+      "description": "+350 PV+45 armure+45 résistance magiqueVigueur de NéantinAprès 5 sec de combat contre des champions, vous augmentez votre armure et votre résistance magique bonus de 30% jusqu'à la fin du combat.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6665.png",
+      "tags": [
+        "Health",
+        "SpellBlock",
+        "Armor",
+        "MagicResist"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Tank",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3153",
+      "name": "Lame du roi déchu",
+      "tier": 5,
+      "gold": 3200,
+      "description": "+40 dégâts d'attaque+25% de vitesse d'attaque+10% de vol de vieFil de brumeVos attaques infligent des dégâts physiques bonus à l'impact équivalents à un pourcentage des PV actuels de l'ennemi.Griffe des ombresAttaquer un",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3153.png",
+      "tags": [
+        "Damage",
+        "AttackSpeed",
+        "LifeSteal",
+        "Slow",
+        "OnHit"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3097",
+      "name": "Lame tempête",
+      "tier": 5,
+      "gold": 3200,
+      "description": "+50 dégâts d'attaque+20% de vitesse d'attaque+25% de chances de coup critiqueÉnergisantVos déplacements et vos attaques permettent d'énergiser une attaque.ÉclairVos attaques énergisées appliquent 0 pts de dégâts magiques",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3097.png",
+      "tags": [
+        "Damage",
+        "CriticalStrike",
+        "AttackSpeed",
+        "NonbootsMovement"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Crit / AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3083",
+      "name": "Armure de Warmog",
+      "tier": 5,
+      "gold": 3100,
+      "description": "+1000 PV+100% de régénération de base des PVCœur de Warmog Si vous avez 2000 PV bonus et n'avez pas subi de dégâts pendant 8 sec, vous récupérez 0 PV par seconde.Vitalité de WarmogVous gagnez des PV bonus équivalents à 1",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3083.png",
+      "tags": [
+        "Health",
+        "HealthRegen"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Légendaire",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "2510",
+      "name": "Aube et crépuscule",
+      "tier": 5,
+      "gold": 3100,
+      "description": "+300 PV+60 puissance+20 accélération de compétence+20% de vitesse d'attaqueLame enchantée (0 sec)Après l'utilisation d'une compétence, votre prochaine attaque inflige 0 pts de dégâts magiques bonus, vous soigne de 0 PV à",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/2510.png",
+      "tags": [
+        "Health",
+        "AttackSpeed",
+        "SpellDamage",
+        "OnHit",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6610",
+      "name": "Ciel éventré",
+      "tier": 5,
+      "gold": 3100,
+      "description": "+45 dégâts d'attaque+400 PV+10 accélération de compétenceFrappe des LightshieldVotre première attaque contre un champion lui porte un coup critique et vous rend des PV.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6610.png",
+      "tags": [
+        "Health",
+        "Damage",
+        "CooldownReduction",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "4633",
+      "name": "Créateur de failles",
+      "tier": 5,
+      "gold": 3100,
+      "description": "+70 puissance+350 PV+15 accélération de compétenceCorruption du NéantPour chaque seconde passée en combat avec des champions ennemis, vous infligez 2% de dégâts bonus (jusqu'à 8%). Une fois le pourcentage max atteint, vo",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/4633.png",
+      "tags": [
+        "Health",
+        "SpellDamage",
+        "CooldownReduction",
+        "SpellVamp"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "2517",
+      "name": "Faim insatiable",
+      "tier": 5,
+      "gold": 3100,
+      "description": "+65 dégâts d'attaque+5% d'omnivampirisme+20% de ténacitéFamineVous gagnez de l'accélération de compétence selon vos dégâts d'attaque bonus.FestinQuand un champion auquel vous avez infligé des dégâts récemment meurt, vous",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/2517.png",
+      "tags": [
+        "Damage",
+        "LifeSteal",
+        "SpellVamp",
+        "Tenacity",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3032",
+      "name": "Flèches des Yun Tal",
+      "tier": 5,
+      "gold": 3100,
+      "description": "+50 dégâts d'attaque+40% de vitesse d'attaque+0% de chances de coup critiqueEntraînement létalÀ l'attaque, vous gagnez définitivement des chances de coup critique (max +25%).DélugeEn attaquant un champion ennemi, vous ga",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3032.png",
+      "tags": [
+        "Damage",
+        "CriticalStrike",
+        "AttackSpeed"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Crit / AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3156",
+      "name": "Gueule de Malmortius",
+      "tier": 5,
+      "gold": 3100,
+      "description": "+60 dégâts d'attaque+15 accélération de compétence+40 résistance magiqueLien vitalSi des dégâts magiques sont censés vous laisser moins de 30% de vos PV, vous gagnez au préalable un bouclier anti-dégâts magiques pendant ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3156.png",
+      "tags": [
+        "SpellBlock",
+        "Damage",
+        "LifeSteal",
+        "SpellVamp",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3161",
+      "name": "Lance de Shojin",
+      "tier": 5,
+      "gold": 3100,
+      "description": "+45 dégâts d'attaque+450 PVForce du dragon Vous gagnez +25 accélération de compétence de base.Détermination inflexible Infliger des dégâts avec vos compétences augmente vos dégâts de compétence de champion et de compéten",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3161.png",
+      "tags": [
+        "Health",
+        "Damage",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3508",
+      "name": "Faux spectrale",
+      "tier": 5,
+      "gold": 3050,
+      "description": "+50 dégâts d'attaque+20 accélération de compétence+25% de chances de coup critiqueLame enchantée Après avoir utilisé une compétence, votre prochaine attaque inflige  pts de dégâts physiques bonus, et vous octroie du mana",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3508.png",
+      "tags": [
+        "Damage",
+        "CriticalStrike",
+        "ManaRegen",
+        "CooldownReduction",
+        "OnHit",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Crit / AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6673",
+      "name": "Arc-bouclier immortel",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+55 dégâts d'attaque+25% de chances de coup critiqueLien vitalSi des dégâts sont censés vous laisser moins de 30% de vos PV, vous gagnez au préalable un bouclier pendant 3 sec.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6673.png",
+      "tags": [
+        "Damage",
+        "CriticalStrike"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Crit / AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3181",
+      "name": "Brise-coques",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+40 dégâts d'attaque+500 PV+4% de vitesse de déplacementPiloteToutes les cinq attaques contre des champions ou des monstres épiques, vous infligez des dégâts physiques bonus. Ces dégâts sont augmentés contre les bâtiment",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3181.png",
+      "tags": [
+        "Health",
+        "Damage",
+        "NonbootsMovement"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3135",
+      "name": "Bâton du vide",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+95 puissance+40% de pénétration magique",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3135.png",
+      "tags": [
+        "MagicPenetration",
+        "SpellDamage"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3071",
+      "name": "Couperet noir",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+40 dégâts d'attaque+400 PV+20 accélération de compétenceDécoupageInfliger des dégâts physiques aux champions ennemis avec des compétences, des compétences passives et des attaques réduit leur armure de 6% pendant 6 sec.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3071.png",
+      "tags": [
+        "Health",
+        "Damage",
+        "CooldownReduction",
+        "OnHit",
+        "NonbootsMovement",
+        "ArmorPenetration",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6699",
+      "name": "Cyclosabre voltaïque",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+55 dégâts d'attaque10 létalité+10 accélération de compétenceGalvanisationInfliger des dégâts à un champion ennemi avec une compétence déclenche Énergisé si l'effet est prêt.FirmamentVotre attaque énergisée inflige des d",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6699.png",
+      "tags": [
+        "Damage",
+        "Active",
+        "CooldownReduction",
+        "ArmorPenetration",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3084",
+      "name": "Cœuracier",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+900 PV+100% de régénération de base des PVConsommation colossale (0 sec) par cibleSi un champion ennemi reste proche pendant quelques sec, votre prochaine attaque contre lui inflige des dégâts physiques bonus équivalent",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3084.png",
+      "tags": [
+        "Health",
+        "HealthRegen"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Légendaire",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3137",
+      "name": "Fleur de crypte",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+75 puissance+30% de pénétration magique+20 accélération de compétenceLa vie par la mortQuand un champion meurt dans les 3 sec après que vous l'avez blessé, une nova détone à l'emplacement de son corps, rendant des PV.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3137.png",
+      "tags": [
+        "SpellDamage",
+        "MagicPenetration",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3073",
+      "name": "Hexplaque expérimentale",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+40 dégâts d'attaque+20% de vitesse d'attaque+450 PVCharge HextechVous gagnez 30 accélération d'ultime.SurchargeAprès avoir lancé votre compétence ultime, vous gagnez 0% de vitesse d'attaque et 0% de vitesse de déplaceme",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3073.png",
+      "tags": [
+        "Health",
+        "Damage",
+        "AttackSpeed",
+        "CooldownReduction",
+        "NonbootsMovement",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3124",
+      "name": "Lame enragée de Guinsoo",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+30 dégâts d'attaque+30 puissance+25% de vitesse d'attaqueCourrouxVos attaques infligent 30 pts de dégâts magiques bonus à l'impact.Frappe furieuseVos attaques vous octroient +8% de vitesse d'attaque pendant 3 sec (effet",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3124.png",
+      "tags": [
+        "Damage",
+        "AttackSpeed",
+        "SpellDamage",
+        "OnHit"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3814",
+      "name": "Manteau de la nuit",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+50 dégâts d'attaque15 létalité+250 PVInvalidationVous gagnez un bouclier antisorts qui bloque la prochaine compétence ennemie.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3814.png",
+      "tags": [
+        "Health",
+        "Damage",
+        "ArmorPenetration"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6676",
+      "name": "Percepteur",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+50 dégâts d'attaque10 létalité+25% de chances de coup critiqueLa vieVos dégâts exécutent les champions qui ont moins de 5% de leurs PV.La bourseÉliminer un champion vous octroie 25 PO bonus.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6676.png",
+      "tags": [
+        "Damage",
+        "CriticalStrike",
+        "ArmorPenetration"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Crit / AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3146",
+      "name": "Pistolame Hextech",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+80 puissance+40 dégâts d'attaque+10% d'omnivampirismePROPRIÉTÉ ACTIVE (0 sec)Orbe de foudreEnvoie une décharge au champion ennemi ciblé, ce qui lui inflige 0 pts de dégâts magiques et le ralentit de 25% pendant 1.5 sec.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3146.png",
+      "tags": [
+        "Damage",
+        "LifeSteal",
+        "SpellDamage",
+        "Active",
+        "SpellVamp"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3087",
+      "name": "Poignard de Statikk",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+45 dégâts d'attaque+45 puissance+30% de vitesse d'attaque+4% de vitesse de déplacementÉtincelle électriqueVos attaques énergisées lancent une chaîne d'éclairs, appliquant  effets à l'impact et infligeant des dégâts magi",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3087.png",
+      "tags": [
+        "Damage",
+        "AttackSpeed",
+        "SpellDamage",
+        "OnHit",
+        "NonbootsMovement"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6694",
+      "name": "Rancune de Serylda",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+45 dégâts d'attaque+35% de pénétration d'armure+15 accélération de compétenceFroid mordantVos compétences blessantes ralentissent de 30% pendant 1 sec les ennemis qui ont moins de 50% de leurs PV.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6694.png",
+      "tags": [
+        "Damage",
+        "CooldownReduction",
+        "ArmorPenetration",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3033",
+      "name": "Rappel mortel",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+35 dégâts d'attaque+30% de pénétration d'armure+25% de chances de coup critiqueHémorragieInfliger des dégâts physiques aux champions ennemis leur inflige 40% d'Hémorragie pendant 3 sec.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3033.png",
+      "tags": [
+        "Damage",
+        "CriticalStrike",
+        "ArmorPenetration"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Crit / AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3302",
+      "name": "Terminus",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+30 dégâts d'attaque+35% de vitesse d'attaqueOmbreVos attaques infligent 30 pts de dégâts magiques bonus à l'impact.JuxtapositionVous alternez entre des attaques lumineuses et ténébreuses contre les champions : Les attaq",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3302.png",
+      "tags": [
+        "Damage",
+        "AttackSpeed",
+        "OnHit",
+        "MagicPenetration",
+        "ArmorPenetration"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6653",
+      "name": "Tourment de Liandry",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+60 puissance+300 PVTourmentLes compétences blessantes brûlent les ennemis, leur infligeant 2% de leurs PV max en dégâts magiques chaque seconde pendant 3 sec.SouffrancePour chaque seconde passée en combat avec des champ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6653.png",
+      "tags": [
+        "Health",
+        "SpellDamage"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6672",
+      "name": "Tueur de krakens",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+45 dégâts d'attaque+40% de vitesse d'attaque+4% de vitesse de déplacementTrempeToutes les trois attaques, vous infligez des dégâts physiques bonus à l'impact (ces dégâts sont augmentés en fonction des PV manquants de la",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6672.png",
+      "tags": [
+        "Damage",
+        "AttackSpeed",
+        "OnHit",
+        "NonbootsMovement"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3102",
+      "name": "Voile de la banshee",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+105 puissance+40 résistance magiqueInvalidationVous gagnez un bouclier antisorts qui bloque la prochaine compétence ennemie.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3102.png",
+      "tags": [
+        "SpellBlock",
+        "SpellDamage"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "4629",
+      "name": "Volonté cosmique",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+70 puissance+350 PV+25 accélération de compétence+4% de vitesse de déplacementDanse des sortsInfliger des dégâts magiques ou bruts à des champions vous octroie de la vitesse de déplacement pendant 4 sec. ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/4629.png",
+      "tags": [
+        "Health",
+        "SpellDamage",
+        "NonbootsMovement",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6609",
+      "name": "Épée dentelée chimico-punk",
+      "tier": 5,
+      "gold": 3000,
+      "description": "+45 dégâts d'attaque+450 PV+15 accélération de compétenceCisaillesInfliger des dégâts physiques aux champions ennemis leur inflige 40% d'Hémorragie pendant 3 sec.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6609.png",
+      "tags": [
+        "Health",
+        "Damage",
+        "CooldownReduction",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3003",
+      "name": "Bâton de l'archange",
+      "tier": 5,
+      "gold": 2900,
+      "description": "+70 puissance+600 mana+25 accélération de compétenceEffroiVous gagnez de la puissance équivalente à 1% de votre mana bonus.Flux de mana (8 sec, max 5 charges)Quand vous touchez une cible avec une compétence, vous gagnez ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3003.png",
+      "tags": [
+        "SpellDamage",
+        "Mana",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3115",
+      "name": "Dent de Nashor",
+      "tier": 5,
+      "gold": 2900,
+      "description": "+80 puissance+50% de vitesse d'attaque+15 accélération de compétenceMorsure d'IcathiaVos attaques infligent des dégâts magiques bonus à l'impact.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3115.png",
+      "tags": [
+        "AttackSpeed",
+        "SpellDamage",
+        "OnHit",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3100",
+      "name": "Fléau de liche",
+      "tier": 5,
+      "gold": 2900,
+      "description": "+100 puissance+6% de vitesse de déplacement+10 accélération de compétenceLame enchantéeAprès avoir utilisé une de vos compétences, votre prochaine attaque inflige des dégâts magiques bonus à l'impact.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3100.png",
+      "tags": [
+        "SpellDamage",
+        "OnHit",
+        "NonbootsMovement",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6662",
+      "name": "Gantelet givrant",
+      "tier": 5,
+      "gold": 2900,
+      "description": "+300 PV+50 armure+15 accélération de compétenceLame enchantéeAprès avoir utilisé une de vos compétences, votre prochaine attaque inflige des dégâts physiques bonus à l'impact et crée un champ de givre pendant 2 sec qui r",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6662.png",
+      "tags": [
+        "Health",
+        "Armor",
+        "CooldownReduction",
+        "Slow",
+        "OnHit",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Tank",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "8010",
+      "name": "Malédiction du sanguinaire",
+      "tier": 5,
+      "gold": 2900,
+      "description": "+65 puissance+400 PV+15 accélération de compétenceVile décompositionInfliger des dégâts magiques avec des compétences ou des compétences passives à des champions réduit leur résistance magique de 7.5% pendant 6 sec. (Cum",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/8010.png",
+      "tags": [
+        "Health",
+        "SpellDamage",
+        "CooldownReduction",
+        "MagicPenetration"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3004",
+      "name": "Manamune",
+      "tier": 5,
+      "gold": 2900,
+      "description": "+35 dégâts d'attaque+500 mana+15 accélération de compétenceEffroiVous gagnez +0 dégâts d'attaque bonus.Flux de mana (8 sec, max 4 charges)Quand vous touchez une cible avec une attaque ou une compétence, vous gagnez +3 ma",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3004.png",
+      "tags": [
+        "Damage",
+        "Mana",
+        "CooldownReduction",
+        "OnHit",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3742",
+      "name": "Plaque du mort",
+      "tier": 5,
+      "gold": 2900,
+      "description": "+350 PV+55 armure+4% de vitesse de déplacementNaufrageurVous déplacer vous octroie jusqu'à +20 vitesse de déplacement bonus. Votre prochaine attaque consomme cette vitesse de déplacement bonus pour infliger des dégâts ph",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3742.png",
+      "tags": [
+        "Health",
+        "Armor",
+        "Slow",
+        "NonbootsMovement"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Tank",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "2504",
+      "name": "Rookern kaénique",
+      "tier": 5,
+      "gold": 2900,
+      "description": "+400 PV+80 résistance magique+100% de régénération de base des PVFléau des magesAprès n'avoir subi aucun dégât magique pendant 15 sec, vous gagnez un bouclier anti-dégâts magiques.  ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/2504.png",
+      "tags": [
+        "Health",
+        "SpellBlock",
+        "HealthRegen"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Tank",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6692",
+      "name": "Éclipse",
+      "tier": 5,
+      "gold": 2900,
+      "description": "+60 dégâts d'attaque+15 accélération de compétenceLune ascendanteQuand vous touchez un champion avec 2 attaques ou compétences distinctes en moins de 2 sec, vous gagnez un bouclier pendant 2 sec.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6692.png",
+      "tags": [
+        "Damage",
+        "CooldownReduction",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6698",
+      "name": "Hydre profane",
+      "tier": 5,
+      "gold": 2850,
+      "description": "+55 dégâts d'attaque18 létalité+10 accélération de compétenceFendoirVos attaques infligent des dégâts physiques aux ennemis proches.Balayage hérétiqueVous infligez des dégâts physiques autour de vous.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6698.png",
+      "tags": [
+        "Damage",
+        "Active",
+        "CooldownReduction",
+        "ArmorPenetration",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3165",
+      "name": "Morellonomicon",
+      "tier": 5,
+      "gold": 2850,
+      "description": "+75 puissance+350 PV+15 accélération de compétenceHémorragieInfliger des dégâts magiques aux champions leur inflige 40% d'Hémorragie pendant 3 sec.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3165.png",
+      "tags": [
+        "Health",
+        "SpellDamage",
+        "CooldownReduction",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "2522",
+      "name": "Actualisateur",
+      "tier": 5,
+      "gold": 2800,
+      "description": "+90 puissance+300 mana+10 accélération de compétenceRenforts de mana (0 sec)Pendant 8 sec, votre mana est renforcé. Pendant que votre mana est renforcé, vos compétences coûtent 100% de mana en plus, vos dégâts, vos boucl",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/2522.png",
+      "tags": [
+        "SpellDamage",
+        "Mana",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3091",
+      "name": "Au bout du rouleau",
+      "tier": 5,
+      "gold": 2800,
+      "description": "+50% de vitesse d'attaque+45 résistance magique+20% de ténacitéConflitVos attaques infligent des dégâts magiques bonus à l'impact.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3091.png",
+      "tags": [
+        "SpellBlock",
+        "AttackSpeed",
+        "OnHit",
+        "Tenacity"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Légendaire",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "2502",
+      "name": "Désespoir infini",
+      "tier": 5,
+      "gold": 2800,
+      "description": "+400 PV+50 armure+15 accélération de compétenceAfflictionToutes les 4 sec de combat contre un champion, vous infligez des dégâts magiques aux champions ennemis proches et vous récupérez des PV équivalents à 250% des dégâ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/2502.png",
+      "tags": [
+        "Health",
+        "Armor",
+        "CooldownReduction",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Tank",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "4401",
+      "name": "Force de la nature",
+      "tier": 5,
+      "gold": 2800,
+      "description": "+400 PV+55 résistance magique+4% de vitesse de déplacementImmuableVous gagnez +70 résistance magique et +6% de vitesse de déplacement bonus après avoir subi des dégâts magiques de la part de champions 8 fois.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/4401.png",
+      "tags": [
+        "Health",
+        "SpellBlock",
+        "NonbootsMovement"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Tank",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3179",
+      "name": "Glaive d'ombre",
+      "tier": 5,
+      "gold": 2800,
+      "description": "+60 dégâts d'attaque18 létalité+15 accélération de compétenceTraqueur nocturneAprès être resté invisible pour les ennemis quelques secondes, votre prochaine attaque contre un champion inflige des dégâts bruts bonus.Black",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3179.png",
+      "tags": [
+        "Damage",
+        "Vision",
+        "CooldownReduction",
+        "ArmorPenetration",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3142",
+      "name": "Lame spectre de Youmuu",
+      "tier": 5,
+      "gold": 2800,
+      "description": "+55 dégâts d'attaque18 létalité+4% de vitesse de déplacementHantise Vous gagnez +0 vitesse de déplacement en dehors des combats.Marche spectraleVous gagnez de la vitesse de déplacement et devenez fantomatique pendant 0 s",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3142.png",
+      "tags": [
+        "Damage",
+        "Active",
+        "NonbootsMovement",
+        "ArmorPenetration"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "2523",
+      "name": "Lunettes Hextech C44",
+      "tier": 5,
+      "gold": 2800,
+      "description": "+55 dégâts d'attaque+25% de chances de coup critiqueGrossissementVous infligez jusqu'à 10% de dégâts bonus avec vos attaques, en fonction de la distance entre vous et l'ennemi (vous infligez le maximum de dégâts lorsque ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/2523.png",
+      "tags": [
+        "Damage",
+        "CriticalStrike"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Crit / AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "4646",
+      "name": "Onde orageuse",
+      "tier": 5,
+      "gold": 2800,
+      "description": "+90 puissance+15 pénétration magique+6% de vitesse de déplacementDresseur d'orageInfliger des dégâts équivalents à 25% des PV max du champion ciblé en moins de 2.5 sec applique Rafale sur lui.RafaleAprès 2 sec, vous infl",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/4646.png",
+      "tags": [
+        "SpellDamage",
+        "GoldPer",
+        "NonbootsMovement",
+        "MagicPenetration"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6697",
+      "name": "Orgueil",
+      "tier": 5,
+      "gold": 2800,
+      "description": "+55 dégâts d'attaque18 létalité+10 accélération de compétenceÉminenceQuand un champion meurt dans les 3 sec après que vous l'avez blessé, vous gagnez +12 dégâts d'attaque (+3 par champion tué) pendant 90 sec.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6697.png",
+      "tags": [
+        "Damage",
+        "Active",
+        "CooldownReduction",
+        "ArmorPenetration",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6664",
+      "name": "Rayonnement du vide",
+      "tier": 5,
+      "gold": 2800,
+      "description": "+400 PV+40 résistance magique+10 accélération de compétence+100% de régénération de base des PVImmolationSubir ou infliger des dégâts vous permet d'infliger chaque seconde des dégâts magiques aux ennemis proches pendant ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6664.png",
+      "tags": [
+        "Health",
+        "SpellBlock",
+        "HealthRegen",
+        "Aura",
+        "MagicResist",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Tank",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "2503",
+      "name": "Torche noire",
+      "tier": 5,
+      "gold": 2800,
+      "description": "+80 puissance+600 mana+20 accélération de compétenceFlamme funèbreLes compétences blessantes infligent des dégâts magiques bonus pendant 3 sec.Feu noirVous gagnez +4% de puissance par champion ennemi, monstre épique ou g",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/2503.png",
+      "tags": [
+        "SpellDamage",
+        "Mana",
+        "CooldownReduction",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6696",
+      "name": "Arc axiomatique",
+      "tier": 5,
+      "gold": 2750,
+      "description": "+55 dégâts d'attaque18 létalité+20 accélération de compétenceFluxQuand un champion meurt dans les 3 sec après que vous l'avez blessé, le délai de récupération de votre compétence ultime est réduit d'un pourcentage de son",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6696.png",
+      "tags": [
+        "Damage",
+        "ArmorPenetration",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "AD",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6655",
+      "name": "Écho de Luden",
+      "tier": 5,
+      "gold": 2750,
+      "description": "+100 puissance+600 mana+10 accélération de compétenceÉchoLes compétences blessantes tirent 6 échos qui infligent des dégâts magiques bonus à la cible et aux ennemis proches. Les échos restants sont redirigés vers la cibl",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6655.png",
+      "tags": [
+        "SpellDamage",
+        "Mana",
+        "CooldownReduction",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "4628",
+      "name": "Concentration lointaine",
+      "tier": 5,
+      "gold": 2700,
+      "description": "+75 puissance+25 accélération de compétenceTir hyperprécisInfliger des dégâts de compétence à un champion à au moins 600 unités de distance le révèle pendant 6 sec. FocalisationQuand Tir hyperprécis se déclenche, vous ré",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/4628.png",
+      "tags": [
+        "SpellDamage",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3118",
+      "name": "Malfaisance",
+      "tier": 5,
+      "gold": 2700,
+      "description": "+90 puissance+600 mana+15 accélération de compétenceMéprisVous gagnez +20 accélération d'ultime.Brouillard de haineLorsque vous blessez un champion avec votre ultime, vous brûlez le sol sous ses pieds pendant 3 sec, ce q",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3118.png",
+      "tags": [
+        "SpellDamage",
+        "Mana",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3143",
+      "name": "Présage de Randuin",
+      "tier": 5,
+      "gold": 2700,
+      "description": "+350 PV+75 armureVigueurLes coups critiques vous infligent 30% de dégâts en moins.HumilitéVous ralentissez les ennemis proches de 70% pendant 2 sec.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3143.png",
+      "tags": [
+        "Health",
+        "Armor",
+        "Active",
+        "Slow"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Tank",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3065",
+      "name": "Visage spirituel",
+      "tier": 5,
+      "gold": 2700,
+      "description": "+400 PV+50 résistance magique+10 accélération de compétence+100% de régénération de base des PVVitalité intarissableLes soins et les boucliers que vous recevez sont augmentés de 25%.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3065.png",
+      "tags": [
+        "Health",
+        "SpellBlock",
+        "HealthRegen",
+        "CooldownReduction",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Tank",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3068",
+      "name": "Égide solaire",
+      "tier": 5,
+      "gold": 2700,
+      "description": "+350 PV+50 armure+10 accélération de compétenceImmolationSubir ou infliger des dégâts vous permet d'infliger chaque seconde des dégâts magiques aux ennemis proches pendant 3 sec. ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3068.png",
+      "tags": [
+        "Health",
+        "Armor",
+        "Aura",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Tank",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3094",
+      "name": "Canon ultrarapide",
+      "tier": 5,
+      "gold": 2650,
+      "description": "+35% de vitesse d'attaque+25% de chances de coup critique+4% de vitesse de déplacementSniperVos attaques énergisées infligent 40 pts de dégâts magiques bonus et gagnent +35% de portée d'attaque bonus.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3094.png",
+      "tags": [
+        "CriticalStrike",
+        "AttackSpeed",
+        "NonbootsMovement"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Légendaire",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3152",
+      "name": "Ceinture-roquette Hextech",
+      "tier": 5,
+      "gold": 2650,
+      "description": "+70 puissance+300 PV+20 accélération de compétenceSupersoniqueVous vous ruez dans la direction ciblée en lançant des projectiles qui infligent des dégâts magiques.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3152.png",
+      "tags": [
+        "Health",
+        "SpellDamage",
+        "Active",
+        "CooldownReduction",
+        "NonbootsMovement",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "2512",
+      "name": "Chasseur de monstres",
+      "tier": 5,
+      "gold": 2650,
+      "description": "+45% de vitesse d'attaque+25% de chances de coup critique+4% de vitesse de déplacementVeille de nuitVous gagnez 30 d'accélération d'ultime.Barrage d'ouverture Après avoir lancé votre ultime, vos prochaines 3 attaques de ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/2512.png",
+      "tags": [
+        "CriticalStrike",
+        "AttackSpeed",
+        "NonbootsMovement",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Utilitaire",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3046",
+      "name": "Danseur fantôme",
+      "tier": 5,
+      "gold": 2650,
+      "description": "+65% de vitesse d'attaque+25% de chances de coup critique+10% de vitesse de déplacementValse spectraleVous devenez fantomatique.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3046.png",
+      "tags": [
+        "CriticalStrike",
+        "AttackSpeed",
+        "NonbootsMovement"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Légendaire",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "8020",
+      "name": "Masque abyssal",
+      "tier": 5,
+      "gold": 2650,
+      "description": "+350 PV+45 résistance magique+15 accélération de compétenceAnéantissementLes champions ennemis proches subissent 12% de dégâts magiques bonus.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/8020.png",
+      "tags": [
+        "Health",
+        "SpellBlock",
+        "CooldownReduction",
+        "MagicResist",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Tank",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3085",
+      "name": "Ouragan de Runaan",
+      "tier": 5,
+      "gold": 2650,
+      "description": "+40% de vitesse d'attaque+25% de chances de coup critique+4% de vitesse de déplacementFureur du ventVos attaques tirent des projectiles sur 2 ennemis bonus près de la cible.Chaque projectile inflige des dégâts physiques ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3085.png",
+      "tags": [
+        "CriticalStrike",
+        "AttackSpeed",
+        "OnHit",
+        "NonbootsMovement"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Légendaire",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6675",
+      "name": "Tremblelame navori",
+      "tier": 5,
+      "gold": 2650,
+      "description": "+40% de vitesse d'attaque+25% de chances de coup critique+4% de vitesse de déplacementTranscendanceVos attaques réduisent le délai de récupération de vos compétences de base de 15% de leur délai de récupération restant.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6675.png",
+      "tags": [
+        "CriticalStrike",
+        "AttackSpeed",
+        "NonbootsMovement"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Légendaire",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "6657",
+      "name": "Bâton séculaire",
+      "tier": 5,
+      "gold": 2600,
+      "description": "+45 puissance+350 PV+500 manaIntemporelCet objet gagne +10 PV, +30 pts de mana et +3 puissance toutes les 60 sec, jusqu'à 10 fois. Au maximum d'effets cumulés, vous gagnez un niveau.ÉternitéSubir des dégâts d'un champion",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/6657.png",
+      "tags": [
+        "Health",
+        "HealthRegen",
+        "SpellDamage",
+        "Mana",
+        "ManaRegen"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3116",
+      "name": "Sceptre de Rylai",
+      "tier": 5,
+      "gold": 2600,
+      "description": "+65 puissance+400 PVCouche de givreVos compétences blessantes ralentissent les ennemis de 30% pendant 1 sec.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3116.png",
+      "tags": [
+        "Health",
+        "SpellDamage",
+        "Slow"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3110",
+      "name": "Cœur gelé",
+      "tier": 5,
+      "gold": 2500,
+      "description": "+75 armure+400 mana+20 accélération de compétenceCaresse de l'hiverVous réduisez de 20% la vitesse d'attaque des champions ennemis proches.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3110.png",
+      "tags": [
+        "Armor",
+        "Mana",
+        "Aura",
+        "CooldownReduction",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Magique",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3109",
+      "name": "Vœu du chevalier",
+      "tier": 5,
+      "gold": 2300,
+      "description": "+200 PV+40 armure+10 accélération de compétence+100% de régénération de base des PVSacrificeQuand l'allié digne est proche, vous redirigez vers vous 14% des dégâts qu'il subit et vous récupérez des PV équivalents à 12% d",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3109.png",
+      "tags": [
+        "Health",
+        "HealthRegen",
+        "Armor",
+        "Aura",
+        "Active",
+        "CooldownReduction",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Tank",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3190",
+      "name": "Médaillon de l'Iron Solari",
+      "tier": 5,
+      "gold": 2200,
+      "description": "+200 PV+30 armure+30 résistance magique+10 accélération de compétenceDévotionVous octroyez aux alliés proches un bouclier de 290 - 360 PV qui se désagrège en 2.5 sec.",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3190.png",
+      "tags": [
+        "Health",
+        "SpellBlock",
+        "Armor",
+        "Aura",
+        "Active",
+        "MagicResist",
+        "AbilityHaste"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Tank",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3865",
+      "name": "Atlas",
+      "tier": 5,
+      "gold": 400,
+      "description": "",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3865.png",
+      "tags": [
+        "Health",
+        "ManaRegen",
+        "Vision",
+        "GoldPer",
+        "Lane"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Légendaire",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3877",
+      "name": "Mélodie du sang",
+      "tier": 5,
+      "gold": 400,
+      "description": "+200 PV+75% de régénération de base des PV+75% de régénération de base du mana+9 PO toutes les 10 secLame enchantéeAprès avoir utilisé une de vos compétences, votre prochaine attaque inflige des dégâts physiques bonus à ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3877.png",
+      "tags": [
+        "Health",
+        "HealthRegen",
+        "ManaRegen",
+        "Vision",
+        "GoldPer",
+        "Lane"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Légendaire",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3869",
+      "name": "Opposition céleste",
+      "tier": 5,
+      "gold": 400,
+      "description": "+200 PV+75% de régénération de base des PV+75% de régénération de base du mana+9 PO toutes les 10 secBénédiction de la montagneRéduit les dégâts que vous infligent les champions pendant 2 sec après avoir subi des dégâts ",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3869.png",
+      "tags": [
+        "Health",
+        "HealthRegen",
+        "ManaRegen",
+        "Vision",
+        "GoldPer",
+        "Lane"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Légendaire",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3871",
+      "name": "Pique dimensionnelle de Zaz'Zak",
+      "tier": 5,
+      "gold": 400,
+      "description": "+200 PV+75% de régénération de base des PV+75% de régénération de base du mana+9 PO toutes les 10 secExplosion du NéantInfliger des dégâts de compétence à un champion provoque une explosion qui inflige des dégâts magique",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3871.png",
+      "tags": [
+        "Health",
+        "HealthRegen",
+        "ManaRegen",
+        "Vision",
+        "GoldPer",
+        "Lane"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Légendaire",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3870",
+      "name": "Rêve éveillé",
+      "tier": 5,
+      "gold": 400,
+      "description": "+200 PV+75% de régénération de base des PV+75% de régénération de base du mana+9 PO toutes les 10 secRêve éveilléSoigner un allié ou lui octroyer un bouclier lui envoie les bulles pendant 3 sec. Sa prochaine attaque infl",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3870.png",
+      "tags": [
+        "Health",
+        "HealthRegen",
+        "ManaRegen",
+        "Vision",
+        "GoldPer",
+        "Lane"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Légendaire",
+      "map": "Summoner's Rift"
+    },
+    {
+      "id": "3876",
+      "name": "Traîneau du solstice",
+      "tier": 5,
+      "gold": 400,
+      "description": "+200 PV+75% de régénération de base des PV+75% de régénération de base du mana+9 PO toutes les 10 secVirée en traîneauRalentir ou immobiliser un champion ennemi près d'alliés vous octroie, ainsi qu'à un allié proche, des",
+      "icon": "https://ddragon.leagueoflegends.com/cdn/16.11.1/img/item/3876.png",
+      "tags": [
+        "Health",
+        "HealthRegen",
+        "ManaRegen",
+        "Vision",
+        "GoldPer",
+        "Lane"
+      ],
+      "category": "Légendaire",
+      "shopRole": "Légendaire",
+      "map": "Summoner's Rift"
+    }
+  ]
+}

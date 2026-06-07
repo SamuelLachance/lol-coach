@@ -1,7 +1,7 @@
-# Données sources / scripts (le site servi est dans public/)
-data/
-docs/
-config/server.json
+# Données sources (le site servi inclut public/data/)
+/data/
+/docs/
+/config/server.json
 
 # Logs et caches
 *.log
