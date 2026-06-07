@@ -1,0 +1,26 @@
+# Données sources / scripts (le site servi est dans public/)
+data/
+docs/
+config/server.json
+
+# Logs et caches
+*.log
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Transcripts volumineux
+data/transcripts/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Secrets locaux
+.env
+.env.*
+
+# Binaires tunnel (téléchargés localement)
+tools/cloudflared.exe

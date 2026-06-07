@@ -1,0 +1,535 @@
+/* ─── LoL Coach · layout épuré, plein écran, grande typo ───────────────── */
+
+:root {
+  --header-h: 72px;
+  --sidebar-w: clamp(168px, 11vw, 196px);
+  --radius: 18px;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1.25rem;
+  --space-lg: 1.75rem;
+  --space-xl: 2.5rem;
+  --text-body: clamp(1rem, 0.35vw + 0.95rem, 1.125rem);
+  --text-label: clamp(0.8125rem, 0.2vw + 0.78rem, 0.9375rem);
+  --text-title: clamp(1.35rem, 1.2vw + 1rem, 2rem);
+  --text-display: clamp(1.75rem, 2vw + 1rem, 2.75rem);
+  --icon-card: clamp(84px, 7vw, 112px);
+  --icon-detail: clamp(88px, 6vw, 112px);
+  --icon-pool: clamp(56px, 4vw, 72px);
+  --icon-draft: clamp(52px, 3.5vw, 68px);
+  --touch-min: 44px;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  font-size: var(--text-body);
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+
+.app {
+  width: 100%;
+  max-width: none;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: 100dvh;
+}
+
+.header {
+  min-height: var(--header-h);
+  padding: 0 clamp(1rem, 2vw, 2.5rem);
+  gap: clamp(1rem, 2vw, 2rem);
+}
+
+.logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  font-size: 0.875rem;
+}
+
+.header-brand h1,
+.header h1 {
+  font-size: clamp(1.2rem, 1vw + 1rem, 1.5rem);
+}
+
+.subtitle {
+  font-size: var(--text-label);
+  margin-top: 0.15rem;
+}
+
+.header-nav {
+  gap: 0.4rem;
+  padding: 0.35rem;
+}
+
+.nav-tab {
+  min-height: var(--touch-min);
+  padding: 0.55rem 1.15rem;
+  font-size: var(--text-label);
+  font-weight: 600;
+}
+
+.header-search {
+  max-width: min(480px, 32vw);
+}
+
+.header-search input {
+  min-height: var(--touch-min);
+  padding: 0.85rem 1.15rem 0.85rem 3rem;
+  font-size: var(--text-body);
+  border-radius: 14px;
+}
+
+.search-icon {
+  width: 22px;
+  height: 22px;
+  left: 16px;
+}
+
+#filter-toggle {
+  width: var(--touch-min);
+  height: var(--touch-min);
+}
+
+/* ─── Sidebar ────────────────────────────────────────────────────────────── */
+
+.sidebar {
+  padding: var(--space-md) var(--space-sm);
+  width: var(--sidebar-w);
+}
+
+.sidebar-hint {
+  display: none;
+}
+
+.filter-section {
+  margin-bottom: var(--space-md);
+}
+
+.filter-section h2,
+.filter-section h3 {
+  font-size: var(--text-label);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.65rem;
+}
+
+.chip {
+  min-height: var(--touch-min);
+  padding: 0.65rem 0.9rem;
+  font-size: var(--text-body);
+  border-radius: 12px;
+}
+
+.filter-chips-scroll {
+  max-height: min(320px, 40vh);
+}
+
+.sidebar-stats {
+  font-size: var(--text-label);
+  padding-top: var(--space-md);
+}
+
+.mtg-color-chip {
+  min-height: var(--touch-min);
+  padding: 0.65rem 0.85rem;
+  font-size: var(--text-body);
+}
+
+.mtg-color-chip-swatch {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.75rem;
+}
+
+/* ─── Main ─────────────────────────────────────────────────────────────────── */
+
+.main {
+  padding: 0.65rem clamp(0.75rem, 1.5vw, 1.75rem) 1.5rem;
+  max-width: none;
+  width: 100%;
+}
+
+.gallery-bar {
+  margin-bottom: 0.5rem;
+}
+
+.gallery-count {
+  font-size: var(--text-label);
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* Hero compact — voir ui-mtg.css (.champions-toolbar) */
+
+.champion-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 142px), 1fr));
+  gap: 0.72rem;
+}
+
+@media (min-width: 1200px) {
+  .champion-grid {
+    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+    gap: 0.8rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .champion-grid {
+    grid-template-columns: repeat(auto-fill, minmax(154px, 1fr));
+  }
+}
+
+.champion-card {
+  border-radius: var(--radius);
+}
+
+.card-matchup-col {
+  padding: var(--space-sm) var(--space-md);
+}
+
+.card-matchup-label {
+  font-size: var(--text-label);
+  margin-bottom: 0.45rem;
+}
+
+.card-matchup-item {
+  font-size: var(--text-label);
+  padding: 0.25rem 0.55rem;
+  border-radius: 8px;
+}
+
+.card-matchup-empty {
+  font-size: var(--text-body);
+}
+
+/* ─── Icônes globales ─────────────────────────────────────────────────────── */
+
+.champ-icon {
+  font-size: clamp(1.75rem, 2vw, 2.5rem);
+}
+
+.champ-icon--detail {
+  width: var(--icon-detail);
+  height: var(--icon-detail);
+  font-size: clamp(2rem, 3vw, 2.75rem);
+}
+
+.champ-icon--pool {
+  width: var(--icon-pool);
+  height: var(--icon-pool);
+}
+
+.champ-icon--draft {
+  width: var(--icon-draft);
+  height: var(--icon-draft);
+}
+
+/* ─── Détail / overlay ───────────────────────────────────────────────────── */
+
+.detail-inner h2 {
+  font-size: var(--text-title);
+}
+
+.detail-meta .badge {
+  font-size: var(--text-label);
+  padding: 0.35rem 0.65rem;
+}
+
+.mtg-detail-block h4 {
+  font-size: var(--text-label);
+}
+
+.mtg-detail-identity {
+  font-size: var(--text-title);
+}
+
+.mtg-detail-philo {
+  font-size: var(--text-body);
+}
+
+.empty-state {
+  font-size: var(--text-body);
+  padding: var(--space-xl);
+}
+
+.empty-state p {
+  font-size: clamp(1.1rem, 1vw + 1rem, 1.35rem);
+}
+
+/* ─── Draft plein écran ──────────────────────────────────────────────────── */
+
+.draft-main {
+  padding: var(--space-sm) clamp(0.75rem, 2vw, 2rem) var(--space-lg);
+}
+
+.draft-layout {
+  min-height: calc(100dvh - var(--header-h) - 1rem);
+  gap: var(--space-md);
+}
+
+.draft-session-bar {
+  padding: var(--space-md) var(--space-lg);
+  font-size: var(--text-body);
+}
+
+.draft-select-compact {
+  min-height: var(--touch-min);
+  font-size: var(--text-body);
+  padding: 0.5rem 0.85rem;
+}
+
+.draft-board {
+  gap: var(--space-md);
+}
+
+.draft-team h3 {
+  font-size: var(--text-title);
+}
+
+.draft-cell {
+  min-height: clamp(72px, 8vh, 96px);
+  font-size: var(--text-body);
+}
+
+.draft-cell-name {
+  font-size: var(--text-label);
+}
+
+.draft-pool-card {
+  min-height: var(--touch-min);
+  padding: var(--space-sm);
+  font-size: var(--text-body);
+}
+
+.draft-pool-name {
+  font-size: var(--text-label);
+}
+
+.mtg-team-panel-title {
+  font-size: var(--text-label);
+}
+
+.mtg-team-identity {
+  font-size: var(--text-body);
+}
+
+.mtg-team-spectrum {
+  height: 10px;
+}
+
+/* ─── Macro / tactiques ────────────────────────────────────────────────────── */
+
+.tactics-main {
+  padding: var(--space-md) clamp(1rem, 2vw, 2.5rem);
+  max-width: none;
+}
+
+.tactics-layout h2 {
+  font-size: var(--text-title);
+}
+
+.tactics-slot-cell {
+  min-height: clamp(80px, 10vh, 110px);
+}
+
+.tactics-comp-score-title {
+  font-size: var(--text-title);
+}
+
+.tactics-comp-points {
+  font-size: var(--text-display);
+}
+
+/* ─── Objets / patch / guide ───────────────────────────────────────────────── */
+
+.guide-main,
+.patch-main {
+  max-width: none;
+  padding: var(--space-md) clamp(1rem, 2vw, 2.5rem);
+}
+
+.items-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  gap: var(--space-md);
+}
+
+.item-card {
+  padding: var(--space-md);
+}
+
+.item-card-name {
+  font-size: var(--text-body);
+}
+
+/* ─── Mobile ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .main {
+    padding: var(--space-sm) var(--space-md) calc(var(--space-xl) + 4rem);
+  }
+
+  .champion-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .sidebar:not(.hidden) {
+    width: min(320px, 92vw);
+  }
+
+  .tab-bar-item {
+    font-size: var(--text-label);
+    min-width: var(--touch-min);
+  }
+
+  .tab-bar-item svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+/* ─── Draft pool & board (plein écran) ─────────────────────────────────────── */
+
+.draft-board-wrap {
+  padding: var(--space-lg);
+}
+
+.draft-board {
+  gap: var(--space-lg);
+}
+
+.draft-team {
+  padding: var(--space-md);
+}
+
+.draft-team-header h3 {
+  font-size: var(--text-title);
+}
+
+.draft-team-badge {
+  font-size: var(--text-label);
+  padding: 0.25rem 0.65rem;
+}
+
+.draft-slots-grid {
+  gap: var(--space-sm);
+}
+
+.draft-pool-wrap {
+  padding: var(--space-md) 0;
+}
+
+.draft-pool-title {
+  font-size: var(--text-title);
+}
+
+.draft-pool-search {
+  min-height: var(--touch-min);
+  font-size: var(--text-body);
+  padding: 0.75rem 1rem;
+}
+
+.draft-pool-grid-alpha {
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: var(--space-sm);
+  max-height: min(640px, calc(100dvh - var(--header-h) - 18rem));
+}
+
+.draft-alpha-letter {
+  font-size: var(--text-label);
+  padding: 0.5rem 0 0.25rem;
+}
+
+.draft-suggest-chip {
+  min-height: var(--touch-min);
+  padding: 0.45rem 0.85rem 0.45rem 0.55rem;
+  font-size: var(--text-label);
+}
+
+.draft-suggest-name {
+  max-width: 10rem;
+  font-size: var(--text-body);
+}
+
+.side-chip,
+.ban-chip {
+  min-height: 36px;
+  min-width: 36px;
+  font-size: var(--text-label);
+  padding: 0.45rem 0.9rem;
+}
+
+.draft-cell-tag {
+  font-size: var(--text-label);
+}
+
+/* ─── Tactiques ────────────────────────────────────────────────────────────── */
+
+.tactics-slots-grid {
+  gap: var(--space-sm);
+}
+
+.tactics-slot-cell {
+  font-size: var(--text-body);
+}
+
+.tactics-pool-wrap .draft-pool-grid-alpha {
+  max-height: min(520px, calc(100dvh - var(--header-h) - 16rem));
+}
+
+.tactics-draft {
+  gap: var(--space-lg);
+}
+
+.draft-column h2 {
+  font-size: var(--text-title);
+}
+
+.tactics-comp-win {
+  font-size: var(--text-body);
+}
+
+@media (max-width: 900px) {
+  #sidebar-champions .sidebar-stats {
+    display: block;
+  }
+}
+
+.app-status {
+  margin-bottom: var(--space-md, 1rem);
+  padding: 0.85rem 1.1rem;
+  border-radius: 12px;
+  font-size: var(--text-body, 1rem);
+  font-weight: 600;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.app-status[data-type="loading"] {
+  color: var(--text-muted);
+}
+
+.app-status[data-type="error"] {
+  color: #ffb4b4;
+  border-color: rgba(255, 92, 92, 0.35);
+  background: rgba(255, 92, 92, 0.08);
+}
+
+@media (min-width: 901px) {
+  #sidebar-champions .sidebar-stats {
+    display: none;
+  }
+
+  .draft-pool-grid-alpha {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+}
+
+@media (min-width: 1600px) {
+  .draft-pool-grid-alpha {
+    grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  }
+}

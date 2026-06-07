@@ -1,0 +1,300 @@
+/* Layout & composants — maquette LoL Coach Dashboard */
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(12rem, auto) 1fr minmax(12rem, 22rem);
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.5rem;
+  min-height: var(--header-h);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.header-brand h1 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.header-nav {
+  justify-self: center;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.header-search {
+  justify-self: end;
+  width: 100%;
+  max-width: 22rem;
+}
+
+#filter-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.icon-btn--ghost {
+  color: var(--text-muted);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1rem 1.5rem;
+  background: var(--bg);
+}
+
+.sidebar-head {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.sidebar-backdrop:not(.hidden) {
+  display: block;
+}
+
+.filter-section h2,
+.filter-section h3 {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+  margin-bottom: 0.55rem;
+}
+
+.filter-chips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.filter-chips-scroll {
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.filter-section--extra {
+  display: none;
+}
+
+.sidebar-hint {
+  display: block;
+  margin: -0.25rem 0 0.55rem;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.champions-hero.is-color-focus .champions-hero-accent {
+  opacity: 1;
+  background: linear-gradient(135deg, var(--fam-color, var(--gold)), transparent 70%);
+}
+
+.hero-panel--color .hero-family-identity {
+  align-items: center;
+}
+
+.hero-panel--color .mtg-compass-sigil {
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  flex-shrink: 0;
+}
+
+.mtg-compass-node--w .mtg-compass-sigil,
+.hero-panel--color .mtg-compass-node--w { background: var(--mtg-w); color: #3d3828; }
+.mtg-compass-node--u .mtg-compass-sigil,
+.hero-panel--color .mtg-compass-node--u { background: var(--mtg-u); color: #fff; }
+.mtg-compass-node--b .mtg-compass-sigil,
+.hero-panel--color .mtg-compass-node--b { background: var(--mtg-b); color: #eee; }
+.mtg-compass-node--r .mtg-compass-sigil,
+.hero-panel--color .mtg-compass-node--r { background: var(--mtg-r); color: #fff; }
+.mtg-compass-node--g .mtg-compass-sigil,
+.hero-panel--color .mtg-compass-node--g { background: var(--mtg-g); color: #fff; }
+
+.champions-hero-nav-wrap {
+  border-top: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.hero-panel--default {
+  grid-template-columns: 1fr;
+}
+
+.champion-card-v2 .card-en {
+  display: block;
+  font-size: var(--text-label, 0.8125rem);
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.tab-bar {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  padding: 0.45rem 0.5rem calc(0.45rem + env(safe-area-inset-bottom));
+  background: rgba(15, 17, 21, 0.96);
+  border-top: 1px solid var(--border);
+  justify-content: space-around;
+  gap: 0.15rem;
+}
+
+.tab-bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.35rem 0.4rem;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.625rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tab-bar-item svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.tab-bar-item.active {
+  color: var(--gold-bright);
+}
+
+.detail-meta .mtg-pastilles,
+.detail-meta .color-identity {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  width: auto;
+  margin-top: 0;
+}
+
+.color-gem {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.2rem;
+  height: 1.2rem;
+  padding: 0 0.2rem;
+  border-radius: 5px;
+  font-size: 0.625rem;
+  font-weight: 800;
+}
+
+.color-gem--w { background: #f5f0dc; color: #3d3828; }
+.color-gem--u { background: #4a9fd4; color: #fff; }
+.color-gem--b { background: #4a4a58; color: #e8e8f0; }
+.color-gem--r { background: #e05238; color: #fff; }
+.color-gem--g { background: #3d9e5a; color: #fff; }
+
+@media (max-width: 1100px) {
+  .header {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "brand search"
+      "nav nav";
+  }
+
+  .header-brand { grid-area: brand; }
+  .header-search { grid-area: search; }
+  .header-nav {
+    grid-area: nav;
+    justify-self: stretch;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 900px) {
+  .header {
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas: "brand search filter";
+  }
+
+  .header-nav { display: none; }
+
+  #filter-toggle {
+    display: inline-flex;
+    grid-area: filter;
+  }
+
+  .tab-bar {
+    display: flex;
+  }
+
+  .main {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  }
+
+  .sidebar:not(.hidden) {
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: min(280px, 88vw);
+    z-index: 40;
+    transform: translateX(-105%);
+    transition: transform 0.3s ease;
+    box-shadow: var(--shadow);
+  }
+
+  .sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-head {
+    display: flex;
+  }
+
+  .filter-section--extra {
+    display: block;
+  }
+}

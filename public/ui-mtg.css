@@ -1,0 +1,668 @@
+/* ─── MTG pastilles + toolbar compact ─────────────────────────────────────── */
+
+:root {
+  --mtg-w: #f8f4e8;
+  --mtg-u: #3b9fd9;
+  --mtg-b: #5a5a6e;
+  --mtg-r: #e85d3a;
+  --mtg-g: #2fa866;
+  --sidebar-w: clamp(168px, 11vw, 196px);
+}
+
+/* Pastilles — taille = degré de couleur (weight /24) */
+.mtg-pastilles {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.mtg-pastille {
+  --w: calc(var(--pastille-weight, 8) / 24);
+  display: block;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
+  flex-shrink: 0;
+}
+
+.mtg-pastille--primary {
+  width: calc(12px + var(--w) * 14px);
+  height: calc(12px + var(--w) * 14px);
+}
+
+.mtg-pastille--secondary {
+  width: calc(8px + var(--w) * 10px);
+  height: calc(8px + var(--w) * 10px);
+  opacity: calc(0.55 + var(--w) * 0.45);
+}
+
+.mtg-pastille--tertiary {
+  width: calc(6px + var(--w) * 6px);
+  height: calc(6px + var(--w) * 6px);
+  opacity: calc(0.4 + var(--w) * 0.5);
+}
+
+.mtg-pastille--w { background: var(--mtg-w); }
+.mtg-pastille--u { background: var(--mtg-u); }
+.mtg-pastille--b { background: var(--mtg-b); }
+.mtg-pastille--r { background: var(--mtg-r); }
+.mtg-pastille--g { background: var(--mtg-g); }
+
+.mtg-pastille--all {
+  width: 14px;
+  height: 14px;
+  background: conic-gradient(var(--mtg-w), var(--mtg-u), var(--mtg-b), var(--mtg-r), var(--mtg-g), var(--mtg-w));
+}
+
+.mtg-pastilles--card {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28rem;
+  padding: 0;
+  margin: 0;
+  background: none;
+  backdrop-filter: none;
+  border-radius: 0;
+  line-height: 0;
+}
+
+.mtg-pastilles--card .mtg-pastille {
+  border-width: 1.5px;
+  box-shadow: none;
+}
+
+.mtg-pastilles--compact {
+  gap: 0.25rem;
+}
+
+.mtg-pastilles--compact .mtg-pastille--primary {
+  width: calc(10px + var(--w) * 8px);
+  height: calc(10px + var(--w) * 8px);
+}
+
+.mtg-pastilles--compact .mtg-pastille--secondary {
+  width: calc(7px + var(--w) * 6px);
+  height: calc(7px + var(--w) * 6px);
+}
+
+/* Grille principale — pastilles fixes, discrètes */
+.mtg-pastilles--micro {
+  gap: 2px;
+}
+
+.mtg-pastilles--micro .mtg-pastille {
+  border-width: 1px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+}
+
+.mtg-pastilles--micro .mtg-pastille--primary {
+  width: 7px;
+  height: 7px;
+}
+
+.mtg-pastilles--micro .mtg-pastille--secondary {
+  width: 6px;
+  height: 6px;
+  opacity: 0.8;
+}
+
+.mtg-pastilles--detail .mtg-pastille--primary {
+  width: calc(18px + var(--w) * 16px);
+  height: calc(18px + var(--w) * 16px);
+}
+
+.mtg-pastilles--detail .mtg-pastille--secondary {
+  width: calc(14px + var(--w) * 12px);
+  height: calc(14px + var(--w) * 12px);
+}
+
+/* Filtres pastilles (sidebar + toolbar) */
+.mtg-filter-dots,
+.mtg-compass {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.mtg-dot-btn {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.mtg-dot-btn:hover {
+  transform: scale(1.08);
+}
+
+.mtg-dot-btn.is-active {
+  border-color: var(--chip-color, var(--gold-border));
+  box-shadow: 0 0 0 1px var(--chip-color, var(--gold-border));
+}
+
+.mtg-dot-btn--w.is-active { --chip-color: var(--mtg-w); }
+.mtg-dot-btn--u.is-active { --chip-color: var(--mtg-u); }
+.mtg-dot-btn--b.is-active { --chip-color: var(--mtg-b); }
+.mtg-dot-btn--r.is-active { --chip-color: var(--mtg-r); }
+.mtg-dot-btn--g.is-active { --chip-color: var(--mtg-g); }
+
+/* Toolbar page d'accueil */
+.champions-toolbar {
+  margin-bottom: 0.65rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.champions-toolbar-focus[hidden] {
+  display: none !important;
+}
+
+.champions-toolbar-focus:not([hidden]) {
+  margin-bottom: 0.5rem;
+}
+
+.toolbar-focus {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border);
+}
+
+.toolbar-focus-text {
+  flex: 1;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.toolbar-focus-text strong {
+  color: var(--text);
+}
+
+.toolbar-focus-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.toolbar-focus-clear {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.toolbar-focus-clear:hover {
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.champions-toolbar-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.65rem 1.25rem;
+}
+
+.champions-toolbar-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.champions-toolbar-group--colors {
+  flex: 0 0 auto;
+}
+
+.champions-toolbar-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.champions-hero-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  max-height: 4.5rem;
+  overflow-y: auto;
+  padding-bottom: 0.1rem;
+}
+
+.family-nav-pill {
+  padding: 0.3rem 0.55rem;
+  font-size: 0.72rem;
+  max-width: none;
+  white-space: normal;
+  line-height: 1.25;
+  text-align: left;
+}
+
+.family-nav-count {
+  font-size: 0.65rem;
+}
+
+/* Cartes — portrait + pastilles */
+.champion-card-v2 {
+  --mtg-accent: var(--gold);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.champion-card-v2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--mtg-accent, var(--gold));
+  border-radius: var(--radius) 0 0 var(--radius);
+}
+
+.champion-card-v2--minimal {
+  min-height: 0;
+}
+
+.champion-card-v2--minimal .card-visual {
+  padding: 0.65rem 0.4rem 0.55rem;
+}
+
+.champion-card-v2--minimal .card-icon-wrap {
+  --icon-card: 86px;
+  margin-bottom: 0.4rem;
+}
+
+.champion-card-v2--minimal .card-name {
+  font-size: 0.875rem;
+  margin-bottom: 0.18rem;
+  line-height: 1.15;
+}
+
+.champion-card-v2--minimal .card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.14rem;
+  width: 100%;
+  min-width: 0;
+  margin-top: 0.05rem;
+}
+
+.champion-card-v2--minimal .card-meta-row {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  font-size: 0.625rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 0.08rem;
+}
+
+.champion-card-v2--minimal .card-meta-family {
+  color: color-mix(in srgb, var(--fam-color, var(--gold)) 90%, white);
+  font-weight: 600;
+}
+
+.champion-card-v2--minimal .card-meta-comp {
+  color: var(--text-muted);
+}
+
+.champion-card-v2--minimal .card-meta-color {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.22rem;
+  line-height: 0;
+  min-height: 0.625rem;
+}
+
+.champion-card-v2--minimal .card-meta-color-id {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+.champion-card-v2--minimal .card-meta-empty {
+  font-size: 0.5625rem;
+  color: var(--text-muted);
+  opacity: 0.55;
+}
+
+.champion-card-v2--minimal .badge-compact {
+  font-size: 0.5625rem;
+  padding: 0.06rem 0.32rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.card-mtg-overlay {
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
+  z-index: 2;
+  line-height: 0;
+  pointer-events: none;
+}
+
+.card-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  min-width: 0;
+  flex-shrink: 0;
+  padding: 0.75rem 0.5rem 0.45rem;
+  box-sizing: border-box;
+}
+
+.card-icon-wrap {
+  position: relative;
+  width: var(--icon-card, 88px);
+  height: var(--icon-card, 88px);
+  flex-shrink: 0;
+  margin-bottom: 0.5rem;
+}
+
+.card-icon-wrap .champ-icon--card {
+  width: 100%;
+  height: 100%;
+  border-radius: calc(var(--radius) + 2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.card-icon-wrap .tier-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  z-index: 3;
+  padding: 0.18rem 0.4rem;
+  font-size: 0.6875rem;
+  line-height: 1.1;
+}
+
+.champion-card-v2--minimal .card-icon-wrap .tier-badge {
+  padding: 0.16rem 0.38rem;
+  font-size: 0.625rem;
+}
+
+.card-name,
+.card-visual .card-name {
+  width: 100%;
+  max-width: 100%;
+  white-space: normal;
+  word-break: break-word;
+  overflow: visible;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+  padding: 0 0.15rem;
+}
+
+.card-mtg-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 1.25rem;
+  margin-bottom: 0.35rem;
+  line-height: 0;
+}
+
+.card-visual .card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.25rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 0 0.1rem;
+}
+
+.card-visual .family-badge,
+.card-visual .badge-slot,
+.card-visual .badge {
+  display: inline-block;
+  max-width: 100%;
+  white-space: normal;
+  word-break: break-word;
+  vertical-align: middle;
+  box-sizing: border-box;
+  line-height: 1.25;
+  padding: 0.12rem 0.4rem;
+  font-size: 0.625rem;
+}
+
+.card-visual .card-en {
+  display: none;
+}
+
+/* Sidebar compacte */
+.sidebar {
+  padding: 0.85rem 0.55rem 1rem;
+}
+
+.filter-section {
+  margin-bottom: 1rem;
+}
+
+.filter-section h2 {
+  font-size: 0.625rem;
+  margin-bottom: 0.45rem;
+}
+
+.chip {
+  padding: 0.4rem 0.55rem;
+  font-size: 0.8125rem;
+  min-height: 36px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filter-chips-scroll {
+  max-height: 140px;
+}
+
+.mtg-detail-block {
+  padding: 0.65rem;
+}
+
+.mtg-team-panel .mtg-pastilles {
+  margin-top: 0.35rem;
+}
+
+.card-matchups {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  width: 100%;
+  min-width: 0;
+  margin-top: 0;
+  padding: 0.45rem 0.4rem 0.5rem;
+  border-top: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+.card-matchup-col {
+  padding: 0;
+  min-width: 0;
+}
+
+.card-matchup-col + .card-matchup-col {
+  border-left: none;
+  padding-top: 0.35rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.card-matchup-label {
+  display: block;
+  font-size: 0.5625rem;
+  margin-bottom: 0.28rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.card-matchup-items {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.22rem;
+  min-width: 0;
+}
+
+.card-matchup-item {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.22rem 0.4rem;
+  line-height: 1.25;
+  border-radius: 5px;
+  text-align: left;
+}
+
+.card-matchup-name {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.card-matchup-hint {
+  display: block;
+  margin-top: 0.12rem;
+  font-size: 0.5625rem;
+  line-height: 1.35;
+  opacity: 0.88;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.card-matchup-foot {
+  margin: 0.1rem 0 0;
+  padding-top: 0.35rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+
+.card-matchup-foot-line {
+  margin: 0 0 0.25rem;
+  font-size: 0.5625rem;
+  line-height: 1.35;
+  color: var(--text-muted);
+  text-align: left;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.card-matchup-foot-line:last-child {
+  margin-bottom: 0;
+}
+
+.card-matchup-foot-line strong {
+  display: block;
+  font-size: 0.5rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.1rem;
+}
+
+.card-matchup-item.counter {
+  background: var(--danger-soft);
+  color: #f0a0a0;
+  border: 1px solid rgba(224, 93, 93, 0.15);
+}
+
+.card-matchup-item.counter .card-matchup-hint {
+  color: #e8a0a0;
+}
+
+.card-matchup-item.best {
+  background: var(--success-soft);
+  color: #8fd4b0;
+  border: 1px solid rgba(76, 175, 130, 0.15);
+}
+
+.card-matchup-item.best .card-matchup-hint {
+  color: #9fd4b8;
+}
+
+.chip-family {
+  max-width: 100%;
+  white-space: normal;
+  word-break: break-word;
+  text-align: left;
+}
+
+/* Draft pool — pastilles compactes */
+.draft-pool-card {
+  min-width: 0;
+  overflow: hidden;
+  text-align: center;
+}
+
+.draft-pool-card .mtg-pastilles--compact,
+.draft-pool-card .mtg-pastilles--card {
+  display: inline-flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 0.12rem;
+  background: none;
+  padding: 0;
+}
+
+.draft-pool-name {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .champions-toolbar-filters {
+    flex-direction: column;
+  }
+
+  .champions-hero-nav {
+    max-height: none;
+  }
+}
