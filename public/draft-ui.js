@@ -58,6 +58,10 @@
     return coach.state.draftSessions.find((s) => s.id === coach.state.activeDraftId) || null;
   }
 
+  function draftMetaMap() {
+    return coach.state.tacticsMeta?.champions || {};
+  }
+
   function ensureDraftElements() {
     if (!coach?.els) return false;
     coach.els.draftSessionBar = coach.els.draftSessionBar || document.getElementById("draft-session-bar");
@@ -146,7 +150,7 @@
     const turnBox = el.querySelector(".draft-turn-box");
     if (turnBox) {
       const spans = turnBox.querySelectorAll("span");
-      const focusHint = window.LoLDraft.actionLabel(session);
+      const focusHint = window.LoLDraft.actionLabel(session, coach.state.byName, draftMetaMap());
       const hintSpan = spans[spans.length - 1];
       if (hintSpan && focusHint) hintSpan.textContent = focusHint;
     }
@@ -155,7 +159,7 @@
   function syncPoolFocus(session) {
     const el = coach.els.draftPool;
     if (!el) return;
-    const actionText = window.LoLDraft.actionLabel(session);
+    const actionText = window.LoLDraft.actionLabel(session, coach.state.byName, draftMetaMap());
     const actionEl = el.querySelector(".draft-pool-action");
     if (actionEl) {
       actionEl.textContent = actionText || "";
@@ -164,8 +168,20 @@
   }
 
   function afterFocusChange(session) {
+    let poolResort = false;
+    if (session.focus?.type === "pick" && session.focus.slot) {
+      const prev = coach.state.draftPoolRole;
+      coach.state.draftPoolRole = session.focus.slot;
+      poolResort = prev !== session.focus.slot;
+      if (poolResort) coach.persistUserSession?.();
+    }
     syncBoardFocus(session);
     syncPoolFocus(session);
+    if (poolResort && coach.els.draftPool?.querySelector(".draft-pool-grid")) {
+      renderPool({ gridOnly: true, preserveScroll: true });
+    } else if (window.LoLPoolRoles && coach.els.draftPool) {
+      window.LoLPoolRoles.syncRoleFilterChips(coach.els.draftPool, coach.state.draftPoolRole || "all");
+    }
   }
 
   function isCellFocused(session, type, side, banIndex, slot) {
@@ -189,10 +205,11 @@
   function showDraftFlash(msg, kind = "success") {
     const el = coach.els.draftFlash;
     if (!el) return;
-    el.classList.remove("error", "success");
+    el.classList.remove("error", "success", "warn");
     el.classList.add("visible", kind);
     el.textContent = msg;
-    setTimeout(() => el.classList.remove("visible", "error", "success"), kind === "error" ? 2800 : 1800);
+    const delay = kind === "error" ? 2800 : kind === "warn" ? 2400 : 1800;
+    setTimeout(() => el.classList.remove("visible", "error", "success", "warn"), delay);
   }
 
   function handlePickCellClick(session, side, slot) {
@@ -220,9 +237,36 @@
       return;
     }
 
-    session.focus = { type: "pick", side };
+    session.focus = { type: "pick", side, slot };
     saveSessionsDebounced();
     afterFocusChange(session);
+  }
+
+  function setFocusFromCell(session, cell) {
+    const type = cell.dataset.focusType;
+    const side = cell.dataset.side;
+    if (type === "ban") {
+      setFocus(session, { type: "ban", side, banIndex: parseInt(cell.dataset.banIndex, 10) });
+      afterFocusChange(session);
+      return;
+    }
+    handlePickCellClick(session, side, cell.dataset.slot);
+  }
+
+  function restoreFocusAfterAction(session, payload, result) {
+    if (result.inOrder) {
+      window.LoLDraft.suggestNextFocus(session);
+      return;
+    }
+    if (payload.type === "ban" && payload.banIndex != null) {
+      session.focus = { type: "ban", side: payload.side, banIndex: payload.banIndex };
+      return;
+    }
+    if (payload.type === "pick" && payload.slot) {
+      session.focus = { type: "pick", side: payload.side, slot: payload.slot };
+      return;
+    }
+    window.LoLDraft.suggestNextFocus(session);
   }
 
   function draftCtx() {
@@ -241,9 +285,10 @@
       return false;
     }
     if (payload.type === "pick" && result.slot) {
-      showDraftFlash(`${payload.name} → ${result.slot}`, "success");
+      const note = result.inOrder ? "" : " (hors séquence)";
+      showDraftFlash(`${payload.name} → ${result.slot}${note}`, result.inOrder ? "success" : "warn");
     }
-    window.LoLDraft.suggestNextFocus(session);
+    restoreFocusAfterAction(session, payload, result);
     flushSaveSessions();
     renderAll();
     return true;
@@ -256,7 +301,8 @@
     const step = window.LoLDraft.getStep(session);
     if (step?.type === "pick") {
       const side = session.focus?.type === "pick" ? session.focus.side : step.side;
-      session.focus = { type: "pick", side };
+      const slot = session.focus?.type === "pick" ? session.focus.slot : null;
+      session.focus = slot ? { type: "pick", side, slot } : { type: "pick", side };
     } else if (!session.focus) {
       window.LoLDraft.suggestNextFocus(session);
     }
@@ -444,13 +490,10 @@
           `<span class="draft-color-seg draft-color-seg--${b.code.toLowerCase()}" style="flex:${Math.max(0.08, b.value)}" title="${b.label}"></span>`
       )
       .join("");
-    const conflict = summary.conflicts?.length
-      ? `<span class="draft-color-conflict" title="${coach.escapeHtml(summary.conflicts.join(" · "))}">⚠</span>`
-      : "";
     return `
       <div class="draft-color-bar" aria-label="Identité couleur ${summary.identity}">
         <div class="draft-color-track">${bars}</div>
-        <span class="draft-color-id">${summary.identity}${conflict}</span>
+        <span class="draft-color-id">${summary.identity}</span>
       </div>`;
   }
 
@@ -463,6 +506,7 @@
     const slots = window.LoLDraft.SLOTS.map((slot) => {
       const name = comp[slot];
       const champ = name ? coach.state.byName.get(name) : null;
+      const pickMeta = name ? window.LoLDraft.pickAtSlot(session, side, slot) : null;
       const focused = isCellFocused(session, "pick", side, null, slot);
       const swapTarget = isSwapTarget(session, side, slot);
 
@@ -471,7 +515,7 @@
           class="draft-cell draft-pick-cell${name ? " filled" : " empty"}${focused ? " draft-cell-focused" : ""}${swapTarget ? " draft-cell-swap-target" : ""}"
           data-focus-type="pick" data-side="${side}" data-slot="${slot}"
           aria-label="Pick ${slot}${name ? ` : ${name}` : ""}">
-          <span class="draft-cell-tag">${SLOT_ICONS[slot]} ${slot}</span>
+          <span class="draft-cell-tag">${SLOT_ICONS[slot]} ${slot}${pickMeta?.order ? ` · P${pickMeta.order}` : ""}</span>
           ${
             champ
               ? coach.championIconHtml(champ, { size: "draft" })
@@ -488,10 +532,37 @@
           <h3>${coach.escapeHtml(label)}</h3>
           ${sideActive ? '<span class="draft-turn-pulse">Au tour</span>' : ""}
         </div>
+        <div class="draft-section-label">Bans · 2 phases</div>
         <div class="draft-bans-row">${renderBanRow(side, session)}</div>
         ${renderTeamColorBar(side, session)}
+        <div class="draft-section-label">Picks · ordre d'équipe (P1→P5) · glisser-déposer OK</div>
         <div class="draft-slots-grid">${slots}</div>
       </div>`;
+  }
+
+  function clearCellAction(cell) {
+    const session = getActiveSession();
+    if (!session) return;
+    const type = cell.dataset.focusType;
+    const side = cell.dataset.side;
+    const payload = {
+      type,
+      side,
+      slot: type === "pick" ? cell.dataset.slot : null,
+      banIndex: type === "ban" ? parseInt(cell.dataset.banIndex, 10) : null,
+    };
+    const result = window.LoLDraft.clearSlot(session, payload, allSessions(), draftCtx());
+    if (!result.ok) {
+      showDraftFlash(result.error, "error");
+      return;
+    }
+    session.focus =
+      type === "ban"
+        ? { type: "ban", side, banIndex: payload.banIndex }
+        : { type: "pick", side, slot: payload.slot };
+    showDraftFlash(`${result.cleared} retiré`, "success");
+    flushSaveSessions();
+    renderAll();
   }
 
   function bindBoardEvents(container) {
@@ -502,14 +573,59 @@
       if (!cell || !container.contains(cell)) return;
       const session = getActiveSession();
       if (!session) return;
-      const type = cell.dataset.focusType;
-      const side = cell.dataset.side;
-      if (type === "ban") {
-        setFocus(session, { type: "ban", side, banIndex: parseInt(cell.dataset.banIndex, 10) });
-        afterFocusChange(session);
-      } else {
-        handlePickCellClick(session, side, cell.dataset.slot);
-      }
+      setFocusFromCell(session, cell);
+    });
+    container.addEventListener("contextmenu", (e) => {
+      const cell = e.target.closest(".draft-cell.filled[data-focus-type]");
+      if (!cell || !container.contains(cell)) return;
+      e.preventDefault();
+      clearCellAction(cell);
+    });
+    bindBoardDragDrop(container);
+  }
+
+  function bindBoardDragDrop(container) {
+    let dragChamp = null;
+
+    container.addEventListener("dragover", (e) => {
+      const cell = e.target.closest(".draft-cell[data-focus-type]");
+      if (!cell || !container.contains(cell) || !dragChamp) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "copy";
+      container.querySelectorAll(".draft-cell-drop-target").forEach((el) => el.classList.remove("draft-cell-drop-target"));
+      cell.classList.add("draft-cell-drop-target");
+    });
+
+    container.addEventListener("dragleave", (e) => {
+      const cell = e.target.closest(".draft-cell[data-focus-type]");
+      if (cell) cell.classList.remove("draft-cell-drop-target");
+    });
+
+    container.addEventListener("drop", (e) => {
+      const cell = e.target.closest(".draft-cell[data-focus-type]");
+      container.querySelectorAll(".draft-cell-drop-target").forEach((el) => el.classList.remove("draft-cell-drop-target"));
+      const name = e.dataTransfer.getData("text/champion") || dragChamp;
+      if (!cell || !name) return;
+      e.preventDefault();
+      const session = getActiveSession();
+      if (!session) return;
+      setFocusFromCell(session, cell);
+      recordChampionAction({
+        type: cell.dataset.focusType,
+        side: cell.dataset.side,
+        name,
+        slot: cell.dataset.focusType === "pick" ? cell.dataset.slot : null,
+        banIndex: cell.dataset.focusType === "ban" ? parseInt(cell.dataset.banIndex, 10) : null,
+      });
+      dragChamp = null;
+    });
+
+    document.addEventListener("dragstart", (e) => {
+      const card = e.target.closest(".draft-pool-card, .draft-suggest-chip");
+      if (!card) return;
+      dragChamp = card.dataset.champ;
+      e.dataTransfer.setData("text/champion", dragChamp);
+      e.dataTransfer.effectAllowed = "copy";
     });
   }
 
@@ -517,6 +633,13 @@
     if (container.dataset.poolBound === "1") return;
     container.dataset.poolBound = "1";
     container.addEventListener("click", (e) => {
+      const roleChip = e.target.closest(".pool-role-chip");
+      if (roleChip && container.contains(roleChip)) {
+        coach.state.draftPoolRole = roleChip.dataset.poolRole || "all";
+        coach.persistUserSession?.();
+        renderPool({ gridOnly: true });
+        return;
+      }
       const link = e.target.closest(".alpha-jump-link");
       if (link && container.contains(link)) {
         e.preventDefault();
@@ -542,7 +665,7 @@
 
     const ourSideId = window.LoLDraft.ourSide(session);
     const enemySideId = window.LoLDraft.enemySide(session);
-    const focusHint = window.LoLDraft.actionLabel(session);
+    const focusHint = window.LoLDraft.actionLabel(session, coach.state.byName, draftMetaMap());
 
     el.innerHTML = `
       ${renderTeamColumn(ourSideId, session, "Notre équipe")}
@@ -554,7 +677,7 @@
               ? "<strong>Terminé</strong><span>Export → Tactiques</span>"
               : `<strong>${window.LoLDraft.isOurTurn(session) ? "Notre tour" : "Tour adversaire"}</strong>`
           }
-          <span>${focusHint ? coach.escapeHtml(focusHint) : "1. Case · 2. Champion"}</span>
+          <span>${focusHint ? coach.escapeHtml(focusHint) : "1. Case · 2. Champion · clic droit = retirer"}</span>
         </div>
       </div>
       ${renderTeamColumn(enemySideId, session, "Adversaire")}
@@ -564,25 +687,7 @@
   }
 
   function renderPoolAlphabetical(champions) {
-    const sorted = [...champions].sort((a, b) => a.name.localeCompare(b.name, "fr"));
-    let lastLetter = "";
-    let html = "";
-
-    for (const c of sorted) {
-      const letter = c.name.charAt(0).toUpperCase();
-      if (letter !== lastLetter) {
-        lastLetter = letter;
-        html += `<div class="draft-alpha-letter" id="draft-letter-${letter}">${letter}</div>`;
-      }
-      html += `
-        <button type="button" class="draft-pool-card" data-champ="${coach.escapeHtml(c.name)}" title="${coach.escapeHtml(c.name)}">
-          ${coach.championIconHtml(c, { size: "pool" })}
-          <span class="draft-pool-name">${coach.escapeHtml(c.name)}</span>
-          ${c.tierMeta ? `<span class="draft-pool-tier tier-${c.tierMeta.toLowerCase()}">${c.tierMeta}</span>` : ""}
-          ${coach.mtgPastillesHtml ? coach.mtgPastillesHtml(c, { variant: "compact" }) : ""}
-        </button>`;
-    }
-    return html;
+    return renderPoolGrid(champions, coach.state.draftPoolRole || "all");
   }
 
   function buildSuggestChipsHtml(session) {
@@ -598,17 +703,23 @@
     );
     if (!rec.items?.length) return "";
     return `
-      <div class="draft-suggest-row" aria-label="Suggestions coach">
-        ${rec.items
-          .map(
-            (item, i) => `
-          <button type="button" class="draft-suggest-chip" data-champ="${coach.escapeHtml(item.champion.name)}" title="${coach.escapeHtml(item.reasons.slice(0, 2).join(" · "))}">
+      <div class="draft-suggest-wrap">
+        <div class="draft-suggest-head">
+          <span class="draft-suggest-title">Suggestions coach</span>
+          <span class="draft-suggest-hint muted">Top picks calculés · pas un pool perso · glisser-déposer sur une case</span>
+        </div>
+        <div class="draft-suggest-row" aria-label="Suggestions coach">
+          ${rec.items
+            .map(
+              (item, i) => `
+          <button type="button" class="draft-suggest-chip" draggable="true" data-champ="${coach.escapeHtml(item.champion.name)}" title="${coach.escapeHtml(item.reasons.slice(0, 2).join(" · "))}">
             <span class="draft-suggest-rank">#${i + 1}</span>
             ${coach.championIconHtml(item.champion, { size: "coach" })}
             <span class="draft-suggest-name">${coach.escapeHtml(item.champion.name)}</span>
           </button>`
-          )
-          .join("")}
+            )
+            .join("")}
+        </div>
       </div>`;
   }
 
@@ -631,25 +742,48 @@
   }
 
   function getPoolFiltered(session) {
+    const PR = window.LoLPoolRoles;
     const searchQuery = coach.state.draftPoolSearch || "";
+    const role = coach.state.draftPoolRole || "all";
+    const metaMap = coach.state.tacticsMeta?.champions || draftMetaMap();
     const q = searchQuery.toLowerCase();
-    const avail = window.LoLDraft.availableChampions(coach.state.champions, session, allSessions());
+    let avail = window.LoLDraft.availableChampions(coach.state.champions, session, allSessions());
+    if (PR) {
+      avail = PR.filterByRole(avail, role, metaMap);
+      avail = PR.sortPool(avail, { sortSlot: role, tierRank: coach.tierRank, metaMap });
+    } else {
+      avail = [...avail].sort((a, b) => a.name.localeCompare(b.name, "fr"));
+    }
     const filtered = avail.filter((c) => {
       if (!q) return true;
-      return (
-        c.name.toLowerCase().includes(q) ||
-        (c.nameEn || "").toLowerCase().includes(q)
-      );
+      return c.name.toLowerCase().includes(q) || (c.nameEn || "").toLowerCase().includes(q);
     });
-    const letters = [...new Set(filtered.map((c) => c.name.charAt(0).toUpperCase()))].sort();
-    return { searchQuery, filtered, letters };
+    return { searchQuery, filtered, role };
   }
 
-  function renderAlphaJump(letters) {
-    if (letters.length <= 1) return "";
-    return `<div class="draft-alpha-jump">${letters
-      .map((l) => `<a href="#draft-letter-${l}" class="alpha-jump-link">${l}</a>`)
-      .join("")}</div>`;
+  function renderPoolGrid(champions, role) {
+    const PR = window.LoLPoolRoles;
+    const metaMap = coach.state.tacticsMeta?.champions || draftMetaMap();
+    const sortSlot = role && role !== "all" ? role : null;
+    return champions
+      .map((c) => {
+        const laneScore = sortSlot && PR ? PR.laneScore(c, sortSlot, metaMap) : 0;
+        const lanePick = sortSlot && laneScore >= 5;
+        return `
+        <button type="button" class="draft-pool-card${lanePick ? " draft-pool-card--lane" : ""}" draggable="true" data-champ="${coach.escapeHtml(c.name)}" title="${coach.escapeHtml(c.name)}">
+          ${coach.championIconHtml(c, { size: "pool" })}
+          <span class="draft-pool-name">${coach.escapeHtml(c.name)}</span>
+          ${c.tierMeta ? `<span class="draft-pool-tier tier-${c.tierMeta.toLowerCase()}">${c.tierMeta}</span>` : ""}
+          ${coach.mtgPastillesHtml ? coach.mtgPastillesHtml(c, { variant: "compact" }) : ""}
+        </button>`;
+      })
+      .join("");
+  }
+
+  function poolCountLabel(count, role) {
+    const PR = window.LoLPoolRoles;
+    const roleLabel = PR ? PR.roleFilterLabel(role) : role;
+    return `${count} dispo · ${roleLabel} · tier`;
   }
 
   function bindPoolCards(root) {
@@ -664,63 +798,57 @@
     /* délégué dans bindPoolEvents */
   }
 
-  function updatePoolGrid(el, filtered, letters) {
+  function updatePoolGrid(el, filtered, role, { preserveScroll = false } = {}) {
     const countEl = el.querySelector(".draft-pool-count");
-    if (countEl) countEl.textContent = `${filtered.length} disponibles · A → Z`;
-
-    const toolbar = el.querySelector(".draft-pool-toolbar");
-    const jump = toolbar?.querySelector(".draft-alpha-jump");
-    const jumpHtml = renderAlphaJump(letters);
-    if (jumpHtml) {
-      if (jump) jump.outerHTML = jumpHtml;
-      else toolbar?.insertAdjacentHTML("beforeend", jumpHtml);
-    } else if (jump) {
-      jump.remove();
-    }
+    if (countEl) countEl.textContent = poolCountLabel(filtered.length, role);
+    window.LoLPoolRoles?.syncRoleFilterChips(el, role);
 
     const gridEl = el.querySelector(".draft-pool-grid");
     if (gridEl) {
+      const scrollTop = preserveScroll ? gridEl.scrollTop : 0;
       gridEl.innerHTML = filtered.length
-        ? renderPoolAlphabetical(filtered)
-        : `<p class="muted draft-pool-empty">Aucun champion disponible.</p>`;
+        ? renderPoolGrid(filtered, role)
+        : `<p class="muted draft-pool-empty">Aucun champion disponible${role && role !== "all" ? " pour ce poste" : ""}.</p>`;
+      if (preserveScroll) gridEl.scrollTop = scrollTop;
       bindPoolCards(gridEl);
     }
-    bindPoolAlphaJump(el);
   }
 
-  function renderPool({ gridOnly = false } = {}) {
+  function renderPool({ gridOnly = false, preserveScroll = false } = {}) {
     const el = coach.els.draftPool || document.getElementById("draft-pool");
     const session = getActiveSession();
     if (!el || !session) return;
     coach.els.draftPool = el;
 
-    const { searchQuery, filtered, letters } = getPoolFiltered(session);
+    const { searchQuery, filtered, role } = getPoolFiltered(session);
 
     if (gridOnly && el.querySelector("#draft-pool-search")) {
-      updatePoolGrid(el, filtered, letters);
+      updatePoolGrid(el, filtered, role, { preserveScroll });
       return;
     }
 
-    const actionText = window.LoLDraft.actionLabel(session);
+    const actionText = window.LoLDraft.actionLabel(session, coach.state.byName, draftMetaMap());
     const hasFocus = Boolean(session.focus);
+    const roleFilters = window.LoLPoolRoles?.renderRoleFilterChips(role) || "";
 
     el.innerHTML = `
       <div class="draft-pool-header">
         <h2 class="draft-pool-title">Champions</h2>
-        <span class="draft-pool-count">${filtered.length} dispo · ${coach.state.champions.length} rotation patch</span>
+        <span class="draft-pool-count">${poolCountLabel(filtered.length, role)}</span>
       </div>
+      <p class="draft-pool-lead muted">Filtre par poste ci-dessous · clic case → champ · glisser-déposer · <strong>clic droit</strong> = retirer.</p>
       ${
         actionText
           ? `<div class="draft-pool-action${hasFocus ? " focus-ready" : ""}">${coach.escapeHtml(actionText)}</div>`
           : ""
       }
+      ${roleFilters}
       ${renderSuggestChips(session)}
       <div class="draft-pool-toolbar">
         <input type="search" class="draft-pool-search" placeholder="Rechercher…" value="${coach.escapeHtml(searchQuery)}" id="draft-pool-search" />
-        ${renderAlphaJump(letters)}
       </div>
       <div class="draft-pool-grid draft-pool-grid-alpha">
-        ${filtered.length ? renderPoolAlphabetical(filtered) : `<p class="muted draft-pool-empty">Aucun champion disponible.</p>`}
+        ${filtered.length ? renderPoolGrid(filtered, role) : `<p class="muted draft-pool-empty">Aucun champion disponible${role && role !== "all" ? " pour ce poste" : ""}.</p>`}
       </div>
     `;
 

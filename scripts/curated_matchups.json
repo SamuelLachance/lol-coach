@@ -87,7 +87,6 @@
     {"pair": ["Camille", "Twisted Fate"], "theme": "split_global", "reason": "Breaker side + TF R — plan 1-3."},
     {"pair": ["Tryndamere", "Nocturne"], "theme": "split_pick", "reason": "Split top + ult global pour punir rotations."},
     {"pair": ["Yorick", "Twisted Fate"], "theme": "split_global", "reason": "Pression side + TF pour swing fights."},
-    {"pair": ["Twitch", "Lulu"], "theme": "protect_hypercarry", "reason": "Stealth DPS + peel — hypercarry late."},
     {"pair": ["Kog'Maw", "Milio"], "theme": "protect_hypercarry", "reason": "Enchanter + immobile hypercarry — plan protect."},
     {"pair": ["Jinx", "Milio"], "theme": "protect_reset", "reason": "Milio peel + reset Jinx — duo HC meta."},
     {"pair": ["Varus", "Taric"], "theme": "poke_siege", "reason": "Poke ADC + disengage Taric — comp range block."},
@@ -98,7 +97,119 @@
     {"pair": ["Sion", "Ziggs"], "theme": "siege_split", "reason": "Sion side push + Ziggs siege mid."},
     {"pair": ["Maokai", "Corki"], "theme": "poke_peel", "reason": "Frontline Maokai + poke Corki safe."},
     {"pair": ["Sejuani", "Orianna"], "theme": "knockup_wombo", "reason": "Engage Sejuani + shockwave sur la balle."},
-    {"pair": ["Lissandra", "Jarvan IV"], "theme": "pick_wombo", "reason": "Cataclysm + Lissandra R — catch mid/jungle."}
+    {"pair": ["Lissandra", "Jarvan IV"], "theme": "pick_wombo", "reason": "Cataclysm + Lissandra R — catch mid/jungle."},
+
+    {"pair": ["Ivern", "Leona"], "theme": "brush_combo", "reason": "Buisson Ivern → passive Explosion solaire Leona + daisy root — bushcamp bot très abuse en soloQ."},
+    {"pair": ["Ivern", "Caitlyn"], "theme": "brush_combo", "reason": "Tête chercheuse depuis le buisson + root daisy — lane oppressif, combo compétitif non intuitif."},
+    {"pair": ["Ivern", "Rengar"], "theme": "brush_combo", "reason": "Buisson garanti pour sauts Rengar + setup daisy — contrôle vision jungle."},
+    {"pair": ["Ivern", "Nidalee"], "theme": "brush_trap", "reason": "Buisson + pièges Nidalee — zone de contrôle et poke depuis fog."},
+    {"pair": ["Ivern", "Jhin"], "theme": "brush_trap", "reason": "Root daisy + piège Jhin dans le buisson — CC chain bot off-meta mais efficace."},
+    {"pair": ["Ivern", "Twisted Fate"], "theme": "global_roam", "reason": "Clear jungle rapide + daisy pour setup gank TF R — tempo map non évident."},
+
+    {"pair": ["Lillia", "Yasuo"], "theme": "sleep_wombo", "reason": "Sommeil Lillia → R Yasuo sur toute l'équipe endormie — wombo compétitif iconique."},
+    {"pair": ["Lillia", "Diana"], "theme": "sleep_wombo", "reason": "R Lillia setup Diana AoE — même fenêtre de sommeil, combo teamfight abuse."},
+    {"pair": ["Lillia", "Darius"], "theme": "sleep_wombo", "reason": "Sommeil = immobilisation → Q Darius au centre — combo top/jungle soloQ."},
+    {"pair": ["Lillia", "Viego"], "theme": "sleep_reset", "reason": "Sleep setup kills → resets Viego en clean-up — snowball fight prolongé."},
+    {"pair": ["Lillia", "Miss Fortune"], "theme": "sleep_channel", "reason": "Sommeil garanti pour canalisation MF R — combo non intuitif mais devastateur."},
+
+    {"pair": ["Sett", "Orianna"], "theme": "wombo_center", "reason": "Sett R carry dans l'équipe → shockwave Ori sur la balle — combo flash compétitif."},
+    {"pair": ["Sett", "Malphite"], "theme": "wombo_center", "reason": "Sett R + R Malphite sur le même cluster — double ult center."},
+    {"pair": ["Sett", "Gragas"], "theme": "wombo_center", "reason": "Gragas R regroupe → Sett R le carry dans le pack — même timing TF."},
+    {"pair": ["Sett", "Yuumi"], "theme": "all_in_dive", "reason": "Sett W tank + Yuumi attach — all-in side lane abuse, sustain inattendu."},
+
+    {"pair": ["Skarner", "Orianna"], "theme": "pull_wombo", "reason": "Skarner R drag carry → shockwave Ori immédiat — pick mid compétitif."},
+    {"pair": ["Skarner", "Azir"], "theme": "pull_wombo", "reason": "Impale dans zone soldats / mur Azir — pick non intuitif."},
+    {"pair": ["Skarner", "Syndra"], "theme": "pull_burst", "reason": "Drag + R Syndra sur cible isolée — burst mid/jungle abuse."},
+    {"pair": ["Skarner", "Tristana"], "theme": "pull_all_in", "reason": "Skarner R + Trist jump sur la même cible — all-in bot off-meta."},
+
+    {"pair": ["Morgana", "Darius"], "theme": "spell_shield_engage", "reason": "Bouclier noir → Darius tank CC pendant engage Q — top lane abuse."},
+    {"pair": ["Morgana", "Master Yi"], "theme": "spell_shield_carry", "reason": "Black shield = Yi immunisé au CC en R — jungle/supp duo non évident."},
+    {"pair": ["Morgana", "Kog'Maw"], "theme": "spell_shield_carry", "reason": "Spell-shield sur hypercarry immobile — protect plan alternatif à Lulu."},
+    {"pair": ["Morgana", "Lucian"], "theme": "spell_shield_all_in", "reason": "Bouclier sur Lucian pendant all-in bot — negation CC agressive."},
+    {"pair": ["Morgana", "Draven"], "theme": "spell_shield_all_in", "reason": "Black shield Draven snowball lane — même tempo kill lane."},
+
+    {"pair": ["Zilean", "Sion"], "theme": "double_ult", "reason": "Double ult (Sion passive + Zilean R) — dive impossible à finir, abuse sidelane."},
+    {"pair": ["Zilean", "Hecarim"], "theme": "speed_engage", "reason": "Accélération Zilean + engage Hecarim — tempo fight inattendu."},
+    {"pair": ["Zilean", "Urgot"], "theme": "double_ult", "reason": "Zilean R pendant canal Urgot R — exécution protégée, combo top abuse."},
+    {"pair": ["Zilean", "Kog'Maw"], "theme": "speed_scale", "reason": "Double speed + peel temporel pour Kog immobile — hypercarry non intuitif."},
+
+    {"pair": ["Kalista", "Renata Glasc"], "theme": "bailout_engage", "reason": "Renata bailout + Kalista R save/engage — reset fight bot compétitif."},
+    {"pair": ["Kalista", "Thresh"], "theme": "duo_engage", "reason": "Lantern + Kalista R engage — duo bot historique, tempo synchronisé."},
+    {"pair": ["Kalista", "Taric"], "theme": "invuln_engage", "reason": "Double ult invuln (Taric + Kalista R) — dive bot abuse pro play."},
+
+    {"pair": ["Taliyah", "Jhin"], "theme": "terrain_cc", "reason": "Mur Taliyah + root Jhin / curtain — catch bot non intuitif mais efficace."},
+    {"pair": ["Taliyah", "Qiyana"], "theme": "terrain_combo", "reason": "Mur Taliyah = nouvelle zone Qiyana — burst mid/jungle abuse ranked."},
+    {"pair": ["Taliyah", "Kayn"], "theme": "terrain_roam", "reason": "Mur + traversal Kayn — gank angles impossibles autrement."},
+    {"pair": ["Taliyah", "Pantheon"], "theme": "global_wombo", "reason": "Taliyah R + Pantheon R même lane — double global gank."},
+
+    {"pair": ["Anivia", "Vayne"], "theme": "terrain_condemn", "reason": "Mur Anivia + Condamnation Vayne — stun garanti, top/jungle non évident."},
+    {"pair": ["Anivia", "Poppy"], "theme": "terrain_zone", "reason": "Zone Anivia + Poppy E stun mur — contrôle terrain double."},
+    {"pair": ["Veigar", "Jarvan IV"], "theme": "cage_wombo", "reason": "Cage Veigar + Cataclysm Jarvan — personne ne sort, combo mid/jungle."},
+
+    {"pair": ["Viego", "Leona"], "theme": "reset_chain", "reason": "CC Leona setup kills → resets Viego en fight — snowball prolongé."},
+    {"pair": ["Viego", "Nautilus"], "theme": "reset_chain", "reason": "Hook lockdown + Viego reset sur clean-up — même plan reset fight."},
+    {"pair": ["Viego", "Lillia"], "theme": "reset_chain", "reason": "Sleep kills → Viego possède plusieurs âmes en un TF."},
+
+    {"pair": ["Lulu", "Olaf"], "theme": "ult_stack", "reason": "Lulu R + Olaf R = double immun CC — dive frontline abuse sidelane/top."},
+    {"pair": ["Lulu", "Kayle"], "theme": "protect_scale", "reason": "Peel Lulu pour Kayle scale — même plan hypercarry late non ADC."},
+    {"pair": ["Lulu", "Kassadin"], "theme": "protect_dive", "reason": "Polymorph peel + Kassadin R dive backline — mid/lane duo ranked."},
+
+    {"pair": ["Galio", "Twisted Fate"], "theme": "global_dive", "reason": "Double R global (TF + Galio) — pick cross-map compétitif iconique."},
+    {"pair": ["Galio", "Nocturne"], "theme": "global_dive", "reason": "Paranoia + Galio R sur la cible isolée — dive coordonné jungle/mid."},
+    {"pair": ["Shen", "Twisted Fate"], "theme": "global_side", "reason": "Shen R + TF R pression simultanée — 1-4 global comp."},
+    {"pair": ["Shen", "Tahm Kench"], "theme": "global_save", "reason": "Double save global (Shen R + Tahm W) — protect carry cross-map abuse."},
+
+    {"pair": ["Fiddlesticks", "Yasuo"], "theme": "fear_wombo", "reason": "Peur Fiddlesticks + R Yasuo sur team clump — wombo jungle/mid."},
+    {"pair": ["Fiddlesticks", "Malphite"], "theme": "fear_wombo", "reason": "Fear + knockup Malphite setup — engage jungle/top non intuitif."},
+    {"pair": ["Neeko", "Rengar"], "theme": "stealth_ambush", "reason": "Neeko disguise + Rengar bush leap — ambush jungle duo."},
+    {"pair": ["Neeko", "Jarvan IV"], "theme": "double_ult", "reason": "Double engage ult (Neeko R + Jarvan R) — wombo mid/jungle."},
+
+    {"pair": ["Nunu et Willump", "Yasuo"], "theme": "snowball_wombo", "reason": "Boule de neige Nunu + R Yasuo — knockup chain jungle/mid abuse."},
+    {"pair": ["Nunu et Willump", "Hwei"], "theme": "snowball_siege", "reason": "Snowball engage + zone Hwei — pick mid non intuitif."},
+    {"pair": ["Nunu et Willump", "Anivia"], "theme": "snowball_zone", "reason": "Boule de neige dans zone Anivia — CC + burst garanti."},
+
+    {"pair": ["Poppy", "Azir"], "theme": "anti_dive_peel", "reason": "Poppy W stop dash + Azir shuffle peel — backline protégée non évident."},
+    {"pair": ["Poppy", "Kindred"], "theme": "lamb_save", "reason": "Poppy R invuln sur Kindred pendant R — save lamb abuse jungle."},
+    {"pair": ["Taric", "Kindred"], "theme": "lamb_invuln", "reason": "Taric R pendant Kindred R — double invuln timing jungle duo."},
+    {"pair": ["Taric", "Urgot"], "theme": "channel_protect", "reason": "Taric R protège canal Urgot R — exécution top abuse."},
+
+    {"pair": ["Ryze", "Nocturne"], "theme": "realm_bus", "reason": "Realm Warp + Paranoia — bus global jungle/mid compétitif."},
+    {"pair": ["Ryze", "Sion"], "theme": "realm_bus", "reason": "RW Ryze + Sion R engage — TP fight sidelane abuse."},
+    {"pair": ["Ryze", "Ivern"], "theme": "roam_tempo", "reason": "Clear + daisy setup + Realm Warp roam — tempo map jungle/mid."},
+
+    {"pair": ["Zac", "Yasuo"], "theme": "knockup_wombo", "reason": "Zac E knockup + R Yasuo — engage jungle/mid non intuitif."},
+    {"pair": ["Zac", "Orianna"], "theme": "knockup_wombo", "reason": "Zac engage regroupe → shockwave Ori — même cluster center."},
+    {"pair": ["Yuumi", "Zac"], "theme": "bounce_dive", "reason": "Yuumi sur Zac = mobile engage + sustain — dive jungle abuse."},
+
+    {"pair": ["Seraphine", "Amumu"], "theme": "double_ult", "reason": "Amumu R + Seraphine R — double CC AOE channel, wombo bot/mid."},
+    {"pair": ["Seraphine", "Sion"], "theme": "cc_chain", "reason": "Seraphine charm + Sion Q charge — CC chain top/mid."},
+    {"pair": ["Zyra", "Morgana"], "theme": "root_stack", "reason": "Double root (Zyra E + Morgana Q) — lane lock bot abuse."},
+    {"pair": ["Heimerdinger", "Zyra"], "theme": "zone_siege", "reason": "Double zone turrets/plantes — siege bot off-meta mais oppressif."},
+
+    {"pair": ["Bard", "Pyke"], "theme": "roam_execute", "reason": "Roam Bard + Pyke R gold share — tempo map bot/roam abuse pro."},
+    {"pair": ["Bard", "Sion"], "theme": "speed_ult", "reason": "Bard R stasis + Sion R / portal Médard — engage sidelane créatif."},
+    {"pair": ["Thresh", "Zed"], "theme": "lantern_assassin", "reason": "Lantern Thresh après Zed R — escape/ reposition mid non intuitif."},
+
+    {"pair": ["Ashe", "Pantheon"], "theme": "global_bot", "reason": "Ashe R + Pantheon R même lane — gank bot global abuse."},
+    {"pair": ["Ashe", "Shen"], "theme": "global_side", "reason": "Flèche Ashe setup + Shen R — pick side lane 1-4."},
+    {"pair": ["Xerath", "Jhin"], "theme": "long_range_cc", "reason": "CC Xerath + curtain Jhin — pick bot/mid à distance non évident."},
+
+    {"pair": ["Ornn", "Aphelios"], "theme": "forge_timing", "reason": "Forge Ornn sur items Aphelios — spike timing bot/top non intuitif."},
+    {"pair": ["Ornn", "Kai'Sa"], "theme": "forge_evolve", "reason": "Upgrade items Kai'Sa + frontline Ornn — evolve spike coordonné."},
+    {"pair": ["Trundle", "Kog'Maw"], "theme": "pillar_peel", "reason": "Pilier Trundle peel + shred vs divers — protect hypercarry off-meta."},
+
+    {"pair": ["Elise", "Syndra"], "theme": "level2_dive", "reason": "Dive Elise level 2/3 + stun Syndra — mid prio gank abuse."},
+    {"pair": ["Elise", "Pantheon"], "theme": "early_dive", "reason": "Double dive early (Elise + Pantheon R) — snowball lane non intuitif."},
+
+    {"pair": ["Renata Glasc", "Samira"], "theme": "bailout_all_in", "reason": "Bailout Renata + Samira R all-in — reset style bot compétitif."},
+    {"pair": ["Renata Glasc", "Nilah"], "theme": "bailout_melee", "reason": "Renata W + Nilah R melee carry — même plan all-in bot."},
+
+    {"pair": ["Maokai", "Ziggs"], "theme": "siege_frontline", "reason": "Maokai engage/disengage + Ziggs siege — macro slow push abuse."},
+    {"pair": ["Sion", "Hwei"], "theme": "siege_split", "reason": "Sion push side + Hwei poke mid — split/siege non intuitif."},
+
+    {"pair": ["Kindred", "Lulu"], "theme": "lamb_peel", "reason": "Lulu peel pendant Kindred R — protect lamb DPS jungle/support."},
+    {"pair": ["Graves", "Twisted Fate"], "theme": "global_invade", "reason": "TF R + Graves burst invade — jungle/mid tempo abuse."},
+    {"pair": ["Graves", "Poppy"], "theme": "invade_frontline", "reason": "Poppy anti-dash peel + Graves burst invade — jungle duo ranked."}
   ],
   "counters": [
     {"defender": "Dr. Mundo", "attacker": "Vayne", "reason": "Vayne %PV true damage — counter historique aux super tanks."},

@@ -1,0 +1,401 @@
+/* ─── Macro plan & draft score — panneaux distincts du reste du site ─── */
+
+.tactics-main .tactics-comp-score {
+  margin-top: 1.25rem;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.tactics-comp-score-inner {
+  padding: 1.35rem 1.5rem 1.25rem;
+  border-radius: 16px;
+  border: 1px solid rgba(94, 179, 255, 0.22);
+  background:
+    linear-gradient(145deg, rgba(18, 28, 48, 0.98) 0%, rgba(10, 14, 24, 0.96) 55%, rgba(14, 18, 28, 0.98) 100%);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.tactics-comp-score-inner--ready {
+  border-color: rgba(94, 179, 255, 0.32);
+  background:
+    linear-gradient(145deg, rgba(16, 32, 56, 0.98) 0%, rgba(8, 12, 22, 0.97) 50%, rgba(12, 18, 32, 0.98) 100%);
+}
+
+.tactics-comp-score-head {
+  margin-bottom: 1rem;
+}
+
+.tactics-comp-score-kicker,
+.tactics-plan-kicker {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #7eb8ff;
+  margin-bottom: 0.35rem;
+}
+
+.tactics-comp-score-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: #f4f7fb;
+  text-transform: none;
+}
+
+.tactics-comp-duel {
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.tactics-comp-side {
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.our-team.tactics-comp-side {
+  border-color: rgba(77, 171, 247, 0.28);
+}
+
+.enemy-team.tactics-comp-side {
+  border-color: rgba(255, 107, 107, 0.28);
+}
+
+.tactics-comp-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.tactics-comp-points {
+  font-size: 2.25rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.tactics-comp-win {
+  font-size: 1.05rem;
+}
+
+.tactics-win-bar {
+  height: 0.7rem;
+  margin-bottom: 0.75rem;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+
+.tactics-comp-margin {
+  margin: 0 0 1rem;
+  font-size: 0.92rem;
+  color: #b8c4d8;
+}
+
+.tactics-comp-margin strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.tactics-mtg-row--score {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.tactics-comp-details {
+  margin-top: 0.85rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.9rem;
+}
+
+.tactics-comp-details summary {
+  font-weight: 650;
+  color: #c8d4e8;
+}
+
+/* ─── Plan hero + role cards ─── */
+
+.tactics-result {
+  margin-top: 1.25rem;
+  padding: 0;
+  border: none;
+}
+
+.tactics-plan-hero {
+  padding: 1.35rem 1.5rem;
+  margin-bottom: 1.25rem;
+  border-radius: 16px;
+  border: 1px solid rgba(110, 231, 183, 0.2);
+  background:
+    linear-gradient(135deg, rgba(14, 36, 32, 0.55) 0%, rgba(12, 18, 28, 0.95) 45%, rgba(10, 14, 22, 0.98) 100%);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.tactics-plan-hero h2 {
+  margin: 0 0 0.65rem;
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #f8fafc;
+}
+
+.tactics-comp-type {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.65rem;
+  font-size: 1rem;
+}
+
+.tactics-comp-type-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #94a3b8;
+}
+
+.tactics-comp-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #b8f0d4;
+  background: rgba(110, 231, 183, 0.12);
+  border: 1px solid rgba(110, 231, 183, 0.35);
+}
+
+.tactics-plan-hero .win-plan {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.6;
+  color: #dbe4f0;
+  max-width: 52rem;
+}
+
+.tactics-plan-panel {
+  padding: 1.25rem 1.35rem 1.35rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(16, 22, 34, 0.96) 0%, rgba(8, 10, 16, 0.98) 100%);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.32);
+}
+
+.tactics-plan-panel-head {
+  margin-bottom: 1.15rem;
+}
+
+.tactics-plan-panel-head h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1.2rem;
+  font-weight: 750;
+  color: #f0f4fa;
+}
+
+.tactics-roles-hint {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.tactics-role-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 1.1rem;
+}
+
+.tactics-role-card {
+  --role-accent: #8ec5ff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1.1rem 1.15rem 1.15rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-top: 3px solid var(--role-accent);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(0, 0, 0, 0.22) 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.tactics-role-card--top { --role-accent: #94a3b8; }
+.tactics-role-card--jungle { --role-accent: #f0a050; }
+.tactics-role-card--mid { --role-accent: #8ec5ff; }
+.tactics-role-card--bot { --role-accent: #f0d878; }
+.tactics-role-card--support { --role-accent: #6ee7b7; }
+
+.tactics-role-identity {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.tactics-role-identity .champ-icon--draft {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.tactics-role-identity-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.tactics-role-slot {
+  font-size: 0.78rem;
+  color: var(--role-accent);
+}
+
+.tactics-role-champ {
+  font-size: 1.2rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: #fff;
+  margin-bottom: 0.15rem;
+}
+
+.tactics-role-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #9ecaff;
+  margin-bottom: 0;
+}
+
+.tactics-role-matchup {
+  margin: 0.65rem 0 0;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: #c8d4e0;
+  background: rgba(0, 0, 0, 0.22);
+  border-left: 3px solid rgba(255, 255, 255, 0.12);
+}
+
+.tactics-role-phases {
+  gap: 0.55rem;
+}
+
+.tactics-role-phase {
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tactics-role-phase--early {
+  border-left: 3px solid #6ee7b7;
+}
+
+.tactics-role-phase--mid {
+  border-left: 3px solid #8ec5ff;
+}
+
+.tactics-role-phase--tf {
+  border-left: 3px solid #f0c674;
+}
+
+.tactics-role-phase-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #e2e8f0;
+  margin-bottom: 0.35rem;
+}
+
+.tactics-role-list {
+  padding-left: 1.15rem;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: #e8edf5;
+}
+
+.tactics-role-list li + li {
+  margin-top: 0.35rem;
+}
+
+.tactics-role-avoid {
+  margin: 0;
+  padding: 0.6rem 0.7rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: #ffc9c9;
+  background: rgba(224, 93, 93, 0.1);
+  border: 1px solid rgba(224, 93, 93, 0.22);
+}
+
+.tactics-role-avoid strong {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+  color: #ff8787;
+}
+
+.tactics-role-verdict {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+}
+
+.tactics-result .tactics-block:not(.tactics-roles-block) {
+  padding: 1.1rem 1.2rem;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(12, 16, 26, 0.92);
+}
+
+.tactics-result .tactics-block h3 {
+  font-size: 1.05rem;
+  color: #e2e8f0;
+}
+
+.tactics-result .tactics-table {
+  font-size: 0.92rem;
+}
+
+.tactics-result .tactics-table th {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #94a3b8;
+}
+
+@media (max-width: 760px) {
+  .tactics-mtg-row--score {
+    grid-template-columns: 1fr;
+  }
+
+  .tactics-comp-points {
+    font-size: 1.85rem;
+  }
+
+  .tactics-plan-hero h2 {
+    font-size: 1.35rem;
+  }
+}

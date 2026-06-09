@@ -134,8 +134,8 @@ COLOR_META = {
 
 # Paires MTG : allied (+), enemy (-)
 COLOR_PAIRS = {
-    "allied": [["W", "G"], ["W", "U"], ["U", "G"], ["W", "R"], ["G", "R"]],
-    "enemy": [["W", "B"], ["U", "R"], ["B", "G"]],
+    "allied": [["W", "U"], ["U", "B"], ["B", "R"], ["R", "G"], ["G", "W"]],
+    "enemy": [["W", "B"], ["W", "R"], ["U", "R"], ["U", "G"], ["B", "G"]],
 }
 
 

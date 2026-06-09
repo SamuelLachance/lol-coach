@@ -24,3 +24,10 @@ Thumbs.db
 
 # Binaires tunnel (téléchargés localement)
 tools/cloudflared.exe
+
+# Scripts dev locaux (hors site statique)
+_extract_transcript.py
+js_brace_check.py
+replay_draft.py
+replay_draft2.py
+restore_tfm2_engines.py

@@ -633,7 +633,7 @@ PREVIEW_COUNT = 5
 FULL_LIST_MAX = 40
 INFER_SYNERGY_MIN = 16.0
 INFER_COUNTER_MIN = 16.0
-CURATED_SCORE = 100.0
+CURATED_SCORE = 152.0
 
 FAMILY_PAIR_BONUS: list[tuple[str, str, float]] = [
     ("support_enchanter", "adc_hypercarry", 38),

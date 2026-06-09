@@ -24,11 +24,11 @@
         "Ashe"
       ],
       "bestPairings": [
+        "Leona",
+        "Yasuo",
         "Ambessa",
         "Pyke",
-        "Nautilus",
-        "Rakan",
-        "Alistar"
+        "Nautilus"
       ],
       "optimalSlots": [
         "Top",
@@ -68,10 +68,10 @@
         "Azir"
       ],
       "bestPairings": [
+        "Vi",
         "Taliyah",
         "Pantheon",
         "Fizz",
-        "Vi",
         "LeBlanc"
       ],
       "optimalSlots": [
@@ -105,11 +105,11 @@
       ],
       "type": "Assassin",
       "worstMatchups": [
+        "Galio",
         "Azir",
         "Aurelion Sol",
         "Cassiopeia",
-        "Anivia",
-        "Orianna"
+        "Anivia"
       ],
       "bestPairings": [
         "Ahri",
@@ -123,11 +123,11 @@
         "Top"
       ],
       "bestCounters": [
+        "Galio",
         "Azir",
         "Aurelion Sol",
         "Cassiopeia",
-        "Anivia",
-        "Orianna"
+        "Anivia"
       ],
       "family": "assassin_ap_pick",
       "familyLabel": "Assassin AP (pick)",
@@ -193,18 +193,18 @@
       ],
       "type": "Tank / Support",
       "worstMatchups": [
+        "Morgana",
         "Braum",
         "Taric",
-        "Morgana",
         "Varus",
         "K'Santé"
       ],
       "bestPairings": [
+        "Kai'Sa",
+        "Yasuo",
         "Aatrox",
         "Kalista",
-        "Ambessa",
-        "Yone",
-        "Galio"
+        "Ambessa"
       ],
       "optimalSlots": [
         "Top",
@@ -212,9 +212,9 @@
         "Support"
       ],
       "bestCounters": [
+        "Morgana",
         "Braum",
         "Taric",
-        "Morgana",
         "Varus",
         "K'Santé"
       ],
@@ -284,18 +284,18 @@
       ],
       "type": "Tank / Support",
       "worstMatchups": [
+        "Olaf",
         "Cho'Gath",
         "Dr. Mundo",
         "K'Santé",
-        "Poppy",
-        "Gragas"
+        "Poppy"
       ],
       "bestPairings": [
-        "Aatrox",
         "Brand",
         "Miss Fortune",
         "Samira",
-        "Smolder"
+        "Séraphine",
+        "Aatrox"
       ],
       "optimalSlots": [
         "Top",
@@ -303,11 +303,11 @@
         "Support"
       ],
       "bestCounters": [
+        "Olaf",
         "Cho'Gath",
         "Dr. Mundo",
         "K'Santé",
-        "Poppy",
-        "Gragas"
+        "Poppy"
       ],
       "family": "tank_engage",
       "familyLabel": "Tank engage",
@@ -334,11 +334,11 @@
         "Camille"
       ],
       "bestPairings": [
-        "Jhin",
-        "Ashe",
-        "Caitlyn",
-        "Zoé",
-        "Corki"
+        "Jarvan IV",
+        "Nunu et Willump",
+        "Poppy",
+        "Vayne",
+        "Jhin"
       ],
       "optimalSlots": [
         "Mid",
@@ -413,28 +413,28 @@
       ],
       "type": "Tireur",
       "worstMatchups": [
+        "Nocturne",
         "Talon",
         "Qiyana",
         "Zaahen",
-        "Zed",
-        "Ahri"
+        "Zed"
       ],
       "bestPairings": [
+        "Ornn",
+        "Thresh",
         "Karma",
         "Lulu",
-        "Sona",
-        "Janna",
-        "Milio"
+        "Sona"
       ],
       "optimalSlots": [
         "Bot"
       ],
       "bestCounters": [
+        "Nocturne",
         "Talon",
         "Qiyana",
         "Zaahen",
-        "Zed",
-        "Ahri"
+        "Zed"
       ],
       "family": "adc_hypercarry",
       "familyLabel": "ADC hypercarry",
@@ -463,11 +463,11 @@
         "Vayne"
       ],
       "bestPairings": [
-        "Jhin",
-        "Senna",
-        "Varus",
-        "Taric",
-        "Anivia"
+        "Braum",
+        "Hwei",
+        "Pantheon",
+        "Shen",
+        "Séraphine"
       ],
       "optimalSlots": [
         "Bot",
@@ -547,8 +547,8 @@
       ],
       "type": "Mage / Assassin",
       "worstMatchups": [
-        "Poppy",
         "Vex",
+        "Poppy",
         "Fizz",
         "K'Santé",
         "LeBlanc"
@@ -566,8 +566,8 @@
         "Support"
       ],
       "bestCounters": [
-        "Poppy",
         "Vex",
+        "Poppy",
         "Fizz",
         "K'Santé",
         "LeBlanc"
@@ -603,11 +603,11 @@
         "Evelynn"
       ],
       "bestPairings": [
-        "Braum",
-        "Taric",
         "Ornn",
+        "Poppy",
         "Sion",
-        "Maître Yi"
+        "Skarner",
+        "Braum"
       ],
       "optimalSlots": [
         "Mid",
@@ -648,10 +648,10 @@
       ],
       "bestPairings": [
         "Caitlyn",
+        "Pyke",
+        "Sion",
         "Pantheon",
-        "Galio",
-        "Nocturne",
-        "Taliyah"
+        "Galio"
       ],
       "optimalSlots": [
         "Mid",
@@ -692,10 +692,10 @@
         "Jhin"
       ],
       "bestPairings": [
+        "Lulu",
         "Talon",
         "Zaahen",
         "Lee Sin",
-        "Lulu",
         "Rek'Sai"
       ],
       "optimalSlots": [
@@ -728,26 +728,26 @@
       ],
       "type": "Tank / Support",
       "worstMatchups": [
+        "Morgana",
         "Braum",
         "Taric",
-        "Morgana",
         "Varus",
         "Lillia"
       ],
       "bestPairings": [
+        "Draven",
         "Aatrox",
         "Ambessa",
         "Kalista",
-        "Yasuo",
-        "Yone"
+        "Yasuo"
       ],
       "optimalSlots": [
         "Support"
       ],
       "bestCounters": [
+        "Morgana",
         "Braum",
         "Taric",
-        "Morgana",
         "Varus",
         "Lillia"
       ],
@@ -779,8 +779,8 @@
         "Rengar"
       ],
       "bestPairings": [
-        "Jhin",
         "Amumu",
+        "Jhin",
         "K'Santé",
         "Zoé",
         "Hwei"
@@ -817,25 +817,25 @@
       ],
       "type": "Tank / Support",
       "worstMatchups": [
-        "Briar",
         "Brand",
+        "Briar",
         "Rengar",
         "Sett",
         "Viego"
       ],
       "bestPairings": [
         "Senna",
-        "Jhin",
-        "Orianna",
-        "Hwei",
-        "Vel'Koz"
+        "Ashe",
+        "Caitlyn",
+        "Ezreal",
+        "Lucian"
       ],
       "optimalSlots": [
         "Support"
       ],
       "bestCounters": [
-        "Briar",
         "Brand",
+        "Briar",
         "Rengar",
         "Sett",
         "Viego"
@@ -914,11 +914,11 @@
         "Evelynn"
       ],
       "bestPairings": [
-        "Vel'Koz",
-        "Senna",
-        "Poppy",
-        "K'Santé",
-        "Maokai"
+        "Bard",
+        "Braum",
+        "Ivern",
+        "Morgana",
+        "Vel'Koz"
       ],
       "optimalSlots": [
         "Bot"
@@ -955,18 +955,18 @@
       ],
       "type": "Combattant / Assassin",
       "worstMatchups": [
+        "Poppy",
         "Taliyah",
         "Bard",
         "Nocturne",
-        "Pantheon",
-        "Karthus"
+        "Pantheon"
       ],
       "bestPairings": [
+        "Galio",
+        "Twisted Fate",
         "Fiora",
         "Irelia",
-        "Nocturne",
-        "Galio",
-        "Jax"
+        "Nocturne"
       ],
       "optimalSlots": [
         "Top",
@@ -974,11 +974,11 @@
         "Mid"
       ],
       "bestCounters": [
+        "Poppy",
         "Taliyah",
         "Bard",
         "Nocturne",
-        "Pantheon",
-        "Karthus"
+        "Pantheon"
       ],
       "family": "bruiser_split",
       "familyLabel": "Bruiser split",
@@ -1006,11 +1006,11 @@
         "Samira"
       ],
       "bestPairings": [
+        "Maokai",
         "Braum",
         "Kindred",
         "Kog'Maw",
-        "Xin Zhao",
-        "Vayne"
+        "Xin Zhao"
       ],
       "optimalSlots": [
         "Mid",
@@ -1097,11 +1097,11 @@
         "LeBlanc"
       ],
       "bestPairings": [
+        "Maokai",
         "Braum",
         "Taric",
         "Anivia",
-        "Gragas",
-        "Zoé"
+        "Gragas"
       ],
       "optimalSlots": [
         "Mid",
@@ -1136,16 +1136,16 @@
       "worstMatchups": [
         "Varus",
         "Jhin",
-        "Caitlyn",
-        "Senna",
-        "Corki"
+        "Lillia",
+        "Quinn",
+        "Caitlyn"
       ],
       "bestPairings": [
+        "Lillia",
+        "Morgana",
         "Alistar",
         "Ambessa",
-        "Blitzcrank",
-        "Garen",
-        "Gnar"
+        "Blitzcrank"
       ],
       "optimalSlots": [
         "Top",
@@ -1155,9 +1155,9 @@
       "bestCounters": [
         "Varus",
         "Jhin",
-        "Caitlyn",
-        "Senna",
-        "Corki"
+        "Lillia",
+        "Quinn",
+        "Caitlyn"
       ],
       "family": "bruiser_teamfight",
       "familyLabel": "Bruiser teamfight",
@@ -1188,10 +1188,10 @@
       ],
       "bestPairings": [
         "Galio",
+        "Lillia",
         "Yasuo",
         "Kalista",
-        "Annie",
-        "Lucian"
+        "Annie"
       ],
       "optimalSlots": [
         "Jungle",
@@ -1275,9 +1275,9 @@
       "bestPairings": [
         "Blitzcrank",
         "Leona",
+        "Morgana",
         "Alistar",
-        "Nautilus",
-        "Rell"
+        "Nautilus"
       ],
       "optimalSlots": [
         "Bot"
@@ -1310,11 +1310,11 @@
       ],
       "type": "Assassin / Mage",
       "worstMatchups": [
+        "Vex",
         "Anivia",
         "Aurelion Sol",
         "Azir",
-        "Cassiopeia",
-        "Ryze"
+        "Cassiopeia"
       ],
       "bestPairings": [
         "Galio",
@@ -1328,11 +1328,11 @@
         "Mid"
       ],
       "bestCounters": [
+        "Vex",
         "Anivia",
         "Aurelion Sol",
         "Azir",
-        "Cassiopeia",
-        "Ryze"
+        "Cassiopeia"
       ],
       "family": "assassin_ap_pick",
       "familyLabel": "Assassin AP (pick)",
@@ -1361,10 +1361,10 @@
       ],
       "bestPairings": [
         "Lucian",
+        "Pantheon",
+        "Syndra",
         "Talon",
-        "Graves",
-        "Rek'Sai",
-        "Shaco"
+        "Graves"
       ],
       "optimalSlots": [
         "Jungle"
@@ -1450,11 +1450,11 @@
         "Hecarim"
       ],
       "bestPairings": [
+        "Braum",
         "Taric",
         "Anivia",
         "Gragas",
-        "Zoé",
-        "Braum"
+        "Zoé"
       ],
       "optimalSlots": [
         "Bot",
@@ -1494,11 +1494,11 @@
         "Ashe"
       ],
       "bestPairings": [
+        "Malphite",
+        "Yasuo",
         "Galio",
         "Aatrox",
-        "Illaoi",
-        "Darius",
-        "Pantheon"
+        "Illaoi"
       ],
       "optimalSlots": [
         "Jungle",
@@ -1531,16 +1531,16 @@
       ],
       "type": "Combattant / Assassin",
       "worstMatchups": [
+        "Poppy",
+        "Renekton",
         "Taliyah",
         "Bard",
-        "Twisted Fate",
-        "Nocturne",
-        "Pantheon"
+        "Twisted Fate"
       ],
       "bestPairings": [
+        "Twisted Fate",
         "Camille",
         "Irelia",
-        "Twisted Fate",
         "Jax",
         "Pantheon"
       ],
@@ -1550,11 +1550,11 @@
         "Mid"
       ],
       "bestCounters": [
+        "Poppy",
+        "Renekton",
         "Taliyah",
         "Bard",
-        "Twisted Fate",
-        "Nocturne",
-        "Pantheon"
+        "Twisted Fate"
       ],
       "family": "bruiser_split",
       "familyLabel": "Bruiser split",
@@ -1636,11 +1636,11 @@
         "Lillia"
       ],
       "bestPairings": [
-        "Yasuo",
-        "Ambessa",
-        "Yone",
-        "Katarina",
-        "Pantheon"
+        "Camille",
+        "Diana",
+        "Jarvan IV",
+        "Nocturne",
+        "Twisted Fate"
       ],
       "optimalSlots": [
         "Top",
@@ -1715,11 +1715,11 @@
       ],
       "type": "Combattant / Tank",
       "worstMatchups": [
+        "Lillia",
+        "Quinn",
         "Varus",
         "Ashe",
-        "Caitlyn",
-        "Corki",
-        "Ezreal"
+        "Caitlyn"
       ],
       "bestPairings": [
         "Aatrox",
@@ -1734,11 +1734,11 @@
         "Support"
       ],
       "bestCounters": [
+        "Lillia",
+        "Quinn",
         "Varus",
         "Ashe",
-        "Caitlyn",
-        "Corki",
-        "Ezreal"
+        "Caitlyn"
       ],
       "family": "bruiser_teamfight",
       "familyLabel": "Bruiser teamfight",
@@ -1763,9 +1763,9 @@
       "worstMatchups": [
         "Varus",
         "Jhin",
+        "Vayne",
         "Caitlyn",
-        "Senna",
-        "Ashe"
+        "Senna"
       ],
       "bestPairings": [
         "Aatrox",
@@ -1782,9 +1782,9 @@
       "bestCounters": [
         "Varus",
         "Jhin",
+        "Vayne",
         "Caitlyn",
-        "Senna",
-        "Ashe"
+        "Senna"
       ],
       "family": "bruiser_teamfight",
       "familyLabel": "Bruiser teamfight",
@@ -1814,11 +1814,11 @@
         "Jinx"
       ],
       "bestPairings": [
+        "Sett",
+        "Yasuo",
         "Jhin",
         "Corki",
-        "Ezreal",
-        "Hwei",
-        "Varus"
+        "Ezreal"
       ],
       "optimalSlots": [
         "Top",
@@ -1862,10 +1862,10 @@
       ],
       "bestPairings": [
         "Nautilus",
+        "Poppy",
+        "Twisted Fate",
         "Elise",
-        "Bel'Veth",
-        "Nidalee",
-        "Ahri"
+        "Bel'Veth"
       ],
       "optimalSlots": [
         "Jungle"
@@ -1946,11 +1946,11 @@
         "Briar"
       ],
       "bestPairings": [
+        "Zilean",
         "Kog'Maw",
         "Twitch",
         "Vayne",
-        "Anivia",
-        "Smolder"
+        "Anivia"
       ],
       "optimalSlots": [
         "Jungle"
@@ -1988,11 +1988,11 @@
         "Fiora"
       ],
       "bestPairings": [
+        "Zyra",
         "Jhin",
         "Corki",
         "Ezreal",
-        "Varus",
-        "Ashe"
+        "Varus"
       ],
       "optimalSlots": [
         "Top",
@@ -2032,11 +2032,11 @@
         "Vayne"
       ],
       "bestPairings": [
-        "Braum",
-        "Taric",
-        "Senna",
-        "Varus",
-        "Gragas"
+        "Ashe",
+        "Karma",
+        "Nunu et Willump",
+        "Sion",
+        "Braum"
       ],
       "optimalSlots": [
         "Mid",
@@ -2069,10 +2069,10 @@
       "type": "Combattant / Tank",
       "worstMatchups": [
         "Varus",
+        "Vayne",
         "Jhin",
         "Senna",
-        "Caitlyn",
-        "Corki"
+        "Caitlyn"
       ],
       "bestPairings": [
         "Leona",
@@ -2088,10 +2088,10 @@
       ],
       "bestCounters": [
         "Varus",
+        "Vayne",
         "Jhin",
         "Senna",
-        "Caitlyn",
-        "Corki"
+        "Caitlyn"
       ],
       "family": "bruiser_teamfight",
       "familyLabel": "Bruiser teamfight",
@@ -2113,11 +2113,11 @@
       ],
       "type": "Combattant / Assassin",
       "worstMatchups": [
+        "Poppy",
         "Taliyah",
         "Nocturne",
         "Bard",
-        "Pantheon",
-        "Karthus"
+        "Pantheon"
       ],
       "bestPairings": [
         "Camille",
@@ -2132,11 +2132,11 @@
         "Mid"
       ],
       "bestCounters": [
+        "Poppy",
         "Taliyah",
         "Nocturne",
         "Bard",
-        "Pantheon",
-        "Karthus"
+        "Pantheon"
       ],
       "family": "bruiser_split",
       "familyLabel": "Bruiser split",
@@ -2164,11 +2164,11 @@
         "Miss Fortune"
       ],
       "bestPairings": [
-        "Vayne",
-        "Kog'Maw",
-        "Smolder",
-        "Twitch",
-        "Kindred"
+        "Caitlyn",
+        "Jhin",
+        "Jinx",
+        "Leona",
+        "Nidalee"
       ],
       "optimalSlots": [
         "Jungle"
@@ -2251,10 +2251,10 @@
         "Briar"
       ],
       "bestPairings": [
-        "Kog'Maw",
         "Anivia",
         "Galio",
         "Lissandra",
+        "Neeko",
         "Orianna"
       ],
       "optimalSlots": [
@@ -2288,11 +2288,11 @@
       ],
       "type": "Combattant",
       "worstMatchups": [
+        "Malphite",
         "Taliyah",
         "Bard",
         "Pantheon",
-        "Nocturne",
-        "Karthus"
+        "Nocturne"
       ],
       "bestPairings": [
         "Camille",
@@ -2306,11 +2306,11 @@
         "Jungle"
       ],
       "bestCounters": [
+        "Malphite",
         "Taliyah",
         "Bard",
         "Pantheon",
-        "Nocturne",
-        "Karthus"
+        "Nocturne"
       ],
       "family": "bruiser_split",
       "familyLabel": "Bruiser split",
@@ -2390,11 +2390,11 @@
         "Vayne"
       ],
       "bestPairings": [
-        "Braum",
-        "K'Santé",
-        "Taric",
-        "Anivia",
-        "Gragas"
+        "Ivern",
+        "Pyke",
+        "Taliyah",
+        "Thresh",
+        "Xerath"
       ],
       "optimalSlots": [
         "Mid",
@@ -2427,27 +2427,27 @@
       "type": "Tireur",
       "worstMatchups": [
         "Talon",
+        "Nocturne",
         "Qiyana",
         "Zaahen",
-        "Zed",
-        "Diana"
+        "Zed"
       ],
       "bestPairings": [
-        "Karma",
-        "Sona",
-        "Janna",
-        "Nami",
-        "Soraka"
+        "Ivern",
+        "Lulu",
+        "Milio",
+        "Renata Glasc",
+        "Shen"
       ],
       "optimalSlots": [
         "Bot"
       ],
       "bestCounters": [
         "Talon",
+        "Nocturne",
         "Qiyana",
         "Zaahen",
-        "Zed",
-        "Diana"
+        "Zed"
       ],
       "family": "adc_hypercarry",
       "familyLabel": "ADC hypercarry",
@@ -2528,9 +2528,9 @@
       "bestPairings": [
         "Alistar",
         "Nautilus",
+        "Ornn",
         "Renekton",
-        "Briar",
-        "Vi"
+        "Briar"
       ],
       "optimalSlots": [
         "Mid",
@@ -2566,26 +2566,26 @@
       ],
       "type": "Tireur",
       "worstMatchups": [
+        "Nautilus",
         "Braum",
         "Taric",
-        "Nautilus",
         "K'Santé",
         "Poppy"
       ],
       "bestPairings": [
+        "Renata Glasc",
+        "Taric",
+        "Thresh",
         "Alistar",
-        "Blitzcrank",
-        "Leona",
-        "Nautilus",
-        "Rell"
+        "Blitzcrank"
       ],
       "optimalSlots": [
         "Bot"
       ],
       "bestCounters": [
+        "Nautilus",
         "Braum",
         "Taric",
-        "Nautilus",
         "K'Santé",
         "Poppy"
       ],
@@ -2617,10 +2617,10 @@
       ],
       "bestPairings": [
         "Smolder",
+        "Hwei",
         "Kog'Maw",
         "Vayne",
-        "Jinx",
-        "Twitch"
+        "Jinx"
       ],
       "optimalSlots": [
         "Mid",
@@ -2701,11 +2701,11 @@
         "Taliyah"
       ],
       "bestPairings": [
+        "Lulu",
         "Galio",
         "Smolder",
         "Braum",
-        "Pantheon",
-        "Aphelios"
+        "Pantheon"
       ],
       "optimalSlots": [
         "Jungle",
@@ -2742,10 +2742,10 @@
       ],
       "type": "Assassin / Mage",
       "worstMatchups": [
-        "Anivia",
         "Galio",
         "Kassadin",
         "Malzahar",
+        "Anivia",
         "Azir"
       ],
       "bestPairings": [
@@ -2761,10 +2761,10 @@
         "Support"
       ],
       "bestCounters": [
-        "Anivia",
         "Galio",
         "Kassadin",
         "Malzahar",
+        "Anivia",
         "Azir"
       ],
       "family": "assassin_ap_pick",
@@ -2786,18 +2786,18 @@
       ],
       "type": "Mage / Tireur",
       "worstMatchups": [
+        "Pantheon",
         "Talon",
         "Qiyana",
         "Zaahen",
-        "Zed",
-        "Ahri"
+        "Zed"
       ],
       "bestPairings": [
+        "Lulu",
         "Janna",
         "Karma",
         "Milio",
-        "Sona",
-        "Soraka"
+        "Sona"
       ],
       "optimalSlots": [
         "Mid",
@@ -2805,11 +2805,11 @@
         "Support"
       ],
       "bestCounters": [
+        "Pantheon",
         "Talon",
         "Qiyana",
         "Zaahen",
-        "Zed",
-        "Ahri"
+        "Zed"
       ],
       "family": "adc_hypercarry",
       "familyLabel": "ADC hypercarry",
@@ -2837,11 +2837,11 @@
         "Sion"
       ],
       "bestPairings": [
+        "Taliyah",
         "Kha'Zix",
         "Rengar",
         "Smolder",
-        "Aphelios",
-        "Jinx"
+        "Aphelios"
       ],
       "optimalSlots": [
         "Jungle"
@@ -2914,8 +2914,8 @@
       ],
       "type": "Assassin",
       "worstMatchups": [
-        "Taliyah",
         "Rengar",
+        "Taliyah",
         "Poppy",
         "K'Santé",
         "Briar"
@@ -2932,8 +2932,8 @@
         "Mid"
       ],
       "bestCounters": [
-        "Taliyah",
         "Rengar",
+        "Taliyah",
         "Poppy",
         "K'Santé",
         "Briar"
@@ -2963,11 +2963,11 @@
         "Lee Sin"
       ],
       "bestPairings": [
-        "Viktor",
-        "Zac",
-        "Aurelion Sol",
-        "Cassiopeia",
-        "Ivern"
+        "Lulu",
+        "Orianna",
+        "Poppy",
+        "Taric",
+        "Viktor"
       ],
       "optimalSlots": [
         "Jungle"
@@ -3054,11 +3054,11 @@
         "LeBlanc"
       ],
       "bestPairings": [
-        "Janna",
-        "Karma",
-        "Nami",
-        "Wukong",
-        "Zac"
+        "Lulu",
+        "Milio",
+        "Morgana",
+        "Renata Glasc",
+        "Taric"
       ],
       "optimalSlots": [
         "Mid",
@@ -3145,11 +3145,11 @@
         "Xin Zhao"
       ],
       "bestPairings": [
+        "Yasuo",
         "Rek'Sai",
         "Talon",
         "Zaahen",
-        "Bel'Veth",
-        "Yasuo"
+        "Bel'Veth"
       ],
       "optimalSlots": [
         "Jungle"
@@ -3189,11 +3189,11 @@
         "Dr. Mundo"
       ],
       "bestPairings": [
-        "Ambessa",
-        "Yasuo",
-        "Yone",
-        "Kalista",
-        "Urgot"
+        "Aatrox",
+        "Draven",
+        "Ivern",
+        "Miss Fortune",
+        "Samira"
       ],
       "optimalSlots": [
         "Support"
@@ -3232,11 +3232,11 @@
         "LeBlanc"
       ],
       "bestPairings": [
-        "Braum",
-        "Taric",
-        "Caitlyn",
-        "Ashe",
-        "Senna"
+        "Darius",
+        "Diana",
+        "Miss Fortune",
+        "Viego",
+        "Yasuo"
       ],
       "optimalSlots": [
         "Jungle"
@@ -3274,11 +3274,11 @@
         "Brand"
       ],
       "bestPairings": [
+        "Jarvan IV",
         "Galio",
         "Aatrox",
         "Sion",
-        "Leona",
-        "Neeko"
+        "Leona"
       ],
       "optimalSlots": [
         "Mid",
@@ -3319,9 +3319,9 @@
         "Dr. Mundo"
       ],
       "bestPairings": [
-        "Pyke",
         "Braum",
         "Elise",
+        "Morgana",
         "Nami",
         "Nautilus"
       ],
@@ -3363,11 +3363,11 @@
         "Mel"
       ],
       "bestPairings": [
-        "Smolder",
-        "Yunara",
-        "Janna",
-        "Aphelios",
-        "Nami"
+        "Bel'Veth",
+        "Jinx",
+        "Kassadin",
+        "Kayle",
+        "Kindred"
       ],
       "optimalSlots": [
         "Support",
@@ -3450,17 +3450,17 @@
       "type": "Tank / Mage",
       "worstMatchups": [
         "Cho'Gath",
-        "K'Santé",
-        "Dr. Mundo",
-        "Maokai",
-        "Poppy"
+        "Gwen",
+        "Trundle",
+        "Vayne",
+        "K'Santé"
       ],
       "bestPairings": [
-        "Aatrox",
-        "Galio",
-        "Sion",
-        "Ambessa",
-        "Yone"
+        "Fiddlesticks",
+        "Orianna",
+        "Sett",
+        "Yasuo",
+        "Aatrox"
       ],
       "optimalSlots": [
         "Top",
@@ -3470,10 +3470,10 @@
       ],
       "bestCounters": [
         "Cho'Gath",
-        "K'Santé",
-        "Dr. Mundo",
-        "Maokai",
-        "Poppy"
+        "Gwen",
+        "Trundle",
+        "Vayne",
+        "K'Santé"
       ],
       "family": "tank_engage",
       "familyLabel": "Tank engage",
@@ -3545,11 +3545,11 @@
         "Varus"
       ],
       "bestPairings": [
-        "Caitlyn",
-        "Senna",
-        "Jhin",
         "Cassiopeia",
-        "Corki"
+        "Corki",
+        "Xerath",
+        "Ziggs",
+        "Caitlyn"
       ],
       "optimalSlots": [
         "Top",
@@ -3583,18 +3583,18 @@
       ],
       "type": "Combattant / Assassin",
       "worstMatchups": [
+        "Rammus",
         "Taliyah",
         "Elise",
         "Lux",
-        "Samira",
-        "Syndra"
+        "Samira"
       ],
       "bestPairings": [
+        "Morgana",
         "Smolder",
         "Aphelios",
         "Jinx",
-        "Kog'Maw",
-        "Kayle"
+        "Kog'Maw"
       ],
       "optimalSlots": [
         "Top",
@@ -3602,11 +3602,11 @@
         "Mid"
       ],
       "bestCounters": [
+        "Rammus",
         "Taliyah",
         "Elise",
         "Lux",
-        "Samira",
-        "Syndra"
+        "Samira"
       ],
       "family": "jungle_defensive",
       "familyLabel": "Jungle défensif",
@@ -3675,26 +3675,26 @@
       ],
       "type": "Support / Mage",
       "worstMatchups": [
+        "Leona",
         "Qiyana",
         "Aurora",
-        "Leona",
         "Talon",
         "Zed"
       ],
       "bestPairings": [
+        "Jinx",
+        "Kog'Maw",
         "Smolder",
         "Vayne",
-        "Aphelios",
-        "Kayle",
-        "Twitch"
+        "Aphelios"
       ],
       "optimalSlots": [
         "Support"
       ],
       "bestCounters": [
+        "Leona",
         "Qiyana",
         "Aurora",
-        "Leona",
         "Talon",
         "Zed"
       ],
@@ -3725,11 +3725,11 @@
         "Cho'Gath"
       ],
       "bestPairings": [
+        "Amumu",
+        "Leona",
+        "Lillia",
         "Alistar",
-        "Blitzcrank",
-        "Nautilus",
-        "Rell",
-        "Amumu"
+        "Blitzcrank"
       ],
       "optimalSlots": [
         "Mid",
@@ -3763,11 +3763,11 @@
       ],
       "type": "Combattant / Mage",
       "worstMatchups": [
+        "Lillia",
         "Caitlyn",
         "Jhin",
         "Ashe",
-        "Senna",
-        "Varus"
+        "Senna"
       ],
       "bestPairings": [
         "Leona",
@@ -3783,11 +3783,11 @@
         "Support"
       ],
       "bestCounters": [
+        "Lillia",
         "Caitlyn",
         "Jhin",
         "Ashe",
-        "Senna",
-        "Varus"
+        "Senna"
       ],
       "family": "bruiser_teamfight",
       "familyLabel": "Bruiser teamfight",
@@ -3815,11 +3815,11 @@
         "Cho'Gath"
       ],
       "bestPairings": [
-        "Jhin",
-        "Senna",
-        "Varus",
-        "Hwei",
-        "Caitlyn"
+        "Caitlyn",
+        "Darius",
+        "Draven",
+        "Kog'Maw",
+        "Lucian"
       ],
       "optimalSlots": [
         "Mid",
@@ -3906,11 +3906,11 @@
         "Evelynn"
       ],
       "bestPairings": [
+        "Lucian",
         "Vayne",
         "Kog'Maw",
         "Twitch",
-        "Smolder",
-        "Jinx"
+        "Smolder"
       ],
       "optimalSlots": [
         "Mid",
@@ -3992,11 +3992,11 @@
         "Lillia"
       ],
       "bestPairings": [
-        "Aatrox",
-        "Kalista",
-        "Yasuo",
-        "Ambessa",
-        "Yone"
+        "Graves",
+        "Kai'Sa",
+        "Lucian",
+        "Samira",
+        "Viego"
       ],
       "optimalSlots": [
         "Support"
@@ -4038,11 +4038,11 @@
         "Cho'Gath"
       ],
       "bestPairings": [
+        "Jarvan IV",
+        "Rengar",
         "Galio",
         "Sion",
-        "Leona",
-        "Lissandra",
-        "Blitzcrank"
+        "Leona"
       ],
       "optimalSlots": [
         "Mid",
@@ -4082,11 +4082,11 @@
         "Irelia"
       ],
       "bestPairings": [
+        "Ivern",
         "Rek'Sai",
         "Shaco",
         "Talon",
-        "Graves",
-        "Bel'Veth"
+        "Graves"
       ],
       "optimalSlots": [
         "Jungle"
@@ -4117,18 +4117,18 @@
       ],
       "type": "Combattant / Assassin",
       "worstMatchups": [
+        "Poppy",
         "Braum",
         "Taric",
         "K'Santé",
-        "Poppy",
         "Dr. Mundo"
       ],
       "bestPairings": [
         "Lulu",
+        "Renata Glasc",
         "Leona",
         "Lucian",
-        "Kalista",
-        "Pyke"
+        "Kalista"
       ],
       "optimalSlots": [
         "Top",
@@ -4136,10 +4136,10 @@
         "Mid"
       ],
       "bestCounters": [
+        "Poppy",
         "Braum",
         "Taric",
         "K'Santé",
-        "Poppy",
         "Dr. Mundo"
       ],
       "family": "adc_short_allin",
@@ -4169,10 +4169,10 @@
       ],
       "bestPairings": [
         "Galio",
-        "Fizz",
-        "Katarina",
-        "Camille",
-        "Taliyah"
+        "Ryze",
+        "Taliyah",
+        "Tryndamere",
+        "Twisted Fate"
       ],
       "optimalSlots": [
         "Jungle"
@@ -4212,11 +4212,11 @@
         "Caitlyn"
       ],
       "bestPairings": [
-        "Kog'Maw",
-        "Vayne",
-        "Twitch",
-        "Aatrox",
-        "Zac"
+        "Anivia",
+        "Hwei",
+        "Viktor",
+        "Yasuo",
+        "Kog'Maw"
       ],
       "optimalSlots": [
         "Top",
@@ -4256,11 +4256,11 @@
         "Senna"
       ],
       "bestPairings": [
+        "Lulu",
         "Kled",
         "Smolder",
         "Renekton",
-        "Anivia",
-        "Kog'Maw"
+        "Anivia"
       ],
       "optimalSlots": [
         "Top",
@@ -4303,11 +4303,11 @@
         "Lucian"
       ],
       "bestPairings": [
-        "Braum",
-        "Xin Zhao",
-        "Smolder",
-        "Vayne",
-        "Jarvan IV"
+        "Jarvan IV",
+        "Kindred",
+        "Malphite",
+        "Pantheon",
+        "Sejuani"
       ],
       "optimalSlots": [
         "Mid",
@@ -4339,27 +4339,27 @@
       "type": "Tank",
       "worstMatchups": [
         "K'Santé",
+        "Trundle",
+        "Vayne",
         "Cho'Gath",
-        "Dr. Mundo",
-        "Maokai",
-        "Poppy"
+        "Dr. Mundo"
       ],
       "bestPairings": [
+        "Aphelios",
         "Azir",
+        "Kai'Sa",
         "Sejuani",
-        "Séraphine",
-        "Neeko",
-        "Aatrox"
+        "Séraphine"
       ],
       "optimalSlots": [
         "Top"
       ],
       "bestCounters": [
         "K'Santé",
+        "Trundle",
+        "Vayne",
         "Cho'Gath",
-        "Dr. Mundo",
-        "Maokai",
-        "Poppy"
+        "Dr. Mundo"
       ],
       "family": "tank_engage",
       "familyLabel": "Tank engage",
@@ -4389,11 +4389,11 @@
         "Caitlyn"
       ],
       "bestPairings": [
-        "Galio",
-        "Ahri",
-        "Aatrox",
-        "Ekko",
-        "Katarina"
+        "Ashe",
+        "Elise",
+        "Orianna",
+        "Taliyah",
+        "Galio"
       ],
       "optimalSlots": [
         "Top",
@@ -4437,11 +4437,11 @@
         "Varus"
       ],
       "bestPairings": [
-        "Jhin",
-        "Caitlyn",
-        "Senna",
-        "Kog'Maw",
-        "Smolder"
+        "Anivia",
+        "Azir",
+        "Graves",
+        "Kindred",
+        "Veigar"
       ],
       "optimalSlots": [
         "Top",
@@ -4475,28 +4475,28 @@
       ],
       "type": "Support / Assassin",
       "worstMatchups": [
+        "Lulu",
         "Zoé",
         "K'Santé",
         "Ziggs",
-        "Braum",
-        "Vel'Koz"
+        "Braum"
       ],
       "bestPairings": [
+        "Bard",
+        "Jhin",
         "Aatrox",
         "Ambessa",
-        "Yasuo",
-        "Yone",
-        "Leona"
+        "Yasuo"
       ],
       "optimalSlots": [
         "Support"
       ],
       "bestCounters": [
+        "Lulu",
         "Zoé",
         "K'Santé",
         "Ziggs",
-        "Braum",
-        "Vel'Koz"
+        "Braum"
       ],
       "family": "support_engage",
       "familyLabel": "Support engage",
@@ -4522,11 +4522,11 @@
         "Anivia"
       ],
       "bestPairings": [
+        "Taliyah",
         "Rek'Sai",
         "Elise",
         "Lee Sin",
-        "Shaco",
-        "Talon"
+        "Shaco"
       ],
       "optimalSlots": [
         "Jungle",
@@ -4610,11 +4610,11 @@
         "Taric"
       ],
       "bestPairings": [
+        "Xayah",
         "Aatrox",
         "Yasuo",
         "Ambessa",
-        "Yone",
-        "Leona"
+        "Yone"
       ],
       "optimalSlots": [
         "Support"
@@ -4696,11 +4696,11 @@
         "Swain"
       ],
       "bestPairings": [
+        "Tristana",
         "Katarina",
         "Talon",
         "Zaahen",
-        "Lee Sin",
-        "Fizz"
+        "Lee Sin"
       ],
       "optimalSlots": [
         "Jungle"
@@ -4738,11 +4738,11 @@
         "Dr. Mundo"
       ],
       "bestPairings": [
+        "Samira",
         "Aatrox",
         "Kalista",
         "Ambessa",
-        "Yasuo",
-        "Yone"
+        "Yasuo"
       ],
       "optimalSlots": [
         "Top",
@@ -4783,11 +4783,11 @@
         "Mel"
       ],
       "bestPairings": [
-        "Smolder",
-        "Vayne",
-        "Twitch",
-        "Yunara",
-        "Zeri"
+        "Jinx",
+        "Kalista",
+        "Kog'Maw",
+        "Nilah",
+        "Samira"
       ],
       "optimalSlots": [
         "Support"
@@ -4875,11 +4875,11 @@
         "K'Santé"
       ],
       "bestPairings": [
+        "Ivern",
+        "Neeko",
         "Evelynn",
         "Swain",
-        "Aatrox",
-        "Ahri",
-        "Kayn"
+        "Aatrox"
       ],
       "optimalSlots": [
         "Top",
@@ -4917,8 +4917,8 @@
         "Jhin",
         "Caitlyn",
         "Senna",
-        "Varus",
-        "Ashe"
+        "Quinn",
+        "Varus"
       ],
       "bestPairings": [
         "Aatrox",
@@ -4936,8 +4936,8 @@
         "Jhin",
         "Caitlyn",
         "Senna",
-        "Varus",
-        "Ashe"
+        "Quinn",
+        "Varus"
       ],
       "family": "bruiser_teamfight",
       "familyLabel": "Bruiser teamfight",
@@ -5012,11 +5012,11 @@
         "Evelynn"
       ],
       "bestPairings": [
+        "Ivern",
+        "Nocturne",
+        "Sion",
         "Braum",
-        "Kindred",
-        "Kog'Maw",
-        "Xin Zhao",
-        "Vayne"
+        "Kindred"
       ],
       "optimalSlots": [
         "Mid",
@@ -5052,18 +5052,18 @@
       ],
       "type": "Tireur / Assassin",
       "worstMatchups": [
+        "Poppy",
         "Braum",
         "Taric",
-        "Poppy",
         "K'Santé",
         "Maokai"
       ],
       "bestPairings": [
-        "Blitzcrank",
-        "Annie",
-        "Kalista",
-        "Alistar",
-        "Rakan"
+        "Amumu",
+        "Leona",
+        "Nautilus",
+        "Rell",
+        "Renata Glasc"
       ],
       "optimalSlots": [
         "Jungle",
@@ -5071,9 +5071,9 @@
         "Bot"
       ],
       "bestCounters": [
+        "Poppy",
         "Braum",
         "Taric",
-        "Poppy",
         "K'Santé",
         "Maokai"
       ],
@@ -5102,10 +5102,10 @@
         "K'Santé"
       ],
       "bestPairings": [
-        "Kog'Maw",
-        "Zac",
         "Orianna",
         "Ornn",
+        "Kog'Maw",
+        "Zac",
         "Vayne"
       ],
       "optimalSlots": [
@@ -5147,10 +5147,10 @@
       ],
       "bestPairings": [
         "Braum",
+        "Tahm Kench",
         "Vel'Koz",
         "Taric",
-        "Caitlyn",
-        "Poppy"
+        "Caitlyn"
       ],
       "optimalSlots": [
         "Support",
@@ -5183,18 +5183,18 @@
       ],
       "type": "Combattant / Tank",
       "worstMatchups": [
-        "Varus",
         "Vayne",
+        "Varus",
         "Aurelion Sol",
         "Ashe",
         "Caitlyn"
       ],
       "bestPairings": [
-        "Aatrox",
-        "Kog'Maw",
-        "Smolder",
-        "Kalista",
-        "Ambessa"
+        "Gragas",
+        "Malphite",
+        "Orianna",
+        "Yuumi",
+        "Aatrox"
       ],
       "optimalSlots": [
         "Top",
@@ -5202,8 +5202,8 @@
         "Support"
       ],
       "bestCounters": [
-        "Varus",
         "Vayne",
+        "Varus",
         "Aurelion Sol",
         "Ashe",
         "Caitlyn"
@@ -5275,11 +5275,11 @@
         "Graves"
       ],
       "bestPairings": [
+        "Ashe",
         "Jinx",
+        "Tahm Kench",
         "Twisted Fate",
-        "Irelia",
-        "Pantheon",
-        "Fiora"
+        "Irelia"
       ],
       "optimalSlots": [
         "Top",
@@ -5313,9 +5313,9 @@
       ],
       "type": "Combattant / Tank",
       "worstMatchups": [
+        "Olaf",
         "Varus",
         "Jhin",
-        "Olaf",
         "Senna",
         "Dr. Mundo"
       ],
@@ -5330,9 +5330,9 @@
         "Jungle"
       ],
       "bestCounters": [
+        "Olaf",
         "Varus",
         "Jhin",
-        "Olaf",
         "Senna",
         "Dr. Mundo"
       ],
@@ -5405,28 +5405,28 @@
       ],
       "type": "Tank / Combattant",
       "worstMatchups": [
+        "Gwen",
+        "Vayne",
         "Dr. Mundo",
         "K'Santé",
-        "Maokai",
-        "Cho'Gath",
-        "Poppy"
+        "Maokai"
       ],
       "bestPairings": [
-        "Aatrox",
-        "Galio",
-        "Ambessa",
-        "Kog'Maw",
-        "Malphite"
+        "Azir",
+        "Bard",
+        "Hwei",
+        "Ryze",
+        "Séraphine"
       ],
       "optimalSlots": [
         "Top"
       ],
       "bestCounters": [
+        "Gwen",
+        "Vayne",
         "Dr. Mundo",
         "K'Santé",
-        "Maokai",
-        "Cho'Gath",
-        "Poppy"
+        "Maokai"
       ],
       "family": "tank_engage",
       "familyLabel": "Tank engage",
@@ -5454,8 +5454,8 @@
         "Talon"
       ],
       "bestPairings": [
-        "Renekton",
         "Sona",
+        "Renekton",
         "Volibear",
         "Wukong",
         "Karma"
@@ -5491,27 +5491,27 @@
       ],
       "type": "Tank / Combattant",
       "worstMatchups": [
+        "Olaf",
         "Varus",
         "Jhin",
         "K'Santé",
-        "Olaf",
         "Dr. Mundo"
       ],
       "bestPairings": [
-        "Kog'Maw",
-        "Smolder",
-        "Galio",
-        "Aatrox",
-        "Swain"
+        "Azir",
+        "Orianna",
+        "Syndra",
+        "Tristana",
+        "Kog'Maw"
       ],
       "optimalSlots": [
         "Jungle"
       ],
       "bestCounters": [
+        "Olaf",
         "Varus",
         "Jhin",
         "K'Santé",
-        "Olaf",
         "Dr. Mundo"
       ],
       "family": "jungle_defensive",
@@ -5534,18 +5534,18 @@
       ],
       "type": "Tireur / Mage",
       "worstMatchups": [
+        "Nocturne",
         "Talon",
         "Qiyana",
         "Zed",
-        "Zaahen",
-        "Diana"
+        "Zaahen"
       ],
       "bestPairings": [
         "Karma",
         "Janna",
         "Soraka",
-        "Renata Glasc",
-        "Séraphine"
+        "Braum",
+        "Renata Glasc"
       ],
       "optimalSlots": [
         "Mid",
@@ -5553,11 +5553,11 @@
         "Support"
       ],
       "bestCounters": [
+        "Nocturne",
         "Talon",
         "Qiyana",
         "Zed",
-        "Zaahen",
-        "Diana"
+        "Zaahen"
       ],
       "family": "adc_hypercarry",
       "familyLabel": "ADC hypercarry",
@@ -5586,11 +5586,11 @@
         "Evelynn"
       ],
       "bestPairings": [
+        "Sivir",
         "Smolder",
         "Kog'Maw",
         "Vayne",
-        "Jinx",
-        "Twitch"
+        "Jinx"
       ],
       "optimalSlots": [
         "Support"
@@ -5710,8 +5710,8 @@
       ],
       "type": "Mage / Assassin",
       "worstMatchups": [
-        "LeBlanc",
         "Orianna",
+        "LeBlanc",
         "Fizz",
         "Vayne",
         "Twitch"
@@ -5728,8 +5728,8 @@
         "Jungle"
       ],
       "bestCounters": [
-        "LeBlanc",
         "Orianna",
+        "LeBlanc",
         "Fizz",
         "Vayne",
         "Twitch"
@@ -5761,11 +5761,11 @@
         "Ekko"
       ],
       "bestPairings": [
+        "Elise",
         "Jarvan IV",
+        "Skarner",
         "Miss Fortune",
-        "Draven",
-        "Kalista",
-        "Lucian"
+        "Draven"
       ],
       "optimalSlots": [
         "Mid",
@@ -5803,11 +5803,11 @@
         "Lux"
       ],
       "bestPairings": [
-        "Smolder",
-        "Kog'Maw",
-        "Jinx",
-        "Twitch",
-        "Vayne"
+        "Amumu",
+        "Ashe",
+        "Ornn",
+        "Sion",
+        "Smolder"
       ],
       "optimalSlots": [
         "Mid",
@@ -5848,11 +5848,11 @@
         "Aphelios"
       ],
       "bestPairings": [
+        "Senna",
+        "Shen",
         "Braum",
         "Caitlyn",
-        "Jhin",
-        "Poppy",
-        "K'Santé"
+        "Jhin"
       ],
       "optimalSlots": [
         "Top",
@@ -5896,11 +5896,11 @@
         "Kog'Maw"
       ],
       "bestPairings": [
-        "Katarina",
-        "Fizz",
-        "Ahri",
-        "Galio",
-        "Twisted Fate"
+        "Jarvan IV",
+        "Jhin",
+        "Kayn",
+        "Nocturne",
+        "Pantheon"
       ],
       "optimalSlots": [
         "Mid",
@@ -5933,11 +5933,11 @@
       ],
       "type": "Assassin",
       "worstMatchups": [
+        "Malzahar",
         "Sion",
         "Briar",
         "Gnar",
-        "Taliyah",
-        "Aurelion Sol"
+        "Taliyah"
       ],
       "bestPairings": [
         "Bel'Veth",
@@ -5951,11 +5951,11 @@
         "Mid"
       ],
       "bestCounters": [
+        "Malzahar",
         "Sion",
         "Briar",
         "Gnar",
-        "Taliyah",
-        "Aurelion Sol"
+        "Taliyah"
       ],
       "family": "assassin_ad_pick",
       "familyLabel": "Assassin AD (pick)",
@@ -5984,11 +5984,11 @@
         "Hecarim"
       ],
       "bestPairings": [
-        "Jhin",
-        "Senna",
-        "Hwei",
-        "Corki",
-        "Ezreal"
+        "Kalista",
+        "Kindred",
+        "Kog'Maw",
+        "Urgot",
+        "Varus"
       ],
       "optimalSlots": [
         "Support"
@@ -6063,9 +6063,9 @@
       ],
       "type": "Support / Tank",
       "worstMatchups": [
+        "Morgana",
         "Taric",
         "Braum",
-        "Morgana",
         "K'Santé",
         "Maokai"
       ],
@@ -6073,16 +6073,16 @@
         "Aphelios",
         "Jhin",
         "Jinx",
-        "Aatrox",
-        "Draven"
+        "Kalista",
+        "Zed"
       ],
       "optimalSlots": [
         "Support"
       ],
       "bestCounters": [
+        "Morgana",
         "Taric",
         "Braum",
-        "Morgana",
         "K'Santé",
         "Maokai"
       ],
@@ -6118,9 +6118,9 @@
       "bestPairings": [
         "Lulu",
         "Rek'Sai",
+        "Skarner",
         "Karma",
-        "Janna",
-        "Soraka"
+        "Janna"
       ],
       "optimalSlots": [
         "Jungle",
@@ -6161,11 +6161,11 @@
         "Pantheon"
       ],
       "bestPairings": [
+        "Kog'Maw",
         "Fiora",
         "Irelia",
         "Jax",
-        "Camille",
-        "Quinn"
+        "Camille"
       ],
       "optimalSlots": [
         "Jungle",
@@ -6197,9 +6197,9 @@
       ],
       "type": "Combattant / Assassin",
       "worstMatchups": [
-        "Taliyah",
         "Malphite",
         "Teemo",
+        "Taliyah",
         "Bard",
         "Nocturne"
       ],
@@ -6216,9 +6216,9 @@
         "Mid"
       ],
       "bestCounters": [
-        "Taliyah",
         "Malphite",
         "Teemo",
+        "Taliyah",
         "Bard",
         "Nocturne"
       ],
@@ -6248,11 +6248,11 @@
         "Garen"
       ],
       "bestPairings": [
-        "Taliyah",
         "Camille",
         "Fiora",
-        "Nocturne",
-        "Yorick"
+        "Galio",
+        "Graves",
+        "Ivern"
       ],
       "optimalSlots": [
         "Mid"
@@ -6293,11 +6293,11 @@
         "Diana"
       ],
       "bestPairings": [
+        "Lulu",
         "Janna",
         "Nami",
         "Karma",
-        "Wukong",
-        "Zac"
+        "Wukong"
       ],
       "optimalSlots": [
         "Jungle",
@@ -6376,18 +6376,18 @@
       ],
       "type": "Combattant / Tank",
       "worstMatchups": [
+        "Fiora",
+        "Vayne",
         "Varus",
         "Jhin",
-        "Caitlyn",
-        "Senna",
-        "Ashe"
+        "Caitlyn"
       ],
       "bestPairings": [
+        "Taric",
+        "Zilean",
         "Ambessa",
         "Yasuo",
-        "Yone",
-        "Galio",
-        "Leona"
+        "Yone"
       ],
       "optimalSlots": [
         "Top",
@@ -6395,11 +6395,11 @@
         "Support"
       ],
       "bestCounters": [
+        "Fiora",
+        "Vayne",
         "Varus",
         "Jhin",
-        "Caitlyn",
-        "Senna",
-        "Ashe"
+        "Caitlyn"
       ],
       "family": "bruiser_teamfight",
       "familyLabel": "Bruiser teamfight",
@@ -6431,11 +6431,11 @@
         "Poppy"
       ],
       "bestPairings": [
+        "Braum",
+        "Taric",
         "K'Santé",
         "Jhin",
-        "Ashe",
-        "Zoé",
-        "Hwei"
+        "Ashe"
       ],
       "optimalSlots": [
         "Mid",
@@ -6478,11 +6478,11 @@
         "Diana"
       ],
       "bestPairings": [
+        "Anivia",
+        "Lulu",
         "Janna",
         "Nami",
-        "Karma",
-        "Ivern",
-        "Zac"
+        "Karma"
       ],
       "optimalSlots": [
         "Jungle",
@@ -6521,11 +6521,11 @@
         "Samira"
       ],
       "bestPairings": [
-        "Kindred",
+        "Jarvan IV",
         "Poppy",
+        "Kindred",
         "Maître Yi",
-        "Aatrox",
-        "Jhin"
+        "Aatrox"
       ],
       "optimalSlots": [
         "Mid",
@@ -6656,11 +6656,11 @@
         "Hecarim"
       ],
       "bestPairings": [
+        "Ahri",
+        "Orianna",
         "Kog'Maw",
         "Wukong",
-        "Xin Zhao",
-        "Kled",
-        "Twitch"
+        "Xin Zhao"
       ],
       "optimalSlots": [
         "Jungle"
@@ -6701,11 +6701,11 @@
         "Hecarim"
       ],
       "bestPairings": [
+        "Leona",
+        "Lillia",
+        "Nautilus",
         "Wukong",
-        "Xin Zhao",
-        "Kog'Maw",
-        "Vi",
-        "Jarvan IV"
+        "Xin Zhao"
       ],
       "optimalSlots": [
         "Jungle",
@@ -6744,10 +6744,10 @@
         "Diana"
       ],
       "bestPairings": [
+        "Nunu et Willump",
         "Kindred",
         "Smolder",
         "Braum",
-        "Nunu et Willump",
         "Taric"
       ],
       "optimalSlots": [
@@ -6921,11 +6921,11 @@
         "Mel"
       ],
       "bestPairings": [
+        "Jarvan IV",
         "Kog'Maw",
         "Twitch",
         "Vayne",
-        "Smolder",
-        "Vi"
+        "Smolder"
       ],
       "optimalSlots": [
         "Top",
@@ -7008,8 +7008,8 @@
       ],
       "bestPairings": [
         "Braum",
-        "Maokai",
         "Jhin",
+        "Maokai",
         "Zoé",
         "Hwei"
       ],
@@ -7099,11 +7099,11 @@
         "Ashe"
       ],
       "bestPairings": [
-        "Ambessa",
-        "Galio",
-        "Yone",
-        "Leona",
-        "Urgot"
+        "Aatrox",
+        "Alistar",
+        "Diana",
+        "Fiddlesticks",
+        "Gragas"
       ],
       "optimalSlots": [
         "Mid",
@@ -7264,26 +7264,26 @@
       ],
       "type": "Support / Mage",
       "worstMatchups": [
+        "Brand",
         "Qiyana",
         "Aurora",
-        "Brand",
         "Talon",
         "Zed"
       ],
       "bestPairings": [
-        "Smolder",
         "Kog'Maw",
-        "Kayle",
-        "Vayne",
-        "Aphelios"
+        "Sett",
+        "Zac",
+        "Smolder",
+        "Kayle"
       ],
       "optimalSlots": [
         "Support"
       ],
       "bestCounters": [
+        "Brand",
         "Qiyana",
         "Aurora",
-        "Brand",
         "Talon",
         "Zed"
       ],
@@ -7361,11 +7361,11 @@
         "Maokai"
       ],
       "bestPairings": [
+        "Orianna",
+        "Yasuo",
+        "Yuumi",
         "Kog'Maw",
-        "Vayne",
-        "Twitch",
-        "Smolder",
-        "Kindred"
+        "Vayne"
       ],
       "optimalSlots": [
         "Jungle"
@@ -7400,11 +7400,11 @@
         "Ziggs"
       ],
       "bestPairings": [
+        "Thresh",
         "Bel'Veth",
         "Elise",
         "Rek'Sai",
-        "Nidalee",
-        "Lee Sin"
+        "Nidalee"
       ],
       "optimalSlots": [
         "Mid"
@@ -7435,28 +7435,28 @@
       ],
       "type": "Tireur",
       "worstMatchups": [
+        "Poppy",
         "Qiyana",
         "Talon",
         "Zaahen",
-        "Zed",
-        "Fizz"
+        "Zed"
       ],
       "bestPairings": [
+        "Lulu",
         "Janna",
         "Soraka",
         "Karma",
-        "Nami",
-        "Renata Glasc"
+        "Nami"
       ],
       "optimalSlots": [
         "Bot"
       ],
       "bestCounters": [
+        "Poppy",
         "Qiyana",
         "Talon",
         "Zaahen",
-        "Zed",
-        "Fizz"
+        "Zed"
       ],
       "family": "adc_hypercarry",
       "familyLabel": "ADC hypercarry",
@@ -7485,10 +7485,10 @@
       ],
       "bestPairings": [
         "Braum",
+        "Maokai",
         "Poppy",
         "Sion",
-        "Zoé",
-        "Ashe"
+        "Zoé"
       ],
       "optimalSlots": [
         "Mid",
@@ -7528,11 +7528,11 @@
         "Mel"
       ],
       "bestPairings": [
-        "Smolder",
+        "Hecarim",
         "Kog'Maw",
-        "Vayne",
-        "Jinx",
-        "Twitch"
+        "Sion",
+        "Urgot",
+        "Smolder"
       ],
       "optimalSlots": [
         "Mid",
@@ -7615,11 +7615,11 @@
         "Camille"
       ],
       "bestPairings": [
+        "Heimerdinger",
+        "Morgana",
         "Caitlyn",
         "Senna",
-        "Jhin",
-        "Tahm Kench",
-        "Poppy"
+        "Jhin"
       ],
       "optimalSlots": [
         "Mid",

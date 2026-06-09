@@ -10,9 +10,9 @@ const state = {
   view: "champions",
   selectedId: null,
   championPageId: null,
+  mtgGuideReturnView: null,
   slotFilter: "all",
   typeFilter: "all",
-  itemTierFilter: "all",
   tierFilter: "all",
   colorFilter: "all",
   familyFilter: "all",
@@ -25,8 +25,10 @@ const state = {
   activeDraftId: null,
   draftPoolSearch: "",
   draftPoolTier: "all",
+  draftPoolRole: "all",
   tacticsFocus: null,
   tacticsPoolSearch: "",
+  tacticsPoolRole: "all",
   ourComp: { Top: "", Jungle: "", Mid: "", Bot: "", Support: "" },
   enemyComp: { Top: "", Jungle: "", Mid: "", Bot: "", Support: "" },
 };
@@ -43,12 +45,13 @@ function applyUserSessionToState() {
   state.familyFilter = ui.familyFilter ?? state.familyFilter;
   state.compFilter = ui.compFilter ?? state.compFilter;
   state.search = ui.search ?? state.search;
-  state.itemTierFilter = ui.itemTierFilter ?? state.itemTierFilter;
   state.patchSearch = ui.patchSearch ?? state.patchSearch;
   state.patchPoolFilter = ui.patchPoolFilter ?? state.patchPoolFilter;
   state.draftPoolSearch = ui.draftPoolSearch ?? state.draftPoolSearch;
   state.draftPoolTier = ui.draftPoolTier ?? state.draftPoolTier;
+  state.draftPoolRole = ui.draftPoolRole ?? state.draftPoolRole;
   state.tacticsPoolSearch = ui.tacticsPoolSearch ?? state.tacticsPoolSearch;
+  state.tacticsPoolRole = ui.tacticsPoolRole ?? state.tacticsPoolRole;
 
   const tactics = window.LoLUserSession.getTactics();
   if (tactics?.ourComp) Object.assign(state.ourComp, tactics.ourComp);
@@ -73,12 +76,13 @@ function collectUserSessionSnapshot() {
       familyFilter: state.familyFilter,
       compFilter: state.compFilter,
       search: state.search,
-      itemTierFilter: state.itemTierFilter,
       patchSearch: state.patchSearch,
       patchPoolFilter: state.patchPoolFilter,
       draftPoolSearch: state.draftPoolSearch,
       draftPoolTier: state.draftPoolTier,
+      draftPoolRole: state.draftPoolRole,
       tacticsPoolSearch: state.tacticsPoolSearch,
+      tacticsPoolRole: state.tacticsPoolRole,
     },
     tactics: {
       ourComp: { ...state.ourComp },
@@ -115,9 +119,6 @@ function syncUiControlsFromSession() {
   syncMobileSelect("familyFilter");
   syncMobileSelect("compFilter");
   syncMobileSelect("colorFilter");
-  els.itemTierFilters?.querySelectorAll(".chip").forEach((c) => {
-    c.classList.toggle("active", c.dataset.tier === state.itemTierFilter);
-  });
   els.colorFilters?.querySelectorAll(".mtg-dot-btn").forEach((c) => {
     c.classList.toggle("is-active", c.dataset.color === state.colorFilter);
   });
@@ -147,15 +148,12 @@ const els = {
   viewChampions: document.getElementById("view-champions"),
   viewChampionPage: document.getElementById("view-champion-page"),
   championPageContent: document.getElementById("champion-page-content"),
-  viewItems: document.getElementById("view-items"),
+  viewMtgColors: document.getElementById("view-mtg-colors"),
+  mtgColorsGuideContent: document.getElementById("mtg-colors-guide-content"),
   viewDraft: document.getElementById("view-draft"),
   viewTactics: document.getElementById("view-tactics"),
   viewPatch: document.getElementById("view-patch"),
   sidebarChampions: document.getElementById("sidebar-champions"),
-  sidebarItems: document.getElementById("sidebar-items"),
-  itemsGrid: document.getElementById("items-grid"),
-  itemsCountLabel: document.getElementById("items-count-label"),
-  itemTierFilters: document.getElementById("item-tier-filters"),
   sidebarPatch: document.getElementById("sidebar-patch"),
   patchTableBody: document.getElementById("patch-table-body"),
   patchEmpty: document.getElementById("patch-empty"),
@@ -719,12 +717,49 @@ function tierBadgeHtml(tier, large = false) {
 const MTG_CODES = ["W", "U", "B", "R", "G"];
 
 const MTG_COLOR_META = {
-  W: { label: "Blanc", hex: "#f5f0dc", philosophy: "Structure & altruisme" },
-  U: { label: "Bleu", hex: "#4a9fd4", philosophy: "Connaissance & contrôle" },
-  B: { label: "Noir", hex: "#6b6b7a", philosophy: "Pouvoir & sacrifice" },
-  R: { label: "Rouge", hex: "#e05238", philosophy: "Liberté & destruction" },
-  G: { label: "Vert", hex: "#3d9e5a", philosophy: "Croissance & tradition" },
+  W: { label: "Blanc", hex: "#f5f0dc", philosophy: "Structure, peel, altruisme" },
+  U: { label: "Bleu", hex: "#4a9fd4", philosophy: "Contrôle, setup, information" },
+  B: { label: "Noir", hex: "#6b6b7a", philosophy: "Greed, picks, sacrifice" },
+  R: { label: "Rouge", hex: "#e05238", philosophy: "Aggro, tempo, chaos" },
+  G: { label: "Vert", hex: "#3d9e5a", philosophy: "Scaling, durée, tradition" },
 };
+
+function openMtgColorsGuide() {
+  closeFilterDrawer();
+  if (state.view !== "mtg-colors") {
+    state.mtgGuideReturnView = state.view;
+    history.pushState(
+      { view: "mtg-colors", returnView: state.mtgGuideReturnView },
+      "",
+      "#colors"
+    );
+  }
+  setView("mtg-colors");
+  window.MtgColorsGuide?.renderPage(els.mtgColorsGuideContent);
+}
+
+function closeMtgColorsGuide() {
+  const returnView = state.mtgGuideReturnView || "champions";
+  state.mtgGuideReturnView = null;
+  if (state.view !== "mtg-colors") return;
+  if (history.state?.view === "mtg-colors") {
+    history.back();
+    return;
+  }
+  navigateToView(returnView);
+}
+
+function setupMtgColorGuideNav() {
+  document.querySelectorAll("[data-mtg-guide]").forEach((btn) => {
+    if (btn.dataset.bound === "1") return;
+    btn.dataset.bound = "1";
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openMtgColorsGuide();
+    });
+  });
+}
 
 function initMtgMeta(mtgJson) {
   state.mtgMeta = mtgJson || null;
@@ -773,7 +808,19 @@ function colorSpectrumHtml() {
   return "";
 }
 
-function mtgHarmonyTagsHtml(dominantCodes) {
+function mtgHarmonyTagsHtml(dominantCodes, combination) {
+  const pie = window.MTGColorPie;
+  if (pie) {
+    const tags = pie.harmonyTags(dominantCodes, combination);
+    if (!tags.length) return "";
+    const kindClass = { ally: "ally", enemy: "enemy", shard: "shard", wedge: "wedge", mono: "mono" };
+    return `<div class="mtg-harmony-tags">${tags
+      .map(
+        (t) =>
+          `<span class="mtg-harmony-tag mtg-harmony-tag--${kindClass[t.kind] || "ally"}">${escapeHtml(t.text)}</span>`
+      )
+      .join("")}</div>`;
+  }
   const pairs = state.mtgMeta?.pairs || {};
   const dom = dominantCodes || [];
   const allies = [];
@@ -822,16 +869,16 @@ function mtgTeamPanelHtml(names, title) {
           )
           .join("")}</span>`
       : "";
-  const conflicts = summary.conflicts?.length
-    ? `<p class="mtg-team-conflicts">⚠ ${escapeHtml(summary.conflicts.join(" · "))}</p>`
+  const comboLabel = summary.combination?.name || summary.identity || "";
+  const identityExtra = comboLabel && summary.combination?.type && !["multicolor", "dual", "four"].includes(summary.combination.type)
+    ? ` · ${escapeHtml(comboLabel)}`
     : "";
   return `<div class="mtg-team-panel">
     <div class="mtg-team-panel-head">
       <span class="mtg-team-panel-title">${escapeHtml(title)}</span>
-      <span class="mtg-team-identity">${pastilles} · cohérence ${summary.score >= 0 ? "+" : ""}${summary.score}</span>
+      <span class="mtg-team-identity">${pastilles}${identityExtra}</span>
     </div>
-    ${conflicts}
-    ${mtgHarmonyTagsHtml(summary.dominant)}
+    ${mtgHarmonyTagsHtml(summary.dominant, summary.combination)}
   </div>`;
 }
 
@@ -1003,16 +1050,14 @@ function linkChampionNames(html) {
 }
 
 function linkItemNames(html) {
-  for (const name of ITEM_NAMES_SORTED) {
-    if (!state.byItemName.has(name)) continue;
-    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const re = new RegExp(`(?<![\\w-])(${escaped})(?![\\w-])`, "g");
-    html = html.replace(
-      re,
-      `<button type="button" class="item-link" data-item="${escapeHtml(name)}">$1</button>`
-    );
-  }
   return html;
+}
+
+function itemTitle(name) {
+  const item = getItemRecord(name);
+  if (!item) return name;
+  const stats = item.stats ?? item.description ?? "";
+  return stats ? `${name} — ${stats}` : name;
 }
 
 function getChampionBuild(champ) {
@@ -1040,10 +1085,10 @@ function itemIconHtml(name, { size = "sm" } = {}) {
 
 function renderItemChip(name, { compact = false, showName = true, truncate = false } = {}) {
   const label = truncate ? truncateText(name, 22) : name;
-  return `<button type="button" class="item-chip build-chip${compact ? " item-chip--compact" : ""}" data-item="${escapeHtml(name)}" title="${escapeHtml(name)}">
+  return `<span class="item-chip build-chip${compact ? " item-chip--compact" : ""}" title="${escapeHtml(itemTitle(name))}">
     ${itemIconHtml(name, { size: compact ? "xs" : "sm" })}
     ${showName ? `<span class="item-chip-name">${escapeHtml(label)}</span>` : ""}
-  </button>`;
+  </span>`;
 }
 
 function renderDetailCoreItems(champ) {
@@ -1120,15 +1165,6 @@ function renderChampionPageItems(champ) {
         : ""
     }
   </div>`;
-}
-
-function bindBuildChips(root) {
-  root.querySelectorAll(".build-chip").forEach((chip) => {
-    chip.addEventListener("click", (e) => {
-      e.stopPropagation();
-      scrollToItem(chip.dataset.item);
-    });
-  });
 }
 
 function mdBlock(text = "") {
@@ -1483,6 +1519,29 @@ function buildFamilyFilterUI() {
       .map(([key, label]) => `<option value="${escapeHtml(key)}">${escapeHtml(label)}</option>`)
       .join("")}`;
   }
+
+  const mobileTier = document.getElementById("mobile-tier");
+  if (mobileTier) {
+    mobileTier.innerHTML = `<option value="all">Tous les tiers</option>
+      <option value="S">S</option><option value="A">A</option><option value="B">B</option>
+      <option value="C">C</option><option value="D">D</option>`;
+    mobileTier.value = state.tierFilter;
+  }
+  const mobileSlot = document.getElementById("mobile-slot");
+  if (mobileSlot) {
+    mobileSlot.innerHTML = `<option value="all">Tous les rôles</option>
+      <option value="Top">Top</option><option value="Jungle">Jungle</option>
+      <option value="Mid">Mid</option><option value="Bot">Bot</option><option value="Support">Support</option>`;
+    mobileSlot.value = state.slotFilter;
+  }
+  const mobileType = document.getElementById("mobile-type");
+  if (mobileType) {
+    mobileType.innerHTML = `<option value="all">Toutes les classes</option>
+      <option value="Combattant">Fighter</option><option value="Tank">Tank</option>
+      <option value="Mage">Mage</option><option value="Assassin">Assassin</option>
+      <option value="Tireur">Marksman</option><option value="Support">Support</option>`;
+    mobileType.value = state.typeFilter;
+  }
 }
 
 function renderChampionCardHtml(champ, index) {
@@ -1543,8 +1602,107 @@ function normalizeMatchupEntry(entry) {
   };
 }
 
+const SYNERGY_LANE_MIN_RATE = 5;
+const PLAYABLE_SLOTS = ["Top", "Jungle", "Mid", "Bot", "Support"];
+/** Bonus léger au score — ne remplace pas un gros écart de synergie calculée. */
+const SYNERGY_ROLE_PAIR_BONUS = 16;
+const SYNERGY_SOFT_PAIR = {
+  Support: "Bot",
+  Bot: "Support",
+  Mid: "Jungle",
+  Jungle: "Mid",
+};
+
+function champPlayableSlots(champ) {
+  if (!champ) return new Set();
+  const slots = new Set();
+  const rates = champ.laneRates;
+  if (rates) {
+    for (const slot of PLAYABLE_SLOTS) {
+      const r = Number(rates[slot]?.rate);
+      if (r >= SYNERGY_LANE_MIN_RATE) slots.add(slot);
+    }
+  }
+  if (champ.mainRole) slots.add(champ.mainRole);
+  for (const role of champ.flexRoles || []) slots.add(role);
+  for (const slot of champ.optimalSlots || []) slots.add(slot);
+  return slots;
+}
+
+function synergySharesPlayableSlot(champ, partnerName) {
+  const mine = champPlayableSlots(champ);
+  if (!mine.size) return false;
+  const partner = state.byName.get(partnerName);
+  const theirs = champPlayableSlots(partner);
+  for (const slot of mine) {
+    if (theirs.has(slot)) return true;
+  }
+  return false;
+}
+
+function champAnchorSlot(champ) {
+  if (!champ) return null;
+  if (champ.mainRole) return champ.mainRole;
+  const rates = champ.laneRates;
+  if (rates && Object.keys(rates).length) {
+    let best = null;
+    let bestRate = -1;
+    for (const slot of PLAYABLE_SLOTS) {
+      const r = Number(rates[slot]?.rate) || 0;
+      if (r > bestRate) {
+        bestRate = r;
+        best = slot;
+      }
+    }
+    if (best) return best;
+  }
+  if (champ.optimalSlots?.length) return champ.optimalSlots[0];
+  return null;
+}
+
+function synergyRolePairBonus(champ, partnerName) {
+  const anchor = champAnchorSlot(champ);
+  const target = anchor ? SYNERGY_SOFT_PAIR[anchor] : null;
+  if (!target) return 0;
+  const partner = state.byName.get(partnerName);
+  if (!partner) return 0;
+  return champPlayableSlots(partner).has(target) ? SYNERGY_ROLE_PAIR_BONUS : 0;
+}
+
+function synergyEffectiveScore(champ, entry) {
+  return (entry.score ?? 0) + synergyRolePairBonus(champ, entry.name);
+}
+
+function synergySortCompare(champ, a, b) {
+  const diff = synergyEffectiveScore(champ, b) - synergyEffectiveScore(champ, a);
+  if (diff !== 0) return diff;
+  return (b.score ?? 0) - (a.score ?? 0);
+}
+
+/** Pairings draftables d'abord (autre poste), puis même poste / flex conflictuel — score + soft prio rôle complémentaire. */
+function sortSynergiesByRole(champ, entries) {
+  if (!entries?.length) return entries || [];
+  const crossRole = [];
+  const sameSlot = [];
+  for (const entry of entries) {
+    (synergySharesPlayableSlot(champ, entry.name) ? sameSlot : crossRole).push(entry);
+  }
+  crossRole.sort((a, b) => synergySortCompare(champ, a, b));
+  sameSlot.sort((a, b) => synergySortCompare(champ, a, b));
+  return [...crossRole, ...sameSlot];
+}
+
+function getSynergyEntries(champ) {
+  const raw = champ?.allPairings?.length ? champ.allPairings : champ?.bestPairings;
+  if (!raw?.length) return [];
+  return sortSynergiesByRole(champ, raw.map(normalizeMatchupEntry).filter(Boolean));
+}
+
 function getMatchupList(champ, field) {
-  const fullField = field === "bestCounters" ? "allCounters" : field === "bestPairings" ? "allPairings" : null;
+  if (field === "bestPairings" || field === "allPairings") {
+    return getSynergyEntries(champ);
+  }
+  const fullField = field === "bestCounters" ? "allCounters" : null;
   const raw = champ?.[field]?.length ? champ[field] : fullField ? champ?.[fullField] : null;
   if (!raw?.length) {
     if (field === "bestCounters" && champ?.worstMatchups?.length) {
@@ -1556,6 +1714,9 @@ function getMatchupList(champ, field) {
 }
 
 function getFullMatchupList(champ, kind) {
+  if (kind === "synergy") {
+    return getSynergyEntries(champ);
+  }
   const field = kind === "counter" ? "allCounters" : "allPairings";
   const fallback = kind === "counter" ? "bestCounters" : "bestPairings";
   const raw = champ?.[field]?.length ? champ[field] : champ?.[fallback];
@@ -1752,7 +1913,6 @@ function renderDetail(champ) {
   `;
 
   bindChampLinks(els.detailContent);
-  bindBuildChips(els.detailContent);
   els.detailContent.querySelectorAll("[data-champion-page]").forEach((btn) => {
     btn.addEventListener("click", () => openChampionPage(btn.dataset.championPage));
   });
@@ -2116,7 +2276,6 @@ function renderChampionPage(champ) {
 
   bindChampLinks(els.championPageContent, { fullPage: true });
   bindChampionPageTabs(els.championPageContent);
-  bindBuildChips(els.championPageContent);
   document.getElementById("champion-page-back")?.addEventListener("click", closeChampionPage);
 }
 
@@ -2155,16 +2314,6 @@ function parseRouteFromHash() {
   renderChampionPage(champ);
   setView("champion-page");
   return true;
-}
-
-function scrollToItem(name) {
-  setView("items");
-  requestAnimationFrame(() => {
-    const card = document.querySelector(`[data-item-id="${CSS.escape(name)}"]`);
-    card?.scrollIntoView({ behavior: "smooth", block: "center" });
-    card?.classList.add("highlight");
-    setTimeout(() => card?.classList.remove("highlight"), 2000);
-  });
 }
 
 function bindChampLinks(root, { fullPage = false } = {}) {
@@ -2213,53 +2362,6 @@ function closeDetail({ refreshGrid = true } = {}) {
   }
   dismissBlockingOverlays();
   if (refreshGrid && state.view === "champions") renderGrid();
-}
-
-function renderItems() {
-  const filtered = state.items.filter((item) => {
-    if (state.itemTierFilter === "all") return true;
-    const role = item.shopRole || item.category || "";
-    return role === state.itemTierFilter;
-  });
-
-  els.itemsCountLabel.textContent = `${filtered.length} légendaires SR`;
-  els.itemsGrid.innerHTML = filtered
-    .sort((a, b) => (b.gold || b.cost || 0) - (a.gold || a.cost || 0) || a.name.localeCompare(b.name, "fr"))
-    .map((item) => {
-      const cost = item.cost ?? item.gold ?? 0;
-      const stats = item.stats ?? item.description ?? "";
-      const type = item.shopRole || item.type || item.category || "";
-      const passive = item.passive ?? "";
-      const iconHtml = item.icon
-        ? `<img class="item-icon" src="${escapeHtml(item.icon)}" alt="" loading="lazy" width="48" height="48" />`
-        : "";
-      const champs =
-        item.typicalChampions
-          ?.map(
-            (n) =>
-              state.byName.has(n)
-                ? `<button type="button" class="champ-link" data-champ="${escapeHtml(n)}">${escapeHtml(n)}</button>`
-                : escapeHtml(n)
-          )
-          .join(" · ") || "";
-
-      return `
-        <article class="item-card tier-${item.tier}" data-item-id="${escapeHtml(item.name)}">
-          <div class="item-card-header">
-            ${iconHtml}
-            <h3>${escapeHtml(item.name)}</h3>
-            <span class="item-tier-badge">${escapeHtml(type || "Légendaire")}</span>
-          </div>
-          <div class="item-cost">${cost} or</div>
-          ${type ? `<div class="item-type">${escapeHtml(type)}</div>` : ""}
-          <div class="item-stats">${escapeHtml(stats)}</div>
-          ${passive ? `<div class="item-passive">${mdInline(passive)}</div>` : ""}
-          ${champs ? `<div class="item-champs"><span class="item-champs-label">Pour :</span> ${champs}</div>` : ""}
-        </article>`;
-    })
-    .join("");
-
-  bindChampLinks(els.itemsGrid);
 }
 
 const TACTIC_ORDER = [
@@ -2381,7 +2483,7 @@ function importDraftToTactics() {
   Object.assign(state.ourComp, ourComp);
   Object.assign(state.enemyComp, enemyComp);
   state.tacticsFocus = null;
-  renderTacticsDraft();
+  renderTacticsDraft({ refreshPool: true });
   updateImportDraftButton();
 
   const ours = countCompPicks(state.ourComp);
@@ -2408,18 +2510,104 @@ function tacticsComp(side) {
 
 function isTacticsCellFocused(side, slot) {
   const f = state.tacticsFocus;
-  return f && f.side === side && f.slot === slot;
+  if (!f || f.side !== side) return false;
+  return f.slot === slot;
 }
 
-function setTacticsFocus(side, slot) {
-  state.tacticsFocus = { side, slot };
+function isTacticsSwapTarget(side, slot) {
+  const f = state.tacticsFocus;
+  if (f?.type !== "swap" || f.side !== side || f.slot === slot) return false;
+  const comp = tacticsComp(side);
+  return Boolean(comp[f.slot] || comp[slot]);
+}
+
+function setTacticsPickFocus(side, slot, { resortPool = false } = {}) {
+  state.tacticsFocus = { type: "pick", side, slot };
+  state.tacticsPoolRole = slot;
   syncTacticsSlotFocus();
-  syncTacticsPoolFocus(els.tacticsPool);
-  if (els.tacticsFocusHint) {
-    els.tacticsFocusHint.textContent = state.tacticsFocus
-      ? `${state.tacticsFocus.side === "our" ? "Notre équipe" : "Adversaire"} · ${state.tacticsFocus.slot} — choisis un champion dans la liste`
-      : "Clique une lane, puis un champion ci-dessous (A → Z)";
+  if (resortPool && els.tacticsPool?.querySelector(".draft-pool-grid")) {
+    const { filtered, role } = getTacticsPoolFiltered();
+    updateTacticsPoolGrid(els.tacticsPool, filtered, role, { preserveScroll: true });
+  } else {
+    syncTacticsPoolChrome();
   }
+  syncTacticsFocusHint();
+}
+
+function swapTacticsSlots(side, slotA, slotB) {
+  const comp = tacticsComp(side);
+  const a = comp[slotA] || "";
+  const b = comp[slotB] || "";
+  comp[slotA] = b;
+  comp[slotB] = a;
+  state.tacticsFocus = null;
+  renderTacticsDraft();
+  syncTacticsAdvice();
+  scheduleUserSessionSave();
+}
+
+function handleTacticsSlotClick(side, slot) {
+  const comp = tacticsComp(side);
+  const focus = state.tacticsFocus;
+
+  if (focus?.type === "swap" && focus.side === side) {
+    if (focus.slot === slot) {
+      state.tacticsFocus = null;
+    } else {
+      swapTacticsSlots(side, focus.slot, slot);
+      if (els.tacticsFocusHint) {
+        els.tacticsFocusHint.textContent = `${side === "our" ? "Notre équipe" : "Adversaire"} · ${focus.slot} ↔ ${slot} échangés`;
+      }
+      return;
+    }
+    syncTacticsSlotFocus();
+    syncTacticsFocusHint();
+    syncTacticsPoolChrome();
+    return;
+  }
+
+  if (comp[slot]) {
+    state.tacticsFocus = { type: "swap", side, slot };
+    syncTacticsSlotFocus();
+    syncTacticsFocusHint();
+    syncTacticsPoolChrome();
+    return;
+  }
+
+  setTacticsPickFocus(side, slot, { resortPool: true });
+}
+
+function syncTacticsFocusHint() {
+  if (!els.tacticsFocusHint) return;
+  const f = state.tacticsFocus;
+  if (!f) {
+    els.tacticsFocusHint.textContent =
+      "Lane vide → choisis un champion · case pleine → clic pour swap · clic droit = retirer";
+    return;
+  }
+  const team = f.side === "our" ? "Notre équipe" : "Adversaire";
+  if (f.type === "swap") {
+    els.tacticsFocusHint.textContent = `${team} · ${f.slot} — clique un autre poste pour échanger (reclique pour annuler)`;
+    return;
+  }
+  els.tacticsFocusHint.textContent = `${team} · ${f.slot} — choisis un champion dans la liste`;
+}
+
+function syncTacticsPoolChrome() {
+  if (!els.tacticsPool) return;
+  syncTacticsPoolFocus(els.tacticsPool);
+  const { filtered, role } = getTacticsPoolFiltered();
+  const countEl = els.tacticsPool.querySelector(".draft-pool-count");
+  if (countEl) {
+    countEl.textContent = `${filtered.length} dispo · ${tacticsPoolSortLabel(role)}`;
+  }
+  window.LoLPoolRoles?.syncRoleFilterChips(els.tacticsPool, role);
+}
+
+function refreshTacticsPoolGrid({ preserveScroll = true } = {}) {
+  if (!els.tacticsPool?.querySelector(".draft-pool-grid")) return;
+  const { filtered, role } = getTacticsPoolFiltered();
+  updateTacticsPoolGrid(els.tacticsPool, filtered, role, { preserveScroll });
 }
 
 function syncTacticsSlotFocus() {
@@ -2427,32 +2615,48 @@ function syncTacticsSlotFocus() {
     const container = side === "our" ? els.ourSlots : els.enemySlots;
     if (!container) continue;
     container.querySelectorAll("[data-tactics-side]").forEach((cell) => {
-      cell.classList.toggle(
-        "draft-cell-focused",
-        isTacticsCellFocused(cell.dataset.tacticsSide, cell.dataset.tacticsSlot)
-      );
+      const s = cell.dataset.tacticsSide;
+      const sl = cell.dataset.tacticsSlot;
+      cell.classList.toggle("draft-cell-focused", isTacticsCellFocused(s, sl));
+      cell.classList.toggle("draft-cell-swap-target", isTacticsSwapTarget(s, sl));
     });
   }
 }
 
+function clearTacticsSlot(side, slot) {
+  const comp = tacticsComp(side);
+  const name = comp[slot];
+  if (!name) return;
+  comp[slot] = "";
+  state.tacticsFocus = { type: "pick", side, slot };
+  renderTacticsDraft();
+  if (els.tacticsFocusHint) {
+    els.tacticsFocusHint.textContent = `${name} retiré · ${side === "our" ? "Notre équipe" : "Adversaire"} · ${slot}`;
+  }
+  syncTacticsAdvice();
+  scheduleUserSessionSave();
+}
+
 function assignTacticsChampion(name) {
-  if (!state.tacticsFocus) {
+  if (state.tacticsFocus?.type === "swap") return;
+  if (!state.tacticsFocus || state.tacticsFocus.type !== "pick") {
     const slots = tacticsSlots();
     for (const side of ["our", "enemy"]) {
       const comp = tacticsComp(side);
       const empty = slots.find((s) => !comp[s]);
       if (empty) {
-        state.tacticsFocus = { side, slot: empty };
+        state.tacticsFocus = { type: "pick", side, slot: empty };
         break;
       }
     }
   }
-  if (!state.tacticsFocus) return;
+  if (!state.tacticsFocus || state.tacticsFocus.type !== "pick") return;
   const { side, slot } = state.tacticsFocus;
   const comp = tacticsComp(side);
   comp[slot] = name;
   const next = tacticsSlots().find((s) => !comp[s]);
-  state.tacticsFocus = next ? { side, slot: next } : null;
+  state.tacticsFocus = next ? { type: "pick", side, slot: next } : null;
+  if (next) state.tacticsPoolRole = next;
   renderTacticsDraft();
   syncTacticsAdvice();
   scheduleUserSessionSave();
@@ -2476,7 +2680,7 @@ function renderTacticsCompScoreHtml(comp) {
   }
 
   const ourPct = Math.round(comp.winProb.our * 100);
-  const enemyPct = Math.round(comp.winProb.enemy * 100);
+  const enemyPct = 100 - ourPct;
   const fav = ourPct >= enemyPct ? "our" : "enemy";
 
   const breakdownRow = (label, key) => {
@@ -2485,8 +2689,11 @@ function renderTacticsCompScoreHtml(comp) {
     return `<tr><td>${label}</td><td class="num our-num">${o}</td><td class="num enemy-num">${e}</td></tr>`;
   };
 
-  return `<div class="tactics-comp-score-inner">
-    <p class="tactics-comp-score-title">Analyse draft — score &amp; winrate estimé</p>
+  return `<div class="tactics-comp-score-inner${comp?.complete ? " tactics-comp-score-inner--ready" : ""}">
+    <div class="tactics-comp-score-head">
+      <span class="tactics-comp-score-kicker">Analyse draft</span>
+      <p class="tactics-comp-score-title">Score &amp; winrate estimé</p>
+    </div>
     <div class="tactics-comp-duel">
       <div class="tactics-comp-side our-team${fav === "our" ? " is-favored" : ""}">
         <span class="tactics-comp-label">Notre comp</span>
@@ -2504,8 +2711,8 @@ function renderTacticsCompScoreHtml(comp) {
       <div class="tactics-win-bar-our" style="width:${ourPct}%"></div>
       <div class="tactics-win-bar-enemy" style="width:${enemyPct}%"></div>
     </div>
-    <p class="tactics-comp-margin muted">Écart de score : ${comp.margin >= 0 ? "+" : ""}${comp.margin} · faveur ${fav === "our" ? "bleue" : "rouge"}</p>
-    <div class="tactics-mtg-row">
+    <p class="tactics-comp-margin">Écart <strong>${comp.margin >= 0 ? "+" : ""}${comp.margin}</strong> · faveur ${fav === "our" ? "bleue" : "rouge"}</p>
+    <div class="tactics-mtg-row tactics-mtg-row--score">
       ${mtgTeamPanelHtml(compPickNames(state.ourComp), "Identité couleur · nous")}
       ${mtgTeamPanelHtml(compPickNames(state.enemyComp), "Identité couleur · adversaire")}
     </div>
@@ -2540,24 +2747,28 @@ function updateTacticsCompScore() {
   el.innerHTML = renderTacticsCompScoreHtml(comp);
 }
 
-function renderTacticsPoolAlphabetical(champions) {
-  const sorted = [...champions].sort((a, b) => a.name.localeCompare(b.name, "fr"));
-  let lastLetter = "";
-  let html = "";
-  for (const c of sorted) {
-    const letter = c.name.charAt(0).toUpperCase();
-    if (letter !== lastLetter) {
-      lastLetter = letter;
-      html += `<div class="draft-alpha-letter" id="tactics-letter-${letter}">${letter}</div>`;
-    }
-    html += `
-      <button type="button" class="draft-pool-card" data-champ="${escapeHtml(c.name)}" title="${escapeHtml(c.name)}">
+function tacticsPoolSortLabel(role) {
+  const PR = window.LoLPoolRoles;
+  const roleLabel = PR ? PR.roleFilterLabel(role) : role;
+  return `${roleLabel} · tier`;
+}
+
+function renderTacticsPoolGrid(champions, role) {
+  const PR = window.LoLPoolRoles;
+  const metaMap = state.tacticsMeta?.champions || {};
+  const sortSlot = role && role !== "all" ? role : null;
+  return champions
+    .map((c) => {
+      const laneScore = sortSlot && PR ? PR.laneScore(c, sortSlot, metaMap) : 0;
+      const lanePick = sortSlot && laneScore >= 5;
+      return `
+      <button type="button" class="draft-pool-card${lanePick ? " draft-pool-card--lane" : ""}" data-champ="${escapeHtml(c.name)}" title="${escapeHtml(c.name)}${lanePick ? ` · ${sortSlot}` : ""}">
         ${championIconHtml(c, { size: "pool" })}
         <span class="draft-pool-name">${escapeHtml(c.name)}</span>
         ${c.tierMeta ? `<span class="draft-pool-tier tier-${c.tierMeta.toLowerCase()}">${c.tierMeta}</span>` : ""}
       </button>`;
-  }
-  return html;
+    })
+    .join("");
 }
 
 function isTacticsCompComplete() {
@@ -2584,7 +2795,6 @@ function syncTacticsAdvice() {
 function getActiveSidebar() {
   const map = {
     champions: els.sidebarChampions,
-    items: els.sidebarItems,
     patch: els.sidebarPatch,
     tactics: els.sidebarTactics,
   };
@@ -2634,26 +2844,36 @@ function openFilterDrawer() {
 }
 
 function updateFilterButtonVisibility(view) {
-  const hasSidebar = ["champions", "items", "patch", "tactics"].includes(view);
-  els.filterToggle?.classList.toggle("hidden", !hasSidebar);
+  const hasSidebar = ["champions", "patch", "tactics"].includes(view);
+  els.filterToggle?.classList.toggle("hidden", !hasSidebar || view === "mtg-colors");
 }
 
 function getTacticsPoolFiltered() {
+  const PR = window.LoLPoolRoles;
   const searchQuery = state.tacticsPoolSearch || "";
+  const role = state.tacticsPoolRole || "all";
+  const metaMap = state.tacticsMeta?.champions || {};
   const q = searchQuery.toLowerCase();
-  const filtered = state.champions.filter((c) => {
+  let filtered = state.champions.filter((c) => {
     if (!q) return true;
     return c.name.toLowerCase().includes(q) || (c.nameEn || "").toLowerCase().includes(q);
   });
-  const letters = [...new Set(filtered.map((c) => c.name.charAt(0).toUpperCase()))].sort();
-  return { searchQuery, filtered, letters };
+  if (PR) {
+    filtered = PR.filterByRole(filtered, role, metaMap);
+    filtered = PR.sortPool(filtered, { sortSlot: role, tierRank, metaMap });
+  }
+  return { searchQuery, filtered, role };
 }
 
 function tacticsPoolActionText() {
   const focus = state.tacticsFocus;
-  return focus
-    ? `${focus.side === "our" ? "Notre" : "Adversaire"} · ${focus.slot} → choisis un champion`
-    : "Clique une lane ci-dessus, puis un champion";
+  if (focus?.type === "swap") {
+    return `${focus.side === "our" ? "Notre" : "Adversaire"} · swap ${focus.slot} → clique un autre poste`;
+  }
+  if (focus?.type === "pick") {
+    return `${focus.side === "our" ? "Notre" : "Adversaire"} · ${focus.slot} → choisis un champion`;
+  }
+  return "Clique une lane ci-dessus, puis un champion";
 }
 
 function bindTacticsPoolEvents(el) {
@@ -2665,11 +2885,17 @@ function bindTacticsPoolEvents(el) {
     renderTacticsPool({ gridOnly: true });
   });
   el.addEventListener("click", (e) => {
+    const roleChip = e.target.closest(".pool-role-chip");
+    if (roleChip && el.contains(roleChip)) {
+      state.tacticsPoolRole = roleChip.dataset.poolRole || "all";
+      window.LoLPoolRoles?.syncRoleFilterChips(el, state.tacticsPoolRole);
+      renderTacticsPool({ gridOnly: true });
+      scheduleUserSessionSave();
+      return;
+    }
     const link = e.target.closest(".alpha-jump-link");
     if (link && el.contains(link)) {
       e.preventDefault();
-      const id = link.getAttribute("href")?.slice(1);
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
     const btn = e.target.closest(".draft-pool-card");
@@ -2681,35 +2907,23 @@ function syncTacticsPoolFocus(el) {
   const actionEl = el.querySelector(".draft-pool-action");
   if (!actionEl) return;
   actionEl.textContent = tacticsPoolActionText();
-  actionEl.classList.toggle("focus-ready", Boolean(state.tacticsFocus));
+  actionEl.classList.toggle("focus-ready", state.tacticsFocus?.type === "pick");
 }
 
-function updateTacticsPoolGrid(el, filtered, letters) {
+function updateTacticsPoolGrid(el, filtered, role, { preserveScroll = false } = {}) {
   const countEl = el.querySelector(".draft-pool-count");
   if (countEl) {
-    countEl.textContent = `${filtered.length} dispo · ${state.champions.length} rotation patch`;
+    countEl.textContent = `${filtered.length} dispo · ${tacticsPoolSortLabel(role)}`;
   }
-
-  const toolbar = el.querySelector(".draft-pool-toolbar");
-  const jump = toolbar?.querySelector(".draft-alpha-jump");
-  const jumpHtml =
-    letters.length > 1
-      ? `<div class="draft-alpha-jump">${letters
-          .map((l) => `<a href="#tactics-letter-${l}" class="alpha-jump-link">${l}</a>`)
-          .join("")}</div>`
-      : "";
-  if (jumpHtml) {
-    if (jump) jump.outerHTML = jumpHtml;
-    else toolbar?.insertAdjacentHTML("beforeend", jumpHtml);
-  } else if (jump) {
-    jump.remove();
-  }
+  window.LoLPoolRoles?.syncRoleFilterChips(el, role);
 
   const gridEl = el.querySelector(".draft-pool-grid");
   if (gridEl) {
+    const scrollTop = preserveScroll ? gridEl.scrollTop : 0;
     gridEl.innerHTML = filtered.length
-      ? renderTacticsPoolAlphabetical(filtered)
-      : `<p class="muted draft-pool-empty">Aucun champion trouvé.</p>`;
+      ? renderTacticsPoolGrid(filtered, role)
+      : `<p class="muted draft-pool-empty">Aucun champion trouvé${role && role !== "all" ? " pour ce poste" : ""}.</p>`;
+    if (preserveScroll) gridEl.scrollTop = scrollTop;
   }
 }
 
@@ -2717,34 +2931,30 @@ function renderTacticsPool({ gridOnly = false } = {}) {
   const el = els.tacticsPool;
   if (!el) return;
 
-  const { searchQuery, filtered, letters } = getTacticsPoolFiltered();
+  const { searchQuery, filtered, role } = getTacticsPoolFiltered();
 
   if (gridOnly && el.querySelector("#tactics-pool-search")) {
-    updateTacticsPoolGrid(el, filtered, letters);
+    updateTacticsPoolGrid(el, filtered, role, { preserveScroll: true });
+    syncTacticsPoolFocus(el);
     return;
   }
 
   const focus = state.tacticsFocus;
   const actionText = tacticsPoolActionText();
+  const roleFilters = window.LoLPoolRoles?.renderRoleFilterChips(role) || "";
 
   el.innerHTML = `
     <div class="draft-pool-header">
       <h2 class="draft-pool-title">Champions</h2>
-      <span class="draft-pool-count">${filtered.length} dispo · ${state.champions.length} rotation patch</span>
+      <span class="draft-pool-count">${filtered.length} dispo · ${tacticsPoolSortLabel(role)}</span>
     </div>
-    <div class="draft-pool-action${focus ? " focus-ready" : ""}">${escapeHtml(actionText)}</div>
+    <div class="draft-pool-action${focus?.type === "pick" ? " focus-ready" : ""}">${escapeHtml(actionText)}</div>
+    ${roleFilters}
     <div class="draft-pool-toolbar">
       <input type="search" class="draft-pool-search" placeholder="Rechercher…" value="${escapeHtml(searchQuery)}" id="tactics-pool-search" />
-      ${
-        letters.length > 1
-          ? `<div class="draft-alpha-jump">${letters
-              .map((l) => `<a href="#tactics-letter-${l}" class="alpha-jump-link">${l}</a>`)
-              .join("")}</div>`
-          : ""
-      }
     </div>
     <div class="draft-pool-grid draft-pool-grid-alpha">
-      ${filtered.length ? renderTacticsPoolAlphabetical(filtered) : `<p class="muted draft-pool-empty">Aucun champion trouvé.</p>`}
+      ${filtered.length ? renderTacticsPoolGrid(filtered, role) : `<p class="muted draft-pool-empty">Aucun champion trouvé${role && role !== "all" ? " pour ce poste" : ""}.</p>`}
     </div>
   `;
 
@@ -2758,9 +2968,10 @@ function renderTacticsSlotGrid(side, container, comp) {
       const name = comp[slot];
       const champ = name ? state.byName.get(name) : null;
       const focused = isTacticsCellFocused(side, slot);
+      const swapTarget = isTacticsSwapTarget(side, slot);
       return `
         <button type="button"
-          class="draft-cell draft-pick-cell tactics-slot-cell${name ? " filled" : " empty"}${focused ? " draft-cell-focused" : ""}"
+          class="draft-cell draft-pick-cell tactics-slot-cell${name ? " filled" : " empty"}${focused ? " draft-cell-focused" : ""}${swapTarget ? " draft-cell-swap-target" : ""}"
           data-tactics-side="${side}" data-tactics-slot="${slot}"
           aria-label="${side === "our" ? "Notre" : "Adversaire"} ${slot}${name ? ` : ${name}` : ""}">
           <span class="draft-cell-tag">${TACTICS_SLOT_ICONS[slot]} ${slot}</span>
@@ -2776,22 +2987,30 @@ function renderTacticsSlotGrid(side, container, comp) {
 
   container.querySelectorAll("[data-tactics-side]").forEach((cell) => {
     cell.addEventListener("click", () => {
-      setTacticsFocus(cell.dataset.tacticsSide, cell.dataset.tacticsSlot);
+      handleTacticsSlotClick(cell.dataset.tacticsSide, cell.dataset.tacticsSlot);
+    });
+    cell.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      const side = cell.dataset.tacticsSide;
+      const slot = cell.dataset.tacticsSlot;
+      if (!comp[slot]) return;
+      clearTacticsSlot(side, slot);
     });
   });
 }
 
-function renderTacticsDraft() {
+function renderTacticsDraft({ refreshPool = false } = {}) {
   renderTacticsSlotGrid("our", els.ourSlots, state.ourComp);
   renderTacticsSlotGrid("enemy", els.enemySlots, state.enemyComp);
-  renderTacticsPool();
-  syncTacticsPoolFocus(els.tacticsPool);
-  updateTacticsCompScore();
-  if (els.tacticsFocusHint) {
-    els.tacticsFocusHint.textContent = state.tacticsFocus
-      ? `${state.tacticsFocus.side === "our" ? "Notre équipe" : "Adversaire"} · ${state.tacticsFocus.slot} — choisis un champion dans la liste`
-      : "Clique une lane, puis un champion ci-dessous (A → Z)";
+  const poolReady = Boolean(els.tacticsPool?.querySelector(".draft-pool-grid"));
+  if (refreshPool || !poolReady) {
+    renderTacticsPool();
+  } else {
+    refreshTacticsPoolGrid({ preserveScroll: true });
+    syncTacticsPoolFocus(els.tacticsPool);
   }
+  updateTacticsCompScore();
+  syncTacticsFocusHint();
 }
 
 function applyTacticTemplate(key) {
@@ -2799,7 +3018,7 @@ function applyTacticTemplate(key) {
   if (!t) return;
   Object.assign(state.ourComp, t.our);
   Object.assign(state.enemyComp, t.enemy);
-  renderTacticsDraft();
+  renderTacticsDraft({ refreshPool: true });
   syncTacticsAdvice();
   scheduleUserSessionSave();
 }
@@ -2904,6 +3123,59 @@ function renderTacticValueCell(t) {
   return `<strong>${escapeHtml(t.value)}</strong>${renderTacticAssignees(t.assign)}`;
 }
 
+function renderRolePhaseBlock(label, items, mod) {
+  if (!items?.length) return "";
+  return `<div class="tactics-role-phase tactics-role-phase--${mod}">
+    <h4 class="tactics-role-phase-title">${escapeHtml(label)}</h4>
+    <ul class="tactics-role-list">${items.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>
+  </div>`;
+}
+
+function renderRoleAdviceSection(roleAdvice) {
+  if (!roleAdvice?.slots) return "";
+  const slots = window.LoLTactics?.SLOTS || tacticsSlots();
+  const cards = slots
+    .map((slot) => {
+      const r = roleAdvice.slots[slot];
+      if (!r?.champion) return "";
+      const champ = state.byName.get(r.champion);
+      const verdictCls = r.matchupVerdict === "win" ? "win" : r.matchupVerdict === "lose" ? "lose" : "even";
+      const icon = TACTICS_SLOT_ICONS[slot] || "";
+      const slotKey = slot.toLowerCase();
+      return `<article class="tactics-role-card tactics-role-card--${slotKey}">
+        <header class="tactics-role-head">
+          <div class="tactics-role-identity">
+            ${champ ? championIconHtml(champ, { size: "draft" }) : ""}
+            <div class="tactics-role-identity-text">
+              <div class="tactics-role-head-top">
+                <span class="tactics-role-slot">${icon} ${escapeHtml(r.slotLabel || slot)}</span>
+                <span class="tactics-role-verdict verdict ${verdictCls}">${r.matchupVerdict === "win" ? "Lane +" : r.matchupVerdict === "lose" ? "Lane −" : "Lane ="}</span>
+              </div>
+              <strong class="tactics-role-champ">${escapeHtml(r.champion)}</strong>
+              <span class="tactics-role-label">${escapeHtml(r.roleLabel)}</span>
+            </div>
+          </div>
+          ${r.matchupNote ? `<p class="tactics-role-matchup">${escapeHtml(r.matchupNote)}</p>` : ""}
+        </header>
+        <div class="tactics-role-phases">
+          ${renderRolePhaseBlock("Early · 0–14 min", r.early, "early")}
+          ${renderRolePhaseBlock("Mid · 15–25 min", r.mid, "mid")}
+          ${renderRolePhaseBlock("Teamfight & objectifs", r.teamfight, "tf")}
+        </div>
+        ${r.avoid?.length ? `<p class="tactics-role-avoid"><strong>Éviter</strong> ${escapeHtml(r.avoid.join(" · "))}</p>` : ""}
+      </article>`;
+    })
+    .join("");
+
+  return `<section class="tactics-block tactics-roles-block tactics-plan-panel">
+    <div class="tactics-plan-panel-head">
+      <h3>Conseils par joueur</h3>
+      <p class="tactics-roles-hint">Comp <strong class="tactics-comp-badge">${escapeHtml(roleAdvice.compTypeLabel || "détectée")}</strong> — early, mid et late par poste.</p>
+    </div>
+    <div class="tactics-role-grid">${cards}</div>
+  </section>`;
+}
+
 function runTacticsAnalysis() {
   const slots = window.LoLTactics?.SLOTS || [];
   const missing = slots.filter((s) => !state.ourComp[s] || !state.enemyComp[s]);
@@ -2949,19 +3221,25 @@ function runTacticsAnalysis() {
     : "";
 
   const buildsHtml = result.itemGuides ? renderTacticsItemGuidesSection(result.itemGuides) : "";
+  const roleAdviceHtml = renderRoleAdviceSection(result.roleAdvice);
 
   els.tacticsResult.classList.remove("hidden");
   updateTacticsCompScore();
   els.tacticsResult.innerHTML = `
-    <header class="tactics-result-header">
-      <h2>Plan de match — macro</h2>
-      ${
-        result.tactics.compTypeLabel
-          ? `<p class="tactics-comp-type"><strong>Type de comp détecté :</strong> ${escapeHtml(result.tactics.compTypeLabel)}</p>`
-          : ""
-      }
-      <p class="win-plan">${result.winPlan.map((p) => escapeHtml(p)).join(" · ")}</p>
+    <header class="tactics-result-header tactics-plan-hero">
+      <div class="tactics-plan-hero-main">
+        <span class="tactics-plan-kicker">Plan de match</span>
+        <h2>Macro &amp; objectifs</h2>
+        ${
+          result.tactics.compTypeLabel
+            ? `<p class="tactics-comp-type"><span class="tactics-comp-type-label">Type de comp</span> <span class="tactics-comp-badge">${escapeHtml(result.tactics.compTypeLabel)}</span></p>`
+            : ""
+        }
+        <p class="win-plan">${result.winPlan.map((p) => escapeHtml(p)).join(" · ")}</p>
+      </div>
     </header>
+
+    ${roleAdviceHtml}
 
     <section class="tactics-block">
       <h3>Matchups par lane</h3>
@@ -2971,13 +3249,13 @@ function runTacticsAnalysis() {
       </table>
     </section>
 
-    <section class="tactics-block">
-      <h3>Réglages à appliquer (écran Tactiques)</h3>
+    <details class="tactics-block tactics-settings-details">
+      <summary>Réglages écran Tactiques (optionnel)</summary>
       <table class="tactics-table settings-table">
         <thead><tr><th>Option</th><th>Choix</th><th>Pourquoi</th></tr></thead>
         <tbody>${tacticRows}</tbody>
       </table>
-    </section>
+    </details>
 
     ${avoidHtml}
     ${buildsHtml}
@@ -2988,7 +3266,7 @@ function runTacticsAnalysis() {
 
 function setupTactics() {
   updateImportDraftButton();
-  renderTacticsDraft();
+  renderTacticsDraft({ refreshPool: true });
   syncTacticsAdvice();
   els.importDraftTactics?.addEventListener("click", importDraftToTactics);
   els.analyzeTactics?.addEventListener("click", runTacticsAnalysis);
@@ -2999,7 +3277,8 @@ function setupTactics() {
     }
     state.tacticsFocus = null;
     state.tacticsPoolSearch = "";
-    renderTacticsDraft();
+    state.tacticsPoolRole = "all";
+    renderTacticsDraft({ refreshPool: true });
     syncTacticsAdvice();
     scheduleUserSessionSave();
   });
@@ -3009,12 +3288,12 @@ function setupTactics() {
 }
 
 function setView(view) {
-  if (view !== "champion-page") {
+  if (view !== "champion-page" && view !== "mtg-colors") {
     state.championPageId = null;
   }
 
   dismissBlockingOverlays();
-  if (view !== "champion-page") {
+  if (view !== "champion-page" && view !== "mtg-colors") {
     state.selectedId = null;
   }
 
@@ -3023,21 +3302,24 @@ function setView(view) {
   document.querySelector(".app")?.classList.toggle("draft-focus", view === "draft");
   document.querySelector(".app")?.classList.toggle("tactics-focus", view === "tactics");
   document.querySelector(".app")?.classList.toggle("champion-page-focus", view === "champion-page");
+  document.querySelector(".app")?.classList.toggle("mtg-guide-focus", view === "mtg-colors");
 
   els.viewChampions.classList.toggle("hidden", view !== "champions");
   els.viewChampionPage.classList.toggle("hidden", view !== "champion-page");
-  els.viewItems.classList.toggle("hidden", view !== "items");
+  els.viewMtgColors?.classList.toggle("hidden", view !== "mtg-colors");
   els.viewDraft.classList.toggle("hidden", view !== "draft");
   els.viewTactics.classList.toggle("hidden", view !== "tactics");
   els.viewPatch.classList.toggle("hidden", view !== "patch");
   els.sidebarChampions.classList.toggle("hidden", view !== "champions");
-  els.sidebarItems.classList.toggle("hidden", view !== "items");
   els.sidebarPatch.classList.toggle("hidden", view !== "patch");
   els.sidebarDraft.classList.add("hidden");
   els.sidebarTactics.classList.toggle("hidden", view !== "tactics");
   els.headerSearchWrap.classList.toggle("hidden", view !== "champions");
 
-  const navView = view === "champion-page" ? "champions" : view;
+  const navView =
+    view === "champion-page" || view === "mtg-colors"
+      ? state.mtgGuideReturnView || "champions"
+      : view;
   els.navTabs.forEach((tab) => {
     tab.classList.toggle("active", tab.dataset.view === navView);
   });
@@ -3047,13 +3329,15 @@ function setView(view) {
 
   updateFilterButtonVisibility(view);
 
-  if (view === "items") renderItems();
   if (view === "patch") renderPatchTable();
   if (view === "draft" && window.LoLDraftUI) window.LoLDraftUI.onViewShow();
   if (view === "tactics") {
     updateImportDraftButton();
-    renderTacticsDraft();
+    renderTacticsDraft({ refreshPool: true });
     syncTacticsAdvice();
+  }
+  if (view === "mtg-colors") {
+    window.MtgColorsGuide?.renderPage(els.mtgColorsGuideContent);
   }
 
   ensureUiInteractive();
@@ -3127,6 +3411,17 @@ function setupKeyboard() {
       }
       if (state.view === "champion-page") {
         closeChampionPage();
+        return;
+      }
+      if (state.view === "mtg-colors") {
+        closeMtgColorsGuide();
+        return;
+      }
+      if (state.view === "tactics" && state.tacticsFocus) {
+        state.tacticsFocus = null;
+        syncTacticsSlotFocus();
+        syncTacticsFocusHint();
+        syncTacticsPoolChrome();
         return;
       }
       ensureUiInteractive();
@@ -3316,18 +3611,10 @@ async function init() {
   setupFilters(els.typeFilters, "type", "typeFilter");
   setupFilters(els.tierFilters, "tier", "tierFilter");
   setupColorFilters();
+  setupMtgColorGuideNav();
   setupFilters(els.familyFilters, "family", "familyFilter");
   setupFilters(els.compFilters, "comp", "compFilter");
   syncUiControlsFromSession();
-  els.itemTierFilters?.addEventListener("click", (e) => {
-    const chip = e.target.closest(".chip");
-    if (!chip) return;
-    els.itemTierFilters.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
-    chip.classList.add("active");
-    state.itemTierFilter = chip.dataset.tier;
-    renderItems();
-    scheduleUserSessionSave();
-  });
   els.search.addEventListener("input", (e) => {
     state.search = e.target.value;
     renderGrid();
@@ -3391,6 +3678,8 @@ async function init() {
     rebuildEffectiveChampions,
     openChampionPage,
     closeChampionPage,
+    openMtgColorsGuide,
+    closeMtgColorsGuide,
     getPlayableChampions: () => state.champions,
     getClientId: () => window.LoLUserSession?.getClientId?.(),
     persistUserSession,
@@ -3408,17 +3697,27 @@ async function init() {
         return;
       }
     }
+    if (e.state?.view === "mtg-colors") {
+      state.mtgGuideReturnView = e.state.returnView || "champions";
+      setView("mtg-colors");
+      return;
+    }
     if (parseRouteFromHash()) return;
     state.championPageId = null;
+    state.mtgGuideReturnView = null;
     state.selectedId = null;
     const hash = location.hash.replace("#", "");
-    const known = ["items", "draft", "tactics", "patch"];
+    const known = ["draft", "tactics", "patch"];
     setView(known.includes(hash) ? hash : "champions");
   });
 
   if (parseRouteFromHash()) {
     /* fiche champion depuis URL */
-  } else if (location.hash === "#items") setView("items");
+  } else if (location.hash === "#colors") {
+    state.mtgGuideReturnView = "champions";
+    history.replaceState({ view: "mtg-colors", returnView: "champions" }, "", "#colors");
+    setView("mtg-colors");
+  } else if (location.hash === "#items") navigateToView("champions");
   else if (location.hash === "#draft") setView("draft");
   else if (location.hash === "#tactics") setView("tactics");
   else if (location.hash === "#patch") setView("patch");

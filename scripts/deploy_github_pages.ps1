@@ -27,7 +27,7 @@ try {
     git add -A
     $status = git status --porcelain
     if ($status) {
-        git commit -m "Deploy LoL Coach static site"
+        git -c user.name="Samuel Lachance" -c user.email="SamuelLachance@users.noreply.github.com" commit -m "Deploy LoL Coach static site"
     }
 
     $remote = git remote get-url origin 2>$null

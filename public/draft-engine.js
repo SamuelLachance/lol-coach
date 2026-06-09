@@ -41,8 +41,13 @@
   const MTG_COLORS = ["W", "U", "B", "R", "G"];
   const COLOR_LABELS = { W: "Blanc", U: "Bleu", B: "Noir", R: "Rouge", G: "Vert" };
   const COLOR_HEX = { W: "#f5f0dc", U: "#4a9fd4", B: "#6b6b7a", R: "#e05238", G: "#3d9e5a" };
-  const COLOR_ALLIED = [["W", "G"], ["W", "U"], ["U", "G"], ["W", "R"], ["G", "R"]];
-  const COLOR_ENEMY = [["W", "B"], ["U", "R"], ["B", "G"]];
+
+  function mtgPie() {
+    return global.MTGColorPie || null;
+  }
+
+  const COLOR_ALLIED = [["W", "U"], ["U", "B"], ["B", "R"], ["R", "G"], ["G", "W"]];
+  const COLOR_ENEMY = [["W", "B"], ["W", "R"], ["U", "R"], ["U", "G"], ["B", "G"]];
 
   const WAVE_CLEAR = new Set();
 
@@ -129,6 +134,13 @@
     const m = {};
     for (const p of sidePicks(s, side)) if (p.slot) m[p.slot] = p.name;
     return m;
+  }
+  function pickAtSlot(s, side, slot) {
+    return sidePicks(s, side).find((p) => p.slot === slot) || null;
+  }
+  function nextPickOrder(s, side) {
+    const orders = sidePicks(s, side).map((p) => p.order || 0);
+    return orders.length ? Math.max(...orders) + 1 : 1;
   }
   function ourSide(s) { return s.ourSide; }
   function enemySide(s) { return s.ourSide === "blue" ? "red" : "blue"; }
@@ -483,26 +495,41 @@
     return { bonus, reasons };
   }
 
-  function getDraftCoachHint(s, side) {
+  function getDraftCoachHint(s, side, byName, meta) {
     const slot = preferredBlindSlot(s, side);
     const label = SLOT_LABELS[slot] || slot;
     const n = sidePickCount(s, side) + 1;
+    const parts = [];
+
+    if (byName && meta) {
+      const allies = sidePicks(s, side).map((p) => p.name);
+      const opp = side === "blue" ? "red" : "blue";
+      const oppNames = sidePicks(s, opp).map((p) => p.name);
+      const ev = evaluateTeam(allies, {
+        byName, metaMap: meta, oppNames, w: phaseWeights(draftDepth(s)), slotsLeft: openSlots(s, side).length,
+      });
+      if (ev.colors?.combination?.name) parts.push(ev.colors.combination.name);
+      else if (ev.colors?.identity) parts.push(`Couleurs ${ev.colors.identity}`);
+    }
 
     if (isTeamFirstPick(s, side)) {
-      return "Blind 1 : ADC obligatoire · Top/Sup = counter pick uniquement";
+      return parts.length ? `${parts.join(" · ")} · Blind 1 : ADC · Top/Sup counter only` : "Blind 1 : ADC obligatoire · Top/Sup = counter pick uniquement";
     }
     if (isBlindPickPhase(s, side)) {
-      if (slot === "Bot") return `Blind ${n} : ADC (dur à punir)`;
-      if (slot === "Jungle") return `Blind ${n} : Jungle · Top/Sup interdits`;
-      if (slot === "Mid") return `Blind ${n} : Mid · Top/Sup après matchup adverse`;
-      return `Blind ${n} : ${label} · Top/Sup = counter only`;
+      const blind = slot === "Bot" ? `Blind ${n} : ADC (dur à punir)`
+        : slot === "Jungle" ? `Blind ${n} : Jungle · Top/Sup interdits`
+        : slot === "Mid" ? `Blind ${n} : Mid · Top/Sup après matchup adverse`
+        : `Blind ${n} : ${label} · Top/Sup = counter only`;
+      return parts.length ? `${parts.join(" · ")} · ${blind}` : blind;
     }
     if (LATE_MATCHUP_SLOTS.includes(slot)) {
-      return isLaneMatchupKnown(s, side, slot)
+      const lane = isLaneMatchupKnown(s, side, slot)
         ? `Pick ${label} : matchup révélé · counter possible`
         : `Pick ${label} · blind ADC/Jgl/Mid épuisés`;
+      return parts.length ? `${parts.join(" · ")} · ${lane}` : lane;
     }
-    return `Pick : ${label} · Familles · Synergies · Trinité`;
+    const base = `Pick : ${label} · Familles · Synergies · Trinité`;
+    return parts.length ? `${parts.join(" · ")} · ${base}` : base;
   }
 
   // ─── Champion model ───────────────────────────────────────────────────────
@@ -691,6 +718,8 @@
   }
 
   function pairColorScore(a, b) {
+    const pie = mtgPie();
+    if (pie) return pie.pairRelationScore(a, b);
     if (!a?.length || !b?.length) return 0;
     let allied = 0;
     let enemy = 0;
@@ -700,26 +729,25 @@
     for (const [x, y] of COLOR_ENEMY) {
       if (a.includes(x) && b.includes(y)) enemy += 1;
     }
-    return allied * 14 - enemy * 22;
+    return allied * 16 - enemy * 24;
   }
 
   function colorCoherence(vs) {
-    if (!vs.length) return { score: 0, dominant: [], conflicts: [], identity: "" };
+    const pie = mtgPie();
+    if (pie) return pie.colorCoherence(vs);
+    if (!vs.length) return { score: 0, dominant: [], conflicts: [], identity: "", combination: null };
     const cis = vs.map((v) => v.colors).filter(Boolean);
-    if (!cis.length) return { score: 0, dominant: [], conflicts: [], identity: "" };
-
+    if (!cis.length) return { score: 0, dominant: [], conflicts: [], identity: "", combination: null };
     const teamSum = sumColorVectors(cis.map((c) => colorVectorFrom(c)));
     const dominant = dominantFromSum(teamSum);
     let score = 0;
     const conflicts = [];
-
     if (dominant.length === 1 && vs.length >= 2) score += 18 + vs.length * 6;
     else if (dominant.length === 2) score += 12;
     else if (dominant.length >= 3 && vs.length >= 4) {
       score -= 20;
       conflicts.push("Identités couleur dispersées (4+ sans plan)");
     }
-
     for (let i = 0; i < cis.length; i += 1) {
       for (let j = i + 1; j < cis.length; j += 1) {
         const d1 = cis[i].dominant || dominantFromSum(colorVectorFrom(cis[i]));
@@ -727,24 +755,24 @@
         score += pairColorScore(d1, d2);
         for (const [x, y] of COLOR_ENEMY) {
           if (d1.includes(x) && d2.includes(y)) {
-            conflicts.push(`${COLOR_LABELS[x]}+${COLOR_LABELS[y]} (${vs[i].name}/${vs[j].name})`);
+            conflicts.push(`${COLOR_LABELS[x]} vs ${COLOR_LABELS[y]} (${vs[i].name}/${vs[j].name})`);
             score -= 18;
           }
         }
       }
     }
-
-    const uniq = [...new Set(conflicts)].slice(0, 3);
     return {
-      score: Math.round(score),
-      dominant,
-      conflicts: uniq,
-      identity: dominant.join("") || "WUBRG",
-      teamSum,
+      score: Math.round(score), dominant, conflicts: [...new Set(conflicts)].slice(0, 4),
+      identity: dominant.join("") || "", combination: null, teamSum,
     };
   }
 
-  function colorPickBonus(champColors, teamColors) {
+  function colorPickBonus(champColors, teamColors, teamSum) {
+    const pie = mtgPie();
+    if (pie) {
+      const r = pie.colorPickBonus(champColors, teamColors, teamSum);
+      return typeof r === "object" ? r.score : r;
+    }
     if (!champColors || !teamColors?.length) return 0;
     let s = 0;
     const dom = champColors.dominant || [];
@@ -757,6 +785,12 @@
       s += Math.round(dot * 35);
     }
     return s;
+  }
+
+  function colorPickDetail(champColors, teamColors, teamSum) {
+    const pie = mtgPie();
+    if (pie) return pie.colorPickBonus(champColors, teamColors, teamSum);
+    return { score: colorPickBonus(champColors, teamColors, teamSum), label: null };
   }
 
   function teamColorSummary(names, byName, meta) {
@@ -1075,8 +1109,13 @@
   }
 
   function optimizeLayout(s, side, byName, meta) {
-    const names = sidePicks(s, side).map((p) => p.name);
-    if (!names.length) { s.picks[side] = []; return; }
+    const picks = sidePicks(s, side);
+    if (!picks.length) { s.picks[side] = []; return; }
+    const pinned = picks.filter((p) => p.pinned && p.slot);
+    const unpinned = picks.filter((p) => !p.pinned);
+    const names = unpinned.map((p) => p.name);
+    if (!names.length) return;
+    const usedSlots = new Set(pinned.map((p) => p.slot));
     const opp = side === "blue" ? "red" : "blue";
     const depth = draftDepth(s);
     const ctx = {
@@ -1085,9 +1124,23 @@
       oppComp: pickBySlot(s, opp),
       w: phaseWeights(depth),
     };
-    const slotPool = layoutAllowedSlots(s, side);
-    const { assignment } = bestLayout(names, ctx, slotPool);
-    if (assignment.length) s.picks[side] = assignment;
+    const slotPool = layoutAllowedSlots(s, side).filter((sl) => !usedSlots.has(sl));
+    const { assignment } = bestLayout(names, ctx, slotPool.length ? slotPool : SLOTS.filter((sl) => !usedSlots.has(sl)));
+    if (assignment.length) {
+      const orderByName = Object.fromEntries(unpinned.map((p) => [p.name, p.order]));
+      const merged = assignment.map((a) => ({
+        ...a,
+        order: orderByName[a.name] ?? nextPickOrder(s, side),
+        pinned: false,
+      }));
+      s.picks[side] = [...pinned, ...merged];
+    }
+  }
+
+  function assignPickDirect(s, side, name, slot, { pinned = true } = {}) {
+    const list = sidePicks(s, side).filter((p) => p.name !== name && p.slot !== slot);
+    list.push({ name, slot, order: nextPickOrder(s, side), pinned });
+    s.picks[side] = list;
   }
 
   function relayoutAll(s, ctx = {}) {
@@ -1114,9 +1167,13 @@
     return { s, links };
   }
 
-  function explain(before, after, champ, slot, allies, links, w, meta) {
+  function explain(before, after, champ, slot, allies, links, w, meta, colorDetail = null) {
     const r = [];
     const v = buildVector(champ, meta);
+    if (colorDetail?.label) r.push(colorDetail.label);
+    if (after.colors?.combination?.name && after.colors.combination.type !== "multicolor") {
+      r.push(`Comp ${after.colors.combination.name}`);
+    }
     if (links.links) r.push(`Synergie sorts/combo (${links.links})`);
     if (after.breakdown.synergy > before.breakdown.synergy + 20) r.push("Renforce la synergie");
     if (after.breakdown.h2h > before.breakdown.h2h + 18) r.push("Avantage vs adversaire");
@@ -1193,7 +1250,8 @@
     score += Math.round(v.specialist * 22 * w.carry);
 
     const teamColors = before.vs?.map((x) => x.colors).filter(Boolean) || [];
-    score += Math.round(colorPickBonus(v.colors, teamColors) * w.synergy * 0.85);
+    const colorDetail = colorPickDetail(v.colors, teamColors, before.colors?.teamSum);
+    score += Math.round(colorDetail.score * w.synergy * 0.85);
     if (after.colors?.conflicts?.length > (before.colors?.conflicts?.length || 0)) {
       score -= Math.round(25 * w.synergy);
     }
@@ -1228,7 +1286,7 @@
     const foundation = scoreCompFoundationBonus(before, after, links, depth);
     score += foundation.bonus;
 
-    const reasons = explain(before, after, champ, slot, allies, links, w, meta);
+    const reasons = explain(before, after, champ, slot, allies, links, w, meta, colorDetail);
     const extraReasons = [
       ...slotOrder.reasons,
       ...blindPick.reasons,
@@ -1327,8 +1385,13 @@
       const list = sidePicks(s, step.side).filter((p) => p.name !== action.championName);
       if (list.length >= 5) return { ok: false, error: "Picks pleins." };
       clearFromBoard(s, action.championName);
-      s.picks[step.side] = list.concat([{ name: action.championName, slot: SLOTS[0] }]);
-      relayoutAll(s, ctx);
+      const by = pickBySlot(s, step.side);
+      if (action.slot && !by[action.slot]) {
+        assignPickDirect(s, step.side, action.championName, action.slot, { pinned: true });
+      } else {
+        s.picks[step.side] = list.concat([{ name: action.championName, slot: SLOTS[0], order: nextPickOrder(s, step.side) }]);
+        relayoutAll(s, ctx);
+      }
     }
     s.stepIndex++;
     s.updatedAt = Date.now();
@@ -1427,14 +1490,19 @@
     } else {
       const list = sidePicks(s, side).filter((p) => p.name !== name);
       if (list.length >= 5) return { ok: false, error: "Picks pleins." };
-      s.picks[side] = list.concat([{ name, slot: SLOTS[0] }]);
-      relayoutAll(s, ctx);
+      const by = pickBySlot(s, side);
+      if (hintSlot && !by[hintSlot]) {
+        assignPickDirect(s, side, name, hintSlot, { pinned: true });
+      } else {
+        s.picks[side] = list.concat([{ name, slot: SLOTS[0], order: nextPickOrder(s, side) }]);
+        relayoutAll(s, ctx);
+      }
       const placed = s.picks[side].find((p) => p.name === name);
       if (!placed) return { ok: false, error: "Placement impossible." };
       resyncStepIndex(s);
       s.updatedAt = Date.now();
       invalidateRecommendationCache();
-      return { ok: true, slot: placed.slot };
+      return { ok: true, slot: placed.slot, manual: true };
     }
 
     resyncStepIndex(s);
@@ -1443,17 +1511,44 @@
     return { ok: true };
   }
 
+  function clearSlot(s, action, all = [], ctx = {}) {
+    normalizeSession(s);
+    const { type, side, slot, banIndex } = action;
+    if (type === "ban") {
+      if (banIndex == null || banIndex < 0 || banIndex >= BANS_PER_TEAM) {
+        return { ok: false, error: "Case ban invalide." };
+      }
+      if (!s.bans[side][banIndex]) return { ok: false, error: "Case déjà vide." };
+    } else if (type === "pick") {
+      if (!slot || !pickBySlot(s, side)[slot]) return { ok: false, error: "Poste déjà vide." };
+    } else {
+      return { ok: false, error: "Type invalide." };
+    }
+    const removed =
+      type === "ban" ? s.bans[side][banIndex] : pickBySlot(s, side)[slot];
+    const result = manualAssign(s, { type, side, name: null, slot, banIndex }, all, ctx);
+    if (result.ok) {
+      result.cleared = removed;
+      result.inOrder = false;
+    }
+    return result;
+  }
+
   function recordAction(s, action, all = [], ctx = {}) {
     const step = getStep(s);
-    if (step && step.type === action.type && step.side === action.side && !action.forceManual) {
+    const inOrder = step && step.type === action.type && step.side === action.side && !action.forceManual;
+    if (inOrder) {
       const banIndex = action.type === "ban" ? (action.banIndex ?? step.banIndex) : action.banIndex;
       const result = applyAction(s, { championName: action.name, slot: action.slot, banIndex }, all, ctx);
       if (result.ok && action.type === "pick") {
         result.slot = s.picks[action.side]?.find((p) => p.name === action.name)?.slot;
       }
+      result.inOrder = true;
       return result;
     }
-    return manualAssign(s, action, all, ctx);
+    const result = manualAssign(s, action, all, ctx);
+    if (result.ok) result.inOrder = false;
+    return result;
   }
 
   function suggestNextFocus(s) {
@@ -1468,7 +1563,8 @@
         return s.focus;
       }
     } else {
-      s.focus = { type: "pick", side: step.side };
+      const slot = preferredBlindSlot(s, step.side);
+      s.focus = { type: "pick", side: step.side, slot: slot || null };
       return s.focus;
     }
     s.focus = null;
@@ -1484,7 +1580,7 @@
     else s.enemyActiveSlot = next;
   }
 
-  function actionLabel(s) {
+  function actionLabel(s, byName, meta) {
     const f = s.focus;
     if (f) {
       const fr = f.side === "blue" ? "Bleu" : "Rouge";
@@ -1492,13 +1588,19 @@
         const phase = f.banIndex < BAN_PHASE1_COUNT ? "phase 1" : "phase 2";
         return `Ban ${fr} (${phase}, ${f.banIndex + 1}/5) → champion`;
       }
-      if (f.type === "swap") return `Swap ${fr}`;
-      return getDraftCoachHint(s, f.side) || `Pick ${fr} → champion (poste auto)`;
+      if (f.type === "swap") return `Swap ${fr} · clique un autre poste`;
+      if (f.slot) {
+        const label = SLOT_LABELS[f.slot] || f.slot;
+        return `Pick ${fr} · ${label} → champion (clic ou glisser)`;
+      }
+      const hint = getDraftCoachHint(s, f.side, byName, meta);
+      return hint ? `Pick ${fr} → champion · ${hint}` : `Pick ${fr} → champion (poste auto)`;
     }
     const step = getStep(s);
     if (!step || isComplete(s)) return null;
     if (step.type === "pick") {
-      return getDraftCoachHint(s, step.side) || "Pick → champion";
+      const hint = getDraftCoachHint(s, step.side, byName, meta);
+      return hint ? `Pick → champion · ${hint}` : "Pick → champion";
     }
     return "Ban → champion";
   }
@@ -1542,7 +1644,7 @@
       type: "pick",
       side,
       slot: hint,
-      coachHint: getDraftCoachHint(s, side),
+      coachHint: getDraftCoachHint(s, side, byName, meta),
       items,
       forSide: side,
     };
@@ -1656,6 +1758,24 @@
     return SLOTS.map((sl) => comp[sl]).filter(Boolean);
   }
 
+  /** Win % aligné sur les scores affichés (ratio) ; logistic sur marge si totaux ≤ 0. */
+  function winProbFromScores(ourTotal, enemyTotal) {
+    if (!Number.isFinite(ourTotal) || !Number.isFinite(enemyTotal)) {
+      return { our: 0.5, enemy: 0.5 };
+    }
+    const sum = ourTotal + enemyTotal;
+    if (sum > 0) {
+      const our = ourTotal / sum;
+      return { our, enemy: 1 - our };
+    }
+    const margin = ourTotal - enemyTotal;
+    if (margin === 0) return { our: 0.5, enemy: 0.5 };
+    const scale = 42;
+    const raw = 1 / (1 + Math.exp(-margin / scale));
+    const our = Math.min(0.93, Math.max(0.07, raw));
+    return { our, enemy: 1 - our };
+  }
+
   /** Compare deux comps complètes — score draft + probabilité de victoire. */
   function compareComps(ourComp, enemyComp, byName, metaMap) {
     const ourNames = namesFromComp(ourComp);
@@ -1689,7 +1809,7 @@
     });
 
     const margin = ourEval.total - enemyEval.total;
-    const pOur = 1 / (1 + Math.exp(-0.022 * margin));
+    const winProb = winProbFromScores(ourEval.total, enemyEval.total);
 
     return {
       complete: true,
@@ -1702,10 +1822,7 @@
         breakdown: enemyEval.breakdown,
       },
       margin: Math.round(margin),
-      winProb: {
-        our: pOur,
-        enemy: 1 - pOur,
-      },
+      winProb,
     };
   }
 
@@ -1735,6 +1852,8 @@
     availableChampions: available,
     sidePicks,
     pickBySlot,
+    pickAtSlot,
+    nextPickOrder,
     ourSide,
     enemySide,
     isOurTurn,
@@ -1759,6 +1878,7 @@
     applyAction,
     recordAction,
     manualAssign,
+    clearSlot,
     actionLabel,
     suggestNextFocus,
     syncLegacySlots,

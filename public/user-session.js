@@ -40,7 +40,9 @@
       patchPoolFilter: "all",
       draftPoolSearch: "",
       draftPoolTier: "all",
+      draftPoolRole: "all",
       tacticsPoolSearch: "",
+      tacticsPoolRole: "all",
     };
   }
 

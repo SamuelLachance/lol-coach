@@ -17,6 +17,9 @@
   <link rel="stylesheet" href="ui-spacious.css" />
   <link rel="stylesheet" href="ui-detail.css" />
   <link rel="stylesheet" href="design-system.css" />
+  <link rel="stylesheet" href="ui-mtg-guide.css" />
+  <link rel="stylesheet" href="ui-tactics-plan.css" />
+  <link rel="stylesheet" href="ui-responsive.css" />
 </head>
 <body>
   <div class="app">
@@ -31,7 +34,6 @@
 
       <nav class="header-nav" aria-label="Navigation principale">
         <button type="button" class="nav-tab active" data-view="champions">Champions</button>
-        <button type="button" class="nav-tab" data-view="items">Objets</button>
         <button type="button" class="nav-tab" data-view="draft">Draft</button>
         <button type="button" class="nav-tab" data-view="tactics">Macro</button>
         <button type="button" class="nav-tab" data-view="patch">Patch</button>
@@ -83,8 +85,10 @@
       </section>
 
       <section class="filter-section">
-        <h2>Couleur MTG</h2>
-        <p class="sidebar-hint">Identité philosophique (W/U/B/R/G) — même logique que Magic, appliquée à la draft LoL.</p>
+        <div class="filter-label-row">
+          <h2>Couleur MTG</h2>
+          <button type="button" class="filter-help-btn" data-mtg-guide aria-label="Ouvrir le guide des couleurs MTG" title="Guide complet du système de couleurs">?</button>
+        </div>
         <div class="mtg-color-filters" id="color-filters"></div>
       </section>
 
@@ -116,24 +120,6 @@
 
       <div class="sidebar-stats">
         <span id="count-label">— champions</span>
-      </div>
-    </aside>
-
-    <aside class="sidebar guide-sidebar hidden" id="sidebar-items" aria-label="Filtres objets">
-      <div class="sidebar-head"><h2>Objets</h2></div>
-      <section class="filter-section">
-        <h3>Type</h3>
-        <div class="filter-chips filter-chips-row" id="item-tier-filters">
-          <button class="chip active" data-tier="all">Tous</button>
-          <button class="chip" data-tier="AD">AD</button>
-          <button class="chip" data-tier="Crit / AD">Crit</button>
-          <button class="chip" data-tier="Magique">AP</button>
-          <button class="chip" data-tier="Tank">Tank</button>
-          <button class="chip" data-tier="Utilitaire">Util</button>
-        </div>
-      </section>
-      <div class="sidebar-stats">
-        <span id="items-count-label">— objets</span>
       </div>
     </aside>
 
@@ -180,7 +166,7 @@
 
     <main class="main" id="view-champions">
       <div id="app-status" class="app-status hidden" role="alert" aria-live="polite"></div>
-      <div class="mobile-filters hidden" aria-hidden="true">
+      <div class="mobile-filters" aria-label="Filtres rapides">
         <select id="mobile-family" aria-label="Famille"><option value="all">Famille</option></select>
         <select id="mobile-comp" aria-label="Comp"><option value="all">Comp</option></select>
         <select id="mobile-color" aria-label="Couleur MTG"><option value="all">Couleur</option></select>
@@ -197,7 +183,10 @@
             <div class="champions-hero-nav" id="family-stats" role="tablist" aria-label="Familles"></div>
           </div>
           <div class="champions-toolbar-group champions-toolbar-group--colors">
-            <span class="champions-toolbar-label">Couleurs</span>
+            <div class="filter-label-row">
+              <span class="champions-toolbar-label">Couleurs</span>
+              <button type="button" class="filter-help-btn" data-mtg-guide aria-label="Ouvrir le guide des couleurs MTG" title="Guide complet du système de couleurs">?</button>
+            </div>
             <div class="mtg-compass" id="mtg-compass" role="tablist" aria-label="Couleurs MTG"></div>
           </div>
         </div>
@@ -211,10 +200,6 @@
       <div id="empty" class="empty-state hidden">
         <p>Aucun résultat.</p>
       </div>
-    </main>
-
-    <main class="main guide-main hidden" id="view-items">
-      <div id="items-grid" class="items-grid" aria-live="polite"></div>
     </main>
 
     <main class="main draft-main hidden" id="view-draft">
@@ -289,6 +274,10 @@
       <div id="champion-page-content" class="champion-page-content"></div>
     </main>
 
+    <main class="main mtg-guide-main hidden" id="view-mtg-colors">
+      <div id="mtg-colors-guide-content"></div>
+    </main>
+
     <aside id="detail" class="detail-panel" aria-hidden="true">
       <button id="close-detail" class="close-btn" aria-label="Fermer">×</button>
       <div id="detail-content"></div>
@@ -312,19 +301,18 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M12 3v18M3 12h18"/></svg>
         <span>Patch</span>
       </button>
-      <button type="button" class="tab-bar-item" data-view="items">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg>
-        <span>Objets</span>
-      </button>
     </nav>
   </div>
 
   <script src="site-config.js?v=1"></script>
   <script src="user-session.js?v=4"></script>
   <script src="patch-config.js?v=4"></script>
-  <script src="draft-engine.js?v=8"></script>
-  <script src="tactics-engine.js?v=4"></script>
-  <script src="app.js?v=10"></script>
-  <script src="draft-ui.js?v=5"></script>
+  <script src="mtg-color-pie.js?v=1"></script>
+  <script src="draft-engine.js?v=16"></script>
+  <script src="tactics-engine.js?v=5"></script>
+  <script src="pool-role-filters.js?v=1"></script>
+  <script src="mtg-colors-guide.js?v=1"></script>
+  <script src="app.js?v=25"></script>
+  <script src="draft-ui.js?v=9"></script>
 </body>
 </html>

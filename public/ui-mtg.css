@@ -506,6 +506,44 @@
   margin-top: 0.35rem;
 }
 
+.mtg-harmony-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-top: 0.4rem;
+}
+
+.mtg-harmony-tag {
+  font-size: 0.65rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+.mtg-harmony-tag--ally {
+  background: rgba(76, 175, 130, 0.15);
+  color: #8fd4b0;
+}
+
+.mtg-harmony-tag--enemy {
+  background: rgba(224, 93, 93, 0.12);
+  color: #e8a0a0;
+}
+
+.mtg-harmony-tag--shard {
+  background: rgba(120, 160, 220, 0.15);
+  color: #a8c8f0;
+}
+
+.mtg-harmony-tag--wedge {
+  background: rgba(180, 140, 220, 0.15);
+  color: #c8b0e8;
+}
+
+.mtg-harmony-tag--mono {
+  background: rgba(200, 200, 200, 0.12);
+  color: #d0d0d0;
+}
+
 .card-matchups {
   display: flex;
   flex-direction: column;
@@ -665,4 +703,97 @@
   .champions-hero-nav {
     max-height: none;
   }
+}
+
+/* ─── Aide couleurs MTG (?) ─────────────────────────────────────────────── */
+
+.filter-label-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.45rem;
+}
+
+.filter-label-row h2 {
+  margin: 0;
+}
+
+.filter-help-btn {
+  appearance: none;
+  flex-shrink: 0;
+  width: 1.35rem;
+  height: 1.35rem;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: help;
+  transition: border-color 0.12s, color 0.12s, background 0.12s;
+}
+
+.filter-help-btn:hover,
+.filter-help-btn[aria-expanded="true"] {
+  color: #dbeafe;
+  border-color: rgba(94, 179, 255, 0.45);
+  background: rgba(94, 179, 255, 0.12);
+}
+
+.filter-help-panel {
+  margin-bottom: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid rgba(94, 179, 255, 0.22);
+  background: rgba(8, 14, 24, 0.92);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #c8d4e0;
+}
+
+.filter-help-panel--toolbar {
+  margin-top: 0.15rem;
+  max-width: 28rem;
+}
+
+.filter-help-lead {
+  margin: 0 0 0.55rem;
+  color: #e2e8f0;
+}
+
+.filter-help-body {
+  margin: 0 0 0.45rem;
+}
+
+.filter-help-muted {
+  margin: 0.55rem 0 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.filter-help-colors {
+  margin: 0 0 0.55rem;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.filter-help-color-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.filter-help-color-row .mtg-pastille {
+  flex-shrink: 0;
+}
+
+.champions-toolbar-group--colors .filter-label-row {
+  margin-bottom: 0.35rem;
 }

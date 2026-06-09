@@ -9,8 +9,9 @@ ROOT = Path(__file__).resolve().parents[1]
 SRC = Path("public/data/champions.json")
 DST = Path("public/data/champions-index.json")
 
-STRIP_KEYS = frozenset({"abilities", "raison", "stats", "allCounters", "allPairings"})
+STRIP_KEYS = frozenset({"abilities", "raison", "stats", "allCounters"})
 MATCHUP_LIMIT = 8
+PAIRINGS_LIMIT = 48
 
 
 def slim_matchups(entries: list | None, limit: int = MATCHUP_LIMIT) -> list:
@@ -25,6 +26,8 @@ def slim_champion(champ: dict) -> dict:
         out["bestCounters"] = slim_matchups(out["bestCounters"])
     if "bestPairings" in out:
         out["bestPairings"] = slim_matchups(out["bestPairings"])
+    if "allPairings" in out:
+        out["allPairings"] = slim_matchups(out["allPairings"], limit=PAIRINGS_LIMIT)
     return out
 
 
