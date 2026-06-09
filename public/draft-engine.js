@@ -151,56 +151,6 @@
     return Math.min(1, (sidePicks(s, "blue").length + sidePicks(s, "red").length) / 10);
   }
 
-  const DRAFT_PHASE_LABELS = {
-    ban: "Ban phase",
-    opening: "Opening",
-    mid: "Mid draft",
-    closing: "Closing",
-  };
-
-  function draftPhase(s) {
-    const step = getStep(s);
-    if (step?.type === "ban") return "ban";
-    const d = sidePicks(s, "blue").length + sidePicks(s, "red").length;
-    if (d <= 2) return "opening";
-    if (d <= 6) return "mid";
-    return "closing";
-  }
-
-  function classifyBanDeny(reasons) {
-    const joined = (reasons || []).join(" ").toLowerCase();
-    if (/casse synergie|deny duo|synergy break/i.test(joined)) return "synergy-break";
-    if (/target|menace carry|anti-dive|brise réponse|deny peel|deny front|deny carry/i.test(joined)) {
-      return "target-ban";
-    }
-    if (/flex ban|deny s flex|cache intent/i.test(joined)) return "flex-ban";
-    return "pool-deny";
-  }
-
-  const BAN_DENY_LABELS = {
-    "synergy-break": "Synergy break",
-    "target-ban": "Target ban",
-    "flex-ban": "Flex ban",
-    "pool-deny": "Pool deny",
-  };
-
-  function getDraftInsight(s, byName, meta) {
-    const ourNames = sidePicks(s, ourSide(s)).map((p) => p.name);
-    const enNames = sidePicks(s, enemySide(s)).map((p) => p.name);
-    const ourPlan = detectCompPlan(teamVectors(ourNames, byName, meta));
-    const enemyPlan = detectCompPlan(teamVectors(enNames, byName, meta));
-    const phase = draftPhase(s);
-    return {
-      phase,
-      phaseLabel: DRAFT_PHASE_LABELS[phase] || phase,
-      depth: draftDepth(s),
-      weights: phaseWeights(draftDepth(s)),
-      our: ourPlan,
-      enemy: enemyPlan,
-      winProgress: ourPlan.completeness,
-    };
-  }
-
   function phaseWeights(depth) {
     const d = Math.max(0, Math.min(1, depth));
     return {
@@ -1123,10 +1073,8 @@
     const { blindRisk, poolThreat } = counterabilityScore(v, meta, byName, champ.name);
     if (blindRisk < 35) return { penalty: 0, reasons: [] };
     const pickN = sidePickCount(s, side);
-    const weight = pickN === 0 ? 1.55 : pickN === 1 ? 0.85 : 0.5;
-    let penalty = Math.round(blindRisk * weight * (1 - draftDepth(s) * 0.25));
-    if (pickN === 0 && poolThreat >= 4) penalty += (poolThreat - 3) * 12;
-    if (pickN === 0 && v.specialist > 0.55 && v.flex < 0.4) penalty += 22;
+    const weight = pickN === 0 ? 1 : pickN === 1 ? 0.75 : 0.5;
+    const penalty = Math.round(blindRisk * weight * (1 - draftDepth(s) * 0.35));
     const reasons = [];
     if (poolThreat >= 3) reasons.push(`Counterable (${poolThreat} menaces pool)`);
     else if (poolThreat >= 1) reasons.push("Matchup risqué en blind");
@@ -1480,18 +1428,8 @@
     const antiBlind = scoreAntiBlindPenalty(champ, v, s, side, byName, meta);
     score -= antiBlind.penalty;
 
-    const safeBlindReasons = [];
-    if (isTeamFirstPick(s, side) && blindTarget === "Bot" && playsSlot(v, champ, "Bot")) {
-      const { poolThreat } = counterabilityScore(v, meta, byName, champ.name);
-      if (poolThreat <= 2 && (v.tierMeta === "S" || v.tierMeta === "A") && v.carry > 0.55) {
-        score += 32;
-        safeBlindReasons.push("Safe blind ADC anchor");
-      }
-    }
-
     const reasons = explain(before, after, champ, slot, allies, links, w, meta, colorDetail);
     const extraReasons = [
-      ...safeBlindReasons,
       ...slotOrder.reasons,
       ...blindPick.reasons,
       ...(firstBlindBonus?.reasons || []),
@@ -1502,15 +1440,7 @@
     for (const r of extraReasons) {
       if (!reasons.includes(r)) reasons.unshift(r);
     }
-    const layers = {
-      delta: Math.round(after.total - before.total),
-      tier: Math.round(TIER_PTS[v.tierMeta] * w.tier),
-      synergy: Math.round(links.s * w.synergy * (0.5 + allies.length * 0.12)),
-      counter: Math.round((after.breakdown.counter - before.breakdown.counter) * w.counter),
-      plan: Math.round(winCond.bonus * (w.plan || 1)),
-      blind: -antiBlind.penalty,
-    };
-    return { score, reasons: reasons.slice(0, 8), slot, eval: after, layers };
+    return { score, reasons: reasons.slice(0, 8), slot, eval: after };
   }
 
   function scoreCandidate(s, side, champ, byName, meta, hintSlot = null) {
@@ -1626,9 +1556,7 @@
       }
     }
 
-    const reasons = [...new Set(r)].slice(0, 7);
-    const denyType = classifyBanDeny(reasons);
-    return { score, reasons, denyType, denyLabel: BAN_DENY_LABELS[denyType] || denyType };
+    return { score, reasons: [...new Set(r)].slice(0, 7) };
   }
 
   // ─── Session actions (unchanged API) ────────────────────────────────────
@@ -1888,22 +1816,12 @@
       };
     }
 
-    const insight = getDraftInsight(s, byName, meta);
-
     if (step.type === "ban") {
       const items = avail.map((c) => {
-        const { score, reasons, denyType, denyLabel } = scoreBan(c, s, side, byName, meta);
-        return { champion: c, score, reasons, denyType, denyLabel };
+        const { score, reasons } = scoreBan(c, s, side, byName, meta);
+        return { champion: c, score, reasons };
       }).sort((a, b) => b.score - a.score).slice(0, limit);
-      const result = {
-        type: "ban",
-        side,
-        items,
-        forSide: side,
-        insight,
-        phase: insight.phase,
-        phaseLabel: insight.phaseLabel,
-      };
+      const result = { type: "ban", side, items, forSide: side };
       recommendationCache = { key: cacheKey, limit, result };
       return result;
     }
@@ -1911,8 +1829,8 @@
     const hint = recommendedSlotForPick(s, side);
     const candidates = pickCandidatesForSide(s, side, avail, meta);
     const items = candidates.map((c) => {
-      const { score, reasons, slot, layers } = scoreCandidate(s, side, c, byName, meta, hint);
-      return { champion: c, score, reasons, slot, layers };
+      const { score, reasons, slot } = scoreCandidate(s, side, c, byName, meta, hint);
+      return { champion: c, score, reasons, slot };
     })
       .filter((item) => item.score > -1000)
       .sort((a, b) => b.score - a.score)
@@ -1925,9 +1843,6 @@
       coachHint: getDraftCoachHint(s, side, byName, meta),
       items,
       forSide: side,
-      insight,
-      phase: insight.phase,
-      phaseLabel: insight.phaseLabel,
     };
     recommendationCache = { key: cacheKey, limit, result };
     return result;
@@ -2182,11 +2097,6 @@
     buildVector,
     phaseWeights,
     detectCompPlan,
-    draftPhase,
-    DRAFT_PHASE_LABELS,
-    getDraftInsight,
-    classifyBanDeny,
-    BAN_DENY_LABELS,
     compareComps,
     teamColorSummary,
     colorCoherence,
