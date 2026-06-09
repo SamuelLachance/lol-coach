@@ -335,11 +335,13 @@
     }
 
     if (step.type === "ban") {
-      const items = avail.map((c) => {
-        const { score, reasons } = scoreBan(c, s, side, byName, meta);
-        return { champion: c, score, reasons };
-      })
-        .filter((item) => item.score > -500)
+      const banPhase = step.banPhase || 1;
+      const items = avail
+        .map((c) => {
+          const { score, reasons, disqualified } = scoreBan(c, s, side, byName, meta);
+          return { champion: c, score, reasons, disqualified };
+        })
+        .filter((item) => !item.disqualified && item.score > -1000)
         .sort((a, b) => b.score - a.score)
         .slice(0, limit);
       const result = { type: "ban", side, items, forSide: side };

@@ -111,6 +111,46 @@ function main() {
     `Lee Sin ban should target open slot, got ${leeBan.reasons.join("; ")}`
   );
 
+  // Ban phase 2: enemy Top/Mid/Bot locked → only Jungle/Supp bans viable
+  const phase2Session = D.createSession("ban-p2", "blue");
+  phase2Session.stepIndex = 13; // Blue ban phase 2
+  phase2Session.picks.red = [
+    { name: "Malphite", slot: "Top" },
+    { name: "Yasuo", slot: "Mid" },
+    { name: "Jinx", slot: "Bot" },
+  ];
+  const caitlyn = champs.find((c) => c.name === "Caitlyn");
+  const ahri = champs.find((c) => c.name === "Ahri");
+  const thresh = champs.find((c) => c.name === "Thresh");
+  const caitBan = D.scoreBan(caitlyn, phase2Session, "blue", byName, meta);
+  const ahriBan = D.scoreBan(ahri, phase2Session, "blue", byName, meta);
+  const ornnBan2 = D.scoreBan(ornn, phase2Session, "blue", byName, meta);
+  const threshBan = D.scoreBan(thresh, phase2Session, "blue", byName, meta);
+  console.log("\n=== Ban phase 2 (enemy Top/Mid/Bot pris) ===");
+  console.log(`  Ornn: ${ornnBan2.score} disq=${ornnBan2.disqualified}`);
+  console.log(`  Caitlyn: ${caitBan.score} disq=${caitBan.disqualified}`);
+  console.log(`  Ahri: ${ahriBan.score} disq=${ahriBan.disqualified}`);
+  console.log(`  Thresh: ${threshBan.score} disq=${threshBan.disqualified}`);
+  assert(ornnBan2.disqualified, "Ornn should be disqualified when Top taken");
+  assert(caitBan.disqualified, "Caitlyn should be disqualified when Bot taken");
+  assert(ahriBan.disqualified, "Ahri should be disqualified when Mid taken");
+  assert(!threshBan.disqualified && threshBan.score > 0, "Thresh should target open Support");
+
+  const rec = D.getRecommendations(phase2Session, champs, meta, byName, [], 8, "blue");
+  assert(rec.type === "ban", "phase2 rec should be ban");
+  const recNames = rec.items.map((i) => i.champion.name);
+  for (const bad of ["Ornn", "Caitlyn", "Ahri", "Varus", "Aphelios"]) {
+    assert(!recNames.includes(bad), `${bad} should not appear in phase2 ban suggestions, got ${recNames.join(", ")}`);
+  }
+  console.log(`  Suggestions: ${recNames.slice(0, 5).join(", ")}`);
+
+  // Picks without explicit slot still infer lanes
+  const inferSession = D.createSession("infer", "blue");
+  inferSession.stepIndex = 13;
+  inferSession.picks.red = [{ name: "Malphite" }, { name: "Jinx" }, { name: "Yasuo" }];
+  const ornnInfer = D.scoreBan(ornn, inferSession, "blue", byName, meta);
+  assert(ornnInfer.disqualified, "Ornn disqualified even when enemy slots inferred");
+
   // Hypercarry plan smoke
   const jinx = champs.find((c) => c.name === "Jinx");
   const lulu = champs.find((c) => c.name === "Lulu");
