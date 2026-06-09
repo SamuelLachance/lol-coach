@@ -29,6 +29,8 @@
   ];
   const WOMBO_THEMES = new Set(["knockup_wombo", "teamfight_engage"]);
 
+  const CK = () => global.CoachingDraftKnowledge;
+
   const COMP_LABELS = {
     hypercarry: "Hypercarry",
     poke_siege: "Poke / Siege",
@@ -281,6 +283,11 @@
         s += Math.round(listScore(vs[i].name, vs[j].pairings, SYN_W) * 0.85);
         if (vs[i].spells.knockup && vs[j].spells.aoe) s += 22;
         if (vs[i].spells.peel && vs[j].carry > 0.55) s += 24;
+        const ck = CK();
+        if (ck?.countComboLinks) {
+          const links = ck.countComboLinks(vs[i].name, [vs[j].name]);
+          if (links) s += 14 + links * 10;
+        }
       }
     }
     return s;
@@ -374,6 +381,15 @@
     if (wombo.threat > 0) {
       score += Math.round(wombo.threat * w.deny);
       reasons.push(...wombo.reasons.slice(0, 2));
+    }
+
+    const ck = CK();
+    if (ck?.denyComboBanScore) {
+      const deny = ck.denyComboBanScore(champ.name, oppNames);
+      if (deny.score) {
+        score += Math.round(deny.score * w.deny);
+        reasons.push(...deny.reasons.slice(0, 2));
+      }
     }
 
     for (const e of oppNames) {
@@ -532,6 +548,39 @@
     else if (v.tierMeta === "A") reasons.push("Tier A");
 
     if (hintSlot === slot) score += 8;
+
+    const ck = CK();
+    if (ck) {
+      const allyNames = allies;
+      const tri = ck.trinityBonus(champ.name, allyNames);
+      if (tri) {
+        score += Math.round(tri * w.synergy * 0.55);
+        if (tri >= 26) reasons.push("Trinité combo (3+ liens)");
+        else if (tri >= 14) reasons.push("Combo coaching");
+      }
+      const syn = ck.coachingSynergyScore(champ.name, allyNames);
+      if (syn.score) {
+        score += Math.round(syn.score * w.synergy * 0.4);
+        reasons.push(...syn.reasons.slice(0, 1));
+      }
+      const fam = ck.familyBonus(v, allyNames);
+      if (fam.score) {
+        score += Math.round(fam.score * w.plan * 0.45);
+        reasons.push(...fam.reasons.slice(0, 1));
+      }
+      const tj = ck.tankJungleBonus(champ.name, slot);
+      if (tj.score) { score += tj.score; reasons.push(...tj.reasons); }
+      const ts = ck.tankSuppAllowsAp(v, slot, allyNames);
+      if (ts.score) { score += ts.score; reasons.push(...ts.reasons); }
+      const fp = ck.firstPickBonus(champ.name, slot, pickN, side);
+      if (fp.score) { score += fp.score; reasons.push(...fp.reasons); }
+      const fj = ck.firstPickJungleBonus(champ.name, slot, pickN);
+      if (fj.score) { score += fj.score; reasons.push(...fj.reasons); }
+      if (ck.inList(champ.name, ck.FIRST_PICK_ADC) && slot === "Bot" && inBlind) {
+        score += 12;
+        if (!reasons.some((r) => /FP ADC/i.test(r))) reasons.push("ADC coaching tier-list");
+      }
+    }
 
     if (!reasons.length) reasons.push(`${SLOT_LABELS[slot] || slot} optimal`);
 
