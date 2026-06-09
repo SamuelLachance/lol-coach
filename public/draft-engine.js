@@ -152,16 +152,33 @@
   }
 
   function phaseWeights(depth) {
+    const d = Math.max(0, Math.min(1, depth));
     return {
-      tier: Math.max(0.08, 1 - depth * 0.92),
-      flex: Math.max(0.15, 1 - depth * 0.88),
-      carry: depth * 0.95,
-      synergy: 0.35 + depth * 0.95,
-      counter: 0.25 + depth * 1.05,
-      balance: 0.45 + depth * 0.75,
-      lane: 0.2 + depth * 0.65,
+      tier: Math.max(0.06, 1 - d * 0.94),
+      flex: Math.max(0.12, 1 - d * 0.88),
+      carry: d * 0.95,
+      synergy: 0.28 + d * 1.12,
+      counter: 0.18 + d * 1.28,
+      balance: 0.4 + d * 0.85,
+      lane: 0.15 + d * 0.78,
+      plan: 0.2 + d * 1.05,
+      deny: 0.35 + d * 0.45,
     };
   }
+
+  const COMP_PLAN_LABELS = {
+    hypercarry: "Hypercarry",
+    poke_siege: "Poke / Siege",
+    poke_disengage: "Poke + Disengage",
+    teamfight_engage: "Teamfight engage",
+    split_push: "Split push",
+    pick_global: "Pick / Global",
+    all_in: "All-in tempo",
+    lane_tempo: "Lane tempo",
+    beatdown: "Beatdown / Dive",
+    front_to_back: "Front-to-back",
+    scaling_late: "Scaling late",
+  };
 
   /** Blind pick : ADC → Jungle → Mid ; Top/Support le plus tard possible (matchup). */
   const PICK_SLOT_PRIORITY = ["Bot", "Jungle", "Mid", "Support", "Top"];
@@ -665,6 +682,7 @@
       wave: tags.has("wave_clear") ? 1 : 0,
       pairings: pairingNames(champ.bestPairings, meta[champ.name]),
       counters: matchupNames(champ.bestCounters, meta[champ.name]),
+      counteredBy: matchupNames(champ.worstMatchups, meta[champ.name]),
       familyKey,
       compTypes,
       familyLabel: fam.label || meta[champ.name]?.familyLabel || "",
@@ -950,6 +968,120 @@
     return { score, dominant, conflicts };
   }
 
+  /** Détecte le plan macro (poke, dive, hypercarry…) et sa complétude. */
+  function detectCompPlan(vs) {
+    if (!vs.length) return { plan: null, label: "", completeness: 0, gaps: [], carry: null };
+    const typeCounts = {};
+    for (const v of vs) {
+      for (const t of v.compTypes || []) typeCounts[t] = (typeCounts[t] || 0) + 1;
+    }
+    const axes = aggregateAxes(vs);
+    const poke = (typeCounts.poke_siege || 0) + (typeCounts.poke_disengage || 0);
+    const engage = typeCounts.teamfight_engage || 0;
+    const hyper = typeCounts.hypercarry || 0;
+    const split = typeCounts.split_push || 0;
+    const pick = typeCounts.pick_global || 0;
+    const gaps = [];
+    let plan = null;
+    let completeness = 0;
+
+    if (hyper >= 1 || (axes.scaling >= 1.5 && sumAxis(vs, "peel") >= 1)) {
+      plan = "hypercarry";
+      completeness = hyper >= 1 ? 30 : 15;
+      if (vs.some((x) => x.familyKey === "support_enchanter")) completeness += 35;
+      else gaps.push("enchanter");
+      if (sumAxis(vs, "front") >= 1) completeness += 20;
+      else gaps.push("frontline");
+      if (sumAxis(vs, "peel") < 1) gaps.push("peel");
+    } else if (poke >= 2 || (axes.disengage >= 1.2 && sumAxis(vs, "wave") >= 1)) {
+      plan = typeCounts.poke_disengage >= 2 ? "poke_disengage" : "poke_siege";
+      completeness = poke * 20 + (axes.disengage >= 0.8 ? 25 : 0);
+      if (vs.some((x) => x.familyKey === "support_engage")) gaps.push("engage_sup_conflict");
+      if (sumAxis(vs, "wave") < 1) gaps.push("wave clear");
+    } else if (engage >= 2 || axes.engage >= 1.8) {
+      plan = "teamfight_engage";
+      completeness = engage * 18 + (sumAxis(vs, "front") >= 1 ? 25 : 0);
+      if (sumAxis(vs, "front") < 1) gaps.push("frontline");
+      if (axes.burst < 1) gaps.push("burst follow");
+    } else if (split >= 1) {
+      plan = "split_push";
+      completeness = split * 22 + (pick >= 1 ? 20 : 0);
+      if (!pick) gaps.push("global pressure");
+    } else if (pick >= 1 || axes.early >= 1.5) {
+      plan = pick >= 1 ? "pick_global" : "lane_tempo";
+      completeness = 25;
+    } else if (axes.engage >= 1.2 && axes.burst >= 1.5) {
+      plan = "beatdown";
+      completeness = 30;
+      if (sumAxis(vs, "front") < 1) gaps.push("frontline");
+    } else if (sumAxis(vs, "front") >= 1 && axes.scaling >= 1 && sumAxis(vs, "peel") >= 1) {
+      plan = "front_to_back";
+      completeness = 40;
+    } else if (axes.scaling >= 1.8) {
+      plan = "scaling_late";
+      completeness = 20;
+      if (axes.early < 0.5) gaps.push("early tempo");
+    } else {
+      const sorted = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
+      plan = sorted[0]?.[0] || null;
+      completeness = sorted[0] ? sorted[0][1] * 15 : 0;
+    }
+
+    const carry = vs.reduce((best, x) => ((x.carry || 0) > (best?.carry || 0) ? x : best), null);
+    return {
+      plan,
+      label: COMP_PLAN_LABELS[plan] || plan || "",
+      completeness: Math.min(100, completeness),
+      gaps,
+      carry: carry?.name || null,
+    };
+  }
+
+  function scoreWinConditionBonus(beforeVs, afterVs, depth) {
+    const before = detectCompPlan(beforeVs);
+    const after = detectCompPlan(afterVs);
+    let bonus = 0;
+    const reasons = [];
+    const compDelta = after.completeness - before.completeness;
+    if (compDelta >= 12) {
+      bonus += Math.round(compDelta * (0.45 + depth * 0.55));
+      if (after.label) reasons.push(`Plan ${after.label} (${after.completeness}%)`);
+    }
+    if (before.gaps.length > after.gaps.length && after.plan) {
+      bonus += Math.round(22 + depth * 18);
+      const filled = before.gaps.find((g) => !after.gaps.includes(g));
+      if (filled) reasons.push(`Complète : ${filled}`);
+    }
+    if (depth >= 0.55 && after.completeness >= 68 && after.gaps.length <= 1) {
+      bonus += 32;
+      reasons.push("Win condition presque verrouillée");
+    }
+    return { bonus, reasons, before, after };
+  }
+
+  function counterabilityScore(v, meta, byName, name) {
+    const data = getData(byName, meta, name);
+    const counteredBy = matchupNames(data.worstMatchups, meta[name]);
+    const poolThreat = counteredBy.length;
+    const blindRisk = poolThreat * 12 + (v.specialist || 0) * 28 + (v.flex < 0.35 ? 18 : 0);
+    return { blindRisk, poolThreat, counteredBy };
+  }
+
+  function scoreAntiBlindPenalty(champ, v, s, side, byName, meta) {
+    const inBlind = isBlindPickPhase(s, side) || isTeamFirstPick(s, side);
+    if (!inBlind) return { penalty: 0, reasons: [] };
+    const { blindRisk, poolThreat } = counterabilityScore(v, meta, byName, champ.name);
+    if (blindRisk < 35) return { penalty: 0, reasons: [] };
+    const pickN = sidePickCount(s, side);
+    const weight = pickN === 0 ? 1 : pickN === 1 ? 0.75 : 0.5;
+    const penalty = Math.round(blindRisk * weight * (1 - draftDepth(s) * 0.35));
+    const reasons = [];
+    if (poolThreat >= 3) reasons.push(`Counterable (${poolThreat} menaces pool)`);
+    else if (poolThreat >= 1) reasons.push("Matchup risqué en blind");
+    if (v.specialist > 0.55 && v.flex < 0.4) reasons.push("Spécialiste — éviter blind");
+    return { penalty, reasons };
+  }
+
   function pairingSynergy(vs) {
     if (vs.length < 2) return 0;
     let s = 0;
@@ -1181,6 +1313,8 @@
     if (v.engage > 0.55 && (after.axes?.engage || 0) > (before.axes?.engage || 0)) r.push("Apporte l'engage");
     if (v.disengage > 0.55 && (after.axes?.disengage || 0) > (before.axes?.disengage || 0)) r.push("Disengage / peel");
     if (v.scaling > 0.55 && w.carry > 0.4) r.push("Win condition scale");
+    const afterPlan = detectCompPlan(after.vs || []);
+    if (afterPlan.completeness >= 65 && afterPlan.label) r.push(`Win condition : ${afterPlan.label}`);
     if (v.specialist > 0.6 && w.carry > 0.5) r.push("Carry solo potential");
     if (v.flex > 0.5 && w.flex > 0.5) r.push("Flex pick");
     if (v.tierMeta === "S") r.push("Tier S");
@@ -1286,12 +1420,22 @@
     const foundation = scoreCompFoundationBonus(before, after, links, depth);
     score += foundation.bonus;
 
+    const beforeVs = before.vs || teamVectors(allies, byName, meta);
+    const afterVs = after.vs || teamVectors(withTeam, byName, meta);
+    const winCond = scoreWinConditionBonus(beforeVs, afterVs, depth);
+    score += Math.round(winCond.bonus * (w.plan || 1));
+
+    const antiBlind = scoreAntiBlindPenalty(champ, v, s, side, byName, meta);
+    score -= antiBlind.penalty;
+
     const reasons = explain(before, after, champ, slot, allies, links, w, meta, colorDetail);
     const extraReasons = [
       ...slotOrder.reasons,
       ...blindPick.reasons,
       ...(firstBlindBonus?.reasons || []),
       ...foundation.reasons,
+      ...winCond.reasons,
+      ...antiBlind.reasons,
     ];
     for (const r of extraReasons) {
       if (!reasons.includes(r)) reasons.unshift(r);
@@ -1335,7 +1479,8 @@
   }
 
   function scoreBan(champ, s, side, byName, meta) {
-    const w = phaseWeights(draftDepth(s));
+    const depth = draftDepth(s);
+    const w = phaseWeights(depth);
     const v = buildVector(champ, meta);
     const r = [];
     let score = Math.round(TIER_PTS[v.tierMeta] * w.tier + v.flex * 22 * w.flex);
@@ -1344,23 +1489,74 @@
     const opp = side === "blue" ? "red" : "blue";
     const oppNames = sidePicks(s, opp).map((p) => p.name);
     const oppOpen = openSlots(s, opp);
+    const step = getStep(s);
+    const banPhase = step?.banPhase || 1;
 
     for (const a of allies) {
       const hit = listScore(champ.name, matchupNames(getData(byName, meta, a).bestCounters, meta[a]), CTR_W);
       if (hit) { score += hit + 8; r.push(`Counter ${a}`); }
     }
 
+    for (const e of oppNames) {
+      const ev = buildVector(getData(byName, meta, e), meta);
+      const syn = listScore(champ.name, ev.pairings, SYN_W) + listScore(e, v.pairings, SYN_W);
+      if (syn >= 28) {
+        score += Math.round(syn * 0.55 * w.deny);
+        r.push(`Casse synergie avec ${e}`);
+      }
+      if (listScore(e, v.pairings, SYN_W) && listScore(champ.name, ev.pairings, SYN_W)) {
+        score += 24;
+        r.push(`Deny duo ${e}+${champ.name}`);
+      }
+    }
+
     const ctx = { byName, metaMap: meta, oppNames: allies, w };
     const before = evaluateTeam(oppNames, { ...ctx, slotsLeft: oppOpen.length });
     const after = evaluateTeam(oppNames.concat(champ.name), { ...ctx, slotsLeft: Math.max(0, oppOpen.length - 1) });
     const delta = after.total - before.total;
-    if (delta > 0) { score += Math.round(delta * 0.6); r.push("Améliore leur comp"); }
+    if (delta > 0) {
+      score += Math.round(delta * (0.55 + depth * 0.15));
+      r.push("Améliore leur comp");
+    }
 
-    score += counterScore(oppNames.concat(champ.name), allies, byName, meta) * 0.2;
-    if (v.tierMeta === "S" && oppOpen.length >= 2) { score += 18; r.push("Deny S flex"); }
+    score += counterScore(oppNames.concat(champ.name), allies, byName, meta) * (0.18 + depth * 0.12);
+
+    if (allies.length >= 2) {
+      const ourPlan = detectCompPlan(teamVectors(allies, byName, meta));
+      if (ourPlan.plan === "hypercarry" && (v.tags.has("assassin") || v.tags.has("dive"))) {
+        score += 32;
+        r.push("Anti-dive vs hypercarry");
+      }
+      if (ourPlan.plan?.includes("poke") && v.tags.has("engage")) {
+        score += 28;
+        r.push("Engage vs notre poke");
+      }
+      if (ourPlan.carry && listScore(ourPlan.carry, v.counters, CTR_W)) {
+        score += 36;
+        r.push(`Menace carry ${ourPlan.carry}`);
+      }
+      if (ourPlan.completeness >= 50 && delta > 8) {
+        score += 22;
+        r.push("Brise réponse à notre plan");
+      }
+    }
+
+    if (v.tierMeta === "S" && oppOpen.length >= 2) {
+      score += 18 + banPhase * 4;
+      r.push("Deny S flex");
+    }
     if (v.carry > 0.65 && w.carry > 0.3) { score += 14; r.push("Deny carry"); }
+    if (v.flex >= 0.5 && banPhase === 1) { score += 12; r.push("Flex ban — cache intent"); }
 
-    return { score, reasons: [...new Set(r)].slice(0, 6) };
+    if (banPhase === 2 && oppNames.length >= 3) {
+      const oppPlan = detectCompPlan(teamVectors(oppNames, byName, meta));
+      for (const gap of oppPlan.gaps) {
+        if (gap === "peel" && v.peel) { score += 20; r.push("Deny peel manquant"); break; }
+        if (gap === "frontline" && v.front) { score += 18; r.push("Deny frontline"); break; }
+      }
+    }
+
+    return { score, reasons: [...new Set(r)].slice(0, 7) };
   }
 
   // ─── Session actions (unchanged API) ────────────────────────────────────
@@ -1704,7 +1900,11 @@
     if (ev.breakdown.synergy >= 90) notes.push("Synergie sorts + paires forte");
     else if (our.length >= 3 && ev.breakdown.synergy < 35) notes.push("Synergie insuffisante");
 
-    if (ev.family?.dominant) {
+    const plan = detectCompPlan(ev.vs || []);
+    if (plan.label) {
+      notes.push(`Plan : ${plan.label} (${plan.completeness}%)`);
+      if (plan.carry) notes.push(`Carry : ${plan.carry}`);
+    } else if (ev.family?.dominant) {
       const labels = {
         poke_siege: "Poke / Siege",
         poke_disengage: "Poke + Disengage",
@@ -1896,6 +2096,7 @@
     measureTeam: teamVectors,
     buildVector,
     phaseWeights,
+    detectCompPlan,
     compareComps,
     teamColorSummary,
     colorCoherence,
