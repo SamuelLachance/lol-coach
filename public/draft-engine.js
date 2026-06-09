@@ -338,7 +338,10 @@
       const items = avail.map((c) => {
         const { score, reasons } = scoreBan(c, s, side, byName, meta);
         return { champion: c, score, reasons };
-      }).sort((a, b) => b.score - a.score).slice(0, limit);
+      })
+        .filter((item) => item.score > -500)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, limit);
       const result = { type: "ban", side, items, forSide: side };
       recommendationCache = { key: cacheKey, limit, result };
       return result;

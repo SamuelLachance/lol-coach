@@ -90,6 +90,27 @@ function main() {
   );
   assert(Math.max(malphBan.score, yasBan.score) >= 50, "Wombo ban should score high");
 
+  // Ban slot targeting: enemy Top taken → prefer open-lane bans
+  const topTakenSession = D.createSession("top-taken", "blue");
+  topTakenSession.stepIndex = 0;
+  topTakenSession.picks.red = [{ name: "Malphite", slot: "Top" }];
+  const ornn = champs.find((c) => c.name === "Ornn");
+  const lee = champs.find((c) => c.name === "Lee Sin");
+  const ornnBan = D.scoreBan(ornn, topTakenSession, "blue", byName, meta);
+  const leeBan = D.scoreBan(lee, topTakenSession, "blue", byName, meta);
+  console.log("\n=== Ban slot targeting (enemy Top = Malphite) ===");
+  console.log(`  Ban Ornn (Top only): ${ornnBan.score} — ${ornnBan.reasons.slice(0, 2).join("; ")}`);
+  console.log(`  Ban Lee Sin (Jungle open): ${leeBan.score} — ${leeBan.reasons.slice(0, 2).join("; ")}`);
+  assert(leeBan.score > ornnBan.score, `Open Jungle ban should beat filled Top ban: Lee ${leeBan.score} vs Ornn ${ornnBan.score}`);
+  assert(
+    ornnBan.reasons.some((r) => /pris|ouvert|inutile/i.test(r)) || ornnBan.score < leeBan.score - 20,
+    "Ornn ban should reflect Top already taken"
+  );
+  assert(
+    leeBan.reasons.some((r) => /ouvert|Jungle|Menace poste/i.test(r)),
+    `Lee Sin ban should target open slot, got ${leeBan.reasons.join("; ")}`
+  );
+
   // Hypercarry plan smoke
   const jinx = champs.find((c) => c.name === "Jinx");
   const lulu = champs.find((c) => c.name === "Lulu");

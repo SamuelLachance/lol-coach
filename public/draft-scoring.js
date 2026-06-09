@@ -360,6 +360,81 @@
     return { risk: isAdcBlind ? risk * 0.4 : risk, pool };
   }
 
+  /** Enemy pick slots — open vs filled lanes for ban targeting. */
+  function enemySlotState(state, side) {
+    const opp = side === "blue" ? "red" : "blue";
+    const oppBySlot = {};
+    const oppNames = [];
+    for (const p of state.picks[opp] || []) {
+      if (p.name) oppNames.push(p.name);
+      if (p.slot) oppBySlot[p.slot] = p.name;
+    }
+    const filledSlots = SLOTS.filter((sl) => oppBySlot[sl]);
+    const openSlots = SLOTS.filter((sl) => !oppBySlot[sl]);
+    return { opp, oppBySlot, oppNames, filledSlots, openSlots };
+  }
+
+  /**
+   * Ban slot targeting: deny champions on enemy open lanes; penalize lane-only
+   * picks when that lane is already locked.
+   */
+  function scoreBanSlotTargeting(v, champ, meta, slotState, { comboDenyScore = 0 } = {}) {
+    const { openSlots, filledSlots, oppBySlot } = slotState;
+    if (!filledSlots.length || openSlots.length === 5) {
+      return { score: 0, reasons: [] };
+    }
+
+    const champSlots = v.slots?.length ? v.slots.slice() : playableSlots(champ, meta);
+    if (!champSlots.length) return { score: 0, reasons: [] };
+
+    const fitsOpen = champSlots.filter((sl) => openSlots.includes(sl));
+    const fitsFilled = champSlots.filter((sl) => filledSlots.includes(sl));
+    const openLabels = openSlots.map((sl) => SLOT_LABELS[sl] || sl);
+    let score = 0;
+    const reasons = [];
+
+    // Lane already taken — wasteful ban unless combo deny (synergy with picked enemy)
+    if (!fitsOpen.length) {
+      if (comboDenyScore >= 20) {
+        score -= 12;
+        reasons.push("Poste(s) fermés — deny combo prioritaire");
+        return { score, reasons };
+      }
+      const filledLabels = fitsFilled.map((sl) => SLOT_LABELS[sl] || sl).join("/");
+      const occupant = fitsFilled.map((sl) => oppBySlot[sl]).filter(Boolean).join(", ");
+      score -= 62;
+      if (v.tierMeta === "S") score -= 12;
+      reasons.push(
+        occupant
+          ? `${filledLabels} pris (${occupant}) — ban inutile`
+          : `${filledLabels} déjà pris — vise ${openLabels.join(", ")}`
+      );
+      return { score, reasons };
+    }
+
+    // Targets at least one open enemy slot
+    const openOnly = fitsOpen.length === champSlots.length;
+    const tierW = (TIER_PTS[v.tierMeta] || 10) * 0.4;
+    score += tierW;
+
+    if (openOnly && champSlots.length === 1) {
+      score += 32;
+      reasons.push(`Deny ${SLOT_LABELS[fitsOpen[0]] || fitsOpen[0]} (poste ouvert)`);
+    } else if (fitsOpen.length >= 1) {
+      score += 16 + fitsOpen.length * 8;
+      const labels = fitsOpen.map((sl) => SLOT_LABELS[sl] || sl).join(", ");
+      reasons.push(`Menace poste${fitsOpen.length > 1 ? "s" : ""} ouvert${fitsOpen.length > 1 ? "s" : ""}: ${labels}`);
+    }
+
+    // Prefer bans that hit the most constrained open slot (fewer picks left)
+    if (openSlots.length <= 2 && fitsOpen.length) {
+      score += 10;
+      reasons.push("Peu de postes restants");
+    }
+
+    return { score, reasons };
+  }
+
   function scoreBan(champ, ctx) {
     const { state, side, byName, meta, depth = 0, banPhase = 1 } = ctx;
     const v = buildProfile(champ, meta);
@@ -368,9 +443,11 @@
     let score = TIER_PTS[v.tierMeta] * w.tier * 0.55 + v.flex * 18 * w.flex;
 
     const allies = (state.picks[side] || []).map((p) => p.name);
-    const opp = side === "blue" ? "red" : "blue";
-    const oppNames = (state.picks[opp] || []).map((p) => p.name);
+    const slotState = enemySlotState(state, side);
+    const { oppNames } = slotState;
     const ourArch = detectArchetype(profiles(allies, byName, meta));
+
+    let comboDenyScore = 0;
 
     for (const a of allies) {
       const hit = listScore(champ.name, namesFrom(getData(byName, meta, a).bestCounters, meta[a]), CTR_W);
@@ -379,6 +456,7 @@
 
     const wombo = enemyWomboThreat(oppNames, champ.name, meta, byName);
     if (wombo.threat > 0) {
+      comboDenyScore += wombo.threat;
       score += Math.round(wombo.threat * w.deny);
       reasons.push(...wombo.reasons.slice(0, 2));
     }
@@ -387,6 +465,7 @@
     if (ck?.denyComboBanScore) {
       const deny = ck.denyComboBanScore(champ.name, oppNames);
       if (deny.score) {
+        comboDenyScore += deny.score;
         score += Math.round(deny.score * w.deny);
         reasons.push(...deny.reasons.slice(0, 2));
       }
@@ -395,9 +474,16 @@
     for (const e of oppNames) {
       const syn = listScore(champ.name, buildProfile(getData(byName, meta, e), meta).pairings, SYN_W);
       if (syn >= 24) {
+        comboDenyScore += syn;
         score += Math.round(syn * 0.5 * w.deny);
         reasons.push(`Casse synergie avec ${e}`);
       }
+    }
+
+    const slotTarget = scoreBanSlotTargeting(v, champ, meta, slotState, { comboDenyScore });
+    if (slotTarget.score) {
+      score += Math.round(slotTarget.score * (0.85 + depth * 0.35));
+      reasons.push(...slotTarget.reasons.slice(0, 2));
     }
 
     const denyEval = evaluateTeam(oppNames.concat(champ.name), { byName, metaMap: meta, oppNames: allies, slotsLeft: Math.max(0, 5 - oppNames.length - 1) });
@@ -617,6 +703,8 @@
     playableSlotsFor: playableSlots,
     playsSlotFor: playsSlot,
     scoreBan,
+    scoreBanSlotTargeting,
+    enemySlotState,
     scorePick,
     scorePickCandidate,
     enemyWomboThreat,
