@@ -5,7 +5,7 @@
   const SLOTS = ["Top", "Jungle", "Mid", "Bot", "Support"];
   const SLOT_LABELS = { Top: "Top", Jungle: "Jgl", Mid: "Mid", Bot: "ADC", Support: "Sup" };
   const SLOT_ICONS = { Top: "▣", Jungle: "🔥", Mid: "⚡", Bot: "◎", Support: "✚" };
-  const MIN_LANE_RATE = 5;
+  const MIN_LANE_RATE = 10;
 
   function champPlaysRole(champ, role, metaMap = {}) {
     if (!role || role === "all") return true;

@@ -36,7 +36,7 @@
   const LATE_MATCHUP_SLOTS = ["Support", "Top"];
   const PICK_SLOT_PRIORITY = ["Bot", "Jungle", "Mid", "Support", "Top"];
   const SLOT_LABELS = { Bot: "ADC", Jungle: "Jungle", Mid: "Mid", Support: "Support", Top: "Top" };
-  const MIN_LANE_PLAY_RATE = 5;
+  const MIN_LANE_PLAY_RATE = 10;
 
   const MTG_COLORS = ["W", "U", "B", "R", "G"];
   const COLOR_LABELS = { W: "Blanc", U: "Bleu", B: "Noir", R: "Rouge", G: "Vert" };

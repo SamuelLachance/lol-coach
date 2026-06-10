@@ -7,7 +7,7 @@
   const BLIND_SLOTS = ["Bot", "Jungle", "Mid"];
   const LATE_SLOTS = ["Support", "Top"];
   const SLOT_LABELS = { Bot: "ADC", Jungle: "Jungle", Mid: "Mid", Support: "Support", Top: "Top" };
-  const MIN_LANE_RATE = 5;
+  const MIN_LANE_RATE = 10;
 
   const TIER_PTS = { S: 40, A: 30, B: 20, C: 10, D: 3 };
   const SYN_W = [36, 28, 22, 16, 12];

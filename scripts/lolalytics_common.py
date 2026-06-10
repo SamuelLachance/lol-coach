@@ -23,7 +23,7 @@ LANE_API = {
 }
 SLOT_TO_API = {v: k for k, v in LANE_API.items()}
 SLOT_ORDER = ["Top", "Jungle", "Mid", "Bot", "Support"]
-MIN_LANE_PCT = 5.0
+MIN_LANE_PCT = 10.0
 RANK = "emerald"
 REQUEST_DELAY = 0.18
 

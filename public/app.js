@@ -1819,7 +1819,7 @@ function renderLaneRateBars(champ) {
             const r = rates[slot]?.rate || 0;
             const isMain = champ.mainRole === slot;
             const isFlex = (champ.flexRoles || []).includes(slot);
-            const playable = r >= 5;
+            const playable = r >= 10;
             return `
             <div class="lane-rate-row${isMain ? " is-main" : ""}${playable ? " is-playable" : ""}">
               <span class="lane-rate-slot">${slot}${isMain ? " ★" : isFlex ? " +" : ""}</span>
@@ -1931,7 +1931,7 @@ function renderCompactLaneRates(champ) {
         .map((slot) => {
           const r = rates[slot]?.rate || 0;
           const isMain = champ.mainRole === slot;
-          const playable = r >= 5;
+          const playable = r >= 10;
           return `
           <div class="cp-lane${isMain ? " is-main" : ""}${playable ? "" : " is-muted"}">
             <span class="cp-lane-slot">${slot}${isMain ? " ★" : ""}</span>
@@ -2760,7 +2760,7 @@ function renderTacticsPoolGrid(champions, role) {
   return champions
     .map((c) => {
       const laneScore = sortSlot && PR ? PR.laneScore(c, sortSlot, metaMap) : 0;
-      const lanePick = sortSlot && laneScore >= 5;
+      const lanePick = sortSlot && laneScore >= 10;
       return `
       <button type="button" class="draft-pool-card${lanePick ? " draft-pool-card--lane" : ""}" data-champ="${escapeHtml(c.name)}" title="${escapeHtml(c.name)}${lanePick ? ` · ${sortSlot}` : ""}">
         ${championIconHtml(c, { size: "pool" })}
