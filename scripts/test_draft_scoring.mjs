@@ -10,7 +10,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 function loadLoLDraft() {
   const sandbox = { global: {}, window: {}, globalThis: {} };
   sandbox.global = sandbox.window = sandbox.globalThis = sandbox;
-  for (const file of ["coaching-knowledge.js", "mtg-color-pie.js", "draft-scoring.js", "draft-engine.js"]) {
+  for (const file of ["lane-viability.js", "coaching-knowledge.js", "mtg-color-pie.js", "draft-scoring.js", "draft-engine.js"]) {
     vm.runInNewContext(readFileSync(join(root, "public", file), "utf8"), sandbox);
   }
   return sandbox.LoLDraft;

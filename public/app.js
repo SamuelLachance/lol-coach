@@ -1293,8 +1293,11 @@ function cardMetaHtml(champ) {
 const ROLE_SHORT = { Top: "Top", Jungle: "Jgl", Mid: "Mid", Bot: "ADC", Support: "Sup" };
 
 function roleBadgeHtml(champ, { compact = false } = {}) {
-  const main = champ.mainRole;
-  const flex = champ.flexRoles || [];
+  const LV = window.LoLLaneViability;
+  const metaMap = tacticsMetaMap();
+  const main = LV ? LV.primarySlot(champ, metaMap) : champ.mainRole;
+  const playable = LV ? LV.playableSlots(champ, metaMap) : [];
+  const flex = playable.filter((s) => s !== main);
   if (!main) return compact ? "" : `<span class="badge badge-slot badge-muted">—</span>`;
   if (compact) {
     const short = ROLE_SHORT[main] || main;
@@ -1602,7 +1605,6 @@ function normalizeMatchupEntry(entry) {
   };
 }
 
-const SYNERGY_LANE_MIN_RATE = 5;
 const PLAYABLE_SLOTS = ["Top", "Jungle", "Mid", "Bot", "Support"];
 /** Bonus léger au score — ne remplace pas un gros écart de synergie calculée. */
 const SYNERGY_ROLE_PAIR_BONUS = 16;
@@ -1613,20 +1615,15 @@ const SYNERGY_SOFT_PAIR = {
   Jungle: "Mid",
 };
 
+function tacticsMetaMap() {
+  return state.tacticsMeta?.champions || {};
+}
+
 function champPlayableSlots(champ) {
   if (!champ) return new Set();
-  const slots = new Set();
-  const rates = champ.laneRates;
-  if (rates) {
-    for (const slot of PLAYABLE_SLOTS) {
-      const r = Number(rates[slot]?.rate);
-      if (r >= SYNERGY_LANE_MIN_RATE) slots.add(slot);
-    }
-  }
-  if (champ.mainRole) slots.add(champ.mainRole);
-  for (const role of champ.flexRoles || []) slots.add(role);
-  for (const slot of champ.optimalSlots || []) slots.add(slot);
-  return slots;
+  const LV = window.LoLLaneViability;
+  if (LV) return new Set(LV.playableSlots(champ, tacticsMetaMap()));
+  return new Set();
 }
 
 function synergySharesPlayableSlot(champ, partnerName) {
@@ -1642,22 +1639,9 @@ function synergySharesPlayableSlot(champ, partnerName) {
 
 function champAnchorSlot(champ) {
   if (!champ) return null;
-  if (champ.mainRole) return champ.mainRole;
-  const rates = champ.laneRates;
-  if (rates && Object.keys(rates).length) {
-    let best = null;
-    let bestRate = -1;
-    for (const slot of PLAYABLE_SLOTS) {
-      const r = Number(rates[slot]?.rate) || 0;
-      if (r > bestRate) {
-        bestRate = r;
-        best = slot;
-      }
-    }
-    if (best) return best;
-  }
-  if (champ.optimalSlots?.length) return champ.optimalSlots[0];
-  return null;
+  const LV = window.LoLLaneViability;
+  if (LV) return LV.primarySlot(champ, tacticsMetaMap());
+  return champ.mainRole || null;
 }
 
 function synergyRolePairBonus(champ, partnerName) {
@@ -1812,13 +1796,16 @@ function renderLaneRateBars(champ) {
   const maxRate = Math.max(...order.map((s) => rates[s]?.rate || 0), 1);
   return `
     <div class="lane-rate-panel">
-      <p class="section-hint">Ranked · lane jouable ≥ 5 %</p>
+      <p class="section-hint">Ranked · lane jouable ≥ 10 %</p>
       <div class="lane-rate-bars">
         ${order
           .map((slot) => {
             const r = rates[slot]?.rate || 0;
-            const isMain = champ.mainRole === slot;
-            const isFlex = (champ.flexRoles || []).includes(slot);
+            const LV = window.LoLLaneViability;
+            const primary = LV ? LV.primarySlot(champ, tacticsMetaMap()) : champ.mainRole;
+            const playableSet = LV ? new Set(LV.playableSlots(champ, tacticsMetaMap())) : null;
+            const isMain = primary === slot;
+            const isFlex = playableSet ? (playableSet.has(slot) && !isMain) : (champ.flexRoles || []).includes(slot);
             const playable = r >= 10;
             return `
             <div class="lane-rate-row${isMain ? " is-main" : ""}${playable ? " is-playable" : ""}">
@@ -2652,6 +2639,15 @@ function assignTacticsChampion(name) {
   }
   if (!state.tacticsFocus || state.tacticsFocus.type !== "pick") return;
   const { side, slot } = state.tacticsFocus;
+  const champ = state.byName.get(name);
+  const metaMap = tacticsMetaMap();
+  if (window.LoLLaneViability && champ && !window.LoLLaneViability.playsSlot(champ, metaMap, slot)) {
+    const min = window.LoLLaneViability.MIN_LANE_RATE;
+    if (els.tacticsFocusHint) {
+      els.tacticsFocusHint.textContent = `${name} n'est pas viable en ${slot} (< ${min}% lane rate).`;
+    }
+    return;
+  }
   const comp = tacticsComp(side);
   comp[slot] = name;
   const next = tacticsSlots().find((s) => !comp[s]);

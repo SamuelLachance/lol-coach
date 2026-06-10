@@ -3,6 +3,7 @@
  */
 (function (global) {
   const SC = () => global.LoLDraftScoring;
+  const LV = () => global.LoLLaneViability;
   const SLOTS = ["Top", "Jungle", "Mid", "Bot", "Support"];
   const BANS_PER_TEAM = 5;
   const BAN_PHASE1_COUNT = 3;
@@ -203,10 +204,12 @@
   }
 
   function playableSlotsFor(champ, meta) {
-    return SC()?.playableSlotsFor(champ, meta) || champ?.optimalSlots || [];
+    if (LV()) return LV().playableSlots(champ, meta);
+    return SC()?.playableSlotsFor(champ, meta) || [];
   }
   function playsSlotFor(champ, meta, slot) {
-    return SC()?.playsSlotFor(champ, meta, slot) ?? playableSlotsFor(champ, meta).includes(slot);
+    if (LV()) return LV().playsSlot(champ, meta, slot);
+    return SC()?.playsSlotFor(champ, meta, slot) ?? false;
   }
 
   function scoringCtx(s, side, byName, meta, hintSlot = null) {
@@ -298,15 +301,22 @@
     const pinned = picks.filter((p) => p.pinned && p.slot);
     const unpinned = picks.filter((p) => !p.pinned);
     const used = new Set(pinned.map((p) => p.slot));
-    const pool = layoutAllowedSlots(s, side).filter((sl) => !used.has(sl));
-    const open = pool.length ? pool : SLOTS.filter((sl) => !used.has(sl));
-    let i = 0;
+    let open = layoutAllowedSlots(s, side).filter((sl) => !used.has(sl));
+    if (!open.length) open = SLOTS.filter((sl) => !used.has(sl));
+
     const merged = [...pinned];
     for (const p of unpinned) {
-      const slot = open[i] || SLOTS.find((sl) => !used.has(sl)) || p.slot;
-      if (slot) used.add(slot);
-      merged.push({ ...p, slot, pinned: false });
-      i++;
+      const champ = getData(byName, meta, p.name);
+      const viableOpen = open.filter((sl) => playsSlotFor(champ, meta, sl));
+      let slot = null;
+      if (p.slot && !used.has(p.slot) && playsSlotFor(champ, meta, p.slot)) slot = p.slot;
+      else if (LV() && viableOpen.length) slot = LV().bestOpenSlot(champ, meta, viableOpen);
+      else if (viableOpen.length) slot = viableOpen[0];
+      if (slot) {
+        used.add(slot);
+        open = open.filter((sl) => sl !== slot);
+      }
+      merged.push({ ...p, slot: slot || p.slot, pinned: false });
     }
     s.picks[side] = merged;
   }
@@ -425,10 +435,12 @@
     } else {
       if (!ctx.byName) return { ok: false, error: "Données manquantes." };
       clearFromBoard(s, action.championName);
-      const slot = action.slot && !pickBySlot(s, step.side)[action.slot]
-        ? action.slot
-        : scorePick(getData(ctx.byName, ctx.metaMap, action.championName), s, step.side, ctx.byName, ctx.metaMap || {}).slot;
-      assignPickDirect(s, step.side, action.championName, slot, { pinned: Boolean(action.slot) });
+      const champData = getData(ctx.byName, ctx.metaMap, action.championName);
+      const metaMap = ctx.metaMap || {};
+      let slot = action.slot && !pickBySlot(s, step.side)[action.slot] ? action.slot : null;
+      if (slot && !playsSlotFor(champData, metaMap, slot)) slot = null;
+      if (!slot) slot = scorePick(champData, s, step.side, ctx.byName, metaMap).slot;
+      assignPickDirect(s, step.side, action.championName, slot, { pinned: Boolean(action.slot && slot === action.slot) });
       if (!action.slot) relayoutAll(s, ctx);
     }
     s.stepIndex++;
@@ -520,10 +532,12 @@
     } else {
       const list = sidePicks(s, side).filter((p) => p.name !== name);
       if (list.length >= 5) return { ok: false, error: "Picks pleins." };
-      const slot = hintSlot && !pickBySlot(s, side)[hintSlot]
-        ? hintSlot
-        : scorePick(getData(ctx.byName, ctx.metaMap, name), s, side, ctx.byName, ctx.metaMap || {}, hintSlot).slot;
-      assignPickDirect(s, side, name, slot, { pinned: Boolean(hintSlot) });
+      const champData = getData(ctx.byName, ctx.metaMap, name);
+      const metaMap = ctx.metaMap || {};
+      let slot = hintSlot && !pickBySlot(s, side)[hintSlot] ? hintSlot : null;
+      if (slot && !playsSlotFor(champData, metaMap, slot)) slot = null;
+      if (!slot) slot = scorePick(champData, s, side, ctx.byName, metaMap, hintSlot).slot;
+      assignPickDirect(s, side, name, slot, { pinned: Boolean(hintSlot && slot === hintSlot) });
       if (!hintSlot) relayoutAll(s, ctx);
       const placed = s.picks[side].find((p) => p.name === name);
       if (!placed) return { ok: false, error: "Placement impossible." };

@@ -10,7 +10,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 function loadLoLDraft() {
   const sandbox = { global: {}, window: {}, globalThis: {} };
   sandbox.global = sandbox.window = sandbox.globalThis = sandbox;
-  for (const file of ["coaching-knowledge.js", "mtg-color-pie.js", "draft-scoring.js", "draft-engine.js"]) {
+  for (const file of ["lane-viability.js", "coaching-knowledge.js", "mtg-color-pie.js", "draft-scoring.js", "draft-engine.js"]) {
     vm.runInNewContext(readFileSync(join(root, "public", file), "utf8"), sandbox);
   }
   return sandbox.LoLDraft;
@@ -159,6 +159,24 @@ function main() {
   const planBefore = D.detectCompPlan([jv]);
   const planAfter = D.detectCompPlan([jv, lv]);
   assert(planAfter.completeness > planBefore.completeness, "Lulu improves hypercarry plan");
+
+  // 10% lane rate: Akshan has flexRoles Top but only 6.79% — must not flex there
+  const akshan = champs.find((c) => c.name === "Akshan");
+  const akSession = D.createSession("akshan", "blue");
+  akSession.stepIndex = 6;
+  akSession.picks.blue = [{ name: "Malphite", slot: "Top", order: 1 }];
+  const akPick = D.scorePick(akshan, akSession, "blue", byName, meta);
+  assert(akPick.slot !== "Top", `Akshan must not flex Top (6.79%), got ${akPick.slot}`);
+  assert(!D.playsSlotFor(akshan, meta, "Top"), "playsSlotFor Akshan Top should be false");
+
+  const layoutSession = D.createSession("layout-ak", "blue");
+  layoutSession.picks.blue = [
+    { name: "Malphite", slot: "Top", order: 1, pinned: true },
+    { name: "Akshan", order: 2 },
+  ];
+  D.optimizeTeamLayout(layoutSession, "blue", byName, meta);
+  const akSlot = layoutSession.picks.blue.find((p) => p.name === "Akshan")?.slot;
+  assert(akSlot !== "Top", `optimizeLayout must not assign Akshan Top, got ${akSlot}`);
 
   console.log("\nOK — LoL draft rebuild tests passed");
 }

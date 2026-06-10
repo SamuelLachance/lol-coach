@@ -7,7 +7,8 @@
   const BLIND_SLOTS = ["Bot", "Jungle", "Mid"];
   const LATE_SLOTS = ["Support", "Top"];
   const SLOT_LABELS = { Bot: "ADC", Jungle: "Jungle", Mid: "Mid", Support: "Support", Top: "Top" };
-  const MIN_LANE_RATE = 10;
+  const LV = () => global.LoLLaneViability;
+  const MIN_LANE_RATE = () => LV()?.MIN_LANE_RATE ?? 10;
 
   const TIER_PTS = { S: 40, A: 30, B: 20, C: 10, D: 3 };
   const SYN_W = [36, 28, 22, 16, 12];
@@ -64,29 +65,22 @@
     return raw.map((x) => (typeof x === "string" ? x : x?.name)).filter(Boolean);
   }
 
-  function laneRates(champ, meta) {
-    return champ?.laneRates || meta?.[champ?.name]?.laneRates || null;
-  }
-
   function playableSlots(champ, meta) {
-    const rates = laneRates(champ, meta);
-    if (rates && Object.keys(rates).length) {
-      return SLOTS.filter((sl) => (rates[sl]?.rate || 0) >= MIN_LANE_RATE);
-    }
-    const slots = new Set(champ?.optimalSlots || meta?.[champ?.name]?.optimalSlots || []);
-    const main = champ?.mainRole || meta?.[champ?.name]?.mainRole;
-    if (main) slots.add(main);
-    for (const sl of champ?.flexRoles || meta?.[champ?.name]?.flexRoles || []) slots.add(sl);
-    return [...slots].filter(Boolean);
+    const lane = LV();
+    if (lane) return lane.playableSlots(champ, meta);
+    return [];
   }
 
   function playsSlot(champ, meta, slot) {
-    const rates = laneRates(champ, meta);
-    if (rates && Object.keys(rates).length) {
-      const r = rates[slot]?.rate;
-      return r != null && r >= MIN_LANE_RATE;
-    }
-    return playableSlots(champ, meta).includes(slot);
+    const lane = LV();
+    if (lane) return lane.playsSlot(champ, meta, slot);
+    return false;
+  }
+
+  function primarySlot(champ, meta) {
+    const lane = LV();
+    if (lane) return lane.primarySlot(champ, meta);
+    return null;
   }
 
   function parseSpells(text) {
@@ -374,13 +368,9 @@
       if (Object.values(oppBySlot).includes(p.name)) continue;
       const champ = getData(byName, meta, p.name);
       const slots = playableSlots(champ, meta);
-      const primary = champ.mainRole || meta[p.name]?.mainRole;
       const open = SLOTS.filter((sl) => !oppBySlot[sl]);
-
-      let slot = null;
-      if (primary && open.includes(primary) && slots.includes(primary)) slot = primary;
-      else slot = slots.find((sl) => open.includes(sl));
-      if (!slot && slots.length) slot = slots[0];
+      const lane = LV();
+      const slot = lane?.bestOpenSlot(champ, meta, open) || slots.find((sl) => open.includes(sl)) || null;
 
       if (slot) oppBySlot[slot] = p.name;
     }
@@ -401,17 +391,10 @@
   /** Open enemy lanes this champion can realistically still be picked for. */
   function getBanViableOpenSlots(champ, meta, openSlots) {
     if (!openSlots.length) return [];
-    const playable = playableSlots(champ, meta);
-    let viable = playable.filter((sl) => openSlots.includes(sl));
+    const viable = playableSlots(champ, meta).filter((sl) => openSlots.includes(sl));
     if (!viable.length) return [];
 
-    const rates = laneRates(champ, meta);
-    if (rates && Object.keys(rates).length) {
-      const rated = viable.filter((sl) => (rates[sl]?.rate || 0) >= MIN_LANE_RATE);
-      if (rated.length) viable = rated;
-    }
-
-    const primary = champ.mainRole || meta[champ.name]?.mainRole;
+    const primary = primarySlot(champ, meta);
     if (primary && viable.includes(primary)) {
       return [primary, ...viable.filter((sl) => sl !== primary)];
     }
@@ -759,8 +742,13 @@
   }
 
   function scorePickCandidate(champ, ctx) {
-    const { allowedSlots, preferredSlot, hintSlot } = ctx;
+    const { allowedSlots, preferredSlot, hintSlot, meta } = ctx;
     let slots = allowedSlots?.length ? allowedSlots.slice() : SLOTS.slice();
+    const lane = LV();
+    slots = lane ? lane.filterSlots(champ, meta, slots) : slots.filter((sl) => playsSlot(champ, meta, sl));
+    if (!slots.length) {
+      return { score: -9999, reasons: [`Aucun poste ≥${MIN_LANE_RATE()}% lane rate`], slot: null };
+    }
     if (preferredSlot && slots.includes(preferredSlot)) slots = [preferredSlot, ...slots.filter((s) => s !== preferredSlot)];
 
     let best = null;
@@ -768,7 +756,7 @@
       const r = scorePick(champ, slot, { ...ctx, hintSlot });
       if (!best || r.score > best.score) best = r;
     }
-    return best || { score: -9999, reasons: ["Aucun slot"], slot: slots[0] };
+    return best || { score: -9999, reasons: ["Aucun slot viable"], slot: null };
   }
 
   global.LoLDraftScoring = {
@@ -776,7 +764,8 @@
     BLIND_SLOTS,
     LATE_SLOTS,
     SLOT_LABELS,
-    MIN_LANE_RATE,
+    MIN_LANE_RATE: MIN_LANE_RATE(),
+    getMinLaneRate: MIN_LANE_RATE,
     TIER_PTS,
     buildProfile,
     buildVector: buildProfile,

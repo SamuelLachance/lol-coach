@@ -768,7 +768,7 @@
     return champions
       .map((c) => {
         const laneScore = sortSlot && PR ? PR.laneScore(c, sortSlot, metaMap) : 0;
-        const lanePick = sortSlot && laneScore >= 5;
+        const lanePick = sortSlot && laneScore >= 10;
         return `
         <button type="button" class="draft-pool-card${lanePick ? " draft-pool-card--lane" : ""}" draggable="true" data-champ="${coach.escapeHtml(c.name)}" title="${coach.escapeHtml(c.name)}">
           ${coach.championIconHtml(c, { size: "pool" })}
