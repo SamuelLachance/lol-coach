@@ -76,7 +76,7 @@
     ["split_push", "teamfight_engage"],
   ];
 
-  const LANE_MATCHUP_WEIGHT = { Top: 1.05, Jungle: 1.2, Mid: 1.0, Bot: 1.0, Support: 0.88 };
+  const LANE_MATCHUP_WEIGHT = { Top: 1.7, Jungle: 1, Mid: 1, Bot: 1, Support: 1.5 };
   const LANE_CROSS_DUEL_WEIGHT = 0.55;
   const JGL_GANK_WEIGHT = { Top: 0.42, Mid: 0.48, Bot: 0.38 };
 
