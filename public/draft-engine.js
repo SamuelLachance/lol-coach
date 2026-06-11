@@ -49,6 +49,14 @@
 
   function buildDraftSteps() { return LOL_DRAFT_STEPS.slice(); }
 
+  function normalizeFocus(f) {
+    if (!f) return null;
+    if (f.type === "ban" || f.banIndex != null) return f;
+    if (f.slot && f.side && !f.type) return { ...f, type: "pick" };
+    if (f.type === "swap" && f.slot && f.side) return f;
+    return f;
+  }
+
   function normalizeSession(s) {
     if (!s) return s;
     s.bansPerTeam = BANS_PER_TEAM;
@@ -60,6 +68,7 @@
       s.bans[side] = Array.from({ length: BANS_PER_TEAM }, (_, i) => c[i] || null);
     }
     if (s.focus === undefined) s.focus = null;
+    else if (s.focus) s.focus = normalizeFocus(s.focus);
     if (s.hoverPick === undefined) s.hoverPick = null;
     return s;
   }
@@ -378,25 +387,18 @@
   function invalidateRecommendationCache() { recommendationCache = null; }
 
   function getRecommendationTarget(s) {
-    const f = s.focus;
-    if ((f?.type === "pick" || f?.type === "swap") && f.slot) {
+    const f = normalizeFocus(s.focus);
+    if (f?.type === "ban") return { type: "ban", side: f.side, banIndex: f.banIndex };
+    if (f?.slot && f?.side && f.type !== "ban") {
       return { type: "pick", side: f.side, slot: f.slot };
     }
-    if (f?.type === "ban") return { type: "ban", side: f.side, banIndex: f.banIndex };
     if (s.hoverPick?.slot) return { type: "pick", side: s.hoverPick.side, slot: s.hoverPick.slot, hover: true };
     return null;
   }
 
   /** UI may pass { side, slot } without type — normalize so lane focus always applies. */
   function normalizeRecommendTarget(raw) {
-    if (!raw) return null;
-    if (raw.type === "swap" && raw.slot && raw.side) {
-      return { type: "pick", side: raw.side, slot: raw.slot };
-    }
-    if (raw.slot && raw.side && !raw.type) {
-      return { type: "pick", side: raw.side, slot: raw.slot, hover: raw.hover };
-    }
-    return raw;
+    return normalizeFocus(raw);
   }
 
   function recommendationCacheKey(s, side, all, step) {

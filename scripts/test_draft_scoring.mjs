@@ -127,6 +127,18 @@ function main() {
       `red Bot suggest ${item.champion.name} must be ≥10% Bot lane rate`
     );
   }
+
+  const legacyFocus = D.createSession("legacy-focus", "blue");
+  legacyFocus.focus = { side: "red", slot: "Bot" };
+  D.normalizeSession(legacyFocus);
+  const legacyRec = D.getRecommendations(legacyFocus, champs, meta, byName, [], 8, null, { skipCache: true });
+  assert(
+    legacyRec.coachHint.includes("ADC") || legacyRec.coachHint.includes("≥"),
+    `legacy focus without type must lane-scope Bot: ${legacyRec.coachHint}`
+  );
+  for (const item of legacyRec.items) {
+    assert(D.playsSlotFor(item.champion, meta, "Bot"), `legacy Bot ${item.champion.name}`);
+  }
   for (const item of draftRec.items) {
     assert(
       D.playsSlotFor(item.champion, meta, "Bot"),

@@ -217,10 +217,17 @@
     }
   }
 
+  function normalizeSessionFocus(session) {
+    if (!session?.focus || !window.LoLDraft?.normalizeSession) return;
+    window.LoLDraft.normalizeSession(session);
+  }
+
   /** Active lane for suggestions / pool sort (pick, swap, or hover). */
   function draftRecommendTarget(session) {
+    normalizeSessionFocus(session);
     const f = session.focus;
-    if ((f?.type === "pick" || f?.type === "swap") && f.slot) {
+    if (f?.type === "ban") return null;
+    if (f?.slot && f?.side) {
       return { type: "pick", side: f.side, slot: f.slot };
     }
     if (session.hoverPick?.slot) {
@@ -244,6 +251,8 @@
   }
 
   function setHoverPick(session, side, slot) {
+    normalizeSessionFocus(session);
+    if (session.focus?.slot && session.focus?.side) return;
     const prev = session.hoverPick;
     if (prev?.side === side && prev?.slot === slot) return;
     session.hoverPick = slot ? { side, slot } : null;
@@ -251,10 +260,11 @@
   }
 
   function isCellFocused(session, type, side, banIndex, slot) {
+    normalizeSessionFocus(session);
     const f = session.focus;
     if (!f || f.side !== side) return false;
     if (f.type === "swap" && type === "pick") return f.slot === slot;
-    if (f.type !== type) return false;
+    if (f.type && f.type !== type) return false;
     if (type === "ban") return f.banIndex === banIndex;
     if (f.slot) return f.slot === slot;
     const comp = window.LoLDraft.pickBySlot(session, side);
@@ -306,6 +316,7 @@
 
     session.hoverPick = null;
     session.focus = { type: "pick", side, slot };
+    window.LoLDraft.normalizeSession(session);
     window.LoLDraft.syncLegacySlots(session);
     saveSessionsDebounced();
     afterFocusChange(session);
@@ -384,8 +395,9 @@
 
     const step = window.LoLDraft.getStep(session);
     if (step?.type === "pick") {
-      const side = session.focus?.type === "pick" ? session.focus.side : step.side;
-      const slot = session.focus?.type === "pick" ? session.focus.slot : null;
+      normalizeSessionFocus(session);
+      const side = session.focus?.side || step.side;
+      const slot = session.focus?.slot || null;
       session.focus = slot ? { type: "pick", side, slot } : { type: "pick", side };
     } else if (!session.focus) {
       window.LoLDraft.suggestNextFocus(session);
@@ -801,6 +813,7 @@
 
   function buildSuggestChipsHtml(session) {
     if (window.LoLDraft.isComplete(session)) return "";
+    normalizeSessionFocus(session);
     const metaMap = coach.state.tacticsMeta?.champions || {};
     const focusTarget = draftRecommendTarget(session);
     const rec = window.LoLDraft.getRecommendations(
@@ -811,7 +824,7 @@
       allSessions(),
       6,
       null,
-      { focusTarget, skipCache: true }
+      { skipCache: true }
     );
     if (!rec.items?.length) return "";
     const hintText = rec.coachHint || "Top picks calculés · glisser-déposer sur une case";
