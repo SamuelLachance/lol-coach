@@ -2631,9 +2631,12 @@ function clearTacticsSlot(side, slot) {
   scheduleUserSessionSave();
 }
 
-function assignTacticsChampion(name) {
-  if (state.tacticsFocus?.type === "swap") return;
-  if (!state.tacticsFocus || state.tacticsFocus.type !== "pick") {
+function assignTacticsChampion(name, { side: forcedSide, slot: forcedSlot } = {}) {
+  if (state.tacticsFocus?.type === "swap" && !forcedSlot) return;
+
+  if (forcedSide && forcedSlot) {
+    state.tacticsFocus = { type: "pick", side: forcedSide, slot: forcedSlot };
+  } else if (!state.tacticsFocus || state.tacticsFocus.type !== "pick") {
     const slots = tacticsSlots();
     for (const side of ["our", "enemy"]) {
       const comp = tacticsComp(side);
@@ -2645,11 +2648,14 @@ function assignTacticsChampion(name) {
     }
   }
   if (!state.tacticsFocus || state.tacticsFocus.type !== "pick") return;
+
   const { side, slot } = state.tacticsFocus;
   const champ = state.byName.get(name);
   const metaMap = tacticsMetaMap();
   const offMeta =
     window.LoLLaneViability && champ && !window.LoLLaneViability.playsSlot(champ, metaMap, slot);
+
+  // Macro always honors the focused slot — flex/off-meta picks are allowed.
   const comp = tacticsComp(side);
   comp[slot] = name;
   const next = tacticsSlots().find((s) => !comp[s]);
@@ -2781,7 +2787,7 @@ function renderTacticsPoolGrid(champions, sortSlot) {
           : ` · flex ${slot} (<10%)`
         : "";
       return `
-      <button type="button" class="draft-pool-card${cardClass}" data-champ="${escapeHtml(c.name)}" title="${escapeHtml(c.name)}${titleExtra}">
+      <button type="button" class="draft-pool-card${cardClass}" draggable="true" data-champ="${escapeHtml(c.name)}" title="${escapeHtml(c.name)}${titleExtra}">
         ${championIconHtml(c, { size: "pool" })}
         <span class="draft-pool-name">${escapeHtml(c.name)}</span>
         ${c.tierMeta ? `<span class="draft-pool-tier tier-${c.tierMeta.toLowerCase()}">${c.tierMeta}</span>` : ""}
@@ -2921,8 +2927,54 @@ function bindTacticsPoolEvents(el) {
       return;
     }
     const btn = e.target.closest(".draft-pool-card");
-    if (btn && el.contains(btn)) assignTacticsChampion(btn.dataset.champ);
+    if (btn && el.contains(btn)) {
+      e.preventDefault();
+      assignTacticsChampion(btn.dataset.champ);
+    }
   });
+}
+
+function bindTacticsDragDrop() {
+  if (document.body.dataset.tacticsDragBound === "1") return;
+  document.body.dataset.tacticsDragBound = "1";
+
+  let dragChamp = null;
+
+  document.addEventListener("dragstart", (e) => {
+    const card = e.target.closest("#tactics-pool .draft-pool-card");
+    if (!card) return;
+    dragChamp = card.dataset.champ;
+    e.dataTransfer.setData("text/champion", dragChamp);
+    e.dataTransfer.effectAllowed = "copy";
+  });
+
+  for (const container of [els.ourSlots, els.enemySlots]) {
+    if (!container) continue;
+    container.addEventListener("dragover", (e) => {
+      const cell = e.target.closest("[data-tactics-slot]");
+      if (!cell || !dragChamp) return;
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "copy";
+      container.querySelectorAll(".draft-cell-drop-target").forEach((c) => c.classList.remove("draft-cell-drop-target"));
+      cell.classList.add("draft-cell-drop-target");
+    });
+    container.addEventListener("dragleave", (e) => {
+      const cell = e.target.closest("[data-tactics-slot]");
+      if (cell) cell.classList.remove("draft-cell-drop-target");
+    });
+    container.addEventListener("drop", (e) => {
+      const cell = e.target.closest("[data-tactics-slot]");
+      container.querySelectorAll(".draft-cell-drop-target").forEach((c) => c.classList.remove("draft-cell-drop-target"));
+      const name = e.dataTransfer.getData("text/champion") || dragChamp;
+      if (!cell || !name) return;
+      e.preventDefault();
+      assignTacticsChampion(name, {
+        side: cell.dataset.tacticsSide,
+        slot: cell.dataset.tacticsSlot,
+      });
+      dragChamp = null;
+    });
+  }
 }
 
 function syncTacticsPoolFocus(el) {
@@ -2970,7 +3022,7 @@ function renderTacticsPool({ gridOnly = false } = {}) {
       <h2 class="draft-pool-title">Champions</h2>
       <span class="draft-pool-count">${filtered.length} dispo · ${tacticsPoolSortLabel(role, sortSlot)}</span>
     </div>
-    <p class="draft-pool-lead muted">Tous les champions restent visibles · lane focusée = tri + pick sur ce poste (flex OK) · filtre optionnel.</p>
+    <p class="draft-pool-lead muted">Tous les champions restent visibles · lane focusée = tri + pick sur ce poste (flex OK) · glisser-déposer · filtre optionnel · build ${escapeHtml(window.LoLSiteConfig?.APP_BUILD || "?")}.</p>
     <div class="draft-pool-action${focus?.type === "pick" ? " focus-ready" : ""}">${escapeHtml(actionText)}</div>
     ${roleFilters}
     <div class="draft-pool-toolbar">
@@ -3288,6 +3340,7 @@ function runTacticsAnalysis() {
 }
 
 function setupTactics() {
+  bindTacticsDragDrop();
   updateImportDraftButton();
   renderTacticsDraft({ refreshPool: true });
   syncTacticsAdvice();
