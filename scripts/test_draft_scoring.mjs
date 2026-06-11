@@ -386,6 +386,52 @@ function main() {
   const hoverRec = D.getRecommendations(hoverRecSession, champs, meta, byName, [], 6, null, { skipCache: true });
   assert(hoverRec.slot === "Jungle", `hover pick must drive recommendations, got ${hoverRec.slot}`);
 
+  const pickFlow = D.createSession("pick-flow", "blue");
+  const banNames = [
+    "Orianna",
+    "Twisted Fate",
+    "Akali",
+    "Camille",
+    "Kayle",
+    "Kog'Maw",
+    "Syndra",
+    "Zed",
+    "Azir",
+    "Yasuo",
+  ];
+  let banIdx = 0;
+  for (let i = 0; i < 6; i++) {
+    const st = D.getStep(pickFlow);
+    const banResult = D.applyAction(
+      pickFlow,
+      { championName: banNames[banIdx++], banIndex: st.banIndex },
+      [],
+      { byName, metaMap: meta }
+    );
+    assert(banResult.ok, `ban ${i} should succeed`);
+  }
+  assert(pickFlow.stepIndex === 6, `after bans stepIndex must be 6, got ${pickFlow.stepIndex}`);
+  assert(D.getStep(pickFlow)?.type === "pick", "first pick step expected");
+
+  pickFlow.focus = { type: "pick", side: "blue", slot: "Bot", userLocked: true };
+  D.normalizeSession(pickFlow, { resyncStep: false });
+  assert(
+    pickFlow.focus?.slot === "Bot" && pickFlow.focus?.userLocked,
+    "user-locked lane must survive lightweight normalize"
+  );
+  const pickResult = D.recordAction(
+    pickFlow,
+    { type: "pick", side: "blue", name: jinx.name, slot: "Bot" },
+    [],
+    { byName, metaMap: meta }
+  );
+  assert(pickResult.ok && pickResult.inOrder, "in-order pick should succeed");
+  assert(pickFlow.stepIndex === 7, `pick must advance stepIndex to 7, got ${pickFlow.stepIndex}`);
+  assert(
+    pickFlow.picks.blue.some((p) => p.name === "Jinx" && p.slot === "Bot"),
+    "Jinx must be placed on Bot"
+  );
+
   const luluBot = SC.scoreMacroPick(lulu, "Bot", {
     teamNames: [],
     enemyNames: [],

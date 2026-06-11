@@ -60,8 +60,10 @@
     return f;
   }
 
-  function normalizeSession(s) {
+  function normalizeSession(s, opts = {}) {
     if (!s) return s;
+    const resyncStep = opts.resyncStep !== false;
+    const alignFocus = opts.alignFocus !== false;
     s.bansPerTeam = BANS_PER_TEAM;
     if (typeof s.fearless !== "boolean") s.fearless = false;
     if (!s.bans) s.bans = { blue: [], red: [] };
@@ -74,19 +76,19 @@
     else if (s.focus) s.focus = normalizeFocus(s.focus);
     if (s.hoverPick === undefined) s.hoverPick = null;
     if (s.hoverSource === undefined) s.hoverSource = null;
-    resyncStepIndex(s);
-    if (needsCoachPickAlign(s)) alignCoachPickFocus(s);
+    if (resyncStep) resyncStepIndex(s);
+    if (alignFocus && needsCoachPickAlign(s)) alignCoachPickFocus(s);
     return s;
   }
 
-  /** Auto-align only when focus is missing, wrong side, or non-user-locked stale slot. */
+  /** Auto-align only when focus is missing or stale; never override user-locked lane. */
   function needsCoachPickAlign(s) {
     const step = getStep(s);
     if (!step || step.type !== "pick" || isComplete(s)) return false;
-    const side = step.side;
     const f = s.focus;
+    if (f?.userLocked && f.type === "pick" && f.slot) return false;
+    const side = step.side;
     if (!f || f.type !== "pick" || f.side !== side || !f.slot) return true;
-    if (f.userLocked) return false;
     return false;
   }
 
@@ -354,7 +356,7 @@
 
   /** Réaligne le survol quand l'adversaire révèle un pick (sans lane cliquée). */
   function refreshDraftHover(s) {
-    normalizeSession(s);
+    normalizeSession(s, { resyncStep: false });
     if (s.focus?.userLocked) return s.hoverPick || null;
     const step = getStep(s);
     if (step?.type !== "pick") {
@@ -570,7 +572,7 @@
   }
 
   function getRecommendations(s, champs, meta, byName, all = [], limit = 8, forSide = null, opts = {}) {
-    normalizeSession(s);
+    normalizeSession(s, { resyncStep: false });
     const step = getStep(s);
     if (!step || isComplete(s)) return { type: "none", items: [], forSide: null };
     const avail = available(champs, s, all);
@@ -849,7 +851,7 @@
   }
 
   function suggestNextFocus(s, opts = {}) {
-    normalizeSession(s);
+    normalizeSession(s, { resyncStep: false });
     if (isComplete(s)) { s.focus = null; return null; }
     const step = getStep(s);
     if (!step) return null;
@@ -881,7 +883,7 @@
   }
 
   function refreshAutoPickFocus(s) {
-    normalizeSession(s);
+    normalizeSession(s, { resyncStep: false });
     const step = getStep(s);
     if (!step || step.type !== "pick" || isComplete(s)) return null;
     if (s.focus?.userLocked && s.focus?.side === step.side && s.focus?.slot) {
@@ -1074,7 +1076,7 @@
     allowedSlotsForNextPick, layoutAllowedSlots, recommendedSlotForPick, preferredBlindSlot,
     isBlindPickPhase, isLaneMatchupKnown, getDraftCoachHint,
     dynamicHoverPriority, defaultHoverPick, resolveHoverPick, refreshDraftHover, activePickSide,
-    alignCoachPickFocus, coachPickTarget, coachFocusOverridesUserLock,
+    alignCoachPickFocus, needsCoachPickAlign, coachPickTarget, coachFocusOverridesUserLock,
     applyAction, recordAction, manualAssign, clearSlot, actionLabel, suggestNextFocus, refreshAutoPickFocus, syncLegacySlots,
     resyncStepIndex, undo, resetSession, swapPickSlots, toComps, analyzeLive, stepLabel, formatSummary,
     scorePick: (c, s, side, slot, meta, byName) => scorePick(c, s, side, byName, meta, slot),

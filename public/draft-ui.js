@@ -234,7 +234,7 @@
 
   function normalizeSessionFocus(session) {
     if (!session?.focus || !window.LoLDraft?.normalizeSession) return;
-    window.LoLDraft.normalizeSession(session);
+    window.LoLDraft.normalizeSession(session, { resyncStep: false });
   }
 
   /** Active lane for suggestions / pool sort (hover > coach, unless user-locked focus). */
@@ -435,11 +435,28 @@
     const session = getActiveSession();
     if (!session || window.LoLDraft.isComplete(session)) return;
 
+    window.LoLDraft.resyncStepIndex(session);
+
+    const locked =
+      session.focus?.userLocked &&
+      session.focus?.type === "pick" &&
+      session.focus?.side &&
+      session.focus?.slot
+        ? {
+            type: "pick",
+            side: session.focus.side,
+            slot: session.focus.slot,
+            userLocked: true,
+          }
+        : null;
+
     const step = window.LoLDraft.getStep(session);
-    if (step?.type === "pick") {
-      normalizeSessionFocus(session);
+    if (locked) {
+      session.focus = locked;
+    } else if (step?.type === "pick") {
+      window.LoLDraft.normalizeSession(session, { resyncStep: false });
       const side = session.focus?.side || step.side;
-      const slot = session.focus?.slot || null;
+      const slot = session.focus?.slot || window.LoLDraft.preferredBlindSlot(session, side) || null;
       session.focus = slot ? { type: "pick", side, slot } : { type: "pick", side };
     } else if (!session.focus) {
       window.LoLDraft.suggestNextFocus(session);
