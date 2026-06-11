@@ -1,0 +1,150 @@
+{
+  "analyzed": 84809,
+  "skipped": 0,
+  "unknownChamps": [],
+  "accuracyBefore": 50.55,
+  "decisive": 84447,
+  "correct": 42685,
+  "wrong": 41762,
+  "ties": 362,
+  "biases": {
+    "underPeel": 865,
+    "overPoke": 0,
+    "underDisengage": 556,
+    "overEngage": 2446
+  },
+  "topPatterns": [
+    {
+      "key": "hypercarry>hypercarry",
+      "winRate": 100,
+      "n": 52512
+    },
+    {
+      "key": "teamfight_engage>hypercarry",
+      "winRate": 100,
+      "n": 9491
+    },
+    {
+      "key": "hypercarry>teamfight_engage",
+      "winRate": 100,
+      "n": 9216
+    },
+    {
+      "key": "poke_disengage>hypercarry",
+      "winRate": 100,
+      "n": 3732
+    },
+    {
+      "key": "hypercarry>poke_disengage",
+      "winRate": 100,
+      "n": 3580
+    },
+    {
+      "key": "teamfight_engage>teamfight_engage",
+      "winRate": 100,
+      "n": 1709
+    },
+    {
+      "key": "beatdown>hypercarry",
+      "winRate": 100,
+      "n": 777
+    },
+    {
+      "key": "hypercarry>beatdown",
+      "winRate": 100,
+      "n": 707
+    },
+    {
+      "key": "teamfight_engage>poke_disengage",
+      "winRate": 100,
+      "n": 674
+    },
+    {
+      "key": "poke_disengage>teamfight_engage",
+      "winRate": 100,
+      "n": 631
+    },
+    {
+      "key": "poke_disengage>poke_disengage",
+      "winRate": 100,
+      "n": 216
+    },
+    {
+      "key": "teamfight_engage>beatdown",
+      "winRate": 100,
+      "n": 154
+    },
+    {
+      "key": "beatdown>teamfight_engage",
+      "winRate": 100,
+      "n": 135
+    },
+    {
+      "key": "hypercarry>pick_global",
+      "winRate": 100,
+      "n": 130
+    },
+    {
+      "key": "pick_global>hypercarry",
+      "winRate": 100,
+      "n": 125
+    }
+  ],
+  "topMetrics": [
+    {
+      "key": "hypercarry_peel>engage",
+      "winRate": 100,
+      "n": 8147
+    },
+    {
+      "key": "disengage>hardEngage",
+      "winRate": 100,
+      "n": 1715
+    },
+    {
+      "key": "poke_plan>engage_plan",
+      "winRate": 100,
+      "n": 649
+    },
+    {
+      "key": "double_enchanter>dive_comp",
+      "winRate": 100,
+      "n": 250
+    },
+    {
+      "key": "tempo>unpeeled_hyper",
+      "winRate": 100,
+      "n": 25
+    },
+    {
+      "key": "zone>immobile_carry",
+      "winRate": 100,
+      "n": 19
+    }
+  ],
+  "topReasons": {
+    "execution_skillcheck": 58431,
+    "win_condition_superior": 14532,
+    "hypercarry_protégé>engage": 8272,
+    "disengage>engage": 1243,
+    "scale>early_tempo": 770,
+    "poke>engage": 649,
+    "zone>dive": 501,
+    "double_enchanter>dive": 185,
+    "pick>hypercarry": 125,
+    "dive>poke": 58,
+    "tempo>hypercarry_non_protégé": 25,
+    "engage>split": 18
+  },
+  "userComp": {
+    "margin": -691,
+    "winProb": {
+      "our": 0.2676529926025555,
+      "enemy": 0.7323470073974445
+    },
+    "plans": {
+      "our": "teamfight_engage",
+      "enemy": "hypercarry"
+    }
+  }
+}
