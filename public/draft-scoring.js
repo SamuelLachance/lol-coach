@@ -161,7 +161,7 @@
 
     const harmony = pie.colorPickBonus(v.colors, allyColors, teamSum);
     if (harmony.score) {
-      score += Math.round(harmony.score * (w?.plan || 0.55) * 0.42);
+      score += Math.round(harmony.score * (w?.plan || 0.55) * 1.35);
       if (harmony.label) reasons.push(harmony.label);
       else if (harmony.teamCombo?.name) reasons.push(`Identité ${harmony.teamCombo.name}`);
     }
@@ -181,10 +181,10 @@
     const projected = allyVs.concat([v]);
     const coh = pie.colorCoherence(projected.map((p) => ({ name: p.name, colors: p.colors })));
     if (coh.conflicts?.length) {
-      score -= Math.min(28, coh.conflicts.length * 9);
+      score -= Math.min(70, coh.conflicts.length * 22);
       reasons.push(coh.conflicts[0]);
     } else if (coh.combination?.type === "guild" && allyVs.length >= 1) {
-      score += 10;
+      score += 28;
     }
 
     return { score, reasons: [...new Set(reasons)].slice(0, 4) };
@@ -198,13 +198,13 @@
     const vs = profiles(names, byName, metaMap);
     const vectors = vs.map((p) => ({ name: p.name, colors: p.colors })).filter((p) => p.colors);
     const coherence = pie.colorCoherence(vectors);
-    let score = Math.round(Math.max(-36, Math.min(108, coherence.score * 0.44)));
+    let score = Math.round(Math.max(-90, Math.min(270, coherence.score * 1.35)));
 
     let beatdown = null;
     if (oppNames.length) {
       const oppVs = profiles(oppNames, byName, metaMap);
       beatdown = pie.analyzeBeatdownMatchup(vs, oppVs);
-      score += Math.max(-18, Math.min(48, beatdown.alignmentBonus || 0));
+      score += Math.max(-45, Math.min(120, (beatdown.alignmentBonus || 0) * 2.5));
     }
 
     return {
@@ -451,7 +451,7 @@
     if (pie && vs.length >= 2) {
       const mtgVec = vs.map((p) => ({ name: p.name, colors: p.colors })).filter((p) => p.colors);
       const mtgCoh = pie.colorCoherence(mtgVec);
-      mtgAdj = Math.round(mtgCoh.score * 0.35);
+      mtgAdj = Math.round(mtgCoh.score * 1.1);
       if (oppNames.length) {
         const beat = pie.analyzeBeatdownMatchup(vs, oppVs);
         mtgAdj += beat.alignmentBonus || 0;
@@ -797,7 +797,7 @@
     const winCondition = winConditionScore(vs, names, byName, metaMap);
     const wombo = teamWomboPower(vs);
     const secondary = Math.round(
-      synergy * 0.28 + family * 0.32 + bal.score * 0.35 + coaching * 0.45 + mtgBlock.score * 0.25 + wombo.power * 0.12
+      synergy * 0.28 + family * 0.32 + bal.score * 0.35 + coaching * 0.45 + mtgBlock.score * 0.85 + wombo.power * 0.12
     );
     const total = winCondition + secondary;
     return {
