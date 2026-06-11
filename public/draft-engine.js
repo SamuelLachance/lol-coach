@@ -387,6 +387,18 @@
     return null;
   }
 
+  /** UI may pass { side, slot } without type — normalize so lane focus always applies. */
+  function normalizeRecommendTarget(raw) {
+    if (!raw) return null;
+    if (raw.type === "swap" && raw.slot && raw.side) {
+      return { type: "pick", side: raw.side, slot: raw.slot };
+    }
+    if (raw.slot && raw.side && !raw.type) {
+      return { type: "pick", side: raw.side, slot: raw.slot, hover: raw.hover };
+    }
+    return raw;
+  }
+
   function recommendationCacheKey(s, side, all, step) {
     return [
       s.id,
@@ -404,8 +416,8 @@
     const step = getStep(s);
     if (!step || isComplete(s)) return { type: "none", items: [], forSide: null };
     const avail = available(champs, s, all);
-    const target = opts.focusTarget || getRecommendationTarget(s);
-    const pickFocus = target?.type === "pick" && target.slot;
+    const target = normalizeRecommendTarget(opts.focusTarget) || getRecommendationTarget(s);
+    const pickFocus = (target?.type === "pick" || target?.type === "swap") && target.slot;
     const side = target?.side || forSide || step.side;
     const cacheKey = recommendationCacheKey(s, side, all, step);
     if (!opts.skipCache && recommendationCache?.key === cacheKey && recommendationCache.limit >= limit) {
@@ -427,7 +439,7 @@
       return result;
     }
 
-    const focusSlot = target?.type === "pick" ? target.slot : null;
+    const focusSlot = pickFocus ? target.slot : null;
     const hint = focusSlot || recommendedSlotForPick(s, side);
     const candidates = focusSlot
       ? laneViableForSlot(avail, meta, focusSlot)

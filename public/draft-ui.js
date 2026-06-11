@@ -221,9 +221,11 @@
   function draftRecommendTarget(session) {
     const f = session.focus;
     if ((f?.type === "pick" || f?.type === "swap") && f.slot) {
-      return { side: f.side, slot: f.slot };
+      return { type: "pick", side: f.side, slot: f.slot };
     }
-    if (session.hoverPick?.slot) return { side: session.hoverPick.side, slot: session.hoverPick.slot };
+    if (session.hoverPick?.slot) {
+      return { type: "pick", side: session.hoverPick.side, slot: session.hoverPick.slot, hover: true };
+    }
     return null;
   }
 

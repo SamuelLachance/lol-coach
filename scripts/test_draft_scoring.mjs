@@ -113,6 +113,20 @@ function main() {
     skipCache: true,
     focusTarget: { type: "pick", side: "blue", slot: "Bot" },
   });
+  const redBotFocus = D.getRecommendations(session, champs, meta, byName, [], 12, null, {
+    skipCache: true,
+    focusTarget: { side: "red", slot: "Bot" },
+  });
+  assert(
+    redBotFocus.coachHint.includes("ADC") || redBotFocus.coachHint.includes("≥"),
+    `red Bot focus hint should mention ADC lane: ${redBotFocus.coachHint}`
+  );
+  for (const item of redBotFocus.items) {
+    assert(
+      D.playsSlotFor(item.champion, meta, "Bot"),
+      `red Bot suggest ${item.champion.name} must be ≥10% Bot lane rate`
+    );
+  }
   for (const item of draftRec.items) {
     assert(
       D.playsSlotFor(item.champion, meta, "Bot"),
