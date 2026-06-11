@@ -74,7 +74,31 @@
     else if (s.focus) s.focus = normalizeFocus(s.focus);
     if (s.hoverPick === undefined) s.hoverPick = null;
     if (s.hoverSource === undefined) s.hoverSource = null;
+    resyncStepIndex(s);
+    alignCoachPickFocus(s);
     return s;
+  }
+
+  /** Force focus/hover to coach priority on the active pick turn (ADC first, enemy reveals = counter). */
+  function alignCoachPickFocus(s) {
+    const step = getStep(s);
+    if (!step || step.type !== "pick" || isComplete(s)) return null;
+    const side = step.side;
+    const preferred = preferredBlindSlot(s, side);
+    if (!preferred) return null;
+    const f = s.focus;
+    const keepLocked =
+      f?.userLocked &&
+      f.type === "pick" &&
+      f.side === side &&
+      f.slot &&
+      !coachFocusOverridesUserLock(s, side, f.slot);
+    if (!keepLocked) {
+      s.focus = { type: "pick", side, slot: preferred, userLocked: false };
+      s.hoverPick = { side, slot: preferred };
+      s.hoverSource = { side, slot: preferred };
+    }
+    return s.focus;
   }
 
   function createSession(name, ourSide = "blue", opts = {}) {
@@ -308,6 +332,11 @@
       return { side: coachSide, slot: hoveredSlot };
     }
 
+    if (stepSide && hoveredSide === stepSide) {
+      const preferred = dynamicHoverPriority(s, stepSide)[0] || hoveredSlot;
+      return { side: stepSide, slot: preferred };
+    }
+
     if (hoveredSide === coachSide) {
       return { side: coachSide, slot: hoveredSlot };
     }
@@ -489,7 +518,28 @@
 
   function invalidateRecommendationCache() { recommendationCache = null; }
 
+  function coachPickTarget(s, side) {
+    const preferred = preferredBlindSlot(s, side);
+    if (!preferred) return null;
+    const f = normalizeFocus(s.focus);
+    if (
+      f?.userLocked &&
+      f.type === "pick" &&
+      f.side === side &&
+      f.slot &&
+      !coachFocusOverridesUserLock(s, side, f.slot)
+    ) {
+      return { type: "pick", side, slot: f.slot };
+    }
+    return { type: "pick", side, slot: preferred };
+  }
+
   function getRecommendationTarget(s) {
+    const step = getStep(s);
+    if (step?.type === "pick") {
+      const coach = coachPickTarget(s, step.side);
+      if (coach) return coach;
+    }
     const f = normalizeFocus(s.focus);
     if (f?.type === "ban") return { type: "ban", side: f.side, banIndex: f.banIndex };
     if (f?.slot && f?.side && f.type !== "ban") {
@@ -518,6 +568,7 @@
   }
 
   function getRecommendations(s, champs, meta, byName, all = [], limit = 8, forSide = null, opts = {}) {
+    normalizeSession(s);
     const step = getStep(s);
     if (!step || isComplete(s)) return { type: "none", items: [], forSide: null };
     const avail = available(champs, s, all);
@@ -656,6 +707,7 @@
     s.updatedAt = Date.now();
     invalidateRecommendationCache();
     if (step.type === "pick") {
+      alignCoachPickFocus(s);
       return { ok: true, slot: s.picks[step.side].find((p) => p.name === action.championName)?.slot };
     }
     return { ok: true };
@@ -1027,6 +1079,7 @@
     allowedSlotsForNextPick, layoutAllowedSlots, recommendedSlotForPick, preferredBlindSlot,
     isBlindPickPhase, isLaneMatchupKnown, getDraftCoachHint,
     dynamicHoverPriority, defaultHoverPick, resolveHoverPick, refreshDraftHover, activePickSide,
+    alignCoachPickFocus, coachPickTarget, coachFocusOverridesUserLock,
     applyAction, recordAction, manualAssign, clearSlot, actionLabel, suggestNextFocus, refreshAutoPickFocus, syncLegacySlots,
     resyncStepIndex, undo, resetSession, swapPickSlots, toComps, analyzeLive, stepLabel, formatSummary,
     scorePick: (c, s, side, slot, meta, byName) => scorePick(c, s, side, byName, meta, slot),

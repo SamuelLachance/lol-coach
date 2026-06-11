@@ -239,14 +239,13 @@
   /** Active lane for suggestions / pool sort (pick, swap, or hover). */
   function draftRecommendTarget(session) {
     normalizeSessionFocus(session);
+    const step = window.LoLDraft.getStep(session);
+    if (step?.type === "pick" && window.LoLDraft.coachPickTarget) {
+      const coach = window.LoLDraft.coachPickTarget(session, step.side);
+      if (coach?.slot) return { type: "pick", side: coach.side, slot: coach.slot };
+    }
     const f = session.focus;
     if (f?.type === "ban") return null;
-    if (f?.userLocked && f?.slot && f?.side) {
-      return { type: "pick", side: f.side, slot: f.slot };
-    }
-    if (session.hoverPick?.slot) {
-      return { type: "pick", side: session.hoverPick.side, slot: session.hoverPick.slot, hover: true };
-    }
     if (f?.slot && f?.side) {
       return { type: "pick", side: f.side, slot: f.slot };
     }

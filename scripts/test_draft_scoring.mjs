@@ -287,15 +287,24 @@ function main() {
   );
 
   const redCounterAdc = D.createSession("red-vs-adc", "blue");
+  redCounterAdc.bans.blue = ["Orianna", "Akali", "Kayle", null, null];
+  redCounterAdc.bans.red = ["Twisted Fate", "Camille", "Kog'Maw", null, null];
   redCounterAdc.picks.blue = [{ name: "Varus", slot: "Bot", order: 1, pinned: true }];
   redCounterAdc.stepIndex = 7;
   const redSlot = D.preferredBlindSlot(redCounterAdc, "red");
   assert(redSlot === "Bot", `red should target ADC counter when blue has Varus, got ${redSlot}`);
   redCounterAdc.focus = { type: "pick", side: "red", slot: "Top", userLocked: true };
-  D.refreshAutoPickFocus(redCounterAdc);
+  D.normalizeSession(redCounterAdc);
   assert(
     redCounterAdc.focus?.slot === "Bot",
     `locked Top must yield to ADC counter after enemy Varus, got ${redCounterAdc.focus?.slot}`
+  );
+  const topHover = D.resolveHoverPick(redCounterAdc, "red", "Top");
+  assert(topHover?.slot === "Bot", `hovering red Top on turn must coach Bot, got ${topHover?.slot}`);
+  const recTop = D.getRecommendations(redCounterAdc, champs, meta, byName, [], 6, null, { skipCache: true });
+  assert(
+    recTop.slot === "Bot" && (recTop.coachHint.includes("ADC") || recTop.coachHint.includes("≥")),
+    `recommendations must stay ADC after Top hover: ${recTop.coachHint}`
   );
   assert(
     (D.DISPLAY_SLOTS || D.HOVER_SLOT_PRIORITY).join(",") === "Bot,Jungle,Mid,Support,Top",
