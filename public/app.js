@@ -166,6 +166,7 @@ const els = {
   patchEnableAll: document.getElementById("patch-enable-all"),
   patchDisableAll: document.getElementById("patch-disable-all"),
   patchResetDefaults: document.getElementById("patch-reset-defaults"),
+  patchPushDefaults: document.getElementById("patch-push-defaults"),
   sidebarDraft: document.getElementById("sidebar-draft"),
   sidebarTactics: document.getElementById("sidebar-tactics"),
   ourSlots: document.getElementById("our-slots"),
@@ -543,7 +544,7 @@ function persistPatchConfig() {
 }
 
 function markPatchSaved() {
-  els.patchSaveStatus?.classList.remove("is-dirty");
+  els.patchSaveStatus?.classList.remove("is-dirty", "is-error", "is-success");
   if (els.patchSaveStatus) els.patchSaveStatus.textContent = "Synchronisé · utilisé partout";
 }
 
@@ -710,6 +711,29 @@ function setupPatchUI() {
     state.patchConfig = window.LoLPatch.resetToDefaults(state.baseChampions);
     if (els.patchNameInput) els.patchNameInput.value = state.patchConfig.label;
     persistPatchConfig();
+  });
+
+  els.patchPushDefaults?.addEventListener("click", () => {
+    if (!state.patchConfig || !state.baseChampions.length) return;
+    const password = prompt("Mot de passe admin pour enregistrer les défauts du patch :");
+    if (password === null) return;
+    if (!window.LoLPatch.verifyAdminPassword(password)) {
+      if (els.patchSaveStatus) {
+        els.patchSaveStatus.textContent = "Mot de passe incorrect.";
+        els.patchSaveStatus.classList.add("is-error");
+        window.setTimeout(() => markPatchSaved(), 3500);
+      }
+      return;
+    }
+    const snapshot = window.LoLPatch.pushAsSiteDefaults(state.patchConfig, state.baseChampions);
+    window.LoLPatch.downloadSiteDefaults(snapshot);
+    if (els.patchSaveStatus) {
+      els.patchSaveStatus.textContent =
+        "Défauts enregistrés · déployez public/data/patch-defaults.json pour tous les visiteurs";
+      els.patchSaveStatus.classList.remove("is-dirty", "is-error");
+      els.patchSaveStatus.classList.add("is-success");
+      window.setTimeout(() => markPatchSaved(), 6000);
+    }
   });
 }
 
@@ -3838,6 +3862,7 @@ async function init() {
   showAppStatus("Chargement des champions…", "loading");
 
   try {
+    await window.LoLPatch.fetchSiteDefaults();
     const indexRes = await fetch("data/champions-index.json");
     if (indexRes.ok) {
       applyChampionDataset(await indexRes.json());

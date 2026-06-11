@@ -4576,6 +4576,19 @@ body::before {
   margin-top: 0.25rem;
 }
 
+.patch-admin-btn {
+  opacity: 0.85;
+  border-style: dashed;
+}
+
+.patch-save-status.is-error {
+  color: var(--accent-danger, #e85d5d);
+}
+
+.patch-save-status.is-success {
+  color: var(--accent-ok, #6bc97a);
+}
+
 .patch-save-status {
   font-size: 0.78rem;
   color: var(--text-muted);

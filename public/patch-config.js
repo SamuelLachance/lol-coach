@@ -3,8 +3,14 @@
  */
 (function (global) {
   const STORAGE_KEY = "lol-patch-config-v2";
+  const DEFAULTS_STORAGE_KEY = "lol_coach_patch_defaults";
+  const SITE_DEFAULTS_URL = "data/patch-defaults.json";
+  const ADMIN_PASSWORD = "24372";
   const SLOTS = ["Top", "Jungle", "Mid", "Bot", "Support"];
   const TIERS = ["S", "A", "B", "C", "D"];
+
+  let siteDefaults = null;
+  let siteDefaultsReady = null;
 
   function defaultEntry(champ) {
     return {
@@ -46,6 +52,40 @@
     };
   }
 
+  function resolveDefaultConfig(champions) {
+    if (siteDefaults) return mergeWithBase(siteDefaults, champions);
+    return createDefaultConfig(champions);
+  }
+
+  function readLocalSiteDefaults() {
+    try {
+      const raw = localStorage.getItem(DEFAULTS_STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === "object" ? parsed : null;
+    } catch {
+      return null;
+    }
+  }
+
+  async function fetchSiteDefaults() {
+    if (siteDefaultsReady) return siteDefaultsReady;
+    siteDefaultsReady = (async () => {
+      try {
+        const res = await fetch(SITE_DEFAULTS_URL);
+        if (res.ok) {
+          const parsed = await res.json();
+          if (parsed && typeof parsed === "object") siteDefaults = parsed;
+        }
+      } catch {
+        /* fichier absent ou réseau indisponible */
+      }
+      if (!siteDefaults) siteDefaults = readLocalSiteDefaults();
+      return siteDefaults;
+    })();
+    return siteDefaultsReady;
+  }
+
   function load(champions) {
     try {
       if (global.LoLUserSession) {
@@ -53,10 +93,10 @@
         if (fromSession) return mergeWithBase(fromSession, champions);
       }
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return createDefaultConfig(champions);
+      if (!raw) return resolveDefaultConfig(champions);
       return mergeWithBase(JSON.parse(raw), champions);
     } catch {
-      return createDefaultConfig(champions);
+      return resolveDefaultConfig(champions);
     }
   }
 
@@ -119,15 +159,47 @@
   }
 
   function resetToDefaults(champions) {
-    return createDefaultConfig(champions, "Patch actuel");
+    return resolveDefaultConfig(champions);
+  }
+
+  function pushAsSiteDefaults(config, champions) {
+    const snapshot = mergeWithBase(JSON.parse(JSON.stringify(config)), champions);
+    snapshot.updatedAt = Date.now();
+    siteDefaults = snapshot;
+    try {
+      localStorage.setItem(DEFAULTS_STORAGE_KEY, JSON.stringify(snapshot));
+    } catch {
+      /* quota ou mode privé */
+    }
+    return snapshot;
+  }
+
+  function downloadSiteDefaults(config) {
+    const blob = new Blob([JSON.stringify(config, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "patch-defaults.json";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function verifyAdminPassword(input) {
+    return String(input || "") === ADMIN_PASSWORD;
   }
 
   global.LoLPatch = {
     STORAGE_KEY,
+    DEFAULTS_STORAGE_KEY,
+    SITE_DEFAULTS_URL,
     SLOTS,
     TIERS,
     load,
     save,
+    fetchSiteDefaults,
+    pushAsSiteDefaults,
+    downloadSiteDefaults,
+    verifyAdminPassword,
     createDefaultConfig,
     mergeWithBase,
     applyToChampion,
