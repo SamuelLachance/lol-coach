@@ -681,9 +681,25 @@
     return counts;
   }
 
+  function teamEnchanterCount(vs) {
+    const ench = IX()?.MECH?.enchanter;
+    return vs.filter(
+      (v) => v.familyKey === "support_enchanter" || (ench?.has?.(nameLookupKey(v.name)))
+    ).length;
+  }
+
+  function isProtectedHypercarryTeam(vs, plan) {
+    if (plan !== "hypercarry" && plan !== "front_to_back") return false;
+    const peel = sumKey(vs, "peel");
+    const scale = sumKey(vs, "scaling");
+    const marksman = vs.filter((v) => v.isMarksman).length;
+    return marksman >= 1 && teamEnchanterCount(vs) >= 1 && peel >= 1.0 && scale >= 0.8;
+  }
+
   function primaryTeamPlan(vs) {
     const counts = teamTypeCounts(vs);
     const arch = detectArchetype(vs);
+    const metrics = IX()?.buildTeamMetrics?.(vs) || {};
     const poke = (counts.poke_siege || 0) + (counts.poke_disengage || 0);
     const engage = (counts.teamfight_engage || 0) + (counts.all_in || 0);
     const hyper = counts.hypercarry || 0;
@@ -694,22 +710,31 @@
     const scaleSum = sumKey(vs, "scaling");
     const marksman = vs.filter((v) => v.isMarksman).length;
     const frontCount = vs.filter((v) => v.tags?.has?.("frontline")).length;
-    const enchanterN = IX()?.buildTeamMetrics ? IX().buildTeamMetrics(vs).enchanter : 0;
+    const enchanterN = metrics.enchanter || teamEnchanterCount(vs);
 
     if (poke >= 2 && poke >= engage) {
       return (counts.poke_disengage || 0) >= (counts.poke_siege || 0) ? "poke_disengage" : "poke_siege";
     }
-    if (engage >= 2 || ((counts.teamfight_engage || 0) >= 1 && engage >= hyper)) {
+    // ADC protégé — un seul marksman bot (pas TF + Ezreal split)
+    if (marksman === 1 && enchanterN >= 1 && peelSum >= 1.0 && scaleSum >= 0.8) return "hypercarry";
+    if (split >= 2 || metrics.split >= 2) return "split_push";
+    // Pick/dive (Galio/Naafiri/Bard) — avant le tag engage d'un seul tank
+    if (pick >= 2) return "pick_global";
+    if (arch.plan === "pick_global" || arch.plan === "beatdown") {
+      if (metrics.dive >= 1 || metrics.global >= 2 || pick >= 1) return arch.plan;
+    }
+    if (pick >= 1 && metrics.global >= 2) return "pick_global";
+    if (engage >= 2 || ((counts.teamfight_engage || 0) >= 1 && engage >= hyper + 1 && pick < 2 && metrics.global < 2)) {
       return (counts.teamfight_engage || 0) >= (counts.all_in || 0) ? "teamfight_engage" : "all_in";
     }
-    // CSV: ADC + enchanter/peel — après engage/poke pour ne pas étiqueter les wombo
+    // ADC + peel sans enchanter explicite
     if (marksman >= 1 && enchanterN >= 1 && peelSum >= 1.1 && scaleSum >= 0.88) return "hypercarry";
     if (marksman >= 1 && peelSum >= 1.2 && scaleSum >= 1.0 && (hyper >= 1 || enchanterN >= 1)) return "hypercarry";
     if (marksman >= 1 && peelSum >= 1.0 && frontCount >= 1 && (counts.front_to_back || 0) >= 1) return "front_to_back";
     if (hyper >= 1 && peelSum >= 1.1 && scaleSum >= 0.8 && engage < 2) return "hypercarry";
     if (hyper >= 2) return "hypercarry";
-    if (split >= 2) return "split_push";
-    if (pick >= 2) return "pick_global";
+    if (split >= 1 && metrics.global >= 2) return "split_push";
+    if (pick >= 1) return "pick_global";
     if (tempo >= 2) return "lane_tempo";
     return arch.plan || null;
   }
@@ -792,11 +817,14 @@
     arch.label = COMP_LABELS[arch.plan] || arch.label;
     let score = Math.round(arch.completeness * 6.5);
     if (arch.plan) score += 95;
+    const gapCount = (arch.gaps || []).length;
     for (const g of arch.gaps || []) {
       if (g === "frontline") score -= 72;
       else if (g === "peel") score -= 58;
       else score -= 38;
     }
+    if (isProtectedHypercarryTeam(vs, arch.plan)) score += 28;
+    if (gapCount === 0 && arch.completeness >= 85) score += 18;
     const ck = CK();
     if (ck && names.length >= 2) {
       const archetype = ck.detectArchetypeComp(names);
@@ -833,6 +861,7 @@
     const arch = detectArchetype(vs);
     arch.plan = primaryTeamPlan(vs) || arch.plan;
     arch.label = COMP_LABELS[arch.plan] || arch.label;
+    arch.gapCount = (arch.gaps || []).length;
     const mtgBlock = macroMtgScore(names, { byName, metaMap, oppNames: [] });
     const coaching = internalCoachingScore(names) + internalIncoherencePenalty(vs) + teamPatternBonus(vs);
     const winCondition = winConditionScore(vs, names, byName, metaMap);
@@ -1017,24 +1046,25 @@
     const reasons = [];
     const hits = [];
 
+    function skipVictimsProtectedHyper(victimPlan, victimVs) {
+      if (victimPlan !== "hypercarry" && victimPlan !== "front_to_back") return false;
+      return isProtectedHypercarryTeam(victimVs, victimPlan);
+    }
+
     for (const [counter, victim] of COMP_TYPE_COUNTERS) {
       if (ourPlan === counter && enemyPlan === victim) {
-        const victimPeel = sumKey(enemyVs, "peel");
-        const victimEnch = enemyVs.filter((v) => v.familyKey === "support_enchanter" || (IX()?.MECH?.enchanter?.has?.(nameLookupKey(v.name)))).length;
-        const skipProtectedHyper = victim === "hypercarry" && victimPeel >= 1.0 && victimEnch >= 1;
-        if (!skipProtectedHyper) {
-          our += 220;
-          reasons.push(`Win condition : ${COMP_LABELS[counter] || counter} > ${COMP_LABELS[victim] || victim}`);
-        }
+        if (skipVictimsProtectedHyper(victim, enemyVs)) continue;
+        if (counter === "teamfight_engage" && victim === "hypercarry") continue;
+        if (counter === "pick_global" && victim === "hypercarry" && isProtectedHypercarryTeam(enemyVs, victim)) continue;
+        our += counter === "teamfight_engage" ? 165 : 205;
+        reasons.push(`Win condition : ${COMP_LABELS[counter] || counter} > ${COMP_LABELS[victim] || victim}`);
       }
       if (enemyPlan === counter && ourPlan === victim) {
-        const victimPeel = sumKey(ourVs, "peel");
-        const victimEnch = ourVs.filter((v) => v.familyKey === "support_enchanter" || (IX()?.MECH?.enchanter?.has?.(nameLookupKey(v.name)))).length;
-        const skipProtectedHyper = victim === "hypercarry" && victimPeel >= 1.0 && victimEnch >= 1;
-        if (!skipProtectedHyper) {
-          enemy += 220;
-          reasons.push(`Win condition : ${COMP_LABELS[counter] || counter} > ${COMP_LABELS[ourPlan] || ourPlan}`);
-        }
+        if (skipVictimsProtectedHyper(victim, ourVs)) continue;
+        if (counter === "teamfight_engage" && victim === "hypercarry") continue;
+        if (counter === "pick_global" && victim === "hypercarry" && isProtectedHypercarryTeam(ourVs, victim)) continue;
+        enemy += counter === "teamfight_engage" ? 165 : 205;
+        reasons.push(`Win condition : ${COMP_LABELS[counter] || counter} > ${COMP_LABELS[ourPlan] || ourPlan}`);
       }
     }
 
@@ -1044,8 +1074,8 @@
     const ix = IX();
     if (ix?.evaluateCompClashes) {
       const clash = ix.evaluateCompClashes(ourVs, enemyVs, ourPlan, enemyPlan, ourArch, enemyArch);
-      our += Math.round(clash.our * 0.72);
-      enemy += Math.round(clash.enemy * 0.72);
+      our += Math.round(clash.our * 0.82);
+      enemy += Math.round(clash.enemy * 0.82);
       for (const h of clash.hits || []) {
         reasons.push(h.reason);
         hits.push({ ...h, edge: Math.round(h.edge * 0.72) });
@@ -1275,7 +1305,7 @@
       { byName, metaMap }
     );
 
-    const winCondDelta =
+    let winCondDelta =
       (ourInternal.breakdown.winCondition || 0) - (enemyInternal.breakdown.winCondition || 0);
     const planNet = (cross.plan?.our || 0) - (cross.plan?.enemy || 0);
     const ourSecondary =
@@ -1285,12 +1315,63 @@
     const secondaryDelta = ourSecondary - enemySecondary;
     const crossNet = cross.our - cross.enemy;
     const crossWithoutPlan = crossNet - planNet;
-    const margin = Math.round(
-      winCondDelta * 3.4 +
-      planNet * 6.5 +
+    const ourPlan = cross.plan?.ourPlan;
+    const enemyPlan = cross.plan?.enemyPlan;
+    const ourGaps = ourInternal.archetype?.gapCount ?? (ourInternal.archetype?.gaps || []).length;
+    const enemyGaps = enemyInternal.archetype?.gapCount ?? (enemyInternal.archetype?.gaps || []).length;
+    const gapDelta = enemyGaps - ourGaps;
+
+    if (Math.abs(planNet) >= 70 && planNet * winCondDelta < 0) {
+      winCondDelta = Math.round(winCondDelta * 0.42);
+    } else if (Math.abs(planNet) >= 100 && planNet * winCondDelta > 0) {
+      winCondDelta = Math.round(winCondDelta * 0.55);
+    }
+
+    let margin = Math.round(
+      winCondDelta * 2.45 +
+      planNet * 4.25 +
+      gapDelta * 38 +
       secondaryDelta * 0.05 +
-      crossWithoutPlan * 0.45
+      crossWithoutPlan * 0.42
     );
+
+    const ourPeel = sumKey(ourInternal.vs, "peel");
+    const enemyPeel = sumKey(enemyInternal.vs, "peel");
+    const ourScale = sumKey(ourInternal.vs, "scaling");
+    const enemyScale = sumKey(enemyInternal.vs, "scaling");
+    const ourEnch = teamEnchanterCount(ourInternal.vs);
+    const enemyEnch = teamEnchanterCount(enemyInternal.vs);
+    const engagePlans = new Set(["teamfight_engage", "pick_global", "beatdown", "all_in", "lane_tempo"]);
+    const ourProtected = isProtectedHypercarryTeam(ourInternal.vs, ourPlan);
+    const enemyProtected = isProtectedHypercarryTeam(enemyInternal.vs, enemyPlan);
+    const bothMarksmanScale =
+      ourInternal.vs.some((v) => v.isMarksman) &&
+      enemyInternal.vs.some((v) => v.isMarksman) &&
+      ourPeel >= 1.0 &&
+      enemyPeel >= 1.0;
+
+    if (engagePlans.has(ourPlan) && enemyProtected && margin < 0) {
+      margin = Math.max(margin, -340);
+    } else if (engagePlans.has(enemyPlan) && ourProtected && margin > 0) {
+      margin = Math.min(margin, 340);
+    }
+
+    const symmetricHyperMirror =
+      ourPlan === enemyPlan &&
+      (ourPlan === "hypercarry" || ourPlan === "front_to_back") &&
+      Math.abs(ourPeel - enemyPeel) < 0.45 &&
+      Math.abs(ourScale - enemyScale) < 0.35 &&
+      ourEnch >= 1 &&
+      enemyEnch >= 1;
+    if (symmetricHyperMirror || (ourPlan === enemyPlan && bothMarksmanScale && Math.abs(ourPeel - enemyPeel) < 0.5)) {
+      margin = Math.round(margin * 0.12);
+    } else if (ourPlan === enemyPlan && bothMarksmanScale && ourPeel >= 1.0 && enemyPeel >= 1.0) {
+      margin = Math.round(margin * 0.1);
+    } else if (ourPlan === enemyPlan && ourPlan === "hypercarry") {
+      margin = Math.round(margin * 0.28);
+    } else if (bothMarksmanScale && Math.abs(ourPeel - enemyPeel) < 0.55 && Math.abs(ourScale - enemyScale) < 0.4) {
+      margin = Math.round(margin * 0.38);
+    }
 
     const displayBase = 500;
     const ourWinCond = ourInternal.breakdown.winCondition || 0;

@@ -656,6 +656,57 @@ function main() {
 
   assert(ruleCount >= 210, `Logic tuning should load 210+ rules, got ${ruleCount}`);
 
+  const engageVsPeel = SC.evaluateDraftDuel(
+    ["Malphite", "Jarvan IV", "Orianna", "Miss Fortune", "Leona"],
+    ["Gnar", "Trundle", "Cassiopeia", "Ashe", "Séraphine"],
+    {
+      ourComp: { Top: "Malphite", Jungle: "Jarvan IV", Mid: "Orianna", Bot: "Miss Fortune", Support: "Leona" },
+      enemyComp: { Top: "Gnar", Jungle: "Trundle", Mid: "Cassiopeia", Bot: "Ashe", Support: "Séraphine" },
+      byName,
+      metaMap: meta,
+    }
+  );
+  assert(
+    engageVsPeel.margin < 0 && engageVsPeel.winProb.enemy > engageVsPeel.winProb.our,
+    `engage vs protected hypercarry must favor peel side: margin=${engageVsPeel.margin}`
+  );
+  assert(
+    engageVsPeel.detail?.cross?.plan?.enemyPlan === "hypercarry",
+    `protected ADC comp must be hypercarry, got ${engageVsPeel.detail?.cross?.plan?.enemyPlan}`
+  );
+
+  const antiDashVsDive = SC.evaluateDraftDuel(
+    ["Camille", "Xin Zhao", "Vex", "Ezreal", "Bard"],
+    ["Sion", "Rek'Sai", "LeBlanc", "Aphelios", "Lulu"],
+    {
+      ourComp: { Top: "Camille", Jungle: "Xin Zhao", Mid: "Vex", Bot: "Ezreal", Support: "Bard" },
+      enemyComp: { Top: "Sion", Jungle: "Rek'Sai", Mid: "LeBlanc", Bot: "Aphelios", Support: "Lulu" },
+      byName,
+      metaMap: meta,
+    }
+  );
+  assert(
+    antiDashVsDive.margin > 0 && antiDashVsDive.winProb.our > antiDashVsDive.winProb.enemy,
+    `anti-dash comp must beat dive: margin=${antiDashVsDive.margin}`
+  );
+  const antiDashHits = (antiDashVsDive.detail?.cross?.plan?.hits || [])
+    .concat(antiDashVsDive.detail?.cross?.topPairs || [])
+    .map((h) => h.reason || "")
+    .join(" ");
+  assert(
+    /Anti-dash|anti-dash/i.test(antiDashHits),
+    `anti-dash vs dive must cite anti-dash rule: ${antiDashHits.slice(0, 120)}`
+  );
+
+  assert(
+    Math.abs(userDuel.margin) <= 450 && userDuel.winProb.enemy >= 0.55 && userDuel.winProb.enemy <= 0.72,
+    `user comp margin should be moderate peel win: margin=${userDuel.margin} win=${Math.round(userDuel.winProb.enemy * 100)}%`
+  );
+  assert(
+    userDuel.detail?.cross?.plan?.ourPlan === "pick_global",
+    `Galio dive comp must be pick_global, got ${userDuel.detail?.cross?.plan?.ourPlan}`
+  );
+
   const CL = sandbox.LoLChampionClasses;
   assert(CL, "LoLChampionClasses export missing");
   assert(classData.championCount === 172, `expected 172 champs mapped, got ${classData.championCount}`);

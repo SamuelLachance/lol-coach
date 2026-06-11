@@ -7,16 +7,16 @@
   "manualAliases": 51,
   "logicExplained": 1386,
   "logicExplainRatePct": 46.2,
-  "algoAccuracyPct": 52.09,
-  "algoCorrect": 1555,
-  "algoWrong": 1430,
-  "algoTies": 15,
+  "algoAccuracyPct": 52.32,
+  "algoCorrect": 1545,
+  "algoWrong": 1408,
+  "algoTies": 47,
   "logicAlgoAgree": {
-    "bothCorrect": 897,
-    "logicOnly": 484,
-    "algoOnly": 658,
-    "bothWrong": 946,
-    "skillcheck": 15
+    "bothCorrect": 898,
+    "logicOnly": 469,
+    "algoOnly": 647,
+    "bothWrong": 939,
+    "skillcheck": 47
   },
   "topCategories": [
     {
@@ -73,7 +73,7 @@
   "topAlgoGaps": [
     {
       "key": "execution_skillcheck|algo_favored_blue|actual_red",
-      "count": 570,
+      "count": 642,
       "example": {
         "blue": [
           "Gnar",
@@ -91,7 +91,7 @@
         ],
         "winner": 2,
         "logicReason": "Comps dive / beatdown vs dive / beatdown — exécution, gold lead et macro décident (pas de clash structurel dominant).",
-        "algoMargin": 852,
+        "algoMargin": 405,
         "plans": {
           "blue": "beatdown",
           "red": "beatdown"
@@ -100,7 +100,7 @@
     },
     {
       "key": "execution_skillcheck|algo_favored_red|actual_blue",
-      "count": 376,
+      "count": 297,
       "example": {
         "blue": [
           "Jayce",
@@ -118,7 +118,7 @@
         ],
         "winner": 1,
         "logicReason": "Comps dive / beatdown vs dive / beatdown — exécution, gold lead et macro décident (pas de clash structurel dominant).",
-        "algoMargin": -612,
+        "algoMargin": -384,
         "plans": {
           "blue": "beatdown",
           "red": "beatdown"
@@ -127,7 +127,7 @@
     },
     {
       "key": "win_condition|algo_favored_blue|actual_red",
-      "count": 248,
+      "count": 280,
       "example": {
         "blue": [
           "Gnar",
@@ -145,7 +145,7 @@
         ],
         "winner": 2,
         "logicReason": "Win condition plus complète (pick_global 615 vs beatdown 433) : moins de gaps structurels.",
-        "algoMargin": 538,
+        "algoMargin": 391,
         "plans": {
           "blue": "beatdown",
           "red": "pick_global"
@@ -153,35 +153,8 @@
       }
     },
     {
-      "key": "win_condition|algo_favored_red|actual_blue",
-      "count": 107,
-      "example": {
-        "blue": [
-          "Graves",
-          "Viego",
-          "Ryze",
-          "Aphelios",
-          "Tahm Kench"
-        ],
-        "red": [
-          "Renekton",
-          "Hecarim",
-          "Orianna",
-          "Jinx",
-          "Nautilus"
-        ],
-        "winner": 1,
-        "logicReason": "Win condition plus complète (pick_global 524 vs beatdown 433) : moins de gaps structurels.",
-        "algoMargin": -47,
-        "plans": {
-          "blue": "pick_global",
-          "red": "beatdown"
-        }
-      }
-    },
-    {
       "key": "anti_dash_vs_dive|algo_favored_blue|actual_red",
-      "count": 87,
+      "count": 101,
       "example": {
         "blue": [
           "Sion",
@@ -199,7 +172,7 @@
         ],
         "winner": 2,
         "logicReason": "Anti-dash + front (Camille/Xin Zhao/Vex/Ezreal/Bard) neutralise la mobilité du dive Sion/Rek'Sai/LeBlanc/Aphelios/Lulu.",
-        "algoMargin": 1152,
+        "algoMargin": 943,
         "plans": {
           "blue": "pick_global",
           "red": "pick_global"
@@ -207,26 +180,26 @@
       }
     },
     {
-      "key": "anti_dash_vs_dive|algo_favored_red|actual_blue",
-      "count": 13,
+      "key": "win_condition|algo_favored_red|actual_blue",
+      "count": 55,
       "example": {
         "blue": [
-          "Jax",
-          "Viego",
-          "Vex",
-          "Xayah",
-          "Nautilus"
+          "Renekton",
+          "Lillia",
+          "Jayce",
+          "Zeri",
+          "Alistar"
         ],
         "red": [
-          "Gnar",
-          "Lee Sin",
-          "Zoé",
-          "Ziggs",
-          "Leona"
+          "Irelia",
+          "Trundle",
+          "Akali",
+          "Jinx",
+          "Nautilus"
         ],
         "winner": 1,
-        "logicReason": "Anti-dash + front (Jax/Viego/Vex/Xayah/Nautilus) neutralise la mobilité du dive Gnar/Lee Sin/Zoé/Ziggs/Leona.",
-        "algoMargin": -541,
+        "logicReason": "Win condition plus complète (beatdown 615 vs pick_global 524) : moins de gaps structurels.",
+        "algoMargin": -92,
         "plans": {
           "blue": "beatdown",
           "red": "pick_global"
@@ -235,7 +208,7 @@
     },
     {
       "key": "scaling_timing|algo_favored_blue|actual_red",
-      "count": 7,
+      "count": 11,
       "example": {
         "blue": [
           "Dr. Mundo",
@@ -253,7 +226,7 @@
         ],
         "winner": 2,
         "logicReason": "Scale + front (Irelia/Trundle/Orianna/Xayah/Braum) : absorbe le spike early de Dr. Mundo/Lee Sin/Twisted Fate/Tristana/Pyke, win condition late supérieure.",
-        "algoMargin": 262,
+        "algoMargin": 888,
         "plans": {
           "blue": "pick_global",
           "red": "beatdown"
@@ -261,29 +234,29 @@
       }
     },
     {
-      "key": "peel_vs_engage|algo_favored_blue|actual_red",
+      "key": "range_vs_melee|algo_favored_blue|actual_red",
       "count": 5,
       "example": {
         "blue": [
-          "Fiora",
-          "Olaf",
-          "Irelia",
-          "Ezreal",
-          "Janna"
+          "Kennen",
+          "Jarvan IV",
+          "Galio",
+          "Kalista",
+          "Nami"
         ],
         "red": [
           "Ornn",
-          "Xin Zhao",
-          "Taliyah",
-          "Caitlyn",
-          "Karma"
+          "Kha'Zix",
+          "Corki",
+          "Ezreal",
+          "Janna"
         ],
         "winner": 2,
-        "logicReason": "hypercarry protégé (Ornn/Xin Zhao/Taliyah/Caitlyn/Karma) : Séraphine/enchanter peel neutralise le dive dive / beatdown de Fiora/Olaf/Irelia/Ezreal/Janna.",
-        "algoMargin": 1315,
+        "logicReason": "Abus de portée (Ornn/Kha'Zix/Corki/Ezreal/Janna) : siege/poke punition une comp engage mélée sans réponse range.",
+        "algoMargin": 578,
         "plans": {
           "blue": "beatdown",
-          "red": "hypercarry"
+          "red": "pick_global"
         }
       }
     },
@@ -307,7 +280,7 @@
         ],
         "winner": 1,
         "logicReason": "Scale + front (Graves/Viego/Ryze/Zeri/Leona) : absorbe le spike early de Darius/Lee Sin/LeBlanc/Tristana/Nautilus, win condition late supérieure.",
-        "algoMargin": -459,
+        "algoMargin": -458,
         "plans": {
           "blue": "pick_global",
           "red": "pick_global"
@@ -315,56 +288,56 @@
       }
     },
     {
-      "key": "peel_vs_engage|algo_favored_red|actual_blue",
-      "count": 3,
+      "key": "peel_vs_engage|algo_favored_blue|actual_red",
+      "count": 4,
       "example": {
         "blue": [
-          "Malphite",
-          "Jarvan IV",
-          "Vex",
-          "Miss Fortune",
-          "Soraka"
+          "Fiora",
+          "Olaf",
+          "Irelia",
+          "Ezreal",
+          "Janna"
         ],
         "red": [
-          "Sett",
-          "Viego",
-          "Ziggs",
-          "Ezreal",
-          "Braum"
+          "Ornn",
+          "Xin Zhao",
+          "Taliyah",
+          "Caitlyn",
+          "Karma"
         ],
-        "winner": 1,
-        "logicReason": "hypercarry protégé (Malphite/Jarvan IV/Vex/Miss Fortune/Soraka) : Séraphine/enchanter peel neutralise le dive dive / beatdown de Sett/Viego/Ziggs/Ezreal/Braum.",
-        "algoMargin": -493,
+        "winner": 2,
+        "logicReason": "hypercarry protégé (Ornn/Xin Zhao/Taliyah/Caitlyn/Karma) : Séraphine/enchanter peel neutralise le dive dive / beatdown de Fiora/Olaf/Irelia/Ezreal/Janna.",
+        "algoMargin": 44,
         "plans": {
-          "blue": "hypercarry",
-          "red": "beatdown"
+          "blue": "beatdown",
+          "red": "hypercarry"
         }
       }
     },
     {
       "key": "disengage_vs_wombo|algo_favored_blue|actual_red",
-      "count": 3,
+      "count": 4,
       "example": {
         "blue": [
-          "Sion",
-          "Xin Zhao",
-          "Ahri",
-          "Corki",
+          "Renekton",
+          "Kindred",
+          "Galio",
+          "Ezreal",
           "Nautilus"
         ],
         "red": [
-          "Renekton",
-          "Elise",
-          "Mel",
-          "Caitlyn",
+          "Ornn",
+          "Gragas",
+          "Corki",
+          "Aphelios",
           "Thresh"
         ],
         "winner": 2,
-        "logicReason": "Disengage casse le wombo : Renekton/Elise/Mel/Caitlyn/Thresh reset la fight quand Sion/Xin Zhao/Ahri/Corki/Nautilus commit l'engage.",
-        "algoMargin": 128,
+        "logicReason": "Disengage casse le wombo : Ornn/Gragas/Corki/Aphelios/Thresh reset la fight quand Renekton/Kindred/Galio/Ezreal/Nautilus commit l'engage.",
+        "algoMargin": 1123,
         "plans": {
-          "blue": "pick_global",
-          "red": "pick_global"
+          "blue": "beatdown",
+          "red": "hypercarry"
         }
       }
     },
@@ -388,64 +361,10 @@
         ],
         "winner": 2,
         "logicReason": "Contrôle de zone (Rumble/Sejuani/Taliyah/Jhin/Thresh) choke les angles — la comp dive (Kled/Gragas/Kassadin/Caitlyn/Tahm Kench) ne peut pas entrer.",
-        "algoMargin": 2037,
+        "algoMargin": 1637,
         "plans": {
           "blue": "beatdown",
           "red": "hypercarry"
-        }
-      }
-    },
-    {
-      "key": "pick_vs_scaling|algo_favored_blue|actual_red",
-      "count": 1,
-      "example": {
-        "blue": [
-          "Ornn",
-          "Hecarim",
-          "Corki",
-          "Jinx",
-          "Zilean"
-        ],
-        "red": [
-          "Gnar",
-          "Xin Zhao",
-          "Ahri",
-          "Aphelios",
-          "Nautilus"
-        ],
-        "winner": 2,
-        "logicReason": "Pick/global (Gnar/Xin Zhao/Ahri/Aphelios/Nautilus) punition un hypercarry immobile (Ornn/Hecarim/Corki/Jinx/Zilean) — cross-map picks avant le scale.",
-        "algoMargin": 1203,
-        "plans": {
-          "blue": "hypercarry",
-          "red": "pick_global"
-        }
-      }
-    },
-    {
-      "key": "range_vs_melee|algo_favored_blue|actual_red",
-      "count": 1,
-      "example": {
-        "blue": [
-          "Kennen",
-          "Jarvan IV",
-          "Galio",
-          "Kalista",
-          "Nami"
-        ],
-        "red": [
-          "Ornn",
-          "Kha'Zix",
-          "Corki",
-          "Ezreal",
-          "Janna"
-        ],
-        "winner": 2,
-        "logicReason": "Abus de portée (Ornn/Kha'Zix/Corki/Ezreal/Janna) : siege/poke punition une comp engage mélée sans réponse range.",
-        "algoMargin": 546,
-        "plans": {
-          "blue": "beatdown",
-          "red": "pick_global"
         }
       }
     },
@@ -469,10 +388,64 @@
         ],
         "winner": 1,
         "logicReason": "Pick/global (Gragas/Rek'Sai/Orianna/Tristana/Leona) punition un hypercarry immobile (Cho'Gath/Xin Zhao/Syndra/Aphelios/Nautilus) — cross-map picks avant le scale.",
-        "algoMargin": -373,
+        "algoMargin": -267,
         "plans": {
           "blue": "pick_global",
           "red": "hypercarry"
+        }
+      }
+    },
+    {
+      "key": "double_enchanter_vs_dive|algo_favored_blue|actual_red",
+      "count": 1,
+      "example": {
+        "blue": [
+          "Gangplank",
+          "Lillia",
+          "Lucian",
+          "Kai'Sa",
+          "Alistar"
+        ],
+        "red": [
+          "Camille",
+          "Graves",
+          "Zoé",
+          "Séraphine",
+          "Janna"
+        ],
+        "winner": 2,
+        "logicReason": "Double enchanter (Camille/Graves/Zoé/Séraphine/Janna) : layers de peel rendent le dive (Gangplank/Lillia/Lucian/Kai'Sa/Alistar) inefficace.",
+        "algoMargin": 249,
+        "plans": {
+          "blue": "beatdown",
+          "red": "pick_global"
+        }
+      }
+    },
+    {
+      "key": "disengage_vs_wombo|algo_favored_red|actual_blue",
+      "count": 1,
+      "example": {
+        "blue": [
+          "K'Sante",
+          "Shyvana",
+          "Tristana",
+          "Ashe",
+          "Séraphine"
+        ],
+        "red": [
+          "Jax",
+          "Sejuani",
+          "Corki",
+          "Miss Fortune",
+          "Nautilus"
+        ],
+        "winner": 1,
+        "logicReason": "Disengage casse le wombo : K'Sante/Shyvana/Tristana/Ashe/Séraphine reset la fight quand Jax/Sejuani/Corki/Miss Fortune/Nautilus commit l'engage.",
+        "algoMargin": -601,
+        "plans": {
+          "blue": "beatdown",
+          "red": "beatdown"
         }
       }
     }
@@ -485,7 +458,7 @@
       "category": "win_condition",
       "reasonFr": "Win condition plus complète (hypercarry 719 vs pick_global 524) : moins de gaps structurels.",
       "plans": "hypercarry vs pick_global",
-      "algoMargin": 1340,
+      "algoMargin": 630,
       "algoAligned": true
     },
     {
@@ -495,7 +468,7 @@
       "category": "win_condition",
       "reasonFr": "Win condition plus complète (pick_global 745 vs pick_global 433) : moins de gaps structurels.",
       "plans": "pick_global vs pick_global",
-      "algoMargin": 1341,
+      "algoMargin": 946,
       "algoAligned": true
     },
     {
@@ -505,7 +478,7 @@
       "category": "win_condition",
       "reasonFr": "Win condition plus complète (hypercarry 719 vs beatdown 433) : moins de gaps structurels.",
       "plans": "hypercarry vs beatdown",
-      "algoMargin": 2158,
+      "algoMargin": 1117,
       "algoAligned": true
     }
   ],
@@ -517,10 +490,10 @@
       "loserPlan": "pick_global"
     },
     "duel": {
-      "margin": -1289,
+      "margin": -384,
       "winProb": {
-        "our": 0.07848266841072596,
-        "enemy": 0.9215173315892741
+        "our": 0.3686730506155951,
+        "enemy": 0.6313269493844049
       },
       "plans": {
         "blue": "pick_global",

@@ -156,7 +156,7 @@
     [(o, e, op, ep) => op === "split_push" && ep === "hypercarry", 62, "Side pressure > ADC scale immobile"],
 
     // Pick vs scale
-    [(o, e, op, ep) => op === "pick_global" && ep === "hypercarry", 88, "Pick/global punition > hypercarry"],
+    [(o, e, op, ep) => op === "pick_global" && ep === "hypercarry" && e.peel < 1.0 && e.enchanter === 0, 88, "Pick/global punition > hypercarry"],
     [(o, e) => o.global >= 2 && e.scaling >= 1.2 && e.immobile >= 1 && e.peel < 1.2, 55, "Double global punition scale"],
     [(o, e) => o.assassin >= 2 && e.enchanter >= 1 && e.marksman >= 1, 58, "Assassin pick > carry protégé lent"],
     [(o, e, op, ep) => op === "pick_global" && ep === "scaling_late", 65, "Pick cross-map > scaling late"],
@@ -171,10 +171,13 @@
     [(o, e) => o.dive >= 2 && e.siege >= 2 && e.front < 2, 112, "Multi-dive > backline poke fragile"],
     [(o, e, op, ep) => op === "teamfight_engage" && ep === "split_push", 95, "Teamfight groupé > split isolé"],
 
-    // Zone / wombo
-    [(o, e) => o.womboSetup >= 2 && e.disengage >= 2, 95, "Disengage casse le wombo", false],
+    // Zone / wombo — disengage casse le wombo (les deux polarités)
+    [(o, e) => o.disengage >= 2 && e.womboSetup >= 2, 118, "Disengage casse le wombo"],
+    [(o, e) => o.womboSetup >= 2 && e.disengage >= 2, 118, "Disengage casse le wombo", false],
+    [(o, e) => e.womboSetup >= 2 && o.disengage >= 1 && o.peel >= 1.0, 102, "Peel/disengage > wombo setup"],
     [(o, e) => o.womboSetup >= 2 && e.disengage < 1 && e.front >= 1, 88, "Wombo setup > comp sans disengage"],
-    [(o, e) => o.zone >= 2 && e.hardEngage >= 2, 92, "Zone control > engage dans choke"],
+    [(o, e) => o.zone >= 2 && e.hardEngage >= 2, 108, "Zone control > engage dans choke"],
+    [(o, e) => o.zone >= 2 && e.dive >= 2 && o.front >= 1, 125, "Zone choke > comp dive"],
 
     // Frontline gaps
     [(o, e, op) => op === "teamfight_engage" && e.front < 1, 98, "Engage vs comp sans frontline"],
@@ -194,7 +197,9 @@
 
     // CC stack vs mobility
     [(o, e) => o.ccHeavy >= 3 && e.dive >= 2, 74, "CC lockdown > comp mobile dive"],
-    [(o, e) => o.antiDash >= 1 && e.dive >= 2, 82, "Anti-dash > comp dive"],
+    [(o, e) => o.antiDash >= 1 && e.dive >= 2, 108, "Anti-dash > comp dive"],
+    [(o, e) => o.antiDash >= 1 && e.dive >= 2 && o.front >= 1, 132, "Anti-dash + front > comp dive"],
+    [(o, e) => o.antiDash >= 2 && e.dive >= 2, 118, "Double anti-dash > comp dive"],
 
     // Jungle tempo
     [(o, e) => countMech(o.vs, "invadeEarly") >= 1 && countMech(e.vs, "scaleJungle") >= 1, 58, "Invade early > jungler scale"],
@@ -236,30 +241,41 @@
     [(o, e, op, ep) => op === "lane_tempo" && ep === "hypercarry" && e.peel < 1.1, 108, "Lane tempo > hypercarry lent"],
     [(o, e, op, ep) => op === "all_in" && ep === "hypercarry" && e.peel < 1.0, 118, "All-in spike > scale sans peel"],
     [(o, e, op, ep) => op === "teamfight_engage" && ep === "split_push" && o.hardEngage >= 2, 108, "Force 5v5 > split isolé"],
-    [(o, e, op, ep) => op === "pick_global" && ep === "hypercarry" && o.global >= 1, 102, "Pick/global punition > hypercarry immobile"],
+    [(o, e, op, ep) => op === "pick_global" && ep === "hypercarry" && o.global >= 1 && e.peel < 1.2 && e.enchanter === 0, 102, "Pick/global punition > hypercarry immobile"],
     [(o, e, op, ep) => op === "scaling_late" && (ep === "lane_tempo" || ep === "all_in"), 118, "Outscale > window tempo"],
-    [(o, e) => o.enchanter >= 2 && e.dive >= 2 && o.peel >= 1.2, 128, "Double enchanter peel > comp dive"],
+    [(o, e) => o.enchanter >= 2 && e.dive >= 2 && o.peel >= 1.2, 148, "Double enchanter peel > comp dive"],
     [(o, e) => o.zone >= 2 && e.immobile >= 2 && o.peel >= 0.8, 115, "Zone + peel > carries immobiles"],
-    [(o, e) => o.disengage >= 2 && e.hardEngage >= 2 && o.siege >= 1, 122, "Disengage + poke > engage frontal"],
+    [(o, e) => o.disengage >= 2 && e.hardEngage >= 2 && o.siege >= 1, 138, "Disengage + poke > engage frontal"],
+    [(o, e) => o.disengage >= 2 && e.hardEngage >= 2, 112, "Double disengage > engage frontal"],
     [(o, e) => o.hardEngage >= 2 && e.siege >= 2 && e.disengage === 0, 82, "Engage > poke sans disengage"],
     [(o, e, op, ep) => op === "beatdown" && ep === "hypercarry" && e.peel < 1.2, 98, "Dive tempo > hypercarry non protégé"],
     [(o, e, op, ep) => op === "hypercarry" && ep === "poke_siege" && o.peel >= 1.0, 95, "Scale protégé > poke siege"],
-    [(o, e) => countMech(o.vs, "peelTank") >= 1 && o.enchanter >= 1 && e.dive >= 2, 108, "Front peel + enchanter > dive"],
+    [(o, e) => countMech(o.vs, "peelTank") >= 1 && o.enchanter >= 1 && e.dive >= 2, 118, "Front peel + enchanter > dive"],
     [(o, e) => o.global >= 1 && o.hardEngage >= 1 && e.immobile >= 1 && e.disengage < 2, 98, "Catch global > backline immobile"],
     [(o, e, op, ep) => op === "front_to_back" && ep === "poke_siege" && o.peel >= 1.0, 88, "Front-to-back > poke siege kite"],
-    [(o, e) => countMech(o.vs, "antiDash") >= 1 && e.dive >= 2 && o.front >= 1, 92, "Anti-dash + front > comp dive"],
+    [(o, e) => countMech(o.vs, "antiDash") >= 1 && e.dive >= 2 && o.front >= 1, 108, "Anti-dash + front > comp dive"],
     [(o, e) => o.scaling >= 1.5 && o.enchanter >= 1 && e.early >= 1.7 && e.peel < 1.0, 105, "Enchanter scale > spike early non protégé"],
     [(o, e, op, ep) => op === "pick_global" && ep === "teamfight_engage" && o.global >= 2, 88, "Double global pick > force teamfight"],
     [(o, e) => countMech(o.vs, "tankShred") >= 1 && e.front >= 2 && o.marksman >= 1, 72, "Shred + ADC > double frontline"],
     [(o, e, op, ep) => (op === "poke_disengage" || op === "poke_siege") && ep === "teamfight_engage" && o.disengage >= 2, 158, "Disengage kite > wombo/engage"],
-    [(o, e) => o.womboSetup >= 2 && e.disengage >= 1 && e.peel >= 1.0, 88, "Peel/disengage > wombo setup", false],
+    [(o, e) => e.womboSetup >= 2 && o.disengage >= 1 && o.peel >= 1.0, 102, "Peel/disengage > wombo setup"],
     [(o, e, op, ep) => op === "lane_tempo" && ep === "scaling_late", 82, "Tempo early > scale late non protégé"],
     [(o, e) => o.siege >= 2 && e.hardEngage >= 2 && o.disengage >= 2, 135, "Triple disengage poke > engage"],
     [(o, e, op, ep) => op === "hypercarry" && ep === "lane_tempo" && o.peel >= 1.1, 92, "Hypercarry peel > lane tempo"],
-    [(o, e, op, ep) => ep === "teamfight_engage" && op === "hypercarry" && o.enchanter >= 1 && o.peel >= 1.0 && o.scaling >= 0.9, 185, "Peel enchanter absorbe l'engage — carry scale", false],
+    [(o, e, op, ep) => ep === "teamfight_engage" && op === "hypercarry" && o.enchanter >= 1 && o.peel >= 1.0 && o.scaling >= 0.9, 195, "Peel enchanter absorbe l'engage — carry scale", false],
+    [(o, e, op, ep) =>
+      ep === "hypercarry" &&
+      (op === "teamfight_engage" || op === "pick_global" || op === "beatdown" || op === "all_in") &&
+      e.enchanter >= 1 &&
+      e.peel >= 1.0 &&
+      e.scaling >= 0.9,
+      188,
+      "Hypercarry protégé > engage/dive frontal",
+      false],
+    [(o, e, op, ep) => op === "hypercarry" && (ep === "teamfight_engage" || ep === "pick_global" || ep === "beatdown") && o.enchanter >= 1 && o.peel >= 1.0 && o.scaling >= 0.9, 178, "Peel enchanter > engage/dive frontal"],
     [(o, e, op, ep) => ep === "beatdown" && op === "hypercarry" && o.enchanter >= 1 && o.front >= 1, 142, "Front + enchanter > dive sur hypercarry", false],
     [(o, e, op, ep) => ep === "all_in" && op === "front_to_back" && o.peel >= 1.0 && o.front >= 1, 118, "Front-to-back peel > all-in tempo", false],
-    [(o, e) => e.hardEngage >= 2 && o.disengage >= 1 && o.enchanter >= 1 && o.scaling >= 1.0, 132, "Enchanter disengage > engage brut", false],
+    [(o, e) => e.hardEngage >= 2 && o.disengage >= 1 && o.enchanter >= 1 && o.scaling >= 1.0, 148, "Enchanter disengage > engage brut", false],
     [(o, e, op, ep) => ep === "teamfight_engage" && op === "poke_disengage" && o.disengage >= 2, 148, "Double disengage annule le engage", false],
     [(o, e) => countMech(e.vs, "immobileCarry") >= 1 && o.enchanter >= 1 && o.peel >= 1.2 && e.dive >= 1, 108, "Peel enchanter > dive sur carry immobile", false],
 
@@ -513,14 +529,16 @@
     const hits = [];
 
     const teamRules = [
-      [(o, e) => o.enchanter >= 2 && e.dive >= 2, 55, "Double enchanter > comp dive"],
+      [(o, e) => o.enchanter >= 2 && e.dive >= 2, 68, "Double enchanter > comp dive"],
       [(o, e) => o.global >= 2 && e.split >= 1 && e.global === 0, 48, "Double global > split sans réponse"],
-      [(o, e) => o.hardEngage >= 2 && e.immobile >= 2, 52, "Engage > duo immobile"],
+      [(o, e) => o.hardEngage >= 2 && e.immobile >= 2 && e.peel < 1.0 && e.enchanter === 0, 52, "Engage > duo immobile non protégé"],
       [(o, e) => o.siege >= 2 && e.peel < 0.8 && e.front < 1, 45, "Siege > backline sans front"],
-      [(o, e) => o.antiDash >= 1 && e.dive >= 2, 42, "Anti-dash équipe > dive"],
+      [(o, e) => o.antiDash >= 1 && e.dive >= 2, 58, "Anti-dash équipe > dive"],
+      [(o, e) => o.antiDash >= 1 && e.dive >= 2 && o.front >= 1, 72, "Anti-dash + front équipe > dive"],
       [(o, e) => o.spellShield >= 1 && countMech(e.vs, "hookCc") >= 1, 38, "Spell-shield > hook comp"],
-      [(o, e) => countMech(o.vs, "peelTank") >= 2 && e.dive >= 2, 44, "Double peel > dive"],
-      [(o, e) => o.womboSetup >= 2 && e.disengage >= 2, 58, "Disengage casse le wombo comp", false],
+      [(o, e) => countMech(o.vs, "peelTank") >= 2 && e.dive >= 2, 52, "Double peel > dive"],
+      [(o, e) => e.womboSetup >= 2 && o.disengage >= 2, 72, "Disengage casse le wombo comp"],
+      [(o, e) => o.zone >= 2 && e.dive >= 2, 62, "Zone control équipe > dive"],
       [(o, e) => countMech(o.vs, "percentHp") >= 1 && e.front >= 2, 40, "Carry %PV > double frontline"],
       [(o, e) => countMech(o.vs, "invadeEarly") >= 2 && e.scaling >= 1.4, 36, "Double invade > comp scale"],
     ];
