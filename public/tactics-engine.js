@@ -350,30 +350,6 @@
     return tactics;
   }
 
-  function buildAvoid(comp, enemy, metaMap, tactics) {
-    const avoid = [];
-    const enTags = teamTags(enemy, metaMap);
-    if (countTags(comp, metaMap, "scaling") >= 2 && countTags(enemy, metaMap, "engage") >= 2) {
-      avoid.push({ setting: "Fight early 5v5", why: "Comp scale — évite les fights groupées avant 2 items." });
-    }
-    if (tactics.lanePriority?.value === "Bot side" && !comp.Bot) {
-      avoid.push({ setting: "Drake sans prio bot", why: "Bot lane manquante pour le plan drake." });
-    }
-    if (enTags.has("assassin") && countTags(comp, metaMap, "peel") === 0) {
-      avoid.push({ setting: "Face-check sans vision", why: "Peu de peel vs assassins — ward et joue groupé." });
-    }
-    if ((tactics.compType === "poke_disengage" || tactics.compType === "poke_siege") && countTags(comp, metaMap, "engage") >= 2) {
-      avoid.push({ setting: "Forcer all-in", why: "Comp poke/siege — laisser l'ennemi engage (Braum/Taric)." });
-    }
-    if (tactics.compType === "hypercarry") {
-      avoid.push({ setting: "Fight avant 2 items carry", why: "Hypercarry — farm safe jusqu'au spike." });
-    }
-    if (tactics.winCondition?.value === "Split push" && countTags(enemy, metaMap, "engage") >= 2) {
-      avoid.push({ setting: "Split sans vision TP", why: "Engage ennemi punît le split isolé." });
-    }
-    return avoid;
-  }
-
   function buildWinPlan(tactics, comp) {
     const parts = [];
     if (tactics.winCondition) parts.push(tactics.winCondition.value);
@@ -708,11 +684,10 @@
     }
 
     const tactics = recommendMacro(ourComp, enemyComp, metaMap, byName);
-    const avoid = buildAvoid(ourComp, enemyComp, metaMap, tactics);
     const winPlan = buildWinPlan(tactics, ourComp);
     const roleAdvice = buildRoleAdvice(ourComp, enemyComp, metaMap, tactics, byName);
 
-    return { lanes, tactics, avoid, winPlan, roleAdvice, itemGuides: null };
+    return { lanes, tactics, winPlan, roleAdvice };
   }
 
   global.LoLTactics = {

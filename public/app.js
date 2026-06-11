@@ -2402,30 +2402,6 @@ function closeDetail({ refreshGrid = true } = {}) {
   if (refreshGrid && state.view === "champions") renderGrid();
 }
 
-const TACTIC_ORDER = [
-  "lanePriority",
-  "junglePath",
-  "heraldDrake",
-  "waveState",
-  "midGame",
-  "baronDrake",
-  "teamfight",
-  "vision",
-  "winCondition",
-];
-
-const TACTIC_LABELS = {
-  lanePriority: "Priorité de lane",
-  junglePath: "Plan jungle early",
-  heraldDrake: "Objectif early (14 min)",
-  waveState: "Gestion de vague",
-  midGame: "Mid game (15–25 min)",
-  baronDrake: "Setup objectif late",
-  teamfight: "Style teamfight",
-  vision: "Vision & contrôle",
-  winCondition: "Win condition",
-};
-
 const TACTIC_TEMPLATES = {
   drake: {
     our: { Top: "Ornn", Jungle: "Jarvan IV", Mid: "Orianna", Bot: "Jinx", Support: "Thresh" },
@@ -3333,106 +3309,6 @@ function applyTacticTemplate(key) {
   scheduleUserSessionSave();
 }
 
-function renderItemCategorySelect(slotRec) {
-  const T = window.LoLTactics;
-  const order = [
-    T?.ITEM_CATEGORY?.PLAYER,
-    T?.ITEM_CATEGORY?.AD,
-    T?.ITEM_CATEGORY?.AP,
-    T?.ITEM_CATEGORY?.AS,
-    T?.ITEM_CATEGORY?.ARMOR,
-    T?.ITEM_CATEGORY?.MR,
-    T?.ITEM_CATEGORY?.HP,
-  ].filter(Boolean);
-  const labels = T?.ITEM_CATEGORY_LABELS || {};
-  const selected = slotRec.label;
-  const opts = order
-    .map((key) => labels[key])
-    .filter(Boolean)
-    .map(
-      (label) =>
-        `<option value="${escapeHtml(label)}"${label === selected ? " selected" : ""}>${escapeHtml(label)}</option>`
-    )
-    .join("");
-  return `<select class="tactics-item-select" disabled title="${escapeHtml(slotRec.reason || "")}">${opts}</select>`;
-}
-
-function renderItemGuideTable(guides, teamLabel, teamClass) {
-  if (!guides?.length) return "";
-
-  const rows = guides
-    .map((guide) => {
-      const champ = state.byName.get(guide.champion);
-      const champCell = `
-        <td>
-          <div class="tactics-item-champ">
-            ${champ ? championIconHtml(champ, { size: "coach" }) : ""}
-            <div class="tactics-item-champ-meta">
-              <strong>${escapeHtml(guide.champion)}</strong>
-              <span>${escapeHtml(guide.laneSlot)}</span>
-            </div>
-          </div>
-        </td>`;
-      const itemCells = guide.slots
-        .map((slotRec) => `<td>${renderItemCategorySelect(slotRec)}</td>`)
-        .join("");
-      return `<tr class="tactics-item-row">${champCell}${itemCells}</tr>`;
-    })
-    .join("");
-
-  return `
-    <div class="tactics-item-team ${teamClass}">
-      <h4 class="tactics-item-team-title">${escapeHtml(teamLabel)}</h4>
-      <div class="tactics-item-table-wrap">
-        <table class="tactics-item-table">
-          <thead>
-            <tr>
-              <th>Champion</th>
-              <th>1er Objet</th>
-              <th>2e Objet</th>
-              <th>3e Objet</th>
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>
-    </div>`;
-}
-
-function renderTacticsItemGuidesSection(itemGuides) {
-  if (!itemGuides?.our?.length) return "";
-
-  return `
-    <section class="tactics-block tactics-items-block">
-      <h3>Objets (écran Tactiques in-game)</h3>
-      <p class="tactics-items-hint">
-        Catégories à régler pour chaque champion — adaptées au profil, aux matchups lane et aux compositions alliée / ennemie.
-        Survole une option pour voir le détail.
-      </p>
-      ${renderItemGuideTable(itemGuides.our, "Notre équipe", "our-team")}
-      ${
-        itemGuides.enemy?.length
-          ? renderItemGuideTable(itemGuides.enemy, "Adversaire (builds probables)", "enemy-team")
-          : ""
-      }
-    </section>`;
-}
-
-function renderTacticAssignees(assignees) {
-  if (!assignees?.length) return "";
-  return `<div class="tactic-assign">${assignees
-    .map((a) => {
-      const champ = state.byName.get(a.name);
-      const icon = champ ? championIconHtml(champ, { size: "coach" }) : "";
-      return `<span class="tactic-assign-chip">${icon}<span>${escapeHtml(a.name)} <em>(${escapeHtml(a.slot)})</em></span></span>`;
-    })
-    .join("")}</div>`;
-}
-
-function renderTacticValueCell(t) {
-  return `<strong>${escapeHtml(t.value)}</strong>${renderTacticAssignees(t.assign)}`;
-}
-
 function renderRolePhaseBlock(label, items, mod) {
   if (!items?.length) return "";
   return `<div class="tactics-role-phase tactics-role-phase--${mod}">
@@ -3517,25 +3393,6 @@ function runTacticsAnalysis() {
     )
     .join("");
 
-  const tacticRows = TACTIC_ORDER.map((key) => {
-    const t = result.tactics[key] || { value: "—", reason: "—", assign: [] };
-    const label = TACTIC_LABELS[key] || key;
-    return `
-    <tr>
-      <td class="tactic-name">${label}</td>
-      <td class="tactic-value">${renderTacticValueCell(t)}</td>
-      <td class="tactic-reason">${escapeHtml(t.reason)}</td>
-    </tr>`;
-  }).join("");
-
-  const avoidHtml = result.avoid.length
-    ? `<section class="tactics-block tactics-avoid">
-        <h3>À éviter</h3>
-        <ul>${result.avoid.map((a) => `<li><strong>${escapeHtml(a.setting)}</strong> — ${escapeHtml(a.why)}</li>`).join("")}</ul>
-      </section>`
-    : "";
-
-  const buildsHtml = result.itemGuides ? renderTacticsItemGuidesSection(result.itemGuides) : "";
   const roleAdviceHtml = renderRoleAdviceSection(result.roleAdvice);
 
   els.tacticsResult.classList.remove("hidden");
@@ -3563,17 +3420,6 @@ function runTacticsAnalysis() {
         <tbody>${laneRows}</tbody>
       </table>
     </section>
-
-    <details class="tactics-block tactics-settings-details">
-      <summary>Réglages écran Tactiques (optionnel)</summary>
-      <table class="tactics-table settings-table">
-        <thead><tr><th>Option</th><th>Choix</th><th>Pourquoi</th></tr></thead>
-        <tbody>${tacticRows}</tbody>
-      </table>
-    </details>
-
-    ${avoidHtml}
-    ${buildsHtml}
   `;
 
   els.tacticsResult.scrollIntoView({ behavior: "smooth", block: "start" });

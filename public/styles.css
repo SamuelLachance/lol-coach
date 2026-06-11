@@ -2860,23 +2860,6 @@ body::before {
   line-height: 1.45;
 }
 
-.tactics-settings-details {
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-}
-
-.tactics-settings-details summary {
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-}
-
-.tactics-settings-details[open] summary {
-  margin-bottom: 0.75rem;
-}
-
 .tactics-block h3 {
   font-size: 1rem;
   color: var(--accent);
@@ -2903,43 +2886,6 @@ body::before {
   font-weight: 600;
 }
 
-.tactic-value strong {
-  color: var(--success);
-}
-
-.tactic-assign {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin-top: 0.45rem;
-}
-
-.tactic-assign-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.2rem 0.45rem 0.2rem 0.2rem;
-  border-radius: 8px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  font-size: 0.78rem;
-  line-height: 1.2;
-}
-
-.tactic-assign-chip em {
-  font-style: normal;
-  color: var(--text-muted);
-  font-size: 0.68rem;
-  text-transform: uppercase;
-}
-
-.tactic-assign-chip .champ-icon--coach {
-  width: 28px;
-  height: 28px;
-  flex-shrink: 0;
-}
-
-.tactic-reason,
 .lane-note {
   color: var(--text-muted);
   font-size: 0.82rem;
@@ -2956,15 +2902,6 @@ body::before {
 .verdict.win { background: var(--success-soft); color: var(--success); }
 .verdict.lose { background: var(--danger-soft); color: var(--danger); }
 .verdict.even { background: rgba(139, 151, 168, 0.15); color: var(--text-muted); }
-
-.tactics-avoid ul {
-  margin-left: 1.1rem;
-  color: var(--text-muted);
-}
-
-.tactics-avoid li {
-  margin-bottom: 0.35rem;
-}
 
 .tactics-alert {
   padding: 1rem;
@@ -3059,125 +2996,6 @@ body::before {
   border-radius: 6px;
   background: var(--bg-elevated);
   font-size: 0.78rem;
-}
-
-.tactics-items-block {
-  margin-top: 0.5rem;
-}
-
-.tactics-items-hint {
-  font-size: 0.82rem;
-  color: var(--text-muted);
-  margin: -0.25rem 0 0.85rem;
-}
-
-.tactics-item-team {
-  margin-bottom: 1.25rem;
-}
-
-.tactics-item-team:last-child {
-  margin-bottom: 0;
-}
-
-.tactics-item-team-title {
-  font-size: 0.78rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin: 0 0 0.55rem;
-  color: var(--text-muted);
-}
-
-.our-team .tactics-item-team-title {
-  color: var(--accent);
-}
-
-.enemy-team .tactics-item-team-title {
-  color: #f0a0a0;
-}
-
-.tactics-item-table-wrap {
-  overflow-x: auto;
-}
-
-.tactics-item-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  font-size: 0.84rem;
-}
-
-.tactics-item-table th {
-  text-align: left;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-  padding: 0.35rem 0.5rem 0.55rem;
-  font-weight: 600;
-}
-
-.tactics-item-table td {
-  padding: 0.45rem 0.5rem;
-  vertical-align: middle;
-  border-top: 1px solid var(--border);
-}
-
-.tactics-item-champ {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 9rem;
-}
-
-.tactics-item-champ-meta {
-  min-width: 0;
-}
-
-.tactics-item-champ-meta strong {
-  display: block;
-  font-size: 0.86rem;
-  line-height: 1.2;
-}
-
-.tactics-item-champ-meta span {
-  display: block;
-  font-size: 0.68rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.tactics-item-select {
-  width: 100%;
-  min-width: 10.5rem;
-  max-width: 14rem;
-  appearance: none;
-  -webkit-appearance: none;
-  background: #2a3142 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23a8b0c0' d='M3 4.5L6 8l3-3.5z'/%3E%3C/svg%3E") no-repeat right 0.65rem center;
-  border: 1px solid #4a5568;
-  border-radius: 8px;
-  color: var(--text);
-  font: inherit;
-  font-size: 0.82rem;
-  padding: 0.55rem 2rem 0.55rem 0.75rem;
-  cursor: help;
-}
-
-.tactics-item-select:disabled {
-  opacity: 1;
-  color: var(--text);
-}
-
-.tactics-item-select option {
-  background: var(--bg-elevated);
-  color: var(--text);
-}
-
-@media (max-width: 900px) {
-  .tactics-item-table th:nth-child(n + 2),
-  .tactics-item-table td:nth-child(n + 2) {
-    min-width: 9.5rem;
-  }
 }
 
 .champ-icon--pool {
