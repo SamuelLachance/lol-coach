@@ -33,6 +33,7 @@
 
   const CK = () => global.CoachingDraftKnowledge;
   const MTG = () => global.MTGColorPie;
+  const IX = () => global.LoLDraftInteractions;
 
   const COMP_LABELS = {
     hypercarry: "Hypercarry",
@@ -821,7 +822,7 @@
     };
   }
 
-  /** One champ vs one champ — counters, style clash, wombo links. */
+  /** One champ vs one champ — counters, style clash, wombo links, ability rules. */
   function pairwiseChampEdge(ourV, enemyV) {
     let our = 0;
     let enemy = 0;
@@ -834,21 +835,23 @@
     if (ctrUs >= 18) reasons.push(`${ourV.name} > ${enemyV.name}`);
     if (ctrThem >= 18) reasons.push(`${enemyV.name} > ${ourV.name}`);
 
-    if (ourV.peel >= 0.55 && enemyV.engage >= 0.5) {
-      our += 7;
-      reasons.push(`${ourV.name} peel vs engage`);
+    const ix = IX();
+    if (ix?.evaluateChampPair) {
+      const extra = ix.evaluateChampPair(ourV, enemyV);
+      our += extra.our;
+      enemy += extra.enemy;
+      reasons.push(...(extra.reasons || []));
+    } else {
+      if (ourV.peel >= 0.55 && enemyV.engage >= 0.5) {
+        our += 7;
+        reasons.push(`${ourV.name} peel vs engage`);
+      }
+      if (enemyV.peel >= 0.55 && ourV.engage >= 0.5) enemy += 7;
+      if (ourV.tags?.has?.("poke") && enemyV.tags?.has?.("frontline") && enemyV.scaling < 0.5) our += 5;
+      if (enemyV.tags?.has?.("poke") && ourV.tags?.has?.("frontline") && ourV.scaling < 0.5) enemy += 5;
+      if (ourV.burst >= 0.55 && enemyV.isMarksman) our += 6;
+      if (enemyV.burst >= 0.55 && ourV.isMarksman) enemy += 6;
     }
-    if (enemyV.peel >= 0.55 && ourV.engage >= 0.5) {
-      enemy += 7;
-    }
-    if (ourV.tags?.has?.("poke") && enemyV.tags?.has?.("frontline") && enemyV.scaling < 0.5) {
-      our += 5;
-    }
-    if (enemyV.tags?.has?.("poke") && ourV.tags?.has?.("frontline") && ourV.scaling < 0.5) {
-      enemy += 5;
-    }
-    if (ourV.burst >= 0.55 && enemyV.isMarksman) our += 6;
-    if (enemyV.burst >= 0.55 && ourV.isMarksman) enemy += 6;
 
     const ck = CK();
     if (ck?.coachingSynergyScore) {
@@ -859,7 +862,7 @@
       }
     }
 
-    return { our, enemy, reasons };
+    return { our, enemy, reasons: [...new Set(reasons)] };
   }
 
   function laneMatchupEdge(ourV, enemyV, slot) {
@@ -954,6 +957,7 @@
     let our = 0;
     let enemy = 0;
     const reasons = [];
+    const hits = [];
 
     for (const [counter, victim] of COMP_TYPE_COUNTERS) {
       if (ourPlan === counter && enemyPlan === victim) {
@@ -966,43 +970,54 @@
       }
     }
 
-    const ourRange = ourVs.filter((v) => v.tags?.has?.("poke")).length;
-    const enemyRange = enemyVs.filter((v) => v.tags?.has?.("poke")).length;
-    const ourEngage = ourVs.filter((v) => v.engage >= 0.45 || (v.compTypes || []).includes("teamfight_engage")).length;
-    const enemyEngage = enemyVs.filter((v) => v.engage >= 0.45 || (v.compTypes || []).includes("teamfight_engage")).length;
-    if (ourRange >= 2 && enemyEngage >= 2) {
-      our += 38;
-      reasons.push("Range/poke kite vs engage");
-    }
-    if (enemyRange >= 2 && ourEngage >= 2) {
-      enemy += 38;
-      reasons.push("Range/poke kite vs engage");
-    }
-
     const ourArch = detectArchetype(ourVs);
     const enemyArch = detectArchetype(enemyVs);
-    if (ourArch.plan === "hypercarry" && (enemyPlan === "all_in" || enemyPlan === "lane_tempo")) enemy += 22;
-    if (enemyArch.plan === "hypercarry" && (ourPlan === "all_in" || ourPlan === "lane_tempo")) our += 22;
-    if (ourPlan === "teamfight_engage" && enemyArch.gaps?.includes("frontline")) our += 14;
-    if (enemyPlan === "teamfight_engage" && ourArch.gaps?.includes("frontline")) enemy += 14;
-    if (enemyPlan === "hypercarry" && ourPlan === "teamfight_engage") {
-      const enemyPeel = sumKey(enemyVs, "peel");
-      const enemyScale = sumKey(enemyVs, "scaling");
-      if (enemyPeel >= 1.4 && enemyScale >= 1.0) {
-        enemy += 165;
-        reasons.push("Hypercarry protégé > engage frontal");
+
+    const ix = IX();
+    if (ix?.evaluateCompClashes) {
+      const clash = ix.evaluateCompClashes(ourVs, enemyVs, ourPlan, enemyPlan, ourArch, enemyArch);
+      our += Math.round(clash.our * 0.55);
+      enemy += Math.round(clash.enemy * 0.55);
+      for (const h of clash.hits || []) {
+        reasons.push(h.reason);
+        hits.push({ ...h, edge: Math.round(h.edge * 0.55) });
       }
-    }
-    if (ourPlan === "hypercarry" && enemyPlan === "teamfight_engage") {
-      const ourPeel = sumKey(ourVs, "peel");
-      const ourScale = sumKey(ourVs, "scaling");
-      if (ourPeel >= 1.4 && ourScale >= 1.0) {
-        our += 165;
-        reasons.push("Hypercarry protégé > engage frontal");
+    } else {
+      const ourRange = ourVs.filter((v) => v.tags?.has?.("poke")).length;
+      const enemyRange = enemyVs.filter((v) => v.tags?.has?.("poke")).length;
+      const ourEngage = ourVs.filter((v) => v.engage >= 0.45 || (v.compTypes || []).includes("teamfight_engage")).length;
+      const enemyEngage = enemyVs.filter((v) => v.engage >= 0.45 || (v.compTypes || []).includes("teamfight_engage")).length;
+      if (ourRange >= 2 && enemyEngage >= 2) {
+        our += 38;
+        reasons.push("Range/poke kite vs engage");
+      }
+      if (enemyRange >= 2 && ourEngage >= 2) {
+        enemy += 38;
+        reasons.push("Range/poke kite vs engage");
+      }
+      if (ourArch.plan === "hypercarry" && (enemyPlan === "all_in" || enemyPlan === "lane_tempo")) enemy += 22;
+      if (enemyArch.plan === "hypercarry" && (ourPlan === "all_in" || ourPlan === "lane_tempo")) our += 22;
+      if (ourPlan === "teamfight_engage" && enemyArch.gaps?.includes("frontline")) our += 14;
+      if (enemyPlan === "teamfight_engage" && ourArch.gaps?.includes("frontline")) enemy += 14;
+      if (enemyPlan === "hypercarry" && ourPlan === "teamfight_engage") {
+        const enemyPeel = sumKey(enemyVs, "peel");
+        const enemyScale = sumKey(enemyVs, "scaling");
+        if (enemyPeel >= 1.4 && enemyScale >= 1.0) {
+          enemy += 165;
+          reasons.push("Hypercarry protégé > engage frontal");
+        }
+      }
+      if (ourPlan === "hypercarry" && enemyPlan === "teamfight_engage") {
+        const ourPeel = sumKey(ourVs, "peel");
+        const ourScale = sumKey(ourVs, "scaling");
+        if (ourPeel >= 1.4 && ourScale >= 1.0) {
+          our += 165;
+          reasons.push("Hypercarry protégé > engage frontal");
+        }
       }
     }
 
-    return { our, enemy, ourPlan, enemyPlan, reasons };
+    return { our, enemy, ourPlan, enemyPlan, reasons: [...new Set(reasons)], hits };
   }
 
   /**
@@ -1074,6 +1089,21 @@
     if (plan.reasons.length) {
       topPairs.push({ our: plan.ourPlan || "?", enemy: plan.enemyPlan || "?", edge: plan.our - plan.enemy, reason: plan.reasons[0] });
     }
+    for (const h of plan.hits || []) {
+      if (Math.abs(h.edge) >= 55) {
+        topPairs.push({ our: h.our || plan.ourPlan, enemy: h.enemy || plan.enemyPlan, edge: h.edge, reason: h.reason });
+      }
+    }
+
+    const ix = IX();
+    if (ix?.evaluateTeamTraitClashes) {
+      const teamIx = ix.evaluateTeamTraitClashes(ourVs, enemyVs);
+      ourEdge += Math.round(teamIx.our * 0.6);
+      enemyEdge += Math.round(teamIx.enemy * 0.6);
+      for (const h of teamIx.hits || []) {
+        if (Math.abs(h.edge) >= 35) topPairs.push(h);
+      }
+    }
 
     const ourWombo = teamWomboPower(ourVs);
     const enemyWombo = teamWomboPower(enemyVs);
@@ -1121,7 +1151,7 @@
       our: Math.round(ourEdge),
       enemy: Math.round(enemyEdge),
       matchup: Math.round(ourEdge - enemyEdge),
-      topPairs: topPairs.slice(0, 8),
+      topPairs: topPairs.slice(0, 12),
       plan,
       ourWombo,
       enemyWombo,

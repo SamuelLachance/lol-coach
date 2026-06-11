@@ -10,7 +10,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 function loadLoLDraft() {
   const sandbox = { global: {}, window: {}, globalThis: {} };
   sandbox.global = sandbox.window = sandbox.globalThis = sandbox;
-  for (const file of ["lane-viability.js", "coaching-knowledge.js", "mtg-color-pie.js", "draft-scoring.js", "draft-engine.js"]) {
+  for (const file of ["lane-viability.js", "coaching-knowledge.js", "mtg-color-pie.js", "draft-interactions.js", "draft-scoring.js", "draft-engine.js"]) {
     vm.runInNewContext(readFileSync(join(root, "public", file), "utf8"), sandbox);
   }
   return sandbox;
@@ -265,6 +265,58 @@ function main() {
   assert(
     (userDuel.detail?.cross?.plan?.enemy || 0) > 0,
     "hypercarry vs engage should register plan clash edge for red"
+  );
+
+  const LDI = sandbox.LoLDraftInteractions;
+  assert(LDI, "LoLDraftInteractions export missing");
+  const ruleCount = LDI.ruleCount();
+  assert(ruleCount >= 150, `expected 150+ interaction rules, got ${ruleCount}`);
+  console.log(`  interaction rules loaded: ${ruleCount} (comp=${LDI.COMP_CLASH_RULES.length} pair=${LDI.CHAMP_PAIR_RULES.length} curated=${LDI.CURATED_COUNTERS.length})`);
+
+  const topIx = userDuel.detail?.topInteractions || userDuel.detail?.cross?.topPairs || [];
+  assert(topIx.length >= 3, `user comp duel should surface key interactions, got ${topIx.length}`);
+  const ixReasons = topIx.map((p) => p.reason || "").join(" | ");
+  console.log(`  user comp top interactions: ${ixReasons.slice(0, 240)}`);
+  assert(
+    ixReasons.includes("Hypercarry protégé") || ixReasons.includes("front-to-back") || ixReasons.includes("Séraphine") || ixReasons.includes("Seraphine") || ixReasons.includes("peel"),
+    `expected hypercarry/peel interaction in: ${ixReasons.slice(0, 120)}`
+  );
+
+  const galioProf = SC.buildProfile(byName.get("Galio"), meta);
+  const naafiriProf = SC.buildProfile(byName.get("Naafiri"), meta);
+  const seraphineChamp = champs.find((c) => c.name === "Séraphine") || champs.find((c) => c.name === "Seraphine");
+  const seraphineProf = SC.buildProfile(seraphineChamp, meta);
+  const pairNaafiriSeraphine = LDI.evaluateChampPair(naafiriProf, seraphineProf);
+  assert(pairNaafiriSeraphine.enemy >= pairNaafiriSeraphine.our, "Seraphine should counter Naafiri dive");
+  assert(
+    pairNaafiriSeraphine.reasons.some((r) => /peel|dive|Séraphine|Seraphine/i.test(r)),
+    `Naafiri vs Seraphine reason: ${pairNaafiriSeraphine.reasons.join("; ")}`
+  );
+
+  const caitlynProf = SC.buildProfile(byName.get("Caitlyn"), meta);
+  const asheProf = SC.buildProfile(byName.get("Ashe"), meta);
+  const pairCaitAshe = LDI.evaluateChampPair(caitlynProf, asheProf);
+  assert(pairCaitAshe.our >= 15, `Caitlyn should edge Ashe: ${pairCaitAshe.our}`);
+
+  const womboVsPokeIx = duel.detail?.cross?.topPairs || [];
+  assert(
+    womboVsPokeIx.some((p) => /poke|disengage|engage|Win condition/i.test(p.reason || "")),
+    `wombo vs poke should show comp clash: ${womboVsPokeIx.map((p) => p.reason).join("; ")}`
+  );
+
+  const hyperTest = SC.evaluateDraftDuel(
+    ["Jinx", "Lulu", "Malphite", "Jarvan IV", "Orianna"],
+    ["Renekton", "Lee Sin", "LeBlanc", "Lucian", "Braum"],
+    {
+      ourComp: { Top: "Malphite", Jungle: "Jarvan IV", Mid: "Orianna", Bot: "Jinx", Support: "Lulu" },
+      enemyComp: { Top: "Renekton", Jungle: "Lee Sin", Mid: "LeBlanc", Bot: "Lucian", Support: "Braum" },
+      byName,
+      metaMap: meta,
+    }
+  );
+  assert(
+    hyperTest.enemy.breakdown.winCondition <= hyperTest.our.breakdown.winCondition + 50,
+    "protected hypercarry should not lose badly to all-in in win condition axis"
   );
 
   const enemyCompFr = { ...enemyComp, Support: "Séraphine" };
