@@ -80,7 +80,11 @@ function main() {
     { byName, metaMap: meta }
   );
   assert(macroTeam.total === internalTeam.total, "macro team eval must match draft internal eval");
-  assert(macroTeam.breakdown.winCondition > 0, "win condition breakdown present");
+  assert(macroTeam.breakdown.winCondition > 150, `win condition must scale 200+ range, got ${macroTeam.breakdown.winCondition}`);
+  assert(
+    macroTeam.breakdown.winCondition > macroTeam.breakdown.synergy * 0.5,
+    `win condition should dominate synergy: wc=${macroTeam.breakdown.winCondition} syn=${macroTeam.breakdown.synergy}`
+  );
   assert(macroTeam.breakdown.synergy > 0, "synergy should be positive");
 
   const unifyOur = { Top: "", Jungle: "", Mid: "", Bot: "Jinx", Support: "" };
@@ -187,6 +191,7 @@ function main() {
 
   const cmp = D.compareComps(womboOur, pokeEnemy, byName, meta);
   assert(cmp.complete && cmp.margin < 0 && cmp.winProb.enemy > cmp.winProb.our, "compareComps should favor poke vs wombo");
+  assert(cmp.our.breakdown?.winCondition > 150, `wombo win condition scale, got ${cmp.our.breakdown?.winCondition}`);
   assert(
     (cmp.our.breakdown?.winCondition || 0) > (cmp.our.breakdown?.synergy || 0) * 0.5,
     "win condition should dominate internal breakdown"
@@ -240,8 +245,22 @@ function main() {
     { ourComp: userComp, enemyComp, byName, metaMap: meta }
   );
   assert(
+    userDuel.enemy.breakdown.winCondition > 150,
+    `red hypercarry win condition must be 200+ range, got ${userDuel.enemy.breakdown.winCondition}`
+  );
+  assert(
+    userDuel.enemy.breakdown.winCondition > userDuel.enemy.breakdown.synergy * 0.5,
+    `hypercarry win condition should dominate synergy: wc=${userDuel.enemy.breakdown.winCondition} syn=${userDuel.enemy.breakdown.synergy}`
+  );
+  assert(
     userDuel.margin < 0 && userDuel.winProb.enemy > userDuel.winProb.our,
     `protected hypercarry should win duel: margin=${userDuel.margin} win=${Math.round(userDuel.winProb.enemy * 100)}%`
+  );
+  const scoreFav = userDuel.our.total >= userDuel.enemy.total ? "our" : "enemy";
+  const probFav = userDuel.winProb.our >= userDuel.winProb.enemy ? "our" : "enemy";
+  assert(
+    scoreFav === probFav,
+    `display score favorite must match win%: scores ${userDuel.our.total}/${userDuel.enemy.total} win% ${Math.round(userDuel.winProb.our * 100)}/${Math.round(userDuel.winProb.enemy * 100)}`
   );
   assert(
     (userDuel.detail?.cross?.plan?.enemy || 0) > 0,
@@ -278,18 +297,36 @@ function main() {
     D.HOVER_SLOT_PRIORITY.join(",") === "Bot,Jungle,Mid,Support,Top",
     "hover priority must be ADC → Jungle → Mid → Support → Top"
   );
-  assert(D.dynamicHoverPriority(hoverSession, "blue")[0] === "Bot", "default hover starts ADC");
+  assert(D.dynamicHoverPriority(hoverSession, "blue")[0] === "Bot", "no enemy picks → blind Bot first");
   hoverSession.picks.red = [{ name: "Rumble", slot: "Top", order: 1, pinned: true }];
   hoverSession.stepIndex = 6;
   assert(
     D.dynamicHoverPriority(hoverSession, "blue")[0] === "Top",
-    "enemy Top revealed should prioritize our Top counter"
+    "enemy Top only → dynamicHoverPriority blue returns Top first"
+  );
+  const botOnly = D.createSession("enemy-bot-only", "blue");
+  botOnly.picks.red = [{ name: "Varus", slot: "Bot", order: 1, pinned: true }];
+  botOnly.stepIndex = 6;
+  assert(
+    D.dynamicHoverPriority(botOnly, "blue")[0] === "Bot",
+    "enemy Bot only (Varus) → Bot first"
   );
   hoverSession.picks.red.push({ name: "Ashe", slot: "Bot", order: 2, pinned: true });
   const priEnemy = D.dynamicHoverPriority(hoverSession, "blue");
   assert(priEnemy[0] === "Bot" && priEnemy[1] === "Top", `counter order ADC before Top: ${priEnemy.join(",")}`);
+  assert(priEnemy.indexOf("Jungle") === 2, `counter lanes before Jungle: ${priEnemy.join(",")}`);
   const mirror = D.resolveHoverPick(hoverSession, "red", "Top");
   assert(mirror?.side === "blue" && mirror?.slot === "Top", "hover enemy Top → blue Top counter");
+  const emptyEnemy = D.resolveHoverPick(hoverSession, "red", "Jungle");
+  assert(
+    emptyEnemy?.side === "blue" && emptyEnemy?.slot === "Bot",
+    "hover enemy empty cell → next dynamic counter lane, not hovered lane"
+  );
+  const exploreJungle = D.resolveHoverPick(hoverSession, "blue", "Jungle");
+  assert(
+    exploreJungle?.side === "blue" && exploreJungle?.slot === "Jungle",
+    "hover our empty cell previews that lane"
+  );
 
   const redVsAdc = D.createSession("red-vs-adc-hover", "blue");
   redVsAdc.picks.blue = [{ name: "Varus", slot: "Bot", order: 1, pinned: true }];
@@ -342,6 +379,12 @@ function main() {
     D.HOVER_SLOT_PRIORITY.join(",") === "Bot,Jungle,Mid,Support,Top",
     "hover/coach priority must stay Bot-first"
   );
+  const hoverRecSession = D.createSession("hover-rec", "blue");
+  hoverRecSession.stepIndex = 6;
+  hoverRecSession.hoverSource = { side: "blue", slot: "Jungle" };
+  hoverRecSession.hoverPick = { side: "blue", slot: "Jungle" };
+  const hoverRec = D.getRecommendations(hoverRecSession, champs, meta, byName, [], 6, null, { skipCache: true });
+  assert(hoverRec.slot === "Jungle", `hover pick must drive recommendations, got ${hoverRec.slot}`);
 
   const luluBot = SC.scoreMacroPick(lulu, "Bot", {
     teamNames: [],

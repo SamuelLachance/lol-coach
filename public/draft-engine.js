@@ -90,7 +90,7 @@
     return false;
   }
 
-  /** Force focus/hover to coach priority on the active pick turn (ADC first, enemy reveals = counter). */
+  /** Align auto focus to coach priority; hover is managed separately (refreshDraftHover / setHoverPick). */
   function alignCoachPickFocus(s) {
     const step = getStep(s);
     if (!step || step.type !== "pick" || isComplete(s)) return null;
@@ -105,8 +105,6 @@
       f.slot;
     if (!keepLocked) {
       s.focus = { type: "pick", side, slot: preferred, userLocked: false };
-      s.hoverPick = { side, slot: preferred };
-      s.hoverSource = { side, slot: preferred };
     }
     return s.focus;
   }
@@ -327,7 +325,7 @@
 
   /**
    * Survol → suggestions pour l'équipe au tour (ou la colonne survolée en prep).
-   * Pick adverse révélé → lane miroir pour counter.
+   * Pick adverse révélé → lane miroir pour counter ; case vide adverse → prochaine priorité dynamique.
    */
   function resolveHoverPick(s, hoveredSide, hoveredSlot) {
     if (!hoveredSide || !hoveredSlot) return null;
@@ -335,19 +333,10 @@
     const stepSide = activePickSide(s);
     const coachSide = stepSide || hoveredSide;
     const oppSide = coachSide === "blue" ? "red" : "blue";
-    const coachBy = pickBySlot(s, coachSide);
     const oppBy = pickBySlot(s, oppSide);
 
     if (hoveredSide === oppSide && oppBy[hoveredSlot]) {
       return { side: coachSide, slot: hoveredSlot };
-    }
-
-    if (stepSide && hoveredSide === stepSide) {
-      if (s.focus?.userLocked && s.focus.side === stepSide && s.focus.slot) {
-        return { side: stepSide, slot: hoveredSlot };
-      }
-      const preferred = dynamicHoverPriority(s, stepSide)[0] || hoveredSlot;
-      return { side: stepSide, slot: preferred };
     }
 
     if (hoveredSide === coachSide) {
@@ -542,17 +531,22 @@
   }
 
   function getRecommendationTarget(s) {
+    const f = normalizeFocus(s.focus);
+    if (f?.userLocked && f.type === "pick" && f.slot && f.side) {
+      return { type: "pick", side: f.side, slot: f.slot };
+    }
+    if (s.hoverSource && s.hoverPick?.slot) {
+      return { type: "pick", side: s.hoverPick.side, slot: s.hoverPick.slot, hover: true };
+    }
     const step = getStep(s);
     if (step?.type === "pick") {
       const coach = coachPickTarget(s, step.side);
       if (coach) return coach;
     }
-    const f = normalizeFocus(s.focus);
     if (f?.type === "ban") return { type: "ban", side: f.side, banIndex: f.banIndex };
     if (f?.slot && f?.side && f.type !== "ban") {
       return { type: "pick", side: f.side, slot: f.slot };
     }
-    if (s.hoverPick?.slot) return { type: "pick", side: s.hoverPick.side, slot: s.hoverPick.slot, hover: true };
     return null;
   }
 
@@ -568,6 +562,7 @@
       side,
       step?.type,
       JSON.stringify(s.focus),
+      JSON.stringify(s.hoverSource),
       JSON.stringify(s.hoverPick),
       JSON.stringify(s.bans),
       JSON.stringify(s.picks),

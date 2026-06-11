@@ -209,6 +209,7 @@
     if (
       step?.type === "pick" &&
       !session.focus?.userLocked &&
+      !session.hoverSource &&
       window.LoLDraft.refreshAutoPickFocus
     ) {
       window.LoLDraft.refreshAutoPickFocus(session);
@@ -236,15 +237,21 @@
     window.LoLDraft.normalizeSession(session);
   }
 
-  /** Active lane for suggestions / pool sort (pick, swap, or hover). */
+  /** Active lane for suggestions / pool sort (hover > coach, unless user-locked focus). */
   function draftRecommendTarget(session) {
     normalizeSessionFocus(session);
+    const f = session.focus;
+    if (f?.userLocked && f.type === "pick" && f.slot && f.side) {
+      return { type: "pick", side: f.side, slot: f.slot };
+    }
+    if (session.hoverSource && session.hoverPick?.slot) {
+      return { type: "pick", side: session.hoverPick.side, slot: session.hoverPick.slot };
+    }
     const step = window.LoLDraft.getStep(session);
     if (step?.type === "pick" && window.LoLDraft.coachPickTarget) {
       const coach = window.LoLDraft.coachPickTarget(session, step.side);
       if (coach?.slot) return { type: "pick", side: coach.side, slot: coach.slot };
     }
-    const f = session.focus;
     if (f?.type === "ban") return null;
     if (f?.slot && f?.side) {
       return { type: "pick", side: f.side, slot: f.slot };
@@ -860,7 +867,7 @@
       allSessions(),
       6,
       null,
-      { skipCache: true }
+      { skipCache: true, focusTarget }
     );
     if (!rec.items?.length) return "";
     const hintText = rec.coachHint || "Top picks calculés · glisser-déposer sur une case";
