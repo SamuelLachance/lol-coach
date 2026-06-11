@@ -201,10 +201,19 @@
   function afterFocusChange(session) {
     window.LoLDraft.invalidateRecommendationCache();
     syncBoardFocus(session);
+    syncDraftCoachUI(session);
+  }
+
+  /** Pool sort + coach chips — always synchronous (no idle callback). */
+  function syncDraftCoachUI(session) {
+    const el = coach.els.draftPool || document.getElementById("draft-pool");
+    if (!el || !session) return;
+    coach.els.draftPool = el;
     syncPoolFocus(session);
     refreshSuggestChips(session);
-    if (coach.els.draftPool?.querySelector(".draft-pool-grid")) {
-      renderPool({ gridOnly: true, preserveScroll: true });
+    if (el.querySelector(".draft-pool-grid")) {
+      const { filtered, role, sortSlot } = getPoolFiltered(session);
+      updatePoolGrid(el, filtered, role, sortSlot, { preserveScroll: true });
     }
   }
 
@@ -295,6 +304,7 @@
 
     session.hoverPick = null;
     session.focus = { type: "pick", side, slot };
+    window.LoLDraft.syncLegacySlots(session);
     saveSessionsDebounced();
     afterFocusChange(session);
   }
@@ -359,7 +369,10 @@
     }
     restoreFocusAfterAction(session, payload, result);
     flushSaveSessions();
-    renderAll();
+    window.LoLDraft.invalidateRecommendationCache();
+    renderSessionBar();
+    renderBoard();
+    syncDraftCoachUI(session);
     return true;
   }
 
@@ -729,7 +742,7 @@
       if (roleChip && container.contains(roleChip)) {
         coach.state.draftPoolRole = roleChip.dataset.poolRole || "all";
         coach.persistUserSession?.();
-        renderPool({ gridOnly: true });
+        syncDraftCoachUI(getActiveSession());
         return;
       }
       const link = e.target.closest(".alpha-jump-link");
@@ -745,7 +758,8 @@
     container.addEventListener("input", (e) => {
       if (e.target.id !== "draft-pool-search") return;
       coach.state.draftPoolSearch = e.target.value;
-      renderPool({ gridOnly: true });
+      const session = getActiveSession();
+      if (session) syncDraftCoachUI(session);
     });
   }
 
@@ -786,18 +800,22 @@
   function buildSuggestChipsHtml(session) {
     if (window.LoLDraft.isComplete(session)) return "";
     const metaMap = coach.state.tacticsMeta?.champions || {};
+    const focusTarget = draftRecommendTarget(session);
     const rec = window.LoLDraft.getRecommendations(
       session,
       coach.state.champions,
       metaMap,
       coach.state.byName,
       allSessions(),
-      6
+      6,
+      null,
+      { focusTarget, skipCache: true }
     );
     if (!rec.items?.length) return "";
     const hintText = rec.coachHint || "Top picks calculés · glisser-déposer sur une case";
+    const slotKey = focusTarget ? `${focusTarget.side}-${focusTarget.slot}` : "auto";
     return `
-      <div class="draft-suggest-wrap">
+      <div class="draft-suggest-wrap" data-suggest-slot="${coach.escapeHtml(slotKey)}">
         <div class="draft-suggest-head">
           <span class="draft-suggest-title">Suggestions coach</span>
           <span class="draft-suggest-hint muted">${coach.escapeHtml(hintText)}</span>
@@ -818,34 +836,30 @@
   }
 
   function renderSuggestChips(session) {
-    return `<div id="draft-suggest-host"></div>`;
+    return `<div id="draft-suggest-host" class="draft-suggest-host"></div>`;
   }
 
-  function fillSuggestChips(session) {
-    const host = document.getElementById("draft-suggest-host");
-    if (!host) return;
-    const run = () => {
-      if (getActiveSession()?.id !== session.id) return;
-      refreshSuggestChips(session);
-    };
-    if (typeof requestIdleCallback === "function") {
-      requestIdleCallback(run, { timeout: 200 });
-    } else {
-      requestAnimationFrame(run);
-    }
-  }
-
-  function refreshSuggestChips(session) {
-    let host = document.getElementById("draft-suggest-host");
+  function ensureSuggestHost() {
+    const pool = coach.els.draftPool || document.getElementById("draft-pool");
+    if (!pool) return null;
+    coach.els.draftPool = pool;
+    let host = pool.querySelector("#draft-suggest-host");
     if (!host) {
-      const pool = coach.els.draftPool;
-      if (!pool) return;
       host = document.createElement("div");
       host.id = "draft-suggest-host";
+      host.className = "draft-suggest-host";
       const toolbar = pool.querySelector(".draft-pool-toolbar");
       if (toolbar) pool.insertBefore(host, toolbar);
       else pool.appendChild(host);
     }
+    return host;
+  }
+
+  function refreshSuggestChips(session) {
+    const active = getActiveSession();
+    if (!active || active.id !== session.id) return;
+    const host = ensureSuggestHost();
+    if (!host) return;
     host.innerHTML = buildSuggestChipsHtml(session) || "";
   }
 
@@ -970,10 +984,8 @@
 
     const { searchQuery, filtered, role, sortSlot } = getPoolFiltered(session);
 
-    if (gridOnly && el.querySelector("#draft-pool-search")) {
-      updatePoolGrid(el, filtered, role, sortSlot, { preserveScroll });
-      refreshSuggestChips(session);
-      syncPoolFocus(session);
+    if (gridOnly && el.querySelector(".draft-pool-grid")) {
+      syncDraftCoachUI(session);
       return;
     }
 
@@ -1003,7 +1015,7 @@
     `;
 
     bindPoolEvents(el);
-    fillSuggestChips(session);
+    refreshSuggestChips(session);
   }
 
   function init(LoLCoach) {

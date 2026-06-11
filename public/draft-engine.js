@@ -384,18 +384,19 @@
     ].join("\0");
   }
 
-  function getRecommendations(s, champs, meta, byName, all = [], limit = 8, forSide = null) {
+  function getRecommendations(s, champs, meta, byName, all = [], limit = 8, forSide = null, opts = {}) {
     const step = getStep(s);
     if (!step || isComplete(s)) return { type: "none", items: [], forSide: null };
     const avail = available(champs, s, all);
-    const target = getRecommendationTarget(s);
+    const target = opts.focusTarget || getRecommendationTarget(s);
+    const pickFocus = target?.type === "pick" && target.slot;
     const side = target?.side || forSide || step.side;
     const cacheKey = recommendationCacheKey(s, side, all, step);
-    if (recommendationCache?.key === cacheKey && recommendationCache.limit >= limit) {
+    if (!opts.skipCache && recommendationCache?.key === cacheKey && recommendationCache.limit >= limit) {
       return { ...recommendationCache.result, items: recommendationCache.result.items.slice(0, limit) };
     }
 
-    if (step.type === "ban" || target?.type === "ban") {
+    if ((step.type === "ban" || target?.type === "ban") && !pickFocus) {
       const banPhase = step.banPhase || 1;
       const items = avail
         .map((c) => {
