@@ -208,12 +208,21 @@
     }
   }
 
+  /** Active lane for suggestions / pool sort (pick, swap, or hover). */
+  function draftRecommendTarget(session) {
+    const f = session.focus;
+    if ((f?.type === "pick" || f?.type === "swap") && f.slot) {
+      return { side: f.side, slot: f.slot };
+    }
+    if (session.hoverPick?.slot) return { side: session.hoverPick.side, slot: session.hoverPick.slot };
+    return null;
+  }
+
   /** Sort/highlight slot: focused lane, then hover, else role chip. */
   function poolSortSlot(session) {
-    const focusSlot = session.focus?.type === "pick" && session.focus.slot ? session.focus.slot : null;
-    const hoverSlot = !focusSlot && session.hoverPick?.slot ? session.hoverPick.slot : null;
+    const target = draftRecommendTarget(session);
     const chipRole = coach.state.draftPoolRole || "all";
-    return focusSlot || hoverSlot || (chipRole !== "all" ? chipRole : null);
+    return target?.slot || (chipRole !== "all" ? chipRole : null);
   }
 
   function isCellHovered(session, type, side, slot) {
@@ -277,12 +286,14 @@
     }
 
     if (comp[slot]) {
+      session.hoverPick = null;
       session.focus = { type: "swap", side, slot };
       saveSessionsDebounced();
       afterFocusChange(session);
       return;
     }
 
+    session.hoverPick = null;
     session.focus = { type: "pick", side, slot };
     saveSessionsDebounced();
     afterFocusChange(session);
@@ -815,7 +826,7 @@
     if (!host) return;
     const run = () => {
       if (getActiveSession()?.id !== session.id) return;
-      host.outerHTML = buildSuggestChipsHtml(session) || "";
+      refreshSuggestChips(session);
     };
     if (typeof requestIdleCallback === "function") {
       requestIdleCallback(run, { timeout: 200 });
@@ -825,14 +836,17 @@
   }
 
   function refreshSuggestChips(session) {
-    const host = document.getElementById("draft-suggest-host");
-    if (!host) return;
-    const html = buildSuggestChipsHtml(session);
-    if (html) {
-      host.outerHTML = html;
-    } else {
-      host.innerHTML = "";
+    let host = document.getElementById("draft-suggest-host");
+    if (!host) {
+      const pool = coach.els.draftPool;
+      if (!pool) return;
+      host = document.createElement("div");
+      host.id = "draft-suggest-host";
+      const toolbar = pool.querySelector(".draft-pool-toolbar");
+      if (toolbar) pool.insertBefore(host, toolbar);
+      else pool.appendChild(host);
     }
+    host.innerHTML = buildSuggestChipsHtml(session) || "";
   }
 
   function getPoolFiltered(session) {
@@ -851,10 +865,32 @@
     } else {
       avail = [...avail].sort((a, b) => a.name.localeCompare(b.name, "fr"));
     }
-    const filtered = avail.filter((c) => {
+    let filtered = avail.filter((c) => {
       if (!q) return true;
       return c.name.toLowerCase().includes(q) || (c.nameEn || "").toLowerCase().includes(q);
     });
+
+    const recTarget = draftRecommendTarget(session);
+    if (recTarget?.slot && window.LoLDraft?.scorePick) {
+      const scores = new Map();
+      for (const c of filtered) {
+        const r = window.LoLDraft.scorePick(
+          c,
+          session,
+          recTarget.side,
+          recTarget.slot,
+          metaMap,
+          coach.state.byName
+        );
+        scores.set(c.name, r.score);
+      }
+      filtered = [...filtered].sort((a, b) => {
+        const diff = (scores.get(b.name) || 0) - (scores.get(a.name) || 0);
+        if (diff !== 0) return diff;
+        return (coach.tierRank(b) - coach.tierRank(a)) || a.name.localeCompare(b.name, "fr");
+      });
+    }
+
     return { searchQuery, filtered, role: chipRole, sortSlot };
   }
 
@@ -936,6 +972,8 @@
 
     if (gridOnly && el.querySelector("#draft-pool-search")) {
       updatePoolGrid(el, filtered, role, sortSlot, { preserveScroll });
+      refreshSuggestChips(session);
+      syncPoolFocus(session);
       return;
     }
 

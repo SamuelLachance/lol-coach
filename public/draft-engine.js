@@ -363,7 +363,9 @@
 
   function getRecommendationTarget(s) {
     const f = s.focus;
-    if (f?.type === "pick" && f.slot) return { type: "pick", side: f.side, slot: f.slot };
+    if ((f?.type === "pick" || f?.type === "swap") && f.slot) {
+      return { type: "pick", side: f.side, slot: f.slot };
+    }
     if (f?.type === "ban") return { type: "ban", side: f.side, banIndex: f.banIndex };
     if (s.hoverPick?.slot) return { type: "pick", side: s.hoverPick.side, slot: s.hoverPick.slot, hover: true };
     return null;
