@@ -102,6 +102,33 @@ function main() {
   assert(rec.items.length > 0, "macro recommendations should return items");
   const topNames = rec.items.slice(0, 5).map((i) => i.champion.name);
   console.log(`  macro Support for Jinx top5: ${topNames.join(", ")}`);
+  for (const item of rec.items) {
+    assert(
+      D.playsSlotFor(item.champion, meta, "Support"),
+      `macro suggest ${item.champion.name} must be ≥10% Support lane rate`
+    );
+  }
+
+  const draftRec = D.getRecommendations(session, champs, meta, byName, [], 12, "blue", {
+    skipCache: true,
+    focusTarget: { type: "pick", side: "blue", slot: "Bot" },
+  });
+  for (const item of draftRec.items) {
+    assert(
+      D.playsSlotFor(item.champion, meta, "Bot"),
+      `draft Bot suggest ${item.champion.name} must be ≥10% Bot lane rate`
+    );
+  }
+
+  const luluBot = SC.scoreMacroPick(lulu, "Bot", {
+    teamNames: [],
+    enemyNames: [],
+    byName,
+    metaMap: meta,
+    side: "our",
+    allowOffRole: false,
+  });
+  assert(luluBot.score < -500, `Lulu Bot macro should reject off-role, got ${luluBot.score}`);
 
   console.log("OK — LoL draft scoring smoke tests passed");
   console.log(`  phaseWeights depth0→1: tier ${w0.tier.toFixed(2)}→${w1.tier.toFixed(2)}, counter ${w0.counter.toFixed(2)}→${w1.counter.toFixed(2)}`);

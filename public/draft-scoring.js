@@ -542,7 +542,7 @@
       byName,
       metaMap,
       side = "our",
-      allowOffRole = true,
+      allowOffRole = false,
     } = ctx;
     const ck = CK();
     const name = champ.name;
@@ -1081,7 +1081,7 @@
     const { allowedSlots, preferredSlot, hintSlot, meta, focusSlot, allowOffRole } = ctx;
 
     if (focusSlot) {
-      return scorePick(champ, focusSlot, { ...ctx, hintSlot: focusSlot, allowOffRole: allowOffRole ?? true });
+      return scorePick(champ, focusSlot, { ...ctx, hintSlot: focusSlot, allowOffRole: allowOffRole === true });
     }
 
     let slots = allowedSlots?.length ? allowedSlots.slice() : SLOTS.slice();

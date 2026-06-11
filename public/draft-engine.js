@@ -268,6 +268,16 @@
     return sc.scorePickCandidate(champ, ctx);
   }
 
+  /** Score a champ for one slot — strict lane gate by default (coach / focused lane). */
+  function scorePickForSlot(champ, s, side, slot, byName, meta, opts = {}) {
+    const sc = SC();
+    if (!sc) return { score: 0, reasons: ["Scoring indisponible"], slot };
+    const ctx = scoringCtx(s, side, byName, meta, slot);
+    ctx.focusSlot = slot;
+    ctx.allowOffRole = opts.allowOffRole === true;
+    return sc.scorePick(champ, slot, ctx);
+  }
+
   function scoreCandidate(s, side, champ, byName, meta, hintSlot = null) {
     return scorePick(champ, s, side, byName, meta, hintSlot);
   }
@@ -275,6 +285,12 @@
   function pickCandidatesForSide(s, side, avail, meta) {
     const allowed = allowedSlotsForNextPick(s, side);
     return avail.filter((c) => allowed.some((sl) => playsSlotFor(c, meta, sl)));
+  }
+
+  /** Coach suggestions — only champs with ≥MIN_LANE_PLAY_RATE% on this slot. */
+  function laneViableForSlot(champs, meta, slot) {
+    if (!slot) return champs || [];
+    return (champs || []).filter((c) => playsSlotFor(c, meta, slot));
   }
 
   function buildVector(champ, meta) {
@@ -413,15 +429,13 @@
 
     const focusSlot = target?.type === "pick" ? target.slot : null;
     const hint = focusSlot || recommendedSlotForPick(s, side);
-    const candidates = focusSlot ? avail : pickCandidatesForSide(s, side, avail, meta);
+    const candidates = focusSlot
+      ? laneViableForSlot(avail, meta, focusSlot)
+      : pickCandidatesForSide(s, side, avail, meta);
     const items = candidates
       .map((c) => {
         if (focusSlot) {
-          const ctx = scoringCtx(s, side, byName, meta, focusSlot);
-          ctx.focusSlot = focusSlot;
-          ctx.allowOffRole = true;
-          const sc = SC();
-          const r = sc ? sc.scorePick(c, focusSlot, ctx) : { score: 0, reasons: [], slot: focusSlot };
+          const r = scorePickForSlot(c, s, side, focusSlot, byName, meta);
           return { champion: c, score: r.score, reasons: r.reasons, slot: focusSlot };
         }
         const { score, reasons, slot } = scoreCandidate(s, side, c, byName, meta, hint);
@@ -437,7 +451,7 @@
       side,
       slot: hint,
       coachHint: focusSlot
-        ? `Suggestions ${slotLabel}${target.hover ? " (survol)" : ""}`
+        ? `Suggestions ${slotLabel} · ≥${MIN_LANE_PLAY_RATE}% lane${target.hover ? " (survol)" : ""}`
         : getDraftCoachHint(s, side, byName, meta),
       items,
       forSide: side,
@@ -780,12 +794,13 @@
     const enemyNames = namesFromComp(oppComp);
     const taken = new Set([...namesFromComp(ourComp), ...namesFromComp(enemyComp)]);
     const avail = (champs || []).filter((c) => c?.name && !taken.has(c.name));
+    const viable = laneViableForSlot(avail, metaMap, slot);
     const sc = SC();
 
-    const items = avail
+    const items = viable
       .map((c) => {
         const r = sc
-          ? sc.scoreMacroPick(c, slot, { teamNames, enemyNames, byName, metaMap, side })
+          ? sc.scoreMacroPick(c, slot, { teamNames, enemyNames, byName, metaMap, side, allowOffRole: false })
           : { score: 0, reasons: [], slot };
         return { champion: c, score: r.score, reasons: r.reasons, slot };
       })
@@ -800,7 +815,7 @@
       side,
       slot,
       forSide: side,
-      coachHint: `${teamLabel} · ${slotLabel} · famille > combo > trinité${target.hover ? " (survol)" : ""}`,
+      coachHint: `${teamLabel} · ${slotLabel} · ≥${MIN_LANE_PLAY_RATE}% · famille > combo > trinité${target.hover ? " (survol)" : ""}`,
       items,
     };
   }
@@ -838,6 +853,8 @@
     applyAction, recordAction, manualAssign, clearSlot, actionLabel, suggestNextFocus, syncLegacySlots,
     resyncStepIndex, undo, resetSession, swapPickSlots, toComps, analyzeLive, stepLabel, formatSummary,
     scorePick: (c, s, side, slot, meta, byName) => scorePick(c, s, side, byName, meta, slot),
+    scorePickForSlot,
+    laneViableForSlot,
     scoreBan, evaluateTeam, measureTeam: measureTeam, buildVector, phaseWeights, detectCompPlan,
     compareComps, getMacroRecommendations, teamColorSummary, colorCoherence, playableSlotsFor, playsSlotFor, lanePlayRate: () => null,
   };

@@ -2970,6 +2970,10 @@ function getTacticsPoolFiltered() {
     const slot = macroFocus.slot;
     const teamNames = compPickNames(tacticsComp(side));
     const enemyNames = compPickNames(tacticsComp(side === "our" ? "enemy" : "our"));
+    const LV = window.LoLLaneViability;
+    const laneViable = LV
+      ? new Set(filtered.filter((c) => LV.playsSlot(c, metaMap, slot)).map((c) => c.name))
+      : null;
     const scores = new Map();
     for (const c of filtered) {
       const r = window.LoLDraftScoring.scoreMacroPick(c, slot, {
@@ -2978,10 +2982,14 @@ function getTacticsPoolFiltered() {
         byName: state.byName,
         metaMap,
         side,
+        allowOffRole: false,
       });
       scores.set(c.name, r.score);
     }
     filtered = [...filtered].sort((a, b) => {
+      const aV = laneViable ? laneViable.has(a.name) : true;
+      const bV = laneViable ? laneViable.has(b.name) : true;
+      if (aV !== bV) return aV ? -1 : 1;
       const diff = (scores.get(b.name) || 0) - (scores.get(a.name) || 0);
       if (diff !== 0) return diff;
       return (tierRank(b) - tierRank(a)) || a.name.localeCompare(b.name, "fr");

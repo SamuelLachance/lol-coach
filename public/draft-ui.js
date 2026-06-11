@@ -885,20 +885,26 @@
     });
 
     const recTarget = draftRecommendTarget(session);
-    if (recTarget?.slot && window.LoLDraft?.scorePick) {
+    if (recTarget?.slot && window.LoLDraft?.scorePickForSlot) {
+      const laneViable = window.LoLDraft.laneViableForSlot
+        ? new Set(window.LoLDraft.laneViableForSlot(filtered, metaMap, recTarget.slot).map((c) => c.name))
+        : null;
       const scores = new Map();
       for (const c of filtered) {
-        const r = window.LoLDraft.scorePick(
+        const r = window.LoLDraft.scorePickForSlot(
           c,
           session,
           recTarget.side,
           recTarget.slot,
-          metaMap,
-          coach.state.byName
+          coach.state.byName,
+          metaMap
         );
         scores.set(c.name, r.score);
       }
       filtered = [...filtered].sort((a, b) => {
+        const aV = laneViable ? laneViable.has(a.name) : true;
+        const bV = laneViable ? laneViable.has(b.name) : true;
+        if (aV !== bV) return aV ? -1 : 1;
         const diff = (scores.get(b.name) || 0) - (scores.get(a.name) || 0);
         if (diff !== 0) return diff;
         return (coach.tierRank(b) - coach.tierRank(a)) || a.name.localeCompare(b.name, "fr");
