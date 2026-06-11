@@ -3261,6 +3261,17 @@ body::before {
   gap: 0.4rem;
 }
 
+.draft-delete-game.is-disabled,
+.draft-delete-game:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.draft-delete-game:not(:disabled):hover {
+  border-color: rgba(248, 113, 113, 0.45);
+  color: #fca5a5;
+}
+
 .draft-select-compact {
   background: var(--bg-elevated);
   border: 1px solid var(--border);

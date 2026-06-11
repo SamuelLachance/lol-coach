@@ -91,6 +91,31 @@
     return coach.state.draftSessions;
   }
 
+  function oppositeSide(side) {
+    return side === "blue" ? "red" : "blue";
+  }
+
+  /** Fearless series: alternate blue/red each new game. */
+  function ourSideForNextGame(prev) {
+    if (!prev) return "blue";
+    if (prev.fearless) return oppositeSide(prev.ourSide);
+    return prev.ourSide;
+  }
+
+  function deleteActiveSession() {
+    const sessions = coach.state.draftSessions;
+    if (sessions.length <= 1) return false;
+    const activeId = coach.state.activeDraftId;
+    const idx = sessions.findIndex((s) => s.id === activeId);
+    if (idx < 0) return false;
+    const removed = sessions[idx];
+    if (!confirm(`Supprimer ${removed.name} ? Cette action est irréversible.`)) return false;
+    sessions.splice(idx, 1);
+    const next = sessions[Math.min(idx, sessions.length - 1)];
+    coach.state.activeDraftId = next.id;
+    return true;
+  }
+
   function renderAll() {
     if (!ensureDraftElements()) return;
     const session = getActiveSession();
@@ -344,6 +369,8 @@
     if (session) window.LoLDraft.normalizeSession(session);
     const canEdit = session && window.LoLDraft.canEditFormat(session);
     const total = session ? window.LoLDraft.totalSteps(session) : 16;
+    const sessionCount = coach.state.draftSessions.length;
+    const canDelete = sessionCount > 1;
     const options = coach.state.draftSessions
       .map(
         (s) =>
@@ -356,6 +383,7 @@
         <select id="draft-session-select" class="draft-select-compact" aria-label="Choisir la partie">${options}</select>
         <button type="button" class="btn-secondary btn-sm" id="draft-new-game">+ Nouvelle</button>
         <button type="button" class="btn-secondary btn-sm" id="draft-rename-game" title="Renommer">✎</button>
+        <button type="button" class="btn-secondary btn-sm draft-delete-game${canDelete ? "" : " is-disabled"}" id="draft-delete-game" title="${canDelete ? "Supprimer cette partie" : "Au moins une partie doit rester"}"${canDelete ? "" : " disabled"}>🗑</button>
       </div>
       <div class="draft-side-toggle">
         <span class="draft-side-label">Nous sommes</span>
@@ -363,7 +391,7 @@
         <button type="button" class="side-chip side-red${session?.ourSide === "red" ? " active" : ""}" data-side="red"${canEdit ? "" : " disabled"}>Rouge</button>
       </div>
       <div class="draft-format-options">
-        <label class="draft-option-check" title="Picks des games précédentes indisponibles">
+        <label class="draft-option-check" title="Picks des games précédentes indisponibles · nouvelle partie = côté adverse">
           <input type="checkbox" id="draft-fearless"${session?.fearless ? " checked" : ""}${canEdit ? "" : " disabled"} />
           <span>Fearless</span>
         </label>
@@ -393,11 +421,18 @@
     el.querySelector("#draft-new-game")?.addEventListener("click", () => {
       const n = coach.state.draftSessions.length + 1;
       const prev = coach.state.draftSessions[coach.state.draftSessions.length - 1];
-      const s = window.LoLDraft.createSession(`Game ${n}`, prev?.ourSide || "blue", {
+      const nextSide = ourSideForNextGame(prev);
+      const s = window.LoLDraft.createSession(`Game ${n}`, nextSide, {
         fearless: prev?.fearless ?? false,
       });
       coach.state.draftSessions.push(s);
       coach.state.activeDraftId = s.id;
+      saveSessions();
+      renderAll();
+    });
+    el.querySelector("#draft-delete-game")?.addEventListener("click", () => {
+      if (!deleteActiveSession()) return;
+      ensureSessions();
       saveSessions();
       renderAll();
     });
