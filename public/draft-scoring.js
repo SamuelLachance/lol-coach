@@ -180,6 +180,20 @@
     return names.map((n) => buildProfile(getData(byName, meta, n), meta));
   }
 
+  function normNameKey(name) {
+    return String(name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  }
+
+  function archetypeHitCount(archetype, names) {
+    if (!archetype?.champs?.length) return 0;
+    const hitSet = new Set(names.map(normNameKey));
+    let hits = 0;
+    for (const c of archetype.champs) {
+      if (hitSet.has(normNameKey(c))) hits++;
+    }
+    return hits;
+  }
+
   function sumKey(vs, key) {
     return vs.reduce((s, v) => s + (v[key] || 0), 0);
   }
@@ -308,7 +322,7 @@
       for (const n of names) mixTotal += ck.familyMixPenalty(n, names.filter((x) => x !== n)).score;
       coachingAdj += mixTotal / Math.max(1, names.length);
       const archetype = ck.detectArchetypeComp(names);
-      if (archetype) coachingAdj += archetype.hits * 8;
+      if (archetype) coachingAdj += archetypeHitCount(archetype, names) * 8;
     }
 
     const total = bal.score + syn * 0.9 + ctr * 0.9 + arch.completeness * 0.45 + coachingAdj;
@@ -321,11 +335,11 @@
     };
   }
 
-  /** Macro tab — score = synergie + familles uniquement. */
+  /** Macro tab — familles (draft.txt #1): cohérence, templates, archétypes, mix. */
   function macroFamilyScore(names, byName, metaMap) {
     const vs = profiles(names, byName, metaMap);
     const arch = detectArchetype(vs);
-    let score = Math.round(arch.completeness * 1.25);
+    let score = Math.round(arch.completeness * 1.35);
     const ck = CK();
     if (!ck || names.length < 2) return score;
 
@@ -336,30 +350,190 @@
     score += Math.round(coherence / names.length);
 
     const archetype = ck.detectArchetypeComp(names);
-    if (archetype) score += archetype.hits * 14;
+    if (archetype) {
+      const archHits = archetypeHitCount(archetype, names);
+      score += archHits * 16;
+      if (archHits >= 3) score += 18;
+    }
 
     const tpl = ck.detectTemplate(names);
-    if (tpl) score += 22;
+    if (tpl) {
+      const hitSet = new Set(names.map(normNameKey));
+      let tplHits = 0;
+      for (const c of tpl.champs || []) {
+        if (hitSet.has(normNameKey(c))) tplHits++;
+      }
+      if (tplHits >= 3) score += 32;
+      else if (tplHits >= 2) score += 22;
+    }
 
     let mix = 0;
     for (const n of names) mix += ck.familyMixPenalty(n, names.filter((x) => x !== n)).score;
-    score += Math.round(mix / names.length);
+    score += Math.round(mix * (ck.WEIGHTS?.mix || 3) / 3 / names.length);
+
+    const tags = names.map((n) => {
+      const key = normNameKey(n);
+      if (ck.FAMILY_TAGS?.engage?.has(key)) return "engage";
+      if (ck.FAMILY_TAGS?.disengage?.has(key)) return "disengage";
+      if (ck.FAMILY_TAGS?.range?.has(key)) return "range";
+      return null;
+    }).filter(Boolean);
+    if (tags.length >= 3) {
+      const counts = {};
+      for (const t of tags) counts[t] = (counts[t] || 0) + 1;
+      const dominant = Math.max(...Object.values(counts));
+      if (dominant / tags.length >= 0.75) score += 14;
+    }
 
     return Math.round(score);
   }
 
-  function evaluateTeamMacro(names, ctx) {
-    const { byName, metaMap } = ctx;
+  /** Macro tab — synergie (draft.txt #2–3): pairings, combos coaching, trinité, counters matchup. */
+  function macroSynergyScore(names, ctx) {
+    const { byName, metaMap, oppNames = [] } = ctx;
     const vs = profiles(names, byName, metaMap);
-    const synergy = Math.round(pairingSynergy(vs));
+    let synergy = Math.round(pairingSynergy(vs));
+    const ck = CK();
+
+    if (ck && names.length >= 2) {
+      let coachingSyn = 0;
+      let trinity = 0;
+      let anti = 0;
+      for (const n of names) {
+        const allies = names.filter((x) => x !== n);
+        coachingSyn += ck.coachingSynergyScore(n, allies).score;
+        trinity += ck.trinityBonus(n, allies).score;
+        anti += ck.antiSynergyPenalty(n, allies).score;
+      }
+      const n = names.length;
+      synergy += Math.round((coachingSyn / n) * (ck.WEIGHTS?.combo || 2));
+      synergy += Math.round((trinity / n) * (ck.WEIGHTS?.trinity || 1.4));
+      synergy += Math.round((anti / n) * (ck.WEIGHTS?.anti || 2.5));
+    }
+
+    if (oppNames.length && names.length >= 2) {
+      let ctrEdge = 0;
+      for (const n of names) {
+        const v = buildProfile(getData(byName, metaMap, n), metaMap);
+        for (const e of oppNames) {
+          ctrEdge += listScore(e, v.counters, CTR_W);
+          const ep = buildProfile(getData(byName, metaMap, e), metaMap);
+          ctrEdge -= Math.round(listScore(n, ep.counters, CTR_W) * 0.38);
+        }
+      }
+      synergy += Math.round((ctrEdge / Math.max(1, names.length)) * 0.42);
+    }
+
+    return Math.round(synergy);
+  }
+
+  function evaluateTeamMacro(names, ctx) {
+    const { byName, metaMap, oppNames = [] } = ctx;
+    const vs = profiles(names, byName, metaMap);
+    const synergy = macroSynergyScore(names, { byName, metaMap, oppNames });
     const family = macroFamilyScore(names, byName, metaMap);
     const arch = detectArchetype(vs);
     return {
       total: synergy + family,
       vs,
       archetype: arch,
-      gaps: [],
+      gaps: arch.gaps || [],
       breakdown: { synergy, family },
+    };
+  }
+
+  /**
+   * Macro tab pick prediction — pure coaching knowledge (famille > combo > trinité).
+   * Considers allies on same side + enemy comp for counters / deny.
+   */
+  function scoreMacroPick(champ, slot, ctx) {
+    const {
+      teamNames = [],
+      enemyNames = [],
+      byName,
+      metaMap,
+      side = "our",
+      allowOffRole = true,
+    } = ctx;
+    const ck = CK();
+    const name = champ.name;
+    const allies = teamNames.filter((n) => n !== name);
+    const pickN = allies.length;
+    const draftSide = side === "enemy" ? "red" : "blue";
+    const reasons = [];
+
+    if (!ck) {
+      return { score: 0, reasons: ["Coaching indisponible"], slot };
+    }
+
+    const coaching = ck.scoreCoachingPick(name, allies, slot, { side: draftSide, pickN });
+    let score = coaching.score;
+    reasons.push(...coaching.reasons);
+
+    const offRole = !playsSlot(champ, metaMap, slot);
+    if (offRole && !allowOffRole) {
+      return { score: -9999, reasons: [`Lane incompatible (${SLOT_LABELS[slot]})`], slot };
+    }
+    if (offRole) {
+      score -= 22;
+      reasons.push(`Flex ${SLOT_LABELS[slot] || slot}`);
+    } else if (primarySlot(champ, metaMap) === slot) {
+      score += 14;
+      reasons.push(`Main ${SLOT_LABELS[slot] || slot}`);
+    }
+
+    const projected = allies.concat(name);
+    const arch = detectArchetype(profiles(projected, byName, metaMap));
+    if (arch.completeness >= 40) {
+      score += Math.round(arch.completeness * 0.28);
+      if (arch.label) reasons.push(`Plan ${arch.label}`);
+    }
+    for (const g of arch.gaps || []) {
+      const fillsGap =
+        (g === "frontline" && (champ.type || "").match(/tank|combattant/i)) ||
+        (g === "peel" && (champ.type || "").match(/support/i));
+      if (fillsGap) {
+        score += 18;
+        reasons.push(`Comble ${g}`);
+        break;
+      }
+    }
+
+    if (enemyNames.length) {
+      const v = buildProfile(champ, metaMap);
+      let ctr = 0;
+      for (const e of enemyNames) {
+        ctr += listScore(e, v.counters, CTR_W);
+        const ep = buildProfile(getData(byName, metaMap, e), metaMap);
+        ctr -= Math.round(listScore(name, ep.counters, CTR_W) * 0.32);
+        if (isWomboPair(e, name)) {
+          score += 16;
+          reasons.push(`Menace wombo vs ${e}`);
+        }
+      }
+      if (ctr > 12) {
+        score += Math.round(ctr * 0.5);
+        reasons.push("Counter matchup");
+      }
+
+      const deny = ck.denyComboBanScore(name, enemyNames);
+      if (deny.score > 0) {
+        score += Math.round(deny.score * 0.35);
+        reasons.push(...deny.reasons.slice(0, 1));
+      }
+    }
+
+    const tpl = ck.detectTemplate(allies);
+    if (tpl && tpl.champs.some((c) => normNameKey(c) === normNameKey(name))) {
+      score += 20;
+      reasons.push(`Complète ${tpl.label}`);
+    }
+
+    return {
+      score: Math.round(score),
+      reasons: [...new Set(reasons)].slice(0, 6),
+      slot,
+      breakdown: coaching.breakdown,
     };
   }
 
@@ -844,6 +1018,8 @@
     evaluateTeam,
     evaluateTeamMacro,
     macroFamilyScore,
+    macroSynergyScore,
+    scoreMacroPick,
     phaseWeights,
     playableSlotsFor: playableSlots,
     playsSlotFor: playsSlot,

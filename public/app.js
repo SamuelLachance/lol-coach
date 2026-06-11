@@ -27,6 +27,7 @@ const state = {
   draftPoolTier: "all",
   draftPoolRole: "all",
   tacticsFocus: null,
+  tacticsHover: null,
   tacticsPoolSearch: "",
   tacticsPoolRole: "all",
   ourComp: { Top: "", Jungle: "", Mid: "", Bot: "", Support: "" },
@@ -2508,24 +2509,97 @@ function isTacticsSwapTarget(side, slot) {
   return Boolean(comp[f.slot] || comp[slot]);
 }
 
-/** Sort/highlight slot: focused lane first, else explicit role chip. */
+/** Sort/highlight slot: focused lane, hover, else role chip. */
 function tacticsPoolSortSlot() {
   const focusSlot =
     state.tacticsFocus?.type === "pick" && state.tacticsFocus.slot ? state.tacticsFocus.slot : null;
+  const hoverSlot = !focusSlot && state.tacticsHover?.slot ? state.tacticsHover.slot : null;
   const chipRole = state.tacticsPoolRole || "all";
-  return focusSlot || (chipRole !== "all" ? chipRole : null);
+  return focusSlot || hoverSlot || (chipRole !== "all" ? chipRole : null);
+}
+
+function isTacticsCellHovered(side, slot) {
+  if (state.tacticsFocus?.type === "pick" && state.tacticsFocus.slot) return false;
+  const h = state.tacticsHover;
+  return Boolean(h && h.side === side && h.slot === slot);
+}
+
+function setTacticsHover(side, slot) {
+  const prev = state.tacticsHover;
+  if (!slot) {
+    if (!prev) return;
+    state.tacticsHover = null;
+  } else if (prev?.side === side && prev?.slot === slot) {
+    return;
+  } else {
+    state.tacticsHover = { side, slot };
+  }
+  syncTacticsCoachPanel({ preserveScroll: true });
+}
+
+function syncTacticsCoachPanel({ preserveScroll = false } = {}) {
+  refreshTacticsSuggestChips();
+  syncTacticsSlotFocus();
+  if (els.tacticsPool?.querySelector(".draft-pool-grid")) {
+    const { filtered, role, sortSlot } = getTacticsPoolFiltered();
+    updateTacticsPoolGrid(els.tacticsPool, filtered, role, sortSlot, { preserveScroll });
+  }
+  syncTacticsPoolChrome();
+}
+
+function buildTacticsSuggestChipsHtml() {
+  if (!window.LoLDraft?.getMacroRecommendations) return "";
+  const focus = state.tacticsFocus?.type === "pick" ? state.tacticsFocus : null;
+  const rec = window.LoLDraft.getMacroRecommendations(
+    state.ourComp,
+    state.enemyComp,
+    focus,
+    state.tacticsHover,
+    state.champions,
+    state.tacticsMeta?.champions || {},
+    state.byName,
+    6
+  );
+  if (!rec.items?.length) return "";
+  const hintText = rec.coachHint || "Famille > combo > trinité";
+  return `
+    <div class="draft-suggest-wrap">
+      <div class="draft-suggest-head">
+        <span class="draft-suggest-title">Suggestions coach</span>
+        <span class="draft-suggest-hint muted">${escapeHtml(hintText)}</span>
+      </div>
+      <div class="draft-suggest-row" aria-label="Suggestions macro">
+        ${rec.items
+          .map(
+            (item, i) => `
+        <button type="button" class="draft-suggest-chip" draggable="true" data-champ="${escapeHtml(item.champion.name)}" title="${escapeHtml(item.reasons.slice(0, 2).join(" · "))}">
+          <span class="draft-suggest-rank">#${i + 1}</span>
+          ${championIconHtml(item.champion, { size: "coach" })}
+          <span class="draft-suggest-name">${escapeHtml(item.champion.name)}</span>
+        </button>`
+          )
+          .join("")}
+      </div>
+    </div>`;
+}
+
+function refreshTacticsSuggestChips() {
+  const host = document.getElementById("tactics-suggest-host");
+  if (!host) return;
+  const html = buildTacticsSuggestChipsHtml();
+  if (html) host.innerHTML = html;
+  else host.innerHTML = "";
 }
 
 function setTacticsPickFocus(side, slot, { resortPool = false } = {}) {
   state.tacticsFocus = { type: "pick", side, slot };
-  syncTacticsSlotFocus();
-  if (resortPool && els.tacticsPool?.querySelector(".draft-pool-grid")) {
-    const { filtered, role, sortSlot } = getTacticsPoolFiltered();
-    updateTacticsPoolGrid(els.tacticsPool, filtered, role, sortSlot, { preserveScroll: true });
-  } else {
+  syncTacticsFocusHint();
+  if (resortPool) syncTacticsCoachPanel({ preserveScroll: true });
+  else {
+    syncTacticsSlotFocus();
+    refreshTacticsSuggestChips();
     syncTacticsPoolChrome();
   }
-  syncTacticsFocusHint();
 }
 
 function swapTacticsSlots(side, slotA, slotB) {
@@ -2702,7 +2776,7 @@ function renderTacticsCompScoreHtml(comp) {
   return `<div class="tactics-comp-score-inner${comp?.complete ? " tactics-comp-score-inner--ready" : ""}">
     <div class="tactics-comp-score-head">
       <span class="tactics-comp-score-kicker">Analyse draft</span>
-      <p class="tactics-comp-score-title">Score synergie + familles</p>
+      <p class="tactics-comp-score-title">Score coaching · synergie + familles</p>
     </div>
     <div class="tactics-comp-duel">
       <div class="tactics-comp-side our-team${fav === "our" ? " is-favored" : ""}">
@@ -2727,7 +2801,7 @@ function renderTacticsCompScoreHtml(comp) {
       ${mtgTeamPanelHtml(compPickNames(state.enemyComp), "Identité couleur · adversaire")}
     </div>
     <details class="tactics-comp-details">
-      <summary>Détail du scoring (synergie + familles)</summary>
+      <summary>Détail du scoring coaching (synergie + familles)</summary>
       <table class="tactics-comp-breakdown">
         <thead><tr><th>Axe</th><th>Nous</th><th>Ennemi</th></tr></thead>
         <tbody>
@@ -2886,6 +2960,33 @@ function getTacticsPoolFiltered() {
   if (PR) {
     filtered = PR.sortPool(filtered, { sortSlot, tierRank, metaMap });
   }
+
+  const macroFocus =
+    (state.tacticsFocus?.type === "pick" && state.tacticsFocus.slot && state.tacticsFocus) ||
+    (state.tacticsHover?.slot && state.tacticsHover);
+  if (macroFocus?.slot && window.LoLDraftScoring?.scoreMacroPick) {
+    const side = macroFocus.side;
+    const slot = macroFocus.slot;
+    const teamNames = compPickNames(tacticsComp(side));
+    const enemyNames = compPickNames(tacticsComp(side === "our" ? "enemy" : "our"));
+    const scores = new Map();
+    for (const c of filtered) {
+      const r = window.LoLDraftScoring.scoreMacroPick(c, slot, {
+        teamNames,
+        enemyNames,
+        byName: state.byName,
+        metaMap,
+        side,
+      });
+      scores.set(c.name, r.score);
+    }
+    filtered = [...filtered].sort((a, b) => {
+      const diff = (scores.get(b.name) || 0) - (scores.get(a.name) || 0);
+      if (diff !== 0) return diff;
+      return (tierRank(b) - tierRank(a)) || a.name.localeCompare(b.name, "fr");
+    });
+  }
+
   return { searchQuery, filtered, role: chipRole, sortSlot };
 }
 
@@ -2922,6 +3023,12 @@ function bindTacticsPoolEvents(el) {
       e.preventDefault();
       return;
     }
+    const suggest = e.target.closest(".draft-suggest-chip");
+    if (suggest && el.contains(suggest)) {
+      e.preventDefault();
+      assignTacticsChampion(suggest.dataset.champ);
+      return;
+    }
     const btn = e.target.closest(".draft-pool-card");
     if (btn && el.contains(btn)) {
       e.preventDefault();
@@ -2938,8 +3045,10 @@ function bindTacticsDragDrop() {
 
   document.addEventListener("dragstart", (e) => {
     const card = e.target.closest("#tactics-pool .draft-pool-card");
-    if (!card) return;
-    dragChamp = card.dataset.champ;
+    const chip = e.target.closest("#tactics-pool .draft-suggest-chip");
+    const el = card || chip;
+    if (!el) return;
+    dragChamp = el.dataset.champ;
     e.dataTransfer.setData("text/champion", dragChamp);
     e.dataTransfer.effectAllowed = "copy";
   });
@@ -3005,6 +3114,7 @@ function renderTacticsPool({ gridOnly = false } = {}) {
 
   if (gridOnly && el.querySelector("#tactics-pool-search")) {
     updateTacticsPoolGrid(el, filtered, role, sortSlot, { preserveScroll: true });
+    refreshTacticsSuggestChips();
     syncTacticsPoolFocus(el);
     return;
   }
@@ -3018,8 +3128,9 @@ function renderTacticsPool({ gridOnly = false } = {}) {
       <h2 class="draft-pool-title">Champions</h2>
       <span class="draft-pool-count">${filtered.length} dispo · ${tacticsPoolSortLabel(role, sortSlot)}</span>
     </div>
-    <p class="draft-pool-lead muted">Tous les champions restent visibles · lane focusée = tri + pick sur ce poste (flex OK) · glisser-déposer · filtre optionnel · build ${escapeHtml(window.LoLSiteConfig?.APP_BUILD || "?")}.</p>
+    <p class="draft-pool-lead muted">Coaching pur LoL · famille &gt; combo &gt; trinité · lane focusée = tri + suggestions · flex OK · build ${escapeHtml(window.LoLSiteConfig?.APP_BUILD || "?")}.</p>
     <div class="draft-pool-action${focus?.type === "pick" ? " focus-ready" : ""}">${escapeHtml(actionText)}</div>
+    <div id="tactics-suggest-host">${buildTacticsSuggestChipsHtml()}</div>
     ${roleFilters}
     <div class="draft-pool-toolbar">
       <input type="search" class="draft-pool-search" placeholder="Rechercher…" value="${escapeHtml(searchQuery)}" id="tactics-pool-search" />
@@ -3039,10 +3150,11 @@ function renderTacticsSlotGrid(side, container, comp) {
       const name = comp[slot];
       const champ = name ? state.byName.get(name) : null;
       const focused = isTacticsCellFocused(side, slot);
+      const hovered = isTacticsCellHovered(side, slot);
       const swapTarget = isTacticsSwapTarget(side, slot);
       return `
         <button type="button"
-          class="draft-cell draft-pick-cell tactics-slot-cell${name ? " filled" : " empty"}${focused ? " draft-cell-focused" : ""}${swapTarget ? " draft-cell-swap-target" : ""}"
+          class="draft-cell draft-pick-cell tactics-slot-cell${name ? " filled" : " empty"}${focused ? " draft-cell-focused" : ""}${hovered ? " draft-cell-hover" : ""}${swapTarget ? " draft-cell-swap-target" : ""}"
           data-tactics-side="${side}" data-tactics-slot="${slot}"
           aria-label="${side === "our" ? "Notre" : "Adversaire"} ${slot}${name ? ` : ${name}` : ""}">
           <span class="draft-cell-tag">${TACTICS_SLOT_ICONS[slot]} ${slot}</span>
@@ -3068,6 +3180,22 @@ function renderTacticsSlotGrid(side, container, comp) {
       clearTacticsSlot(side, slot);
     });
   });
+
+  if (container.dataset.tacticsHoverBound !== "1") {
+    container.dataset.tacticsHoverBound = "1";
+    container.addEventListener(
+      "mouseenter",
+      (e) => {
+        const cell = e.target.closest("[data-tactics-slot]");
+        if (!cell || !container.contains(cell)) return;
+        setTacticsHover(cell.dataset.tacticsSide, cell.dataset.tacticsSlot);
+      },
+      true
+    );
+    container.addEventListener("mouseleave", (e) => {
+      if (!container.contains(e.relatedTarget) && state.tacticsHover) setTacticsHover(null, null);
+    });
+  }
 }
 
 function renderTacticsDraft({ refreshPool = false } = {}) {
@@ -3082,6 +3210,7 @@ function renderTacticsDraft({ refreshPool = false } = {}) {
   }
   updateTacticsCompScore();
   syncTacticsFocusHint();
+  refreshTacticsSuggestChips();
 }
 
 function applyTacticTemplate(key) {

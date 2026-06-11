@@ -759,6 +759,49 @@
     return { our, enemy: 1 - our };
   }
 
+  function macroFocusTarget(focus, hover) {
+    if (focus?.type === "pick" && focus.slot) return { side: focus.side, slot: focus.slot };
+    if (hover?.slot) return { side: hover.side, slot: hover.slot, hover: true };
+    return null;
+  }
+
+  function getMacroRecommendations(ourComp, enemyComp, focus, hover, champs, metaMap, byName, limit = 6) {
+    const target = macroFocusTarget(focus, hover);
+    if (!target?.slot) return { type: "none", items: [], coachHint: "", forSide: null };
+
+    const side = target.side;
+    const slot = target.slot;
+    const comp = side === "our" ? ourComp : enemyComp;
+    const oppComp = side === "our" ? enemyComp : ourComp;
+    const teamNames = namesFromComp(comp);
+    const enemyNames = namesFromComp(oppComp);
+    const taken = new Set([...namesFromComp(ourComp), ...namesFromComp(enemyComp)]);
+    const avail = (champs || []).filter((c) => c?.name && !taken.has(c.name));
+    const sc = SC();
+
+    const items = avail
+      .map((c) => {
+        const r = sc
+          ? sc.scoreMacroPick(c, slot, { teamNames, enemyNames, byName, metaMap, side })
+          : { score: 0, reasons: [], slot };
+        return { champion: c, score: r.score, reasons: r.reasons, slot };
+      })
+      .filter((item) => item.score > -500)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit);
+
+    const slotLabel = SLOT_LABELS[slot] || slot;
+    const teamLabel = side === "our" ? "Notre équipe" : "Adversaire";
+    return {
+      type: "pick",
+      side,
+      slot,
+      forSide: side,
+      coachHint: `${teamLabel} · ${slotLabel} · famille > combo > trinité${target.hover ? " (survol)" : ""}`,
+      items,
+    };
+  }
+
   function compareComps(ourComp, enemyComp, byName, metaMap) {
     const ourNames = namesFromComp(ourComp);
     const enemyNames = namesFromComp(enemyComp);
@@ -793,6 +836,6 @@
     resyncStepIndex, undo, resetSession, swapPickSlots, toComps, analyzeLive, stepLabel, formatSummary,
     scorePick: (c, s, side, slot, meta, byName) => scorePick(c, s, side, byName, meta, slot),
     scoreBan, evaluateTeam, measureTeam: measureTeam, buildVector, phaseWeights, detectCompPlan,
-    compareComps, teamColorSummary, colorCoherence, playableSlotsFor, playsSlotFor, lanePlayRate: () => null,
+    compareComps, getMacroRecommendations, teamColorSummary, colorCoherence, playableSlotsFor, playsSlotFor, lanePlayRate: () => null,
   };
 })(typeof window !== "undefined" ? window : globalThis);

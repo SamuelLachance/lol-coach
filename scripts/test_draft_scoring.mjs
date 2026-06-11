@@ -13,7 +13,7 @@ function loadLoLDraft() {
   for (const file of ["lane-viability.js", "coaching-knowledge.js", "mtg-color-pie.js", "draft-scoring.js", "draft-engine.js"]) {
     vm.runInNewContext(readFileSync(join(root, "public", file), "utf8"), sandbox);
   }
-  return sandbox.LoLDraft;
+  return sandbox;
 }
 
 function assert(cond, msg) {
@@ -21,7 +21,8 @@ function assert(cond, msg) {
 }
 
 function main() {
-  const D = loadLoLDraft();
+  const sandbox = loadLoLDraft();
+  const D = sandbox.LoLDraft;
   assert(D, "LoLDraft export missing");
 
   const w0 = D.phaseWeights(0);
@@ -59,6 +60,38 @@ function main() {
   const vs = [D.buildVector(jinx, meta), D.buildVector(lulu, meta)];
   const plan = D.detectCompPlan(vs);
   assert(plan.plan === "hypercarry" || plan.label.includes("Hyper"), `expected hypercarry plan, got ${plan.plan}`);
+
+  const SC = sandbox.LoLDraftScoring;
+  const macroPick = SC.scoreMacroPick(lulu, "Support", {
+    teamNames: ["Jinx"],
+    enemyNames: ["Malphite", "Yasuo"],
+    byName,
+    metaMap: meta,
+    side: "our",
+  });
+  assert(macroPick.score > 40, `Lulu+Jinx hypercarry macro pick should score high, got ${macroPick.score}`);
+
+  const macroTeam = SC.evaluateTeamMacro(
+    ["Jinx", "Lulu", "Malphite", "Jarvan IV", "Orianna"],
+    { byName, metaMap: meta, oppNames: ["Renekton", "Lee Sin", "Ahri", "Caitlyn", "Thresh"] }
+  );
+  assert(macroTeam.breakdown.synergy > 0, "macro synergy should be positive");
+  assert(macroTeam.breakdown.family > 0, "macro family should be positive");
+  assert(macroTeam.total === macroTeam.breakdown.synergy + macroTeam.breakdown.family, "macro total = synergy + family");
+
+  const rec = D.getMacroRecommendations(
+    { Top: "", Jungle: "", Mid: "", Bot: "Jinx", Support: "" },
+    { Top: "Malphite", Jungle: "", Mid: "", Bot: "", Support: "" },
+    { type: "pick", side: "our", slot: "Support" },
+    null,
+    champs,
+    meta,
+    byName,
+    8
+  );
+  assert(rec.items.length > 0, "macro recommendations should return items");
+  const topNames = rec.items.slice(0, 5).map((i) => i.champion.name);
+  console.log(`  macro Support for Jinx top5: ${topNames.join(", ")}`);
 
   console.log("OK — LoL draft scoring smoke tests passed");
   console.log(`  phaseWeights depth0→1: tier ${w0.tier.toFixed(2)}→${w1.tier.toFixed(2)}, counter ${w0.counter.toFixed(2)}→${w1.counter.toFixed(2)}`);
