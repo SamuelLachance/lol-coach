@@ -2903,6 +2903,7 @@ function renderTacticsCompScoreHtml(comp) {
           ${breakdownRow("Équilibre (AD/AP/front)", "balance")}
           ${breakdownRow("Coaching / mix", "coaching")}
           ${breakdownRow("Win condition", "winCondition")}
+          ${breakdownRow("Classes Riot", "classes")}
           ${breakdownRow("Identité MTG", "mtg")}
           ${breakdownRow("Wombo / combos", "wombo")}
           ${breakdownRow("Interactions draft", "interaction")}
@@ -3804,11 +3805,12 @@ function renderChampionsUI() {
 
 async function loadSecondaryAssets() {
   try {
-    const [itemsRes, tacticsRes, mtgRes, laneMatchRes] = await Promise.all([
+    const [itemsRes, tacticsRes, mtgRes, laneMatchRes, classRes] = await Promise.all([
       fetch("data/items.json"),
       fetch("data/tactics-meta.json"),
       fetch("data/mtg-colors.json"),
       fetch("data/lane-matchups.json"),
+      fetch("data/champion-classes.json"),
     ]);
 
     if (itemsRes.ok) {
@@ -3833,6 +3835,10 @@ async function loadSecondaryAssets() {
 
     if (laneMatchRes.ok && window.LoLLaneMatchupLogic?.loadPrecomputed) {
       window.LoLLaneMatchupLogic.loadPrecomputed(await laneMatchRes.json());
+    }
+
+    if (classRes.ok && window.LoLChampionClasses?.loadPrecomputed) {
+      window.LoLChampionClasses.loadPrecomputed(await classRes.json());
     }
   } catch (err) {
     console.warn("Secondary assets load failed", err);

@@ -1,0 +1,4165 @@
+{
+  "version": "16.11.1",
+  "source": "Riot subclass wheel + champions.json heuristics",
+  "championCount": 172,
+  "wheel": [
+    "Marksman",
+    "Artillery",
+    "Burst",
+    "Battlemage",
+    "Assassin",
+    "Skirmisher",
+    "Diver",
+    "Juggernaut",
+    "Vanguard",
+    "Warden",
+    "Catcher",
+    "Enchanter"
+  ],
+  "primaryClass": {
+    "Marksman": "Marksman",
+    "Artillery": "Mage",
+    "Burst": "Mage",
+    "Battlemage": "Mage",
+    "Assassin": "Slayer",
+    "Skirmisher": "Slayer",
+    "Diver": "Fighter",
+    "Juggernaut": "Fighter",
+    "Vanguard": "Tank",
+    "Warden": "Tank",
+    "Catcher": "Controller",
+    "Enchanter": "Controller",
+    "Specialist": "Specialist"
+  },
+  "slotFit": {
+    "Top": [
+      "Juggernaut",
+      "Diver",
+      "Battlemage",
+      "Skirmisher",
+      "Vanguard",
+      "Specialist"
+    ],
+    "Jungle": [
+      "Diver",
+      "Assassin",
+      "Skirmisher",
+      "Vanguard",
+      "Specialist"
+    ],
+    "Mid": [
+      "Burst",
+      "Artillery",
+      "Assassin",
+      "Battlemage",
+      "Specialist"
+    ],
+    "Bot": [
+      "Marksman",
+      "Artillery",
+      "Burst"
+    ],
+    "Support": [
+      "Enchanter",
+      "Catcher",
+      "Warden",
+      "Burst",
+      "Vanguard"
+    ]
+  },
+  "interactionRules": [
+    {
+      "attacker": "Marksman",
+      "defender": "Catcher",
+      "reason": "Marksman > Catcher (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Marksman",
+      "defender": "Enchanter",
+      "reason": "Marksman > Enchanter (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Artillery",
+      "defender": "Enchanter",
+      "reason": "Artillery > Enchanter (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Artillery",
+      "defender": "Marksman",
+      "reason": "Artillery poke > Marksman immobile",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Burst",
+      "defender": "Marksman",
+      "reason": "Burst Mage > ADC early",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Burst",
+      "defender": "Artillery",
+      "reason": "Burst > Artillery (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Battlemage",
+      "defender": "Artillery",
+      "reason": "Battlemage > Artillery (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Battlemage",
+      "defender": "Burst",
+      "reason": "Battlemage > Burst (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Assassin",
+      "defender": "Burst",
+      "reason": "Slayer burst > Mage setup",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Assassin",
+      "defender": "Battlemage",
+      "reason": "Assassin > Battlemage (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Skirmisher",
+      "defender": "Battlemage",
+      "reason": "Skirmisher mobile > Battlemage",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Skirmisher",
+      "defender": "Assassin",
+      "reason": "Duelist > Assassin fragile",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Diver",
+      "defender": "Assassin",
+      "reason": "Diver > Assassin (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Diver",
+      "defender": "Skirmisher",
+      "reason": "Diver > Skirmisher (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Juggernaut",
+      "defender": "Skirmisher",
+      "reason": "Juggernaut > Skirmisher (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Juggernaut",
+      "defender": "Diver",
+      "reason": "Juggernaut > Diver (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Vanguard",
+      "defender": "Diver",
+      "reason": "Vanguard > Diver (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Vanguard",
+      "defender": "Juggernaut",
+      "reason": "Vanguard > Juggernaut (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Warden",
+      "defender": "Juggernaut",
+      "reason": "Warden > Juggernaut (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Warden",
+      "defender": "Vanguard",
+      "reason": "Warden > Vanguard (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Catcher",
+      "defender": "Vanguard",
+      "reason": "Catcher > Vanguard (wheel)",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Catcher",
+      "defender": "Warden",
+      "reason": "Hook punition > Warden lent",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Enchanter",
+      "defender": "Warden",
+      "reason": "Enchanter sustain > Warden",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Enchanter",
+      "defender": "Catcher",
+      "reason": "Enchanter peel > hook Catcher",
+      "laneWeight": 1,
+      "teamWeight": 0.6
+    },
+    {
+      "attacker": "Marksman",
+      "defender": "Vanguard",
+      "reason": "Marksman DPS > Tank sans gapclose",
+      "laneWeight": 1.15,
+      "teamWeight": 0.8
+    },
+    {
+      "attacker": "Marksman",
+      "defender": "Warden",
+      "reason": "ADC sustained > Warden peel seul",
+      "laneWeight": 1.1,
+      "teamWeight": 0.75
+    },
+    {
+      "attacker": "Juggernaut",
+      "defender": "Vanguard",
+      "reason": "Fighter DPS > Tank engage",
+      "laneWeight": 1.05,
+      "teamWeight": 0.7
+    },
+    {
+      "attacker": "Diver",
+      "defender": "Marksman",
+      "reason": "Diver gapclose > ADC immobile",
+      "laneWeight": 1.1,
+      "teamWeight": 0.65
+    },
+    {
+      "attacker": "Vanguard",
+      "defender": "Assassin",
+      "reason": "Tank absorbe le burst Assassin",
+      "laneWeight": 1.2,
+      "teamWeight": 0.85
+    },
+    {
+      "attacker": "Vanguard",
+      "defender": "Burst",
+      "reason": "Frontline > Burst Mage setup",
+      "laneWeight": 1.15,
+      "teamWeight": 0.8
+    },
+    {
+      "attacker": "Enchanter",
+      "defender": "Assassin",
+      "reason": "Enchanter peel > dive Assassin",
+      "laneWeight": 0.85,
+      "teamWeight": 0.9
+    },
+    {
+      "attacker": "Catcher",
+      "defender": "Artillery",
+      "reason": "Hook punition > Mage immobile",
+      "laneWeight": 1.05,
+      "teamWeight": 0.7
+    }
+  ],
+  "teamGapRules": [
+    {
+      "gap": "frontline",
+      "need": [
+        "Vanguard",
+        "Warden",
+        "Juggernaut"
+      ],
+      "penalty": 72,
+      "label": "Pas de frontline (Tank/Fighter)"
+    },
+    {
+      "gap": "engage",
+      "need": [
+        "Vanguard",
+        "Diver",
+        "Catcher",
+        "Assassin"
+      ],
+      "penalty": 58,
+      "label": "Pas d'engage (Vanguard/Diver/Catcher)"
+    },
+    {
+      "gap": "peel",
+      "need": [
+        "Enchanter",
+        "Warden",
+        "Catcher"
+      ],
+      "penalty": 48,
+      "label": "Pas de peel (Enchanter/Warden)"
+    },
+    {
+      "gap": "damage",
+      "need": [
+        "Marksman",
+        "Burst",
+        "Artillery",
+        "Assassin",
+        "Skirmisher",
+        "Battlemage"
+      ],
+      "penalty": 55,
+      "label": "Pas de damage dealer"
+    },
+    {
+      "gap": "waveclear",
+      "need": [
+        "Artillery",
+        "Battlemage",
+        "Marksman",
+        "Burst"
+      ],
+      "penalty": 35,
+      "label": "Waveclear mage/ADC manquant"
+    }
+  ],
+  "champions": {
+    "Aatrox": {
+      "key": "Aatrox",
+      "primary": "Juggernaut",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "counteredBy": [
+        "Vanguard",
+        "Warden"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Jungle"
+      ]
+    },
+    "Ahri": {
+      "key": "Ahri",
+      "primary": "Burst",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Marksman",
+        "Artillery"
+      ],
+      "counteredBy": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "attributes": [
+        "damageDealer",
+        "bully"
+      ],
+      "slots": [
+        "Mid"
+      ]
+    },
+    "Akali": {
+      "key": "Akali",
+      "primary": "Assassin",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Mid",
+        "Top"
+      ]
+    },
+    "Akshan": {
+      "key": "Akshan",
+      "primary": "Skirmisher",
+      "secondary": "Marksman",
+      "primaryClass": "Slayer",
+      "secondaryClass": "Marksman",
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Mid",
+        "Top"
+      ]
+    },
+    "Alistar": {
+      "key": "Alistar",
+      "primary": "Catcher",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Vanguard",
+        "Warden"
+      ],
+      "counteredBy": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "attributes": [],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Ambessa": {
+      "key": "Ambessa",
+      "primary": "Specialist",
+      "secondary": "Diver",
+      "primaryClass": "Specialist",
+      "secondaryClass": "Fighter",
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Jungle"
+      ]
+    },
+    "Amumu": {
+      "key": "Amumu",
+      "primary": "Vanguard",
+      "secondary": null,
+      "primaryClass": "Tank",
+      "secondaryClass": null,
+      "counters": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "counteredBy": [
+        "Warden",
+        "Catcher"
+      ],
+      "attributes": [
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Support"
+      ]
+    },
+    "Anivia": {
+      "key": "Anivia",
+      "primary": "Burst",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Marksman",
+        "Artillery"
+      ],
+      "counteredBy": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "attributes": [
+        "damageDealer",
+        "bully"
+      ],
+      "slots": [
+        "Mid",
+        "Top",
+        "Support"
+      ]
+    },
+    "Annie": {
+      "key": "Annie",
+      "primary": "Burst",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Marksman",
+        "Artillery"
+      ],
+      "counteredBy": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher",
+        "bully"
+      ],
+      "slots": [
+        "Mid",
+        "Support"
+      ]
+    },
+    "Aphelios": {
+      "key": "Aphelios",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "hypercarry",
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "Ashe": {
+      "key": "Ashe",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Bot",
+        "Support"
+      ]
+    },
+    "Aurelion Sol": {
+      "key": "AurelionSol",
+      "primary": "Battlemage",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Artillery",
+        "Burst"
+      ],
+      "counteredBy": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Mid",
+        "Bot",
+        "Top"
+      ]
+    },
+    "Aurora": {
+      "key": "Aurora",
+      "primary": "Specialist",
+      "secondary": "Burst",
+      "primaryClass": "Specialist",
+      "secondaryClass": "Mage",
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Mid",
+        "Top"
+      ]
+    },
+    "Azir": {
+      "key": "Azir",
+      "primary": "Battlemage",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Artillery",
+        "Burst"
+      ],
+      "counteredBy": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "attributes": [
+        "carry",
+        "hypercarry",
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Mid",
+        "Top"
+      ]
+    },
+    "Bard": {
+      "key": "Bard",
+      "primary": "Catcher",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Vanguard",
+        "Warden"
+      ],
+      "counteredBy": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "attributes": [
+        "pusher"
+      ],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Bel'Veth": {
+      "key": "Belveth",
+      "primary": "Skirmisher",
+      "secondary": "Skirmisher",
+      "primaryClass": "Slayer",
+      "secondaryClass": "Slayer",
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle"
+      ]
+    },
+    "Blitzcrank": {
+      "key": "Blitzcrank",
+      "primary": "Catcher",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Vanguard",
+        "Warden"
+      ],
+      "counteredBy": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "attributes": [],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Brand": {
+      "key": "Brand",
+      "primary": "Burst",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Marksman",
+        "Artillery"
+      ],
+      "counteredBy": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher",
+        "bully"
+      ],
+      "slots": [
+        "Support",
+        "Bot",
+        "Mid",
+        "Jungle"
+      ]
+    },
+    "Braum": {
+      "key": "Braum",
+      "primary": "Warden",
+      "secondary": null,
+      "primaryClass": "Tank",
+      "secondaryClass": null,
+      "counters": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "counteredBy": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "attributes": [],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Briar": {
+      "key": "Briar",
+      "primary": "Assassin",
+      "secondary": "Diver",
+      "primaryClass": "Slayer",
+      "secondaryClass": "Fighter",
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle"
+      ]
+    },
+    "Caitlyn": {
+      "key": "Caitlyn",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "Camille": {
+      "key": "Camille",
+      "primary": "Skirmisher",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Support"
+      ]
+    },
+    "Cassiopeia": {
+      "key": "Cassiopeia",
+      "primary": "Battlemage",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Artillery",
+        "Burst"
+      ],
+      "counteredBy": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Mid",
+        "Top",
+        "Bot"
+      ]
+    },
+    "Cho'Gath": {
+      "key": "Chogath",
+      "primary": "Specialist",
+      "secondary": null,
+      "primaryClass": "Specialist",
+      "secondaryClass": null,
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Mid",
+        "Jungle"
+      ]
+    },
+    "Corki": {
+      "key": "Corki",
+      "primary": "Marksman",
+      "secondary": "Artillery",
+      "primaryClass": "Marksman",
+      "secondaryClass": "Mage",
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Bot",
+        "Mid"
+      ]
+    },
+    "Darius": {
+      "key": "Darius",
+      "primary": "Juggernaut",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "counteredBy": [
+        "Vanguard",
+        "Warden"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Top",
+        "Jungle"
+      ]
+    },
+    "Diana": {
+      "key": "Diana",
+      "primary": "Assassin",
+      "secondary": "Assassin",
+      "primaryClass": "Slayer",
+      "secondaryClass": "Slayer",
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle",
+        "Mid"
+      ]
+    },
+    "Dr. Mundo": {
+      "key": "DrMundo",
+      "primary": "Juggernaut",
+      "secondary": "Juggernaut",
+      "primaryClass": "Fighter",
+      "secondaryClass": "Fighter",
+      "counters": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "counteredBy": [
+        "Vanguard",
+        "Warden"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Top",
+        "Jungle"
+      ]
+    },
+    "Draven": {
+      "key": "Draven",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "Ekko": {
+      "key": "Ekko",
+      "primary": "Diver",
+      "secondary": "Assassin",
+      "primaryClass": "Fighter",
+      "secondaryClass": "Slayer",
+      "counters": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "counteredBy": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle",
+        "Mid"
+      ]
+    },
+    "Elise": {
+      "key": "Elise",
+      "primary": "Assassin",
+      "secondary": "Assassin",
+      "primaryClass": "Slayer",
+      "secondaryClass": "Slayer",
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Support"
+      ]
+    },
+    "Evelynn": {
+      "key": "Evelynn",
+      "primary": "Assassin",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle"
+      ]
+    },
+    "Ezreal": {
+      "key": "Ezreal",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "Fiddlesticks": {
+      "key": "Fiddlesticks",
+      "primary": "Catcher",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Vanguard",
+        "Warden"
+      ],
+      "counteredBy": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "attributes": [
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle",
+        "Support",
+        "Top"
+      ]
+    },
+    "Fiora": {
+      "key": "Fiora",
+      "primary": "Skirmisher",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Top"
+      ]
+    },
+    "Fizz": {
+      "key": "Fizz",
+      "primary": "Assassin",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Mid",
+        "Jungle"
+      ]
+    },
+    "Galio": {
+      "key": "Galio",
+      "primary": "Warden",
+      "secondary": "Warden",
+      "primaryClass": "Tank",
+      "secondaryClass": "Tank",
+      "counters": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "counteredBy": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "attributes": [
+        "pusher"
+      ],
+      "slots": [
+        "Mid",
+        "Support"
+      ]
+    },
+    "Gangplank": {
+      "key": "Gangplank",
+      "primary": "Specialist",
+      "secondary": "Fighter",
+      "primaryClass": "Specialist",
+      "secondaryClass": null,
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Mid"
+      ]
+    },
+    "Garen": {
+      "key": "Garen",
+      "primary": "Juggernaut",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "counteredBy": [
+        "Vanguard",
+        "Warden"
+      ],
+      "attributes": [
+        "damageDealer"
+      ],
+      "slots": [
+        "Top",
+        "Mid"
+      ]
+    },
+    "Gnar": {
+      "key": "Gnar",
+      "primary": "Specialist",
+      "secondary": null,
+      "primaryClass": "Specialist",
+      "secondaryClass": null,
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Top"
+      ]
+    },
+    "Gragas": {
+      "key": "Gragas",
+      "primary": "Vanguard",
+      "secondary": "Vanguard",
+      "primaryClass": "Tank",
+      "secondaryClass": "Tank",
+      "counters": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "counteredBy": [
+        "Warden",
+        "Catcher"
+      ],
+      "attributes": [
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Jungle",
+        "Mid",
+        "Support"
+      ]
+    },
+    "Graves": {
+      "key": "Graves",
+      "primary": "Specialist",
+      "secondary": "Marksman",
+      "primaryClass": "Specialist",
+      "secondaryClass": "Marksman",
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "carry",
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle"
+      ]
+    },
+    "Gwen": {
+      "key": "Gwen",
+      "primary": "Skirmisher",
+      "secondary": "Skirmisher",
+      "primaryClass": "Slayer",
+      "secondaryClass": "Slayer",
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Jungle",
+        "Mid"
+      ]
+    },
+    "Hecarim": {
+      "key": "Hecarim",
+      "primary": "Diver",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "counteredBy": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Jungle"
+      ]
+    },
+    "Heimerdinger": {
+      "key": "Heimerdinger",
+      "primary": "Specialist",
+      "secondary": null,
+      "primaryClass": "Specialist",
+      "secondaryClass": null,
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "damageDealer"
+      ],
+      "slots": [
+        "Top",
+        "Mid",
+        "Support",
+        "Bot"
+      ]
+    },
+    "Hwei": {
+      "key": "Hwei",
+      "primary": "Artillery",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "counteredBy": [
+        "Burst",
+        "Battlemage"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher",
+        "bully"
+      ],
+      "slots": [
+        "Mid",
+        "Bot",
+        "Support"
+      ]
+    },
+    "Illaoi": {
+      "key": "Illaoi",
+      "primary": "Juggernaut",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "counteredBy": [
+        "Vanguard",
+        "Warden"
+      ],
+      "attributes": [
+        "damageDealer"
+      ],
+      "slots": [
+        "Top"
+      ]
+    },
+    "Irelia": {
+      "key": "Irelia",
+      "primary": "Skirmisher",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer"
+      ],
+      "slots": [
+        "Top",
+        "Mid"
+      ]
+    },
+    "Ivern": {
+      "key": "Ivern",
+      "primary": "Enchanter",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Warden",
+        "Catcher"
+      ],
+      "counteredBy": [
+        "Marksman",
+        "Artillery"
+      ],
+      "attributes": [
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Support",
+        "Top"
+      ]
+    },
+    "Janna": {
+      "key": "Janna",
+      "primary": "Enchanter",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Warden",
+        "Catcher"
+      ],
+      "counteredBy": [
+        "Marksman",
+        "Artillery"
+      ],
+      "attributes": [],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Jarvan IV": {
+      "key": "JarvanIV",
+      "primary": "Diver",
+      "secondary": "Vanguard",
+      "primaryClass": "Fighter",
+      "secondaryClass": "Tank",
+      "counters": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "counteredBy": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle",
+        "Support"
+      ]
+    },
+    "Jax": {
+      "key": "Jax",
+      "primary": "Skirmisher",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Jungle"
+      ]
+    },
+    "Jayce": {
+      "key": "Jayce",
+      "primary": "Specialist",
+      "secondary": "Fighter",
+      "primaryClass": "Specialist",
+      "secondaryClass": null,
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "carry",
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Jungle",
+        "Mid"
+      ]
+    },
+    "Jhin": {
+      "key": "Jhin",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "Jinx": {
+      "key": "Jinx",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "hypercarry",
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "K'Santé": {
+      "key": "KSante",
+      "primary": "Juggernaut",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "counteredBy": [
+        "Vanguard",
+        "Warden"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Top"
+      ]
+    },
+    "Kai'Sa": {
+      "key": "Kaisa",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "Kalista": {
+      "key": "Kalista",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Bot",
+        "Top"
+      ]
+    },
+    "Karma": {
+      "key": "Karma",
+      "primary": "Enchanter",
+      "secondary": "Burst",
+      "primaryClass": "Controller",
+      "secondaryClass": "Mage",
+      "counters": [
+        "Warden",
+        "Catcher"
+      ],
+      "counteredBy": [
+        "Marksman",
+        "Artillery"
+      ],
+      "attributes": [],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Karthus": {
+      "key": "Karthus",
+      "primary": "Battlemage",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Artillery",
+        "Burst"
+      ],
+      "counteredBy": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Bot",
+        "Mid"
+      ]
+    },
+    "Kassadin": {
+      "key": "Kassadin",
+      "primary": "Battlemage",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Artillery",
+        "Burst"
+      ],
+      "counteredBy": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Mid"
+      ]
+    },
+    "Katarina": {
+      "key": "Katarina",
+      "primary": "Assassin",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Mid",
+        "Bot"
+      ]
+    },
+    "Kayle": {
+      "key": "Kayle",
+      "primary": "Specialist",
+      "secondary": "Battlemage",
+      "primaryClass": "Specialist",
+      "secondaryClass": "Mage",
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "carry",
+        "hypercarry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Top",
+        "Mid"
+      ]
+    },
+    "Kayn": {
+      "key": "Kayn",
+      "primary": "Skirmisher",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Jungle"
+      ]
+    },
+    "Kennen": {
+      "key": "Kennen",
+      "primary": "Specialist",
+      "secondary": null,
+      "primaryClass": "Specialist",
+      "secondaryClass": null,
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "damageDealer"
+      ],
+      "slots": [
+        "Top",
+        "Mid"
+      ]
+    },
+    "Kha'Zix": {
+      "key": "Khazix",
+      "primary": "Assassin",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle"
+      ]
+    },
+    "Kindred": {
+      "key": "Kindred",
+      "primary": "Specialist",
+      "secondary": "Marksman",
+      "primaryClass": "Specialist",
+      "secondaryClass": "Marksman",
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "carry",
+        "hypercarry",
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle"
+      ]
+    },
+    "Kled": {
+      "key": "Kled",
+      "primary": "Diver",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "counteredBy": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Mid"
+      ]
+    },
+    "Kog'Maw": {
+      "key": "KogMaw",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "hypercarry",
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Bot",
+        "Mid"
+      ]
+    },
+    "LeBlanc": {
+      "key": "Leblanc",
+      "primary": "Assassin",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer"
+      ],
+      "slots": [
+        "Mid",
+        "Support"
+      ]
+    },
+    "Lee Sin": {
+      "key": "LeeSin",
+      "primary": "Diver",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "counteredBy": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle"
+      ]
+    },
+    "Leona": {
+      "key": "Leona",
+      "primary": "Catcher",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Vanguard",
+        "Warden"
+      ],
+      "counteredBy": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "attributes": [
+        "pusher"
+      ],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Lillia": {
+      "key": "Lillia",
+      "primary": "Battlemage",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Artillery",
+        "Burst"
+      ],
+      "counteredBy": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle"
+      ]
+    },
+    "Lissandra": {
+      "key": "Lissandra",
+      "primary": "Burst",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Marksman",
+        "Artillery"
+      ],
+      "counteredBy": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "attributes": [
+        "damageDealer",
+        "bully"
+      ],
+      "slots": [
+        "Mid",
+        "Top"
+      ]
+    },
+    "Lucian": {
+      "key": "Lucian",
+      "primary": "Marksman",
+      "secondary": "Skirmisher",
+      "primaryClass": "Marksman",
+      "secondaryClass": "Slayer",
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "Lulu": {
+      "key": "Lulu",
+      "primary": "Enchanter",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Warden",
+        "Catcher"
+      ],
+      "counteredBy": [
+        "Marksman",
+        "Artillery"
+      ],
+      "attributes": [],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Lux": {
+      "key": "Lux",
+      "primary": "Artillery",
+      "secondary": "Artillery",
+      "primaryClass": "Mage",
+      "secondaryClass": "Mage",
+      "counters": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "counteredBy": [
+        "Burst",
+        "Battlemage"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher",
+        "bully"
+      ],
+      "slots": [
+        "Support",
+        "Mid",
+        "Bot"
+      ]
+    },
+    "Malphite": {
+      "key": "Malphite",
+      "primary": "Vanguard",
+      "secondary": null,
+      "primaryClass": "Tank",
+      "secondaryClass": null,
+      "counters": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "counteredBy": [
+        "Warden",
+        "Catcher"
+      ],
+      "attributes": [
+        "jungler"
+      ],
+      "slots": [
+        "Top",
+        "Mid",
+        "Jungle"
+      ]
+    },
+    "Malzahar": {
+      "key": "Malzahar",
+      "primary": "Burst",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Marksman",
+        "Artillery"
+      ],
+      "counteredBy": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher",
+        "bully"
+      ],
+      "slots": [
+        "Mid",
+        "Top"
+      ]
+    },
+    "Maokai": {
+      "key": "Maokai",
+      "primary": "Warden",
+      "secondary": "Vanguard",
+      "primaryClass": "Tank",
+      "secondaryClass": "Tank",
+      "counters": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "counteredBy": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "attributes": [
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Support",
+        "Top",
+        "Jungle"
+      ]
+    },
+    "Maître Yi": {
+      "key": "MasterYi",
+      "primary": "Skirmisher",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Top"
+      ]
+    },
+    "Mel": {
+      "key": "Mel",
+      "primary": "Artillery",
+      "secondary": "Artillery",
+      "primaryClass": "Mage",
+      "secondaryClass": "Mage",
+      "counters": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "counteredBy": [
+        "Burst",
+        "Battlemage"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher",
+        "bully"
+      ],
+      "slots": [
+        "Mid",
+        "Support",
+        "Bot"
+      ]
+    },
+    "Milio": {
+      "key": "Milio",
+      "primary": "Enchanter",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Warden",
+        "Catcher"
+      ],
+      "counteredBy": [
+        "Marksman",
+        "Artillery"
+      ],
+      "attributes": [
+        "pusher"
+      ],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Miss Fortune": {
+      "key": "MissFortune",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "Mordekaiser": {
+      "key": "Mordekaiser",
+      "primary": "Juggernaut",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "counteredBy": [
+        "Vanguard",
+        "Warden"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Jungle"
+      ]
+    },
+    "Morgana": {
+      "key": "Morgana",
+      "primary": "Catcher",
+      "secondary": "Burst",
+      "primaryClass": "Controller",
+      "secondaryClass": "Mage",
+      "counters": [
+        "Vanguard",
+        "Warden"
+      ],
+      "counteredBy": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "attributes": [
+        "pusher"
+      ],
+      "slots": [
+        "Support",
+        "Mid"
+      ]
+    },
+    "Naafiri": {
+      "key": "Naafiri",
+      "primary": "Assassin",
+      "secondary": "Assassin",
+      "primaryClass": "Slayer",
+      "secondaryClass": "Slayer",
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle",
+        "Mid",
+        "Top"
+      ]
+    },
+    "Nami": {
+      "key": "Nami",
+      "primary": "Enchanter",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Warden",
+        "Catcher"
+      ],
+      "counteredBy": [
+        "Marksman",
+        "Artillery"
+      ],
+      "attributes": [
+        "pusher"
+      ],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Nasus": {
+      "key": "Nasus",
+      "primary": "Juggernaut",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "counteredBy": [
+        "Vanguard",
+        "Warden"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Jungle",
+        "Mid"
+      ]
+    },
+    "Nautilus": {
+      "key": "Nautilus",
+      "primary": "Catcher",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Vanguard",
+        "Warden"
+      ],
+      "counteredBy": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "attributes": [],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Neeko": {
+      "key": "Neeko",
+      "primary": "Specialist",
+      "secondary": "Burst",
+      "primaryClass": "Specialist",
+      "secondaryClass": "Mage",
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Support",
+        "Mid"
+      ]
+    },
+    "Nidalee": {
+      "key": "Nidalee",
+      "primary": "Specialist",
+      "secondary": "Assassin",
+      "primaryClass": "Specialist",
+      "secondaryClass": "Slayer",
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle",
+        "Support"
+      ]
+    },
+    "Nilah": {
+      "key": "Nilah",
+      "primary": "Skirmisher",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "Nocturne": {
+      "key": "Nocturne",
+      "primary": "Assassin",
+      "secondary": "Assassin",
+      "primaryClass": "Slayer",
+      "secondaryClass": "Slayer",
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Jungle"
+      ]
+    },
+    "Nunu et Willump": {
+      "key": "Nunu",
+      "primary": "Vanguard",
+      "secondary": null,
+      "primaryClass": "Tank",
+      "secondaryClass": null,
+      "counters": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "counteredBy": [
+        "Warden",
+        "Catcher"
+      ],
+      "attributes": [
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle",
+        "Mid"
+      ]
+    },
+    "Olaf": {
+      "key": "Olaf",
+      "primary": "Juggernaut",
+      "secondary": "Juggernaut",
+      "primaryClass": "Fighter",
+      "secondaryClass": "Fighter",
+      "counters": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "counteredBy": [
+        "Vanguard",
+        "Warden"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Top",
+        "Jungle"
+      ]
+    },
+    "Orianna": {
+      "key": "Orianna",
+      "primary": "Burst",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Marksman",
+        "Artillery"
+      ],
+      "counteredBy": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher",
+        "bully"
+      ],
+      "slots": [
+        "Mid"
+      ]
+    },
+    "Ornn": {
+      "key": "Ornn",
+      "primary": "Vanguard",
+      "secondary": null,
+      "primaryClass": "Tank",
+      "secondaryClass": null,
+      "counters": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "counteredBy": [
+        "Warden",
+        "Catcher"
+      ],
+      "attributes": [],
+      "slots": [
+        "Top"
+      ]
+    },
+    "Pantheon": {
+      "key": "Pantheon",
+      "primary": "Diver",
+      "secondary": "Diver",
+      "primaryClass": "Fighter",
+      "secondaryClass": "Fighter",
+      "counters": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "counteredBy": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Support",
+        "Top",
+        "Jungle",
+        "Mid"
+      ]
+    },
+    "Poppy": {
+      "key": "Poppy",
+      "primary": "Diver",
+      "secondary": "Warden",
+      "primaryClass": "Fighter",
+      "secondaryClass": "Tank",
+      "counters": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "counteredBy": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Support",
+        "Top",
+        "Jungle"
+      ]
+    },
+    "Pyke": {
+      "key": "Pyke",
+      "primary": "Skirmisher",
+      "secondary": "Assassin",
+      "primaryClass": "Slayer",
+      "secondaryClass": "Slayer",
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer"
+      ],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Qiyana": {
+      "key": "Qiyana",
+      "primary": "Assassin",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Mid",
+        "Jungle"
+      ]
+    },
+    "Quinn": {
+      "key": "Quinn",
+      "primary": "Specialist",
+      "secondary": null,
+      "primaryClass": "Specialist",
+      "secondaryClass": null,
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "carry",
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle",
+        "Top",
+        "Mid"
+      ]
+    },
+    "Rakan": {
+      "key": "Rakan",
+      "primary": "Catcher",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Vanguard",
+        "Warden"
+      ],
+      "counteredBy": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "attributes": [],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Rammus": {
+      "key": "Rammus",
+      "primary": "Vanguard",
+      "secondary": null,
+      "primaryClass": "Tank",
+      "secondaryClass": null,
+      "counters": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "counteredBy": [
+        "Warden",
+        "Catcher"
+      ],
+      "attributes": [
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle",
+        "Support"
+      ]
+    },
+    "Rek'Sai": {
+      "key": "RekSai",
+      "primary": "Diver",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "counteredBy": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Top"
+      ]
+    },
+    "Rell": {
+      "key": "Rell",
+      "primary": "Catcher",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Vanguard",
+        "Warden"
+      ],
+      "counteredBy": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "attributes": [],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Renata Glasc": {
+      "key": "Renata",
+      "primary": "Enchanter",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Warden",
+        "Catcher"
+      ],
+      "counteredBy": [
+        "Marksman",
+        "Artillery"
+      ],
+      "attributes": [
+        "pusher"
+      ],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Renekton": {
+      "key": "Renekton",
+      "primary": "Diver",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "counteredBy": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Top"
+      ]
+    },
+    "Rengar": {
+      "key": "Rengar",
+      "primary": "Assassin",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Top"
+      ]
+    },
+    "Riven": {
+      "key": "Riven",
+      "primary": "Skirmisher",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer"
+      ],
+      "slots": [
+        "Top",
+        "Mid"
+      ]
+    },
+    "Rumble": {
+      "key": "Rumble",
+      "primary": "Battlemage",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Artillery",
+        "Burst"
+      ],
+      "counteredBy": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Mid",
+        "Jungle"
+      ]
+    },
+    "Ryze": {
+      "key": "Ryze",
+      "primary": "Battlemage",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Artillery",
+        "Burst"
+      ],
+      "counteredBy": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "attributes": [
+        "damageDealer"
+      ],
+      "slots": [
+        "Mid",
+        "Top"
+      ]
+    },
+    "Samira": {
+      "key": "Samira",
+      "primary": "Marksman",
+      "secondary": "Skirmisher",
+      "primaryClass": "Marksman",
+      "secondaryClass": "Slayer",
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "Sejuani": {
+      "key": "Sejuani",
+      "primary": "Vanguard",
+      "secondary": null,
+      "primaryClass": "Tank",
+      "secondaryClass": null,
+      "counters": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "counteredBy": [
+        "Warden",
+        "Catcher"
+      ],
+      "attributes": [
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Top"
+      ]
+    },
+    "Senna": {
+      "key": "Senna",
+      "primary": "Specialist",
+      "secondary": "Marksman",
+      "primaryClass": "Specialist",
+      "secondaryClass": "Marksman",
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "carry",
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Support",
+        "Bot"
+      ]
+    },
+    "Sett": {
+      "key": "Sett",
+      "primary": "Juggernaut",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "counteredBy": [
+        "Vanguard",
+        "Warden"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Top"
+      ]
+    },
+    "Shaco": {
+      "key": "Shaco",
+      "primary": "Assassin",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Support"
+      ]
+    },
+    "Shen": {
+      "key": "Shen",
+      "primary": "Warden",
+      "secondary": "Warden",
+      "primaryClass": "Tank",
+      "secondaryClass": "Tank",
+      "counters": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "counteredBy": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "attributes": [
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Support",
+        "Jungle"
+      ]
+    },
+    "Shyvana": {
+      "key": "Shyvana",
+      "primary": "Specialist",
+      "secondary": "Juggernaut",
+      "primaryClass": "Specialist",
+      "secondaryClass": "Fighter",
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle",
+        "Top"
+      ]
+    },
+    "Singed": {
+      "key": "Singed",
+      "primary": "Battlemage",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Artillery",
+        "Burst"
+      ],
+      "counteredBy": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Mid"
+      ]
+    },
+    "Sion": {
+      "key": "Sion",
+      "primary": "Juggernaut",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "counteredBy": [
+        "Vanguard",
+        "Warden"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Mid"
+      ]
+    },
+    "Sivir": {
+      "key": "Sivir",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "Skarner": {
+      "key": "Skarner",
+      "primary": "Vanguard",
+      "secondary": null,
+      "primaryClass": "Tank",
+      "secondaryClass": null,
+      "counters": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "counteredBy": [
+        "Warden",
+        "Catcher"
+      ],
+      "attributes": [
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Support",
+        "Top"
+      ]
+    },
+    "Smolder": {
+      "key": "Smolder",
+      "primary": "Marksman",
+      "secondary": "Marksman",
+      "primaryClass": "Marksman",
+      "secondaryClass": "Marksman",
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "hypercarry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Bot",
+        "Mid"
+      ]
+    },
+    "Sona": {
+      "key": "Sona",
+      "primary": "Enchanter",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Warden",
+        "Catcher"
+      ],
+      "counteredBy": [
+        "Marksman",
+        "Artillery"
+      ],
+      "attributes": [
+        "pusher"
+      ],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Soraka": {
+      "key": "Soraka",
+      "primary": "Enchanter",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Warden",
+        "Catcher"
+      ],
+      "counteredBy": [
+        "Marksman",
+        "Artillery"
+      ],
+      "attributes": [
+        "pusher"
+      ],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Swain": {
+      "key": "Swain",
+      "primary": "Battlemage",
+      "secondary": "Battlemage",
+      "primaryClass": "Mage",
+      "secondaryClass": "Mage",
+      "counters": [
+        "Artillery",
+        "Burst"
+      ],
+      "counteredBy": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "attributes": [
+        "damageDealer"
+      ],
+      "slots": [
+        "Support",
+        "Bot",
+        "Mid",
+        "Top"
+      ]
+    },
+    "Sylas": {
+      "key": "Sylas",
+      "primary": "Battlemage",
+      "secondary": "Skirmisher",
+      "primaryClass": "Mage",
+      "secondaryClass": "Slayer",
+      "counters": [
+        "Artillery",
+        "Burst"
+      ],
+      "counteredBy": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Mid",
+        "Jungle",
+        "Top",
+        "Support"
+      ]
+    },
+    "Syndra": {
+      "key": "Syndra",
+      "primary": "Burst",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Marksman",
+        "Artillery"
+      ],
+      "counteredBy": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "attributes": [
+        "damageDealer",
+        "bully"
+      ],
+      "slots": [
+        "Mid"
+      ]
+    },
+    "Séraphine": {
+      "key": "Seraphine",
+      "primary": "Enchanter",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Warden",
+        "Catcher"
+      ],
+      "counteredBy": [
+        "Marksman",
+        "Artillery"
+      ],
+      "attributes": [
+        "pusher"
+      ],
+      "slots": [
+        "Support",
+        "Bot"
+      ]
+    },
+    "Tahm Kench": {
+      "key": "TahmKench",
+      "primary": "Warden",
+      "secondary": null,
+      "primaryClass": "Tank",
+      "secondaryClass": null,
+      "counters": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "counteredBy": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "attributes": [
+        "pusher"
+      ],
+      "slots": [
+        "Support",
+        "Top",
+        "Bot"
+      ]
+    },
+    "Taliyah": {
+      "key": "Taliyah",
+      "primary": "Battlemage",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Artillery",
+        "Burst"
+      ],
+      "counteredBy": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Mid",
+        "Jungle",
+        "Support"
+      ]
+    },
+    "Talon": {
+      "key": "Talon",
+      "primary": "Assassin",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Mid"
+      ]
+    },
+    "Taric": {
+      "key": "Taric",
+      "primary": "Specialist",
+      "secondary": null,
+      "primaryClass": "Specialist",
+      "secondaryClass": null,
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Teemo": {
+      "key": "Teemo",
+      "primary": "Specialist",
+      "secondary": null,
+      "primaryClass": "Specialist",
+      "secondaryClass": null,
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "carry",
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Top",
+        "Bot",
+        "Jungle",
+        "Support"
+      ]
+    },
+    "Thresh": {
+      "key": "Thresh",
+      "primary": "Catcher",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Vanguard",
+        "Warden"
+      ],
+      "counteredBy": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "attributes": [
+        "pusher"
+      ],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Tristana": {
+      "key": "Tristana",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Bot",
+        "Mid"
+      ]
+    },
+    "Trundle": {
+      "key": "Trundle",
+      "primary": "Juggernaut",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "counteredBy": [
+        "Vanguard",
+        "Warden"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Jungle"
+      ]
+    },
+    "Tryndamere": {
+      "key": "Tryndamere",
+      "primary": "Skirmisher",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Top",
+        "Mid",
+        "Jungle"
+      ]
+    },
+    "Twisted Fate": {
+      "key": "TwistedFate",
+      "primary": "Specialist",
+      "secondary": "Burst",
+      "primaryClass": "Specialist",
+      "secondaryClass": "Mage",
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "carry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Mid",
+        "Top"
+      ]
+    },
+    "Twitch": {
+      "key": "Twitch",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "hypercarry",
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Bot",
+        "Support"
+      ]
+    },
+    "Udyr": {
+      "key": "Udyr",
+      "primary": "Vanguard",
+      "secondary": null,
+      "primaryClass": "Tank",
+      "secondaryClass": null,
+      "counters": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "counteredBy": [
+        "Warden",
+        "Catcher"
+      ],
+      "attributes": [
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Top"
+      ]
+    },
+    "Urgot": {
+      "key": "Urgot",
+      "primary": "Specialist",
+      "secondary": "Juggernaut",
+      "primaryClass": "Specialist",
+      "secondaryClass": "Fighter",
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Top"
+      ]
+    },
+    "Varus": {
+      "key": "Varus",
+      "primary": "Marksman",
+      "secondary": "Artillery",
+      "primaryClass": "Marksman",
+      "secondaryClass": "Mage",
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Bot",
+        "Top",
+        "Mid"
+      ]
+    },
+    "Vayne": {
+      "key": "Vayne",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "hypercarry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Bot",
+        "Top"
+      ]
+    },
+    "Veigar": {
+      "key": "Veigar",
+      "primary": "Burst",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Marksman",
+        "Artillery"
+      ],
+      "counteredBy": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher",
+        "bully"
+      ],
+      "slots": [
+        "Mid",
+        "Bot",
+        "Support"
+      ]
+    },
+    "Vel'Koz": {
+      "key": "Velkoz",
+      "primary": "Artillery",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "counteredBy": [
+        "Burst",
+        "Battlemage"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher",
+        "bully"
+      ],
+      "slots": [
+        "Support",
+        "Mid",
+        "Bot"
+      ]
+    },
+    "Vex": {
+      "key": "Vex",
+      "primary": "Battlemage",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Artillery",
+        "Burst"
+      ],
+      "counteredBy": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Mid"
+      ]
+    },
+    "Vi": {
+      "key": "Vi",
+      "primary": "Diver",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "counteredBy": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Jungle"
+      ]
+    },
+    "Viego": {
+      "key": "Viego",
+      "primary": "Skirmisher",
+      "secondary": "Skirmisher",
+      "primaryClass": "Slayer",
+      "secondaryClass": "Slayer",
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Jungle"
+      ]
+    },
+    "Viktor": {
+      "key": "Viktor",
+      "primary": "Burst",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Marksman",
+        "Artillery"
+      ],
+      "counteredBy": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher",
+        "bully"
+      ],
+      "slots": [
+        "Mid"
+      ]
+    },
+    "Vladimir": {
+      "key": "Vladimir",
+      "primary": "Battlemage",
+      "secondary": "Battlemage",
+      "primaryClass": "Mage",
+      "secondaryClass": "Mage",
+      "counters": [
+        "Artillery",
+        "Burst"
+      ],
+      "counteredBy": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Mid",
+        "Top",
+        "Bot"
+      ]
+    },
+    "Volibear": {
+      "key": "Volibear",
+      "primary": "Juggernaut",
+      "secondary": "Juggernaut",
+      "primaryClass": "Fighter",
+      "secondaryClass": "Fighter",
+      "counters": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "counteredBy": [
+        "Vanguard",
+        "Warden"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Top",
+        "Jungle"
+      ]
+    },
+    "Warwick": {
+      "key": "Warwick",
+      "primary": "Diver",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "counteredBy": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Top"
+      ]
+    },
+    "Wukong": {
+      "key": "MonkeyKing",
+      "primary": "Vanguard",
+      "secondary": "Vanguard",
+      "primaryClass": "Tank",
+      "secondaryClass": "Tank",
+      "counters": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "counteredBy": [
+        "Warden",
+        "Catcher"
+      ],
+      "attributes": [
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Top"
+      ]
+    },
+    "Xayah": {
+      "key": "Xayah",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "Xerath": {
+      "key": "Xerath",
+      "primary": "Artillery",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "counteredBy": [
+        "Burst",
+        "Battlemage"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher",
+        "bully"
+      ],
+      "slots": [
+        "Mid",
+        "Support",
+        "Bot"
+      ]
+    },
+    "Xin Zhao": {
+      "key": "XinZhao",
+      "primary": "Diver",
+      "secondary": null,
+      "primaryClass": "Fighter",
+      "secondaryClass": null,
+      "counters": [
+        "Assassin",
+        "Skirmisher"
+      ],
+      "counteredBy": [
+        "Juggernaut",
+        "Vanguard"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Jungle",
+        "Top",
+        "Mid"
+      ]
+    },
+    "Yasuo": {
+      "key": "Yasuo",
+      "primary": "Skirmisher",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Mid",
+        "Top",
+        "Bot"
+      ]
+    },
+    "Yone": {
+      "key": "Yone",
+      "primary": "Skirmisher",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Battlemage",
+        "Assassin"
+      ],
+      "counteredBy": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher"
+      ],
+      "slots": [
+        "Top",
+        "Mid"
+      ]
+    },
+    "Yorick": {
+      "key": "Yorick",
+      "primary": "Specialist",
+      "secondary": null,
+      "primaryClass": "Specialist",
+      "secondaryClass": null,
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "damageDealer"
+      ],
+      "slots": [
+        "Top"
+      ]
+    },
+    "Yunara": {
+      "key": "Yunara",
+      "primary": "Marksman",
+      "secondary": "Marksman",
+      "primaryClass": "Marksman",
+      "secondaryClass": "Marksman",
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "hypercarry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "Yuumi": {
+      "key": "Yuumi",
+      "primary": "Enchanter",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Warden",
+        "Catcher"
+      ],
+      "counteredBy": [
+        "Marksman",
+        "Artillery"
+      ],
+      "attributes": [],
+      "slots": [
+        "Support"
+      ]
+    },
+    "Zaahen": {
+      "key": "Zaahen",
+      "primary": "Specialist",
+      "secondary": "Skirmisher",
+      "primaryClass": "Specialist",
+      "secondaryClass": "Slayer",
+      "counters": [],
+      "counteredBy": [],
+      "attributes": [
+        "damageDealer",
+        "jungler"
+      ],
+      "slots": [
+        "Top",
+        "Jungle"
+      ]
+    },
+    "Zac": {
+      "key": "Zac",
+      "primary": "Vanguard",
+      "secondary": null,
+      "primaryClass": "Tank",
+      "secondaryClass": null,
+      "counters": [
+        "Diver",
+        "Juggernaut"
+      ],
+      "counteredBy": [
+        "Warden",
+        "Catcher"
+      ],
+      "attributes": [
+        "jungler"
+      ],
+      "slots": [
+        "Jungle",
+        "Support",
+        "Mid"
+      ]
+    },
+    "Zed": {
+      "key": "Zed",
+      "primary": "Assassin",
+      "secondary": null,
+      "primaryClass": "Slayer",
+      "secondaryClass": null,
+      "counters": [
+        "Burst",
+        "Battlemage"
+      ],
+      "counteredBy": [
+        "Skirmisher",
+        "Diver"
+      ],
+      "attributes": [
+        "damageDealer",
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Mid",
+        "Jungle"
+      ]
+    },
+    "Zeri": {
+      "key": "Zeri",
+      "primary": "Marksman",
+      "secondary": null,
+      "primaryClass": "Marksman",
+      "secondaryClass": null,
+      "counters": [
+        "Catcher",
+        "Enchanter"
+      ],
+      "counteredBy": [
+        "Artillery",
+        "Burst"
+      ],
+      "attributes": [
+        "carry",
+        "hypercarry",
+        "damageDealer"
+      ],
+      "slots": [
+        "Bot"
+      ]
+    },
+    "Ziggs": {
+      "key": "Ziggs",
+      "primary": "Artillery",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "counteredBy": [
+        "Burst",
+        "Battlemage"
+      ],
+      "attributes": [
+        "damageDealer",
+        "pusher",
+        "bully"
+      ],
+      "slots": [
+        "Bot",
+        "Mid"
+      ]
+    },
+    "Zilean": {
+      "key": "Zilean",
+      "primary": "Catcher",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Vanguard",
+        "Warden"
+      ],
+      "counteredBy": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "attributes": [
+        "pusher"
+      ],
+      "slots": [
+        "Support",
+        "Mid"
+      ]
+    },
+    "Zoé": {
+      "key": "Zoe",
+      "primary": "Artillery",
+      "secondary": null,
+      "primaryClass": "Mage",
+      "secondaryClass": null,
+      "counters": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "counteredBy": [
+        "Burst",
+        "Battlemage"
+      ],
+      "attributes": [
+        "damageDealer",
+        "bully"
+      ],
+      "slots": [
+        "Mid",
+        "Support"
+      ]
+    },
+    "Zyra": {
+      "key": "Zyra",
+      "primary": "Catcher",
+      "secondary": null,
+      "primaryClass": "Controller",
+      "secondaryClass": null,
+      "counters": [
+        "Vanguard",
+        "Warden"
+      ],
+      "counteredBy": [
+        "Enchanter",
+        "Marksman"
+      ],
+      "attributes": [
+        "jungler",
+        "pusher"
+      ],
+      "slots": [
+        "Support",
+        "Jungle"
+      ]
+    }
+  }
+}

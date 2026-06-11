@@ -35,6 +35,7 @@
   const CK = () => global.CoachingDraftKnowledge;
   const MTG = () => global.MTGColorPie;
   const IX = () => global.LoLDraftInteractions;
+  const CL = () => global.LoLChampionClasses;
 
   const COMP_LABELS = {
     hypercarry: "Hypercarry",
@@ -301,6 +302,8 @@
       isMarksman: tags.has("marksman") || /marksman|tireur|à distance/i.test(type),
       isSupportOnly: (slots.length <= 1 && slots[0] === "Support") || (/support/i.test(type) && !tags.has("marksman")),
       colors,
+      championClass: CL()?.getProfile?.(name) || null,
+      subclass: CL()?.getProfile?.(name)?.primary || null,
     };
   }
 
@@ -410,6 +413,15 @@
     if (peel < 0.8) { score -= 38 * urg; gaps.push("peel"); }
     if (engage > 2 && peel < 0.5) score -= 22;
     if (wave < 1 && vs.length >= 3) { score -= 20; gaps.push("wave clear"); }
+    const cl = CL();
+    if (cl?.teamClassGapPenalty && vs.length >= 4) {
+      const cg = cl.teamClassGapPenalty(vs);
+      score += Math.round(cg.score * urg * 0.28);
+      for (const g of cg.gaps || []) if (!gaps.includes(g)) gaps.push(g);
+    }
+    if (cl?.teamClassDiversity && vs.length >= 4) {
+      score += Math.round(cl.teamClassDiversity(vs).score * 0.22);
+    }
     return { score, gaps };
   }
 
@@ -817,8 +829,11 @@
     const coaching = internalCoachingScore(names) + internalIncoherencePenalty(vs) + teamPatternBonus(vs);
     const winCondition = winConditionScore(vs, names, byName, metaMap);
     const wombo = teamWomboPower(vs);
+    const clBlock = CL()?.teamClassDiversity?.(vs) || { score: 0 };
+    const clGap = CL()?.teamClassGapPenalty?.(vs) || { score: 0 };
+    const classScore = Math.round(clBlock.score * 0.45 + clGap.score * 0.35);
     const secondary = Math.round(
-      synergy * 0.28 + family * 0.32 + bal.score * 0.35 + coaching * 0.45 + mtgBlock.score * 1.05 + wombo.power * 0.12
+      synergy * 0.28 + family * 0.32 + bal.score * 0.35 + coaching * 0.45 + mtgBlock.score * 1.05 + wombo.power * 0.12 + classScore * 0.18
     );
     const total = winCondition + secondary;
     return {
@@ -834,6 +849,7 @@
         archetype: winCondition,
         mtg: mtgBlock.score,
         wombo: Math.round(wombo.power * 0.32),
+        classes: classScore,
       },
       wombo,
       mtgDetail: mtgBlock.detail,
@@ -880,6 +896,14 @@
       }
     }
 
+    const cl = CL();
+    if (cl?.pairClassEdge) {
+      const ce = cl.pairClassEdge(ourV.name, enemyV.name, { lane: false });
+      our += Math.round(ce.our * 0.4);
+      enemy += Math.round(ce.enemy * 0.4);
+      if (ce.reason && (ce.our >= 10 || ce.enemy >= 10)) reasons.push(ce.reason);
+    }
+
     return { our, enemy, reasons: [...new Set(reasons)] };
   }
 
@@ -910,6 +934,14 @@
 
     if (ourV.counteredBy?.includes(enemyV.name)) enemy += 14;
     if (enemyV.counteredBy?.includes(ourV.name)) our += 14;
+
+    const cl = CL();
+    if (cl?.pairClassEdge) {
+      const ce = cl.pairClassEdge(ourV.name, enemyV.name, { lane: true });
+      our += Math.round(ce.our * w);
+      enemy += Math.round(ce.enemy * w);
+      if (ce.reason && (ce.our >= 8 || ce.enemy >= 8)) reasons.push(ce.reason);
+    }
 
     const label = SLOT_LABELS[slot] || slot;
     return {
@@ -1130,6 +1162,16 @@
       enemyEdge += Math.round(teamIx.enemy * 0.6);
       for (const h of teamIx.hits || []) {
         if (Math.abs(h.edge) >= 35) topPairs.push(h);
+      }
+    }
+
+    const cl = CL();
+    if (cl?.teamClassClashEdge) {
+      const classIx = cl.teamClassClashEdge(ourVs, enemyVs);
+      ourEdge += Math.round(classIx.our * 0.4);
+      enemyEdge += Math.round(classIx.enemy * 0.4);
+      for (const h of classIx.hits || []) {
+        if (Math.abs(h.edge) >= 42) topPairs.push(h);
       }
     }
 
@@ -1742,6 +1784,13 @@
     const mtg = applyMtgPickScore(v, allies, oppNames, byName, meta, w);
     score += mtg.score;
     reasons.push(...mtg.reasons);
+
+    const cl = CL();
+    if (cl?.scorePickClassFit) {
+      const classPick = cl.scorePickClassFit(champ.name, slot, oppBySlot[slot] || null);
+      score += Math.round(classPick.score * w.counter * 0.45);
+      reasons.push(...classPick.reasons.slice(0, 3));
+    }
 
     if (!reasons.length) reasons.push(`${SLOT_LABELS[slot] || slot} optimal`);
 

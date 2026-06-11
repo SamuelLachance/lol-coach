@@ -90,6 +90,8 @@
 
   function buildTeamMetrics(vs) {
     const tags = (t) => vs.filter((v) => v.tags?.has?.(t)).length;
+    const cl = global.LoLChampionClasses;
+    const classM = cl?.buildTeamClassMetrics ? cl.buildTeamClassMetrics(vs) : null;
     return {
       vs,
       engage: sumKey(vs, "engage"),
@@ -114,6 +116,13 @@
       spellShield: countMech(vs, "spellShield"),
       immobile: countMech(vs, "immobileCarry"),
       womboSetup: countMech(vs, "knockupSetup"),
+      classFrontline: classM?.frontline ?? 0,
+      classSlayer: classM?.slayer ?? 0,
+      classMageBurst: classM?.mageBurst ?? 0,
+      classPeel: classM?.peel ?? 0,
+      classEngage: classM?.engage ?? 0,
+      classMarksman: classM?.marksman ?? 0,
+      classDiversity: classM?.uniqueSubclasses ?? 0,
     };
   }
 
@@ -163,7 +172,7 @@
     [(o, e, op, ep) => op === "teamfight_engage" && ep === "split_push", 95, "Teamfight groupé > split isolé"],
 
     // Zone / wombo
-    [(o, e) => o.womboSetup >= 2 && e.disengage >= 2, -95, "Disengage casse le wombo", false],
+    [(o, e) => o.womboSetup >= 2 && e.disengage >= 2, 95, "Disengage casse le wombo", false],
     [(o, e) => o.womboSetup >= 2 && e.disengage < 1 && e.front >= 1, 88, "Wombo setup > comp sans disengage"],
     [(o, e) => o.zone >= 2 && e.hardEngage >= 2, 92, "Zone control > engage dans choke"],
 
@@ -189,7 +198,7 @@
 
     // Jungle tempo
     [(o, e) => countMech(o.vs, "invadeEarly") >= 1 && countMech(e.vs, "scaleJungle") >= 1, 58, "Invade early > jungler scale"],
-    [(o, e) => countMech(o.vs, "scaleJungle") >= 1 && e.early >= 2.0, -52, "Jungle scale vs comp snowball early", false],
+    [(o, e) => countMech(o.vs, "scaleJungle") >= 1 && e.early >= 2.0, 52, "Jungle scale vs comp snowball early", false],
 
     // Famille coaching — engage vs range mix
     [(o, e) => o.disengage >= 2 && e.hardEngage >= 2, 105, "Famille disengage > engage"],
@@ -207,15 +216,62 @@
     [(o, e) => countMech(o.vs, "tankShred") >= 1 && e.front >= 2, 65, "Shred %PV > double frontline"],
 
     // Stealth
-    [(o, e) => countMech(o.vs, "stealth") >= 1 && countMech(e.vs, "revealStealth") >= 1, -72, "Reveal/vision > stealth comp", false],
+    [(o, e) => countMech(o.vs, "stealth") >= 1 && countMech(e.vs, "revealStealth") >= 1, 72, "Reveal/vision > stealth comp", false],
     [(o, e) => countMech(o.vs, "stealth") >= 1 && countMech(e.vs, "revealStealth") === 0 && countMech(e.vs, "aoeMage") === 0, 70, "Stealth > comp sans reveal"],
 
     // Channel
-    [(o, e) => countMech(o.vs, "channelUlt") >= 1 && countMech(e.vs, "interruptChannel") >= 2, -85, "Interrupt CC > canalisation", false],
+    [(o, e) => countMech(o.vs, "channelUlt") >= 1 && countMech(e.vs, "interruptChannel") >= 2, 85, "Interrupt CC > canalisation", false],
     [(o, e) => countMech(o.vs, "channelUlt") >= 1 && countMech(e.vs, "interruptChannel") === 0, 78, "Canalisation libre > sans interrupt"],
 
     // Short vs long range bot
     [(o, e) => countMech(o.vs, "longRangeAdc") >= 1 && countMech(e.vs, "shortRangeAdc") >= 1 && o.disengage >= 1, 55, "ADC long range + disengage > all-in bot"],
+
+    // Logic corpus (MOBA theory)
+    [(o, e, op, ep) => op === "hypercarry" && ep === "teamfight_engage" && o.enchanter >= 1 && o.peel >= 1.0, 178, "Hypercarry enchanter > engage frontal"],
+    [(o, e, op, ep) => op === "front_to_back" && (ep === "beatdown" || ep === "all_in") && o.peel >= 1.1, 125, "Front-to-back peel > dive all-in"],
+    [(o, e, op, ep) => op === "hypercarry" && ep === "beatdown" && o.enchanter >= 1 && o.front >= 1, 112, "ADC protégé > dive coordonné"],
+    [(o, e, op, ep) => op === "teamfight_engage" && ep === "hypercarry" && e.peel < 0.85 && e.enchanter === 0, 102, "Engage frontal > hypercarry sans peel"],
+    [(o, e, op, ep) => op === "poke_disengage" && ep === "teamfight_engage" && o.disengage >= 1, 152, "Poke/disengage kite > engage frontal"],
+    [(o, e, op, ep) => op === "poke_siege" && ep === "teamfight_engage" && o.siege >= 2, 138, "Siege range > engage mélée"],
+    [(o, e, op, ep) => op === "lane_tempo" && ep === "hypercarry" && e.peel < 1.1, 108, "Lane tempo > hypercarry lent"],
+    [(o, e, op, ep) => op === "all_in" && ep === "hypercarry" && e.peel < 1.0, 118, "All-in spike > scale sans peel"],
+    [(o, e, op, ep) => op === "teamfight_engage" && ep === "split_push" && o.hardEngage >= 2, 108, "Force 5v5 > split isolé"],
+    [(o, e, op, ep) => op === "pick_global" && ep === "hypercarry" && o.global >= 1, 102, "Pick/global punition > hypercarry immobile"],
+    [(o, e, op, ep) => op === "scaling_late" && (ep === "lane_tempo" || ep === "all_in"), 118, "Outscale > window tempo"],
+    [(o, e) => o.enchanter >= 2 && e.dive >= 2 && o.peel >= 1.2, 128, "Double enchanter peel > comp dive"],
+    [(o, e) => o.zone >= 2 && e.immobile >= 2 && o.peel >= 0.8, 115, "Zone + peel > carries immobiles"],
+    [(o, e) => o.disengage >= 2 && e.hardEngage >= 2 && o.siege >= 1, 122, "Disengage + poke > engage frontal"],
+    [(o, e) => o.hardEngage >= 2 && e.siege >= 2 && e.disengage === 0, 82, "Engage > poke sans disengage"],
+    [(o, e, op, ep) => op === "beatdown" && ep === "hypercarry" && e.peel < 1.2, 98, "Dive tempo > hypercarry non protégé"],
+    [(o, e, op, ep) => op === "hypercarry" && ep === "poke_siege" && o.peel >= 1.0, 95, "Scale protégé > poke siege"],
+    [(o, e) => countMech(o.vs, "peelTank") >= 1 && o.enchanter >= 1 && e.dive >= 2, 108, "Front peel + enchanter > dive"],
+    [(o, e) => o.global >= 1 && o.hardEngage >= 1 && e.immobile >= 1 && e.disengage < 2, 98, "Catch global > backline immobile"],
+    [(o, e, op, ep) => op === "front_to_back" && ep === "poke_siege" && o.peel >= 1.0, 88, "Front-to-back > poke siege kite"],
+    [(o, e) => countMech(o.vs, "antiDash") >= 1 && e.dive >= 2 && o.front >= 1, 92, "Anti-dash + front > comp dive"],
+    [(o, e) => o.scaling >= 1.5 && o.enchanter >= 1 && e.early >= 1.7 && e.peel < 1.0, 105, "Enchanter scale > spike early non protégé"],
+    [(o, e, op, ep) => op === "pick_global" && ep === "teamfight_engage" && o.global >= 2, 88, "Double global pick > force teamfight"],
+    [(o, e) => countMech(o.vs, "tankShred") >= 1 && e.front >= 2 && o.marksman >= 1, 72, "Shred + ADC > double frontline"],
+    [(o, e, op, ep) => (op === "poke_disengage" || op === "poke_siege") && ep === "teamfight_engage" && o.disengage >= 2, 158, "Disengage kite > wombo/engage"],
+    [(o, e) => o.womboSetup >= 2 && e.disengage >= 1 && e.peel >= 1.0, 88, "Peel/disengage > wombo setup", false],
+    [(o, e, op, ep) => op === "lane_tempo" && ep === "scaling_late", 82, "Tempo early > scale late non protégé"],
+    [(o, e) => o.siege >= 2 && e.hardEngage >= 2 && o.disengage >= 2, 135, "Triple disengage poke > engage"],
+    [(o, e, op, ep) => op === "hypercarry" && ep === "lane_tempo" && o.peel >= 1.1, 92, "Hypercarry peel > lane tempo"],
+    [(o, e, op, ep) => ep === "teamfight_engage" && op === "hypercarry" && o.enchanter >= 1 && o.peel >= 1.0 && o.scaling >= 0.9, 185, "Peel enchanter absorbe l'engage — carry scale", false],
+    [(o, e, op, ep) => ep === "beatdown" && op === "hypercarry" && o.enchanter >= 1 && o.front >= 1, 142, "Front + enchanter > dive sur hypercarry", false],
+    [(o, e, op, ep) => ep === "all_in" && op === "front_to_back" && o.peel >= 1.0 && o.front >= 1, 118, "Front-to-back peel > all-in tempo", false],
+    [(o, e) => e.hardEngage >= 2 && o.disengage >= 1 && o.enchanter >= 1 && o.scaling >= 1.0, 132, "Enchanter disengage > engage brut", false],
+    [(o, e, op, ep) => ep === "teamfight_engage" && op === "poke_disengage" && o.disengage >= 2, 148, "Double disengage annule le engage", false],
+    [(o, e) => countMech(e.vs, "immobileCarry") >= 1 && o.enchanter >= 1 && o.peel >= 1.2 && e.dive >= 1, 108, "Peel enchanter > dive sur carry immobile", false],
+
+    // Riot class wheel — comp-level
+    [(o, e) => o.classFrontline >= 2 && e.classSlayer >= 2, 95, "Double frontline Tank > comp Slayer"],
+    [(o, e) => o.classMageBurst >= 2 && e.classFrontline === 0, 88, "Double burst Mage > comp sans frontline"],
+    [(o, e) => o.classMarksman >= 1 && e.classFrontline >= 2 && e.classMageBurst === 0, 72, "Marksman DPS > double Tank sans burst"],
+    [(o, e) => o.classMarksman >= 1 && o.classPeel >= 1 && e.classSlayer >= 2, 82, "ADC + peel Enchanter > dive Slayer"],
+    [(o, e) => o.classEngage >= 2 && e.classPeel === 0 && e.classFrontline <= 1, 78, "Engage Vanguard/Diver > backline sans peel"],
+    [(o, e) => o.classDiversity >= 4 && e.classDiversity <= 2, 48, "Diversité sous-classes > comp mono-classe"],
+    [(o, e) => o.classFrontline >= 1 && e.classMageBurst >= 2, 65, "Tank absorbe le burst Mage"],
+    [(o, e) => e.classFrontline >= 1 && o.classMageBurst >= 2, 65, "Tank absorbe le burst Mage", false],
   ];
 
   /** Champion pair rules — [test(ourV, enemyV), ourScore, enemyScore, reasonFn] */
@@ -270,6 +326,17 @@
     [(u, e) => norm(u.name) === norm("Cassiopeia") && hasMech(e, "diveAssassin"), 32, 0, () => "Cassiopeia anti-dash W > dive"],
     [(u, e) => norm(e.name) === norm("Rumble") && u.isMarksman && !hasMech(u, "disengage"), 0, 26, () => "Rumble zone > ADC immobile"],
     [(u, e) => norm(u.name) === norm("Rumble") && e.isMarksman, 26, 0, () => "Rumble zone > ADC backline"],
+
+    // Riot subclass wheel — champ pairs
+    [(u, e) => (u.subclass || u.championClass?.primary) === "Vanguard" && (e.subclass || e.championClass?.primary) === "Assassin", 26, 0, () => "Tank absorbe le burst Assassin"],
+    [(u, e) => (u.subclass || u.championClass?.primary) === "Vanguard" && (e.subclass || e.championClass?.primary) === "Burst", 24, 0, () => "Frontline > Burst Mage setup"],
+    [(u, e) => (u.subclass || u.championClass?.primary) === "Marksman" && ["Vanguard", "Warden"].includes(e.subclass || e.championClass?.primary), 22, 0, () => "Marksman DPS > Tank sans gapclose"],
+    [(u, e) => ["Juggernaut", "Diver"].includes(u.subclass || u.championClass?.primary) && ["Vanguard", "Warden"].includes(e.subclass || e.championClass?.primary), 20, 0, (u) => `${u.name} bruiser > Tank sustain`],
+    [(u, e) => (u.subclass || u.championClass?.primary) === "Assassin" && ["Artillery", "Burst"].includes(e.subclass || e.championClass?.primary), 24, 0, () => "Assassin gapclose > Mage immobile"],
+    [(u, e) => (u.subclass || u.championClass?.primary) === "Enchanter" && (e.subclass || e.championClass?.primary) === "Assassin", 20, 0, (u) => `${u.name} peel > dive Assassin`],
+    [(u, e) => (e.subclass || e.championClass?.primary) === "Vanguard" && (u.subclass || u.championClass?.primary) === "Assassin", 0, 26, () => "Tank absorbe le burst Assassin"],
+    [(u, e) => (e.subclass || e.championClass?.primary) === "Marksman" && ["Vanguard", "Warden"].includes(u.subclass || u.championClass?.primary), 0, 22, () => "Marksman DPS > Tank sans gapclose"],
+    [(u, e) => (e.subclass || e.championClass?.primary) === "Assassin" && ["Artillery", "Burst"].includes(u.subclass || u.championClass?.primary), 0, 24, () => "Assassin gapclose > Mage immobile"],
   ];
 
   /** Curated pairwise counters (mirrors curated_matchups.json — usable without re-run apply script). */

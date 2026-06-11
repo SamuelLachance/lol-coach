@@ -10,12 +10,23 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 function loadLoLDraft() {
   const sandbox = { global: {}, window: {}, globalThis: {} };
   sandbox.global = sandbox.window = sandbox.globalThis = sandbox;
-  for (const file of ["lane-viability.js", "lane-matchup-logic.js", "coaching-knowledge.js", "mtg-color-pie.js", "draft-interactions.js", "draft-scoring.js", "draft-engine.js"]) {
+  for (const file of [
+    "lane-viability.js",
+    "lane-matchup-logic.js",
+    "champion-classes.js",
+    "coaching-knowledge.js",
+    "mtg-color-pie.js",
+    "draft-interactions.js",
+    "draft-scoring.js",
+    "draft-engine.js",
+  ]) {
     vm.runInNewContext(readFileSync(join(root, "public", file), "utf8"), sandbox);
   }
   const laneData = JSON.parse(readFileSync(join(root, "public/data/lane-matchups.json"), "utf8"));
   sandbox.LoLLaneMatchupLogic.loadPrecomputed(laneData);
-  return { sandbox, laneData };
+  const classData = JSON.parse(readFileSync(join(root, "public/data/champion-classes.json"), "utf8"));
+  sandbox.LoLChampionClasses.loadPrecomputed(classData);
+  return { sandbox, laneData, classData };
 }
 
 function assert(cond, msg) {
@@ -23,7 +34,7 @@ function assert(cond, msg) {
 }
 
 function main() {
-  const { sandbox, laneData } = loadLoLDraft();
+  const { sandbox, laneData, classData } = loadLoLDraft();
   const D = sandbox.LoLDraft;
   assert(D, "LoLDraft export missing");
 
@@ -644,6 +655,43 @@ function main() {
   );
 
   assert(ruleCount >= 210, `Logic tuning should load 210+ rules, got ${ruleCount}`);
+
+  const CL = sandbox.LoLChampionClasses;
+  assert(CL, "LoLChampionClasses export missing");
+  assert(classData.championCount === 172, `expected 172 champs mapped, got ${classData.championCount}`);
+  assert(CL.ruleCount() >= 30, `class interaction rules: ${CL.ruleCount()}`);
+
+  const malph = CL.getProfile("Malphite");
+  const zed = CL.getProfile("Zed");
+  assert(malph.primary === "Vanguard", `Malphite should be Vanguard, got ${malph.primary}`);
+  assert(zed.primary === "Assassin", `Zed should be Assassin, got ${zed.primary}`);
+
+  const tankVsAss = CL.pairClassEdge("Malphite", "Zed", { lane: true });
+  assert(tankVsAss.our > 0, `Vanguard should beat Assassin in lane: ${tankVsAss.reason}`);
+  assert(/Tank absorbe|Frontline/i.test(tankVsAss.reason || ""), `French reason expected, got ${tankVsAss.reason}`);
+
+  const adcVsTank = CL.pairClassEdge("Jinx", "Malphite", { lane: true });
+  assert(adcVsTank.our > 0 || adcVsTank.enemy > 0, "Marksman vs Tank should have class edge");
+
+  const classDuel = SC.evaluateDraftDuel(
+    ["Malphite", "Sejuani", "Orianna", "Jinx", "Lulu"],
+    ["Darius", "Lee Sin", "Ahri", "Caitlyn", "Thresh"],
+    {
+      ourComp: { Top: "Malphite", Jungle: "Sejuani", Mid: "Orianna", Bot: "Jinx", Support: "Lulu" },
+      enemyComp: { Top: "Darius", Jungle: "Lee Sin", Mid: "Ahri", Bot: "Caitlyn", Support: "Thresh" },
+      byName,
+      metaMap: meta,
+    }
+  );
+  const classIx = (classDuel.detail?.cross?.topPairs || []).some((p) =>
+    /Tank|Marksman|Frontline|Slayer|burst|classe|Vanguard|Assassin/i.test(p.reason || "")
+  );
+  assert(classIx || classDuel.detail?.cross?.matchup !== 0, "class interactions should affect duel");
+  console.log(`  class duel example: margin=${classDuel.margin} top=${(classDuel.detail?.topInteractions || classDuel.detail?.cross?.topPairs || []).slice(0, 2).map((p) => p.reason).join(" · ")}`);
+
+  const vaynePick = CL.scorePickClassFit("Vayne", "Bot", "Malphite");
+  assert(vaynePick.score > 0, "Vayne Bot vs Malphite should score class counter");
+  assert(vaynePick.reasons.some((r) => /Marksman|Tank|gapclose|Classe/i.test(r)), `class pick reasons: ${vaynePick.reasons.join("; ")}`);
 
   const swapS = D.createSession("swap", "blue");
   D.recordAction(swapS, { type: "pick", side: "blue", name: "Jinx", slot: "Bot" }, [swapS], { byName, metaMap: meta });
