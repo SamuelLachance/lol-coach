@@ -301,20 +301,37 @@
         ctr -= Math.round(listScore(e.name, u.counters, CTR_W) * 0.45);
       }
     }
-    const total = bal.score + syn * 0.85 + ctr * 0.9 + arch.completeness * 0.35;
-    return { total, vs, gaps: bal.gaps, archetype: arch, breakdown: { balance: bal.score, synergy: syn, counter: ctr } };
+    let coachingAdj = 0;
+    const ck = CK();
+    if (ck?.scoreCoachingPick && names.length >= 2) {
+      let mixTotal = 0;
+      for (const n of names) mixTotal += ck.familyMixPenalty(n, names.filter((x) => x !== n)).score;
+      coachingAdj += mixTotal / Math.max(1, names.length);
+      const archetype = ck.detectArchetypeComp(names);
+      if (archetype) coachingAdj += archetype.hits * 8;
+    }
+
+    const total = bal.score + syn * 0.9 + ctr * 0.9 + arch.completeness * 0.45 + coachingAdj;
+    return {
+      total,
+      vs,
+      gaps: bal.gaps,
+      archetype: arch,
+      breakdown: { balance: bal.score, synergy: syn, counter: ctr, coaching: coachingAdj },
+    };
   }
 
   function phaseWeights(depth) {
     const d = clamp01(depth);
     return {
-      tier: Math.max(0.08, 1 - d * 0.9),
-      flex: Math.max(0.15, 1 - d * 0.85),
-      synergy: 0.3 + d * 1.1,
-      counter: 0.2 + d * 1.25,
-      plan: 0.25 + d * 1.0,
-      deny: 0.35 + d * 0.4,
-      blind: Math.max(0.2, 1 - d * 0.75),
+      tier: Math.max(0.06, 1 - d * 0.92),
+      flex: Math.max(0.12, 1 - d * 0.88),
+      synergy: 0.45 + d * 1.35,
+      counter: 0.25 + d * 1.35,
+      plan: 0.55 + d * 1.2,
+      deny: 0.4 + d * 0.45,
+      blind: Math.max(0.15, 1 - d * 0.8),
+      coaching: 0.85 + d * 0.9,
     };
   }
 
@@ -482,6 +499,14 @@
     if (ck?.denyComboBanScore) {
       const deny = ck.denyComboBanScore(champ.name, oppNames);
       if (deny.score) comboDenyScore += deny.score;
+    }
+    if (ck?.banCoachingScore) {
+      const enemyNeedsTank = filledSlots.length >= 3 && !oppNames.some((n) => {
+        const p = buildProfile(getData(byName, meta, n), meta);
+        return p.tags.has("frontline") || p.tank > 0.5;
+      });
+      const banCoach = ck.banCoachingScore(champ.name, oppNames, { enemyNeedsTank });
+      if (banCoach.score) comboDenyScore += banCoach.score;
     }
 
     for (const e of oppNames) {
@@ -704,36 +729,24 @@
     if (hintSlot === slot) score += 8;
 
     const ck = CK();
-    if (ck) {
-      const allyNames = allies;
-      const tri = ck.trinityBonus(champ.name, allyNames);
-      if (tri) {
-        score += Math.round(tri * w.synergy * 0.55);
-        if (tri >= 26) reasons.push("Trinité combo (3+ liens)");
-        else if (tri >= 14) reasons.push("Combo coaching");
+    if (ck?.scoreCoachingPick) {
+      const coaching = ck.scoreCoachingPick(champ.name, allies, slot, { side, pickN });
+      if (coaching.score) {
+        score += Math.round(coaching.score * w.coaching);
+        reasons.push(...coaching.reasons.slice(0, 4));
       }
-      const syn = ck.coachingSynergyScore(champ.name, allyNames);
-      if (syn.score) {
-        score += Math.round(syn.score * w.synergy * 0.4);
-        reasons.push(...syn.reasons.slice(0, 1));
-      }
-      const fam = ck.familyBonus(v, allyNames);
-      if (fam.score) {
-        score += Math.round(fam.score * w.plan * 0.45);
-        reasons.push(...fam.reasons.slice(0, 1));
-      }
-      const tj = ck.tankJungleBonus(champ.name, slot);
-      if (tj.score) { score += tj.score; reasons.push(...tj.reasons); }
-      const ts = ck.tankSuppAllowsAp(v, slot, allyNames);
-      if (ts.score) { score += ts.score; reasons.push(...ts.reasons); }
-      const fp = ck.firstPickBonus(champ.name, slot, pickN, side);
-      if (fp.score) { score += fp.score; reasons.push(...fp.reasons); }
-      const fj = ck.firstPickJungleBonus(champ.name, slot, pickN);
-      if (fj.score) { score += fj.score; reasons.push(...fj.reasons); }
-      if (ck.inList(champ.name, ck.FIRST_PICK_ADC) && slot === "Bot" && inBlind) {
-        score += 12;
-        if (!reasons.some((r) => /FP ADC/i.test(r))) reasons.push("ADC coaching tier-list");
-      }
+    } else if (ck) {
+      const tri = ck.trinityBonus(champ.name, allies);
+      if (tri.score) score += Math.round(tri.score * w.synergy * 0.55);
+      const syn = ck.coachingSynergyScore(champ.name, allies);
+      if (syn.score) score += Math.round(syn.score * w.synergy * 0.4);
+      const fam = ck.familyBonus(champ.name, allies);
+      if (fam.score) score += Math.round(fam.score * w.plan * 0.45);
+    }
+
+    if (ck?.inList?.(champ.name, ck.COUNTER_PICK_CHAMPS) && side === "red" && pickN >= 3) {
+      score += Math.round(18 * w.counter);
+      reasons.push("Pocket counter coaching");
     }
 
     if (!reasons.length) reasons.push(`${SLOT_LABELS[slot] || slot} optimal`);

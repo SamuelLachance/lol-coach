@@ -33,9 +33,11 @@
   ];
 
   const PICK_STEPS = LOL_DRAFT_STEPS.filter((s) => s.type === "pick");
+  const PICK_ORDER_BLUE = ["Bot", "Jungle", "Mid", "Support", "Top"];
+  const PICK_ORDER_RED = ["Top", "Support", "Mid", "Jungle", "Bot"];
   const BLIND_PICK_SLOTS = ["Bot", "Jungle", "Mid"];
   const LATE_MATCHUP_SLOTS = ["Support", "Top"];
-  const PICK_SLOT_PRIORITY = ["Bot", "Jungle", "Mid", "Support", "Top"];
+  const PICK_SLOT_PRIORITY = PICK_ORDER_BLUE;
   const SLOT_LABELS = { Bot: "ADC", Jungle: "Jungle", Mid: "Mid", Support: "Support", Top: "Top" };
   const MIN_LANE_PLAY_RATE = 10;
 
@@ -148,12 +150,26 @@
     return true;
   }
 
-  function nextBlindSlotFrom(by) {
-    for (const slot of BLIND_PICK_SLOTS) if (!by[slot]) return slot;
+  function pickOrderForSide(side) {
+    const ck = global.CoachingDraftKnowledge;
+    if (ck?.pickOrderForSide) return ck.pickOrderForSide(side);
+    return side === "red" ? PICK_ORDER_RED : PICK_ORDER_BLUE;
+  }
+
+  function nextPreferredSlotFrom(by, side) {
+    for (const slot of pickOrderForSide(side)) if (!by[slot]) return slot;
     return null;
   }
-  function nextBlindSlot(s, side) { return nextBlindSlotFrom(pickBySlot(s, side)); }
-  function isBlindPickPhase(s, side) { return nextBlindSlot(s, side) !== null; }
+
+  function nextBlindSlotFrom(by, side = "blue") {
+    return nextPreferredSlotFrom(by, side);
+  }
+  function nextBlindSlot(s, side) { return nextPreferredSlotFrom(pickBySlot(s, side), side); }
+  function isBlindPickPhase(s, side) {
+    const by = pickBySlot(s, side);
+    const n = sidePicks(s, side).length;
+    return n < 5 && nextPreferredSlotFrom(by, side) !== null;
+  }
 
   function pickBySlotExcluding(s, side, excludeName) {
     const m = {};
@@ -168,34 +184,44 @@
   function allowedSlotsForNextPick(s, side, excludeName = null) {
     const by = excludeName ? pickBySlotExcluding(s, side, excludeName) : pickBySlot(s, side);
     const open = openSlotsFrom(by);
-    const nextBlind = nextBlindSlotFrom(by);
-    if (nextBlind && open.includes(nextBlind)) return [nextBlind];
-    const allowed = open.filter((sl) => BLIND_PICK_SLOTS.includes(sl));
-    for (const slot of LATE_MATCHUP_SLOTS) {
-      if (open.includes(slot) && isLaneMatchupKnown(s, side, slot)) allowed.push(slot);
+    const order = pickOrderForSide(side);
+    const next = nextPreferredSlotFrom(by, side);
+
+    if (next && open.includes(next)) {
+      if (side === "blue" && LATE_MATCHUP_SLOTS.includes(next) && !isLaneMatchupKnown(s, side, next)) {
+        const early = order.filter((sl) => open.includes(sl) && !LATE_MATCHUP_SLOTS.includes(sl));
+        if (early.length) return [early[0]];
+      }
+      return [next];
+    }
+
+    const allowed = [];
+    for (const slot of order) {
+      if (!open.includes(slot)) continue;
+      if (side === "blue" && LATE_MATCHUP_SLOTS.includes(slot) && !isLaneMatchupKnown(s, side, slot)) continue;
+      allowed.push(slot);
     }
     return allowed.length ? allowed : open;
   }
 
   function layoutAllowedSlots(s, side, excludeName = null) {
     const by = excludeName ? pickBySlotExcluding(s, side, excludeName) : pickBySlot(s, side);
-    const n = excludeName
-      ? sidePicks(s, side).filter((p) => p.name !== excludeName).length + 1
-      : sidePicks(s, side).length;
-    if (nextBlindSlotFrom(by) !== null) return BLIND_PICK_SLOTS.slice(0, Math.min(n, 3));
-    const slots = BLIND_PICK_SLOTS.slice();
+    const order = pickOrderForSide(side);
     const open = openSlotsFrom(by);
-    for (const slot of LATE_MATCHUP_SLOTS) {
-      if (by[slot] || (open.includes(slot) && isLaneMatchupKnown(s, side, slot))) {
-        if (!slots.includes(slot)) slots.push(slot);
+    const out = [];
+    for (const slot of order) {
+      if (by[slot]) out.push(slot);
+      else if (open.includes(slot)) {
+        if (side === "blue" && LATE_MATCHUP_SLOTS.includes(slot) && !isLaneMatchupKnown(s, side, slot)) continue;
+        out.push(slot);
       }
     }
-    return slots;
+    return out.length ? out : order.filter((sl) => open.includes(sl));
   }
 
   function preferredBlindSlot(s, side, excludeName = null) {
     const allowed = allowedSlotsForNextPick(s, side, excludeName);
-    return allowed[0] || openSlotsFrom(excludeName ? pickBySlotExcluding(s, side, excludeName) : pickBySlot(s, side))[0] || "Bot";
+    return allowed[0] || openSlotsFrom(excludeName ? pickBySlotExcluding(s, side, excludeName) : pickBySlot(s, side))[0] || pickOrderForSide(side)[0];
   }
   function recommendedSlotForPick(s, side) { return preferredBlindSlot(s, side); }
 
@@ -382,19 +408,24 @@
     const slot = preferredBlindSlot(s, side);
     const label = SLOT_LABELS[slot] || slot;
     const n = sidePickCount(s, side) + 1;
-    if (isTeamFirstPick(s, side)) return "Blind 1 : ADC obligatoire · Top/Sup = counter pick uniquement";
-    if (isBlindPickPhase(s, side)) {
-      if (slot === "Bot") return `Blind ${n} : ADC (dur à punir)`;
-      if (slot === "Jungle") return `Blind ${n} : Jungle · Top/Sup interdits`;
-      if (slot === "Mid") return `Blind ${n} : Mid flex · Top/Sup après matchup`;
-      return `Blind ${n} : ${label}`;
+    const order = pickOrderForSide(side).map((sl) => SLOT_LABELS[sl] || sl).join(" → ");
+    const sideLabel = side === "blue" ? "Bleu" : "Rouge";
+
+    if (isTeamFirstPick(s, side)) {
+      if (side === "blue") return "B1 Bleu : ADC OP · Jungle OP · ou flex (Cours 3)";
+      return "R1 Rouge : Top counter · ordre " + order;
+    }
+    if (side === "blue" && slot === "Bot" && n === 1) return `Pick ${n} Bleu : ADC blind (Cait/Varus/Aphelios/Jinx/Xayah)`;
+    if (side === "red" && slot === "Top" && n <= 2) return `Pick ${n} Rouge : Top/Supp counter en priorité`;
+    if (LATE_MATCHUP_SLOTS.includes(slot) && side === "blue" && !isLaneMatchupKnown(s, side, slot)) {
+      return `Attendre matchup avant ${label} · priorité ${order}`;
     }
     if (LATE_MATCHUP_SLOTS.includes(slot)) {
       return isLaneMatchupKnown(s, side, slot)
-        ? `Pick ${label} : matchup révélé · counter possible`
-        : `Pick ${label} · blind épuisés`;
+        ? `Pick ${label} : counter matchup (${sideLabel})`
+        : `Pick ${label} · fin de draft`;
     }
-    return `Pick : ${label} · synergie · complétion comp`;
+    return `Pick ${n} ${sideLabel} : ${label} · famille → combo → trinité`;
   }
 
   function suggestSlot(s, side, meta, byName) {
@@ -710,6 +741,7 @@
 
   global.LoLDraft = {
     SLOTS, BANS_PER_TEAM, BAN_PHASE1_COUNT, BAN_PHASE2_COUNT, PICK_STEPS, PICK_SLOT_PRIORITY,
+    PICK_ORDER_BLUE, PICK_ORDER_RED, pickOrderForSide,
     BLIND_PICK_SLOTS, LATE_MATCHUP_SLOTS, SLOT_LABELS, MIN_LANE_PLAY_RATE,
     MTG_COLORS, COLOR_LABELS, COLOR_HEX,
     buildDraftSteps, normalizeSession, createSession, getSteps, totalSteps, getStep, isComplete,
