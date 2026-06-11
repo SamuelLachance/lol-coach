@@ -713,7 +713,7 @@ function setupPatchUI() {
     persistPatchConfig();
   });
 
-  els.patchPushDefaults?.addEventListener("click", () => {
+  els.patchPushDefaults?.addEventListener("click", async () => {
     if (!state.patchConfig || !state.baseChampions.length) return;
     const password = prompt("Mot de passe admin pour enregistrer les défauts du patch :");
     if (password === null) return;
@@ -726,13 +726,28 @@ function setupPatchUI() {
       return;
     }
     const snapshot = window.LoLPatch.pushAsSiteDefaults(state.patchConfig, state.baseChampions);
-    window.LoLPatch.downloadSiteDefaults(snapshot);
     if (els.patchSaveStatus) {
-      els.patchSaveStatus.textContent =
-        "Défauts enregistrés · déployez public/data/patch-defaults.json pour tous les visiteurs";
-      els.patchSaveStatus.classList.remove("is-dirty", "is-error");
-      els.patchSaveStatus.classList.add("is-success");
-      window.setTimeout(() => markPatchSaved(), 6000);
+      els.patchSaveStatus.textContent = "Publication des défauts…";
+      els.patchSaveStatus.classList.remove("is-dirty", "is-error", "is-success");
+    }
+    try {
+      const result = await window.LoLPatch.pushSiteDefaultsToServer(snapshot, password);
+      const deployed = result.deploy?.deployed !== false;
+      if (els.patchSaveStatus) {
+        els.patchSaveStatus.textContent = deployed
+          ? "Défauts appliqués pour tous les visiteurs · déploiement ~1–2 min"
+          : "Défauts enregistrés localement · déploiement distant en attente";
+        els.patchSaveStatus.classList.remove("is-dirty", "is-error");
+        els.patchSaveStatus.classList.add(deployed ? "is-success" : "is-error");
+        window.setTimeout(() => markPatchSaved(), 8000);
+      }
+    } catch (err) {
+      if (els.patchSaveStatus) {
+        els.patchSaveStatus.textContent =
+          err?.message || "Publication impossible · vérifiez que start.bat est actif";
+        els.patchSaveStatus.classList.add("is-error");
+        window.setTimeout(() => markPatchSaved(), 6000);
+      }
     }
   });
 }
