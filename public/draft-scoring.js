@@ -321,6 +321,48 @@
     };
   }
 
+  /** Macro tab — score = synergie + familles uniquement. */
+  function macroFamilyScore(names, byName, metaMap) {
+    const vs = profiles(names, byName, metaMap);
+    const arch = detectArchetype(vs);
+    let score = Math.round(arch.completeness * 1.25);
+    const ck = CK();
+    if (!ck || names.length < 2) return score;
+
+    let coherence = 0;
+    for (const n of names) {
+      coherence += ck.familyCoherence(n, names.filter((x) => x !== n)).score;
+    }
+    score += Math.round(coherence / names.length);
+
+    const archetype = ck.detectArchetypeComp(names);
+    if (archetype) score += archetype.hits * 14;
+
+    const tpl = ck.detectTemplate(names);
+    if (tpl) score += 22;
+
+    let mix = 0;
+    for (const n of names) mix += ck.familyMixPenalty(n, names.filter((x) => x !== n)).score;
+    score += Math.round(mix / names.length);
+
+    return Math.round(score);
+  }
+
+  function evaluateTeamMacro(names, ctx) {
+    const { byName, metaMap } = ctx;
+    const vs = profiles(names, byName, metaMap);
+    const synergy = Math.round(pairingSynergy(vs));
+    const family = macroFamilyScore(names, byName, metaMap);
+    const arch = detectArchetype(vs);
+    return {
+      total: synergy + family,
+      vs,
+      archetype: arch,
+      gaps: [],
+      breakdown: { synergy, family },
+    };
+  }
+
   function phaseWeights(depth) {
     const d = clamp01(depth);
     return {
@@ -786,6 +828,8 @@
     detectCompPlan: detectArchetype,
     detectArchetype,
     evaluateTeam,
+    evaluateTeamMacro,
+    macroFamilyScore,
     phaseWeights,
     playableSlotsFor: playableSlots,
     playsSlotFor: playsSlot,

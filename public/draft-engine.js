@@ -294,6 +294,10 @@
     return SC()?.evaluateTeam(names, ctx) || { total: 0, breakdown: {}, gaps: [] };
   }
 
+  function evaluateTeamMacro(names, ctx) {
+    return SC()?.evaluateTeamMacro(names, ctx) || { total: 0, breakdown: { synergy: 0, family: 0 }, gaps: [] };
+  }
+
   function measureTeam(names, byName, meta) {
     return SC()?.profiles(names, byName, meta) || [];
   }
@@ -726,9 +730,8 @@
     if (ourNames.length < 5 || enemyNames.length < 5) {
       return { complete: false, ourCount: ourNames.length, enemyCount: enemyNames.length };
     }
-    const w = phaseWeights(1);
-    const ourEval = evaluateTeam(ourNames, { byName, metaMap, oppNames: enemyNames, oppComp: enemyComp, slotsLeft: 0 });
-    const enemyEval = evaluateTeam(enemyNames, { byName, metaMap, oppNames: ourNames, oppComp: ourComp, slotsLeft: 0 });
+    const ourEval = evaluateTeamMacro(ourNames, { byName, metaMap, oppNames: enemyNames, oppComp: enemyComp, slotsLeft: 0 });
+    const enemyEval = evaluateTeamMacro(enemyNames, { byName, metaMap, oppNames: ourNames, oppComp: ourComp, slotsLeft: 0 });
     const margin = ourEval.total - enemyEval.total;
     return {
       complete: true,

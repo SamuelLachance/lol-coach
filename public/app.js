@@ -2702,7 +2702,7 @@ function renderTacticsCompScoreHtml(comp) {
   return `<div class="tactics-comp-score-inner${comp?.complete ? " tactics-comp-score-inner--ready" : ""}">
     <div class="tactics-comp-score-head">
       <span class="tactics-comp-score-kicker">Analyse draft</span>
-      <p class="tactics-comp-score-title">Score &amp; winrate estimé</p>
+      <p class="tactics-comp-score-title">Score synergie + familles</p>
     </div>
     <div class="tactics-comp-duel">
       <div class="tactics-comp-side our-team${fav === "our" ? " is-favored" : ""}">
@@ -2727,16 +2727,12 @@ function renderTacticsCompScoreHtml(comp) {
       ${mtgTeamPanelHtml(compPickNames(state.enemyComp), "Identité couleur · adversaire")}
     </div>
     <details class="tactics-comp-details">
-      <summary>Détail du scoring (synergie, counter, structure…)</summary>
+      <summary>Détail du scoring (synergie + familles)</summary>
       <table class="tactics-comp-breakdown">
         <thead><tr><th>Axe</th><th>Nous</th><th>Ennemi</th></tr></thead>
         <tbody>
-          ${breakdownRow("Structure / équilibre", "balance")}
-          ${breakdownRow("Synergie + familles", "synergy")}
-          ${breakdownRow("Familles / comp", "family")}
-          ${breakdownRow("Counter", "counter")}
-          ${breakdownRow("Lanes", "lane")}
-          ${breakdownRow("Avantage H2H", "h2h")}
+          ${breakdownRow("Synergie", "synergy")}
+          ${breakdownRow("Familles", "family")}
         </tbody>
       </table>
     </details>
