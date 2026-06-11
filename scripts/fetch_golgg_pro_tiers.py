@@ -1,10 +1,23 @@
 #!/usr/bin/env python3
-"""Fetch pro champion presence from gol.gg (Games of Legends) and build competitive tiers."""
+"""Fetch pro champion tiers from gol.gg and build competitive_tiers.json.
+
+ProComps.gg (procomps.gg) publishes a proprietary expert tier list inside their
+Overwolf app — there is no public JSON/API. This script uses gol.gg pro pick/ban
+stats (same competitive match pool ProComps cites) as the daily-updatable source.
+
+Daily refresh: scripts/daily_meta_refresh.py → apply_competitive_tiers.py
+Windows task: scripts/register_daily_task.ps1 (07:00)
+GitHub Action: .github/workflows/daily-meta-refresh.yml (06:00 UTC)
+
+Source URL: https://gol.gg/champion/list/season-{season}/split-ALL/tournament-ALL/
+"""
 
 from __future__ import annotations
 
 import json
+import os
 import re
+import sys
 import unicodedata
 import urllib.error
 import urllib.request
@@ -17,13 +30,15 @@ SCRIPTS = Path(__file__).resolve().parent
 CHAMPIONS_JSON = ROOT / "public" / "data" / "champions.json"
 OUT_STATS = ROOT / "data" / "golgg_pro.json"
 OUT_TIERS = SCRIPTS / "competitive_tiers.json"
+LOG = ROOT / "data" / "pro_tier_refresh.log"
 
 GOL_LIST = "https://gol.gg/champion/list/season-{season}/split-ALL/tournament-ALL/"
-# 4 dernières années calendaires complètes en esport LoL (2022–2025)
-PRO_SEASONS = ("S12", "S13", "S14", "S15")
+# Highest season tried first when auto-detecting (override with GOLGG_SEASON=S16).
+MAX_SEASON_NUM = 16
+MIN_SEASON_NUM = 12
 
 TIER_NOTES = {
-    "S": "Pilier pro (gol.gg) — pick/ban dominant sur les 4 dernières saisons.",
+    "S": "Pilier pro (gol.gg) — pick/ban dominant sur la saison compétitive en cours.",
     "A": "Très présent en pro — pick/ban régulier selon meta et draft.",
     "B": "Viable en pro — pick situationnel ou meta dépendant.",
     "C": "Peu vu en pro — niche, counter-pick ou patch spécifique.",
@@ -65,10 +80,38 @@ NAME_ALIASES: dict[str, str] = {
 }
 
 
+def log(msg: str) -> None:
+    line = f"{datetime.now(timezone.utc).isoformat()} {msg}"
+    print(line, flush=True)
+    LOG.parent.mkdir(parents=True, exist_ok=True)
+    with LOG.open("a", encoding="utf-8") as f:
+        f.write(line + "\n")
+
+
 def fetch_html(url: str) -> str:
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (LoL-Coach/1.0)"})
     with urllib.request.urlopen(req, timeout=45) as resp:
         return resp.read().decode("utf-8", "replace")
+
+
+def resolve_seasons() -> tuple[str, ...]:
+    override = os.environ.get("GOLGG_SEASON", "").strip().upper()
+    if override:
+        if not re.fullmatch(r"S\d{2}", override):
+            raise SystemExit(f"Invalid GOLGG_SEASON={override!r} (expected e.g. S16)")
+        return (override,)
+    for num in range(MAX_SEASON_NUM, MIN_SEASON_NUM - 1, -1):
+        season = f"S{num}"
+        url = GOL_LIST.format(season=season)
+        try:
+            html = fetch_html(url)
+        except (urllib.error.HTTPError, urllib.error.URLError, TimeoutError) as exc:
+            log(f"season probe {season}: fetch failed ({exc})")
+            continue
+        if parse_champion_list(html):
+            log(f"Using gol.gg season {season} ({url})")
+            return (season,)
+    raise SystemExit("Could not detect a gol.gg season with champion rows")
 
 
 def norm_key(name: str) -> str:
@@ -240,7 +283,13 @@ def assign_tiers(agg: dict[str, dict], coach_names: list[str]) -> dict[str, str]
     return assignments
 
 
-def build_payload(agg: dict[str, dict], assignments: dict[str, str], coach_names: list[str], errors: list[str]) -> dict:
+def build_payload(
+    agg: dict[str, dict],
+    assignments: dict[str, str],
+    coach_names: list[str],
+    errors: list[str],
+    seasons: tuple[str, ...],
+) -> dict:
     by_tier = {t: [] for t in TIER_NOTES}
     for name in coach_names:
         by_tier[assignments[name]].append(name)
@@ -249,12 +298,19 @@ def build_payload(agg: dict[str, dict], assignments: dict[str, str], coach_names
         (agg[n] for n in coach_names),
         key=lambda s: (-s["proScore"], s["name"]),
     )
+    season_label = ", ".join(seasons)
+    source_url = GOL_LIST.format(season=seasons[0])
 
     return {
-        "version": "golgg-pro-v1",
+        "version": "golgg-pro-v2",
         "source": "gol.gg",
-        "scope": "Tier list pro — présence pick/ban agrégée S12–S15 (2022–2025), tous tournois gol.gg.",
-        "seasons": list(PRO_SEASONS),
+        "sourceUrl": source_url,
+        "sourceNote": (
+            "ProComps.gg tier list is app-only; gol.gg pro pick/ban is the programmatic proxy "
+            "(ProComps FAQ: tiers updated from pro play and team play)."
+        ),
+        "scope": f"Tier list pro — présence pick/ban gol.gg {season_label}, tous tournois.",
+        "seasons": list(seasons),
         "updatedAt": datetime.now(timezone.utc).isoformat(),
         "tierNotes": TIER_NOTES,
         "assignments": assignments,
@@ -268,10 +324,13 @@ def main() -> None:
     if not CHAMPIONS_JSON.exists():
         raise SystemExit(f"Missing {CHAMPIONS_JSON}")
 
+    seasons = resolve_seasons()
     _, coach_names = load_name_maps()
-    agg, errors = aggregate_seasons(PRO_SEASONS)
+    agg, errors = aggregate_seasons(seasons)
+    if errors:
+        log(f"fetch warnings: {len(errors)} (first: {errors[0]})")
     assignments = assign_tiers(agg, coach_names)
-    payload = build_payload(agg, assignments, coach_names, errors)
+    payload = build_payload(agg, assignments, coach_names, errors, seasons)
 
     OUT_STATS.parent.mkdir(parents=True, exist_ok=True)
     OUT_STATS.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -279,7 +338,12 @@ def main() -> None:
         json.dumps(
             {
                 "version": payload["version"],
+                "source": payload["source"],
+                "sourceUrl": payload["sourceUrl"],
+                "sourceNote": payload["sourceNote"],
                 "scope": payload["scope"],
+                "seasons": payload["seasons"],
+                "updatedAt": payload["updatedAt"],
                 "tierNotes": payload["tierNotes"],
                 "assignments": payload["assignments"],
                 "tiers": payload["tiers"],
@@ -291,12 +355,15 @@ def main() -> None:
     )
 
     for t in "SABCD":
-        print(f"{t}: {len(payload['tiers'][t])}")
+        log(f"{t}: {len(payload['tiers'][t])}")
     top = payload["ranking"][:12]
-    print("Top pro:", [(x["name"], x["proScore"], assignments[x["name"]]) for x in top])
+    log(f"Top pro: {[(x['name'], x['proScore'], assignments[x['name']]) for x in top]}")
     if errors:
-        print(f"Warnings: {len(errors)} (see {OUT_STATS})")
-    print(f"Wrote {OUT_TIERS}")
+        log(f"Warnings: {len(errors)} (see {OUT_STATS})")
+    log(f"Wrote {OUT_TIERS}")
+    if not payload["ranking"] or payload["ranking"][0]["proScore"] <= 0:
+        log("ERROR: no pro presence parsed — aborting")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

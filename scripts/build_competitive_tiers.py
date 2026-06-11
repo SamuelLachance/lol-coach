@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build competitive_tiers.json — delegates to gol.gg pro fetch."""
+"""Build competitive_tiers.json — delegates to gol.gg pro fetch (see fetch_golgg_pro_tiers.py)."""
 
 from __future__ import annotations
 

@@ -70,7 +70,13 @@ pip install -r requirements.txt   # une fois
 - Scripts :
   - `scripts/fetch_ddragon.py` — relancer après chaque patch LoL
   - `scripts/apply_matchups_from_gameplay.py` — recalcule `worstMatchups` et `bestPairings` (172 champs)
-- Tiers meta : configurables manuellement dans l’onglet Patch
+- **Tiers pro (draft + onglet Patch)** : mis à jour automatiquement depuis [gol.gg](https://gol.gg/champion/list/) (stats pick/ban compétitif). ProComps.gg n’expose pas d’API publique ; gol.gg est le proxy programmatique (ProComps indique des tiers basés sur le pro play).
+  - Fetch manuel : `python scripts/fetch_golgg_pro_tiers.py && python scripts/apply_competitive_tiers.py`
+  - **Windows** (quotidien 07:00) : `powershell -File scripts/register_daily_task.ps1` puis la tâche `LoLCoach-DailyMetaRefresh` exécute `scripts/run_daily_meta_refresh.ps1` (lane rates, builds, tiers pro).
+  - **GitHub Actions** : workflow `daily-meta-refresh.yml` (06:00 UTC) — fetch gol.gg + apply + commit sur `main`.
+  - Logs : `data/pro_tier_refresh.log`, stats brutes : `data/golgg_pro.json`, tiers : `scripts/competitive_tiers.json`.
+  - Override saison : `$env:GOLGG_SEASON='S16'` avant le fetch.
+- Tiers meta : surcharge manuelle possible dans l’onglet Patch (localStorage)
 
 ## Projet TFM2
 

@@ -8,7 +8,8 @@ $Action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-NoProfil
 $Trigger = New-ScheduledTaskTrigger -Daily -At "07:00"
 $Settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -DontStopOnIdleEnd -AllowStartIfOnBatteries
 
-Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger -Settings $Settings -Description "Refresh LoL Coach lane rates and item builds" -Force
+Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger -Settings $Settings -Description "Refresh LoL Coach lane rates, builds, and gol.gg pro tiers" -Force
 
 Write-Host "Registered scheduled task: $TaskName (daily 07:00)"
+Write-Host "Runs: lane rates, item builds, beatdown analysis, gol.gg pro tiers"
 Write-Host "Script: $Script"

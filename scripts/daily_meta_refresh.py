@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Daily meta refresh: lane rates + core/situational builds → champions.json."""
+"""Daily meta refresh: lane rates, builds, beatdown analysis, pro tiers → champions.json."""
 
 from __future__ import annotations
 
@@ -22,6 +22,8 @@ def main() -> None:
     run("apply_lolalytics_meta.py")
     run("build_beatdown_tiers.py")
     run("apply_beatdown_tiers.py")
+    run("fetch_golgg_pro_tiers.py")
+    run("apply_competitive_tiers.py")
     run("build_champions_index.py")
     print("Daily meta refresh complete.")
 
