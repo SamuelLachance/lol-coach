@@ -242,7 +242,7 @@
 
   function normalizeSessionFocus(session) {
     if (!session?.focus || !window.LoLDraft?.normalizeSession) return;
-    window.LoLDraft.normalizeSession(session, { resyncStep: false });
+    window.LoLDraft.normalizeSession(session, { resyncStep: false, alignFocus: false });
   }
 
   /** Active lane for suggestions / pool sort (hover > coach, unless user-locked focus). */

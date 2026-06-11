@@ -693,6 +693,12 @@ function main() {
   assert(vaynePick.score > 0, "Vayne Bot vs Malphite should score class counter");
   assert(vaynePick.reasons.some((r) => /Marksman|Tank|gapclose|Classe/i.test(r)), `class pick reasons: ${vaynePick.reasons.join("; ")}`);
 
+  const swapFocusS = D.createSession("swap-focus", "blue");
+  swapFocusS.focus = { type: "swap", side: "blue", slot: "Bot" };
+  D.normalizeSession(swapFocusS);
+  assert(swapFocusS.focus?.type === "swap" && swapFocusS.focus.slot === "Bot", "normalizeSession must preserve swap focus");
+  assert(!D.needsCoachPickAlign(swapFocusS), "swap focus must not trigger coach pick align");
+
   const swapS = D.createSession("swap", "blue");
   D.recordAction(swapS, { type: "pick", side: "blue", name: "Jinx", slot: "Bot" }, [swapS], { byName, metaMap: meta });
   D.recordAction(swapS, { type: "pick", side: "blue", name: "Lulu", slot: "Support" }, [swapS], { byName, metaMap: meta });

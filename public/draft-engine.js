@@ -86,6 +86,7 @@
     const step = getStep(s);
     if (!step || step.type !== "pick" || isComplete(s)) return false;
     const f = s.focus;
+    if (f?.type === "swap") return false;
     if (f?.userLocked && f.type === "pick" && f.slot) return false;
     const side = step.side;
     if (!f || f.type !== "pick" || f.side !== side || !f.slot) return true;
