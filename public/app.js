@@ -3804,10 +3804,11 @@ function renderChampionsUI() {
 
 async function loadSecondaryAssets() {
   try {
-    const [itemsRes, tacticsRes, mtgRes] = await Promise.all([
+    const [itemsRes, tacticsRes, mtgRes, laneMatchRes] = await Promise.all([
       fetch("data/items.json"),
       fetch("data/tactics-meta.json"),
       fetch("data/mtg-colors.json"),
+      fetch("data/lane-matchups.json"),
     ]);
 
     if (itemsRes.ok) {
@@ -3828,6 +3829,10 @@ async function loadSecondaryAssets() {
 
     if (mtgRes.ok) {
       initMtgMeta(await mtgRes.json());
+    }
+
+    if (laneMatchRes.ok && window.LoLLaneMatchupLogic?.loadPrecomputed) {
+      window.LoLLaneMatchupLogic.loadPrecomputed(await laneMatchRes.json());
     }
   } catch (err) {
     console.warn("Secondary assets load failed", err);

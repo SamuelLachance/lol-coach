@@ -10,10 +10,12 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 function loadLoLDraft() {
   const sandbox = { global: {}, window: {}, globalThis: {} };
   sandbox.global = sandbox.window = sandbox.globalThis = sandbox;
-  for (const file of ["lane-viability.js", "coaching-knowledge.js", "mtg-color-pie.js", "draft-interactions.js", "draft-scoring.js", "draft-engine.js"]) {
+  for (const file of ["lane-viability.js", "lane-matchup-logic.js", "coaching-knowledge.js", "mtg-color-pie.js", "draft-interactions.js", "draft-scoring.js", "draft-engine.js"]) {
     vm.runInNewContext(readFileSync(join(root, "public", file), "utf8"), sandbox);
   }
-  return sandbox;
+  const laneData = JSON.parse(readFileSync(join(root, "public/data/lane-matchups.json"), "utf8"));
+  sandbox.LoLLaneMatchupLogic.loadPrecomputed(laneData);
+  return { sandbox, laneData };
 }
 
 function assert(cond, msg) {
@@ -21,7 +23,7 @@ function assert(cond, msg) {
 }
 
 function main() {
-  const sandbox = loadLoLDraft();
+  const { sandbox, laneData } = loadLoLDraft();
   const D = sandbox.LoLDraft;
   assert(D, "LoLDraft export missing");
 
@@ -237,6 +239,25 @@ function main() {
     assert(lane.verdict !== "even", `${slot} must never be even`);
     assert(lane.note && !lane.note.includes("prio vague et jungle décident"), `${slot} note must be specific`);
     console.log(`  lane ${slot}: ${lane.verdict} (${lane.margin}) — ${lane.note}`);
+  }
+
+  const LML = sandbox.LoLLaneMatchupLogic;
+  assert(LML, "LoLLaneMatchupLogic export missing");
+  assert(laneData.stats.totalPairs >= 170 * 169 * 5, `lane matrix too small: ${laneData.stats.totalPairs}`);
+  const kitChecks = [
+    ["Caitlyn", "Ashe", "Bot", "win", /portée|range/i],
+    ["Darius", "Malphite", "Top", "win", /%PV|bruiser|tank|anti-dash/i],
+    ["Ashe", "Caitlyn", "Bot", "lose", /portée|range/i],
+    ["Zed", "Lux", "Mid", "win", /assassin|burst/i],
+    ["Morgana", "Blitzcrank", "Support", "win", /hook|black|shield|spell|immobile/i],
+  ];
+  for (const [a, b, slot, expect, reasonRx] of kitChecks) {
+    const lane = SC.scoreLaneMatchup(a, b, slot, byName, meta);
+    assert(lane.verdict === expect, `${a} vs ${b} ${slot} expected ${expect}, got ${lane.verdict} (${lane.margin})`);
+    assert(reasonRx.test(lane.note), `${a} vs ${b} note should match kit logic: ${lane.note}`);
+    const margin = LML.lookupMargin(a, b, slot);
+    assert(margin != null && (expect === "win" ? margin > 0 : margin < 0), `${a} vs ${b} precomputed margin=${margin}`);
+    console.log(`  kit ${slot} ${a}>${expect === "win" ? b : a}: margin=${lane.margin} — ${lane.note}`);
   }
 
   const userDuel = SC.evaluateDraftDuel(

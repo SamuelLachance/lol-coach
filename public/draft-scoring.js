@@ -9,6 +9,7 @@
   const LATE_SLOTS = ["Support", "Top"];
   const SLOT_LABELS = { Bot: "ADC", Jungle: "Jungle", Mid: "Mid", Support: "Support", Top: "Top" };
   const LV = () => global.LoLLaneViability;
+  const LML = () => global.LoLLaneMatchupLogic;
   const MIN_LANE_RATE = () => LV()?.MIN_LANE_RATE ?? 10;
 
   const TIER_PTS = { S: 40, A: 30, B: 20, C: 10, D: 3 };
@@ -49,7 +50,7 @@
     scaling_late: "Scaling late",
   };
 
-  /** Win-condition counters — [counter plan, victim plan] (MOBA + LS theory). */
+  /** Win-condition counters — [counter plan, victim plan] (MOBA composition logic). */
   const COMP_TYPE_COUNTERS = [
     ["poke_disengage", "teamfight_engage"],
     ["poke_siege", "teamfight_engage"],
@@ -58,6 +59,12 @@
     ["lane_tempo", "hypercarry"],
     ["split_push", "teamfight_engage"],
     ["teamfight_engage", "split_push"],
+    ["front_to_back", "beatdown"],
+    ["front_to_back", "all_in"],
+    ["scaling_late", "lane_tempo"],
+    ["scaling_late", "all_in"],
+    ["pick_global", "poke_siege"],
+    ["beatdown", "poke_siege"],
   ];
 
   const INCOMPATIBLE_COMP_PAIRS = [
@@ -69,6 +76,7 @@
   ];
 
   const LANE_MATCHUP_WEIGHT = { Top: 1.05, Jungle: 1.2, Mid: 1.0, Bot: 1.0, Support: 0.88 };
+  const LANE_CROSS_DUEL_WEIGHT = 0.55;
   const JGL_GANK_WEIGHT = { Top: 0.42, Mid: 0.48, Bot: 0.38 };
 
   function clamp01(x) {
@@ -662,6 +670,11 @@
     const split = counts.split_push || 0;
     const pick = counts.pick_global || 0;
     const tempo = counts.lane_tempo || 0;
+    const peelSum = sumKey(vs, "peel");
+    const scaleSum = sumKey(vs, "scaling");
+    const marksman = vs.filter((v) => v.isMarksman).length;
+    const frontCount = vs.filter((v) => v.tags?.has?.("frontline")).length;
+    const enchanterN = IX()?.buildTeamMetrics ? IX().buildTeamMetrics(vs).enchanter : 0;
 
     if (poke >= 2 && poke >= engage) {
       return (counts.poke_disengage || 0) >= (counts.poke_siege || 0) ? "poke_disengage" : "poke_siege";
@@ -669,6 +682,11 @@
     if (engage >= 2 || ((counts.teamfight_engage || 0) >= 1 && engage >= hyper)) {
       return (counts.teamfight_engage || 0) >= (counts.all_in || 0) ? "teamfight_engage" : "all_in";
     }
+    // CSV: ADC + enchanter/peel — après engage/poke pour ne pas étiqueter les wombo
+    if (marksman >= 1 && enchanterN >= 1 && peelSum >= 1.1 && scaleSum >= 0.88) return "hypercarry";
+    if (marksman >= 1 && peelSum >= 1.2 && scaleSum >= 1.0 && (hyper >= 1 || enchanterN >= 1)) return "hypercarry";
+    if (marksman >= 1 && peelSum >= 1.0 && frontCount >= 1 && (counts.front_to_back || 0) >= 1) return "front_to_back";
+    if (hyper >= 1 && peelSum >= 1.1 && scaleSum >= 0.8 && engage < 2) return "hypercarry";
     if (hyper >= 2) return "hypercarry";
     if (split >= 2) return "split_push";
     if (pick >= 2) return "pick_global";
@@ -865,12 +883,26 @@
     return { our, enemy, reasons: [...new Set(reasons)] };
   }
 
-  function laneMatchupEdge(ourV, enemyV, slot) {
-    const base = pairwiseChampEdge(ourV, enemyV);
+  function laneMatchupEdge(ourV, enemyV, slot, ctx) {
     const w = LANE_MATCHUP_WEIGHT[slot] || 1;
     const tierUs = (TIER_PTS[ourV.tierMeta] || 10) - (TIER_PTS[enemyV.tierMeta] || 10);
-    let our = Math.round(base.our * w);
-    let enemy = Math.round(base.enemy * w);
+    const reasons = [];
+
+    const kit = LML()?.laneKitEdge?.(ourV, enemyV, slot, ctx);
+    let our = kit ? Math.round(kit.our * w) : 0;
+    let enemy = kit ? Math.round(kit.enemy * w) : 0;
+
+    if (kit?.reasons?.length) reasons.push(...kit.reasons);
+
+    const curated = IX()?.evaluateChampPair?.(ourV, enemyV);
+    if (curated) {
+      our += Math.round(curated.our * 0.35 * w);
+      enemy += Math.round(curated.enemy * 0.35 * w);
+      for (const r of curated.reasons || []) {
+        if (r.includes(">")) reasons.push(r.replace(/^[^:]+:\s*/, ""));
+      }
+    }
+
     if (tierUs >= 8) our += 8;
     else if (tierUs <= -8) enemy += 8;
     else if (tierUs >= 4) our += 4;
@@ -879,26 +911,12 @@
     if (ourV.counteredBy?.includes(enemyV.name)) enemy += 14;
     if (enemyV.counteredBy?.includes(ourV.name)) our += 14;
 
-    if (slot === "Bot" && ourV.isMarksman && enemyV.isMarksman) {
-      our += Math.round((ourV.carry - enemyV.carry) * 14);
-    }
-    if (slot === "Jungle") {
-      our += Math.round((ourV.early - enemyV.early) * 24);
-      our += Math.round((ourV.burst - enemyV.burst) * 8);
-    }
-    if (slot === "Support") {
-      our += Math.round((ourV.peel - enemyV.peel) * 20);
-      our += Math.round((ourV.engage - enemyV.engage) * 10);
-    }
-    if (slot === "Top") {
-      our += Math.round((ourV.tank - enemyV.tank) * 12);
-      if (ourV.tags?.has("split")) our += 6;
-    }
-    if (slot === "Mid") {
-      our += Math.round((ourV.burst - enemyV.burst) * 12);
-      our += Math.round((ourV.spellSetup - enemyV.spellSetup) * 8);
-    }
-    return { our, enemy, reasons: base.reasons.map((r) => `${SLOT_LABELS[slot] || slot}: ${r}`) };
+    const label = SLOT_LABELS[slot] || slot;
+    return {
+      our,
+      enemy,
+      reasons: [...new Set(reasons)].map((r) => (r.startsWith(label) ? r : `${label}: ${r}`)),
+    };
   }
 
   function laneMatchupNote(ourName, enemyName, ourV, enemyV, margin, reasons, slot) {
@@ -919,7 +937,7 @@
     if (!ourName || !enemyName) return { verdict: "unknown", margin: 0, note: "Lane incomplète." };
     const ourV = buildProfile(getData(byName, metaMap, ourName), metaMap);
     const enemyV = buildProfile(getData(byName, metaMap, enemyName), metaMap);
-    const edge = laneMatchupEdge(ourV, enemyV, slot);
+    const edge = laneMatchupEdge(ourV, enemyV, slot, { metaMap });
     let margin = edge.our - edge.enemy;
 
     if (margin === 0) {
@@ -961,12 +979,22 @@
 
     for (const [counter, victim] of COMP_TYPE_COUNTERS) {
       if (ourPlan === counter && enemyPlan === victim) {
-        our += 220;
-        reasons.push(`Win condition : ${COMP_LABELS[counter] || counter} > ${COMP_LABELS[victim] || victim}`);
+        const victimPeel = sumKey(enemyVs, "peel");
+        const victimEnch = enemyVs.filter((v) => v.familyKey === "support_enchanter" || (IX()?.MECH?.enchanter?.has?.(nameLookupKey(v.name)))).length;
+        const skipProtectedHyper = victim === "hypercarry" && victimPeel >= 1.0 && victimEnch >= 1;
+        if (!skipProtectedHyper) {
+          our += 220;
+          reasons.push(`Win condition : ${COMP_LABELS[counter] || counter} > ${COMP_LABELS[victim] || victim}`);
+        }
       }
       if (enemyPlan === counter && ourPlan === victim) {
-        enemy += 220;
-        reasons.push(`Win condition : ${COMP_LABELS[counter] || counter} > ${COMP_LABELS[ourPlan] || ourPlan}`);
+        const victimPeel = sumKey(ourVs, "peel");
+        const victimEnch = ourVs.filter((v) => v.familyKey === "support_enchanter" || (IX()?.MECH?.enchanter?.has?.(nameLookupKey(v.name)))).length;
+        const skipProtectedHyper = victim === "hypercarry" && victimPeel >= 1.0 && victimEnch >= 1;
+        if (!skipProtectedHyper) {
+          enemy += 220;
+          reasons.push(`Win condition : ${COMP_LABELS[counter] || counter} > ${COMP_LABELS[ourPlan] || ourPlan}`);
+        }
       }
     }
 
@@ -976,11 +1004,11 @@
     const ix = IX();
     if (ix?.evaluateCompClashes) {
       const clash = ix.evaluateCompClashes(ourVs, enemyVs, ourPlan, enemyPlan, ourArch, enemyArch);
-      our += Math.round(clash.our * 0.55);
-      enemy += Math.round(clash.enemy * 0.55);
+      our += Math.round(clash.our * 0.72);
+      enemy += Math.round(clash.enemy * 0.72);
       for (const h of clash.hits || []) {
         reasons.push(h.reason);
-        hits.push({ ...h, edge: Math.round(h.edge * 0.55) });
+        hits.push({ ...h, edge: Math.round(h.edge * 0.72) });
       }
     } else {
       const ourRange = ourVs.filter((v) => v.tags?.has?.("poke")).length;
@@ -1049,10 +1077,10 @@
       if (!on || !en) continue;
       const u = buildProfile(getData(byName, metaMap, on), metaMap);
       const e = buildProfile(getData(byName, metaMap, en), metaMap);
-      const lane = laneMatchupEdge(u, e, slot);
-      ourEdge += lane.our;
-      enemyEdge += lane.enemy;
-      const net = lane.our - lane.enemy;
+      const lane = laneMatchupEdge(u, e, slot, ctx);
+      ourEdge += Math.round(lane.our * LANE_CROSS_DUEL_WEIGHT);
+      enemyEdge += Math.round(lane.enemy * LANE_CROSS_DUEL_WEIGHT);
+      const net = Math.round((lane.our - lane.enemy) * LANE_CROSS_DUEL_WEIGHT);
       if (Math.abs(net) >= 10) {
         topPairs.push({ our: on, enemy: en, edge: net, reason: lane.reasons[0] || `${slot} matchup` });
       }
@@ -1208,10 +1236,10 @@
     const crossNet = cross.our - cross.enemy;
     const crossWithoutPlan = crossNet - planNet;
     const margin = Math.round(
-      winCondDelta * 5.8 +
-      planNet * 4.6 +
-      secondaryDelta * 0.08 +
-      crossWithoutPlan * 0.32
+      winCondDelta * 3.4 +
+      planNet * 6.5 +
+      secondaryDelta * 0.05 +
+      crossWithoutPlan * 0.45
     );
 
     const displayBase = 500;
