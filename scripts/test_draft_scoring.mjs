@@ -120,6 +120,35 @@ function main() {
     );
   }
 
+  const womboOur = {
+    Top: "Malphite",
+    Jungle: "Jarvan IV",
+    Mid: "Orianna",
+    Bot: "Miss Fortune",
+    Support: "Rell",
+  };
+  const pokeEnemy = {
+    Top: "Jayce",
+    Jungle: "Nidalee",
+    Mid: "Ziggs",
+    Bot: "Caitlyn",
+    Support: "Karma",
+  };
+  const duel = SC.evaluateDraftDuel(
+    Object.values(womboOur),
+    Object.values(pokeEnemy),
+    { ourComp: womboOur, enemyComp: pokeEnemy, byName, metaMap: meta }
+  );
+  assert(duel.our.total > 0 && duel.enemy.total > 0, "duel should score both teams");
+  assert(duel.detail?.cross?.topPairs?.length > 0, "duel should surface key interactions");
+  assert(
+    duel.margin < 0 && duel.winProb.enemy > duel.winProb.our,
+    `poke/disengage should beat wombo engage: margin=${duel.margin} win=${Math.round(duel.winProb.enemy * 100)}%`
+  );
+
+  const cmp = D.compareComps(womboOur, pokeEnemy, byName, meta);
+  assert(cmp.complete && cmp.margin < 0 && cmp.winProb.enemy > cmp.winProb.our, "compareComps should favor poke vs wombo");
+
   const luluBot = SC.scoreMacroPick(lulu, "Bot", {
     teamNames: [],
     enemyNames: [],

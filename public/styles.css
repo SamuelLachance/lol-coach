@@ -2712,6 +2712,34 @@ body::before {
   color: #ff8787;
 }
 
+.tactics-comp-plans {
+  margin: 0.5rem 0 0;
+  font-size: 0.84rem;
+}
+
+.tactics-duel-ix-title {
+  margin: 0.85rem 0 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.tactics-duel-ix-list {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.82rem;
+}
+
+.tactics-duel-ix--our {
+  color: #74c0fc;
+}
+
+.tactics-duel-ix--enemy {
+  color: #ff8787;
+}
+
 .tactics-comp-block .tactics-comp-score-inner {
   padding: 0;
   border: none;

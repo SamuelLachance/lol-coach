@@ -826,15 +826,18 @@
     if (ourNames.length < 5 || enemyNames.length < 5) {
       return { complete: false, ourCount: ourNames.length, enemyCount: enemyNames.length };
     }
-    const ourEval = evaluateTeamMacro(ourNames, { byName, metaMap, oppNames: enemyNames, oppComp: enemyComp, slotsLeft: 0 });
-    const enemyEval = evaluateTeamMacro(enemyNames, { byName, metaMap, oppNames: ourNames, oppComp: ourComp, slotsLeft: 0 });
-    const margin = ourEval.total - enemyEval.total;
+    const sc = SC();
+    const duel = sc?.evaluateDraftDuel(ourNames, enemyNames, { ourComp, enemyComp, byName, metaMap });
+    if (!duel) {
+      return { complete: false, ourCount: ourNames.length, enemyCount: enemyNames.length };
+    }
     return {
       complete: true,
-      our: { score: Math.round(ourEval.total), breakdown: ourEval.breakdown },
-      enemy: { score: Math.round(enemyEval.total), breakdown: enemyEval.breakdown },
-      margin: Math.round(margin),
-      winProb: winProbFromScores(ourEval.total, enemyEval.total),
+      our: { score: Math.round(duel.our.total), breakdown: duel.our.breakdown, archetype: duel.our.archetype },
+      enemy: { score: Math.round(duel.enemy.total), breakdown: duel.enemy.breakdown, archetype: duel.enemy.archetype },
+      margin: Math.round(duel.margin),
+      winProb: duel.winProb,
+      duel: duel.detail,
     };
   }
 

@@ -2773,10 +2773,21 @@ function renderTacticsCompScoreHtml(comp) {
     return `<tr><td>${label}</td><td class="num our-num">${o}</td><td class="num enemy-num">${e}</td></tr>`;
   };
 
+  const planOur = comp.our.archetype?.label || comp.duel?.plans?.our || "—";
+  const planEnemy = comp.enemy.archetype?.label || comp.duel?.plans?.enemy || "—";
+  const topIx = (comp.duel?.topInteractions || []).slice(0, 5);
+  const ixRows = topIx.length
+    ? topIx.map((p) => {
+        const fav = p.edge >= 0 ? "our" : "enemy";
+        const sign = p.edge >= 0 ? "+" : "";
+        return `<li class="tactics-duel-ix tactics-duel-ix--${fav}"><strong>${sign}${p.edge}</strong> · ${escapeHtml(p.reason || `${p.our} vs ${p.enemy}`)}</li>`;
+      }).join("")
+    : `<li class="muted">Interactions calculées sur la matrice 5×5 + lanes + jungle.</li>`;
+
   return `<div class="tactics-comp-score-inner${comp?.complete ? " tactics-comp-score-inner--ready" : ""}">
     <div class="tactics-comp-score-head">
-      <span class="tactics-comp-score-kicker">Analyse draft</span>
-      <p class="tactics-comp-score-title">Score coaching · synergie + familles + MTG</p>
+      <span class="tactics-comp-score-kicker">Analyse duel</span>
+      <p class="tactics-comp-score-title">Interactions 10v10 · coaching · LS · MTG · matchups · familles</p>
     </div>
     <div class="tactics-comp-duel">
       <div class="tactics-comp-side our-team${fav === "our" ? " is-favored" : ""}">
@@ -2800,16 +2811,25 @@ function renderTacticsCompScoreHtml(comp) {
       ${mtgTeamPanelHtml(compPickNames(state.ourComp), "Identité couleur · nous")}
       ${mtgTeamPanelHtml(compPickNames(state.enemyComp), "Identité couleur · adversaire")}
     </div>
+    <p class="tactics-comp-plans muted">Plan détecté · <strong>${escapeHtml(planOur)}</strong> vs <strong>${escapeHtml(planEnemy)}</strong></p>
     <details class="tactics-comp-details">
-      <summary>Détail du scoring coaching (synergie + familles + identité MTG)</summary>
+      <summary>Détail duel (interne + interactions croisées)</summary>
       <table class="tactics-comp-breakdown">
         <thead><tr><th>Axe</th><th>Nous</th><th>Ennemi</th></tr></thead>
         <tbody>
-          ${breakdownRow("Synergie", "synergy")}
-          ${breakdownRow("Familles", "family")}
+          ${breakdownRow("Synergie interne", "synergy")}
+          ${breakdownRow("Familles / templates", "family")}
+          ${breakdownRow("Équilibre (AD/AP/front)", "balance")}
+          ${breakdownRow("Coaching / mix", "coaching")}
+          ${breakdownRow("Win condition", "archetype")}
           ${breakdownRow("Identité MTG", "mtg")}
+          ${breakdownRow("Wombo / combos", "wombo")}
+          ${breakdownRow("Interactions draft", "interaction")}
+          ${breakdownRow("Avantage net matchups", "matchup")}
         </tbody>
       </table>
+      <p class="tactics-duel-ix-title">Interactions clés</p>
+      <ul class="tactics-duel-ix-list">${ixRows}</ul>
     </details>
   </div>`;
 }

@@ -47,6 +47,28 @@
     scaling_late: "Scaling late",
   };
 
+  /** Win-condition counters — [counter plan, victim plan] (MOBA + LS theory). */
+  const COMP_TYPE_COUNTERS = [
+    ["poke_disengage", "teamfight_engage"],
+    ["poke_siege", "teamfight_engage"],
+    ["pick_global", "hypercarry"],
+    ["all_in", "hypercarry"],
+    ["lane_tempo", "hypercarry"],
+    ["split_push", "teamfight_engage"],
+    ["teamfight_engage", "split_push"],
+  ];
+
+  const INCOMPATIBLE_COMP_PAIRS = [
+    ["poke_disengage", "all_in"],
+    ["poke_disengage", "teamfight_engage"],
+    ["poke_siege", "all_in"],
+    ["hypercarry", "lane_tempo"],
+    ["split_push", "teamfight_engage"],
+  ];
+
+  const LANE_MATCHUP_WEIGHT = { Top: 1.05, Jungle: 1.2, Mid: 1.0, Bot: 1.0, Support: 0.88 };
+  const JGL_GANK_WEIGHT = { Top: 0.42, Mid: 0.48, Bot: 0.38 };
+
   function clamp01(x) {
     return Math.max(0, Math.min(1, Number(x) || 0));
   }
@@ -154,13 +176,13 @@
     const vs = profiles(names, byName, metaMap);
     const vectors = vs.map((p) => ({ name: p.name, colors: p.colors })).filter((p) => p.colors);
     const coherence = pie.colorCoherence(vectors);
-    let score = Math.round(coherence.score * 0.7);
+    let score = Math.round(Math.max(-52, Math.min(82, coherence.score * 0.26)));
 
     let beatdown = null;
     if (oppNames.length) {
       const oppVs = profiles(oppNames, byName, metaMap);
       beatdown = pie.analyzeBeatdownMatchup(vs, oppVs);
-      score += beatdown.alignmentBonus || 0;
+      score += Math.max(-28, Math.min(32, beatdown.alignmentBonus || 0));
     }
 
     return {
@@ -528,6 +550,462 @@
       gaps: arch.gaps || [],
       breakdown: { synergy, family, mtg },
       mtgDetail: mtgBlock.detail,
+    };
+  }
+
+  function teamTypeCounts(vs) {
+    const counts = {};
+    for (const v of vs) {
+      for (const t of v.compTypes || []) counts[t] = (counts[t] || 0) + 1;
+    }
+    return counts;
+  }
+
+  function primaryTeamPlan(vs) {
+    const counts = teamTypeCounts(vs);
+    const arch = detectArchetype(vs);
+    const poke = (counts.poke_siege || 0) + (counts.poke_disengage || 0);
+    const engage = (counts.teamfight_engage || 0) + (counts.all_in || 0);
+    const hyper = counts.hypercarry || 0;
+    const split = counts.split_push || 0;
+    const pick = counts.pick_global || 0;
+    const tempo = counts.lane_tempo || 0;
+
+    if (poke >= 2 && poke >= engage) {
+      return (counts.poke_disengage || 0) >= (counts.poke_siege || 0) ? "poke_disengage" : "poke_siege";
+    }
+    if (engage >= 2 || ((counts.teamfight_engage || 0) >= 1 && engage >= hyper)) {
+      return (counts.teamfight_engage || 0) >= (counts.all_in || 0) ? "teamfight_engage" : "all_in";
+    }
+    if (hyper >= 2) return "hypercarry";
+    if (split >= 2) return "split_push";
+    if (pick >= 2) return "pick_global";
+    if (tempo >= 2) return "lane_tempo";
+    return arch.plan || null;
+  }
+
+  function dominantCompPlan(vs) {
+    return primaryTeamPlan(vs);
+  }
+
+  function teamPatternBonus(vs) {
+    const counts = teamTypeCounts(vs);
+    let bonus = 0;
+    const poke = (counts.poke_siege || 0) + (counts.poke_disengage || 0);
+    const engage = (counts.teamfight_engage || 0) + (counts.all_in || 0);
+    if (poke >= 3) bonus += 52;
+    else if (poke >= 2) bonus += 28;
+    if (engage >= 3) bonus += 48;
+    else if (engage >= 2) bonus += 26;
+    if ((counts.hypercarry || 0) >= 2 && vs.some((v) => v.tags?.has?.("peel"))) bonus += 32;
+    const ck = CK();
+    if (ck?.FAMILY_TAGS) {
+      const tags = vs.map((v) => {
+        const key = normNameKey(v.name);
+        if (ck.FAMILY_TAGS.engage?.has(key)) return "engage";
+        if (ck.FAMILY_TAGS.disengage?.has(key)) return "disengage";
+        if (ck.FAMILY_TAGS.range?.has(key)) return "range";
+        return null;
+      }).filter(Boolean);
+      if (tags.length >= 3) {
+        const dom = Math.max(...["engage", "disengage", "range"].map((t) => tags.filter((x) => x === t).length));
+        if (dom / tags.length >= 0.7) bonus += 22;
+      }
+    }
+    return bonus;
+  }
+
+  function teamWomboPower(vs) {
+    let power = 0;
+    const reasons = [];
+    for (let i = 0; i < vs.length; i++) {
+      for (let j = i + 1; j < vs.length; j++) {
+        if (isWomboPair(vs[i].name, vs[j].name)) {
+          power += 58;
+          reasons.push(`Wombo ${vs[i].name}+${vs[j].name}`);
+        }
+        const ck = CK();
+        if (ck?.countComboLinks) {
+          const links = ck.countComboLinks(vs[i].name, [vs[j].name]);
+          if (links >= 2) {
+            power += 16 + links * 9;
+            reasons.push(`Combo ${vs[i].name}+${vs[j].name}`);
+          }
+        }
+        if (vs[i].spells?.knockup && vs[j].spells?.aoe) power += 18;
+      }
+    }
+    return { power, reasons };
+  }
+
+  function internalCoachingScore(names) {
+    const ck = CK();
+    if (!ck || names.length < 2) return 0;
+    let mix = 0;
+    for (const n of names) mix += ck.familyMixPenalty(n, names.filter((x) => x !== n)).score;
+    let score = Math.round(mix / names.length);
+    const archetype = ck.detectArchetypeComp(names);
+    if (archetype) score += archetypeHitCount(archetype, names) * 14;
+    const tpl = ck.detectTemplate(names);
+    if (tpl) {
+      const hitSet = new Set(names.map(normNameKey));
+      const hits = (tpl.champs || []).filter((c) => hitSet.has(normNameKey(c))).length;
+      if (hits >= 3) score += 24;
+      else if (hits >= 2) score += 14;
+    }
+    return score;
+  }
+
+  function internalIncoherencePenalty(vs) {
+    const plan = dominantCompPlan(vs);
+    if (!plan) return 0;
+    const types = new Set();
+    for (const v of vs) for (const t of v.compTypes || []) types.add(t);
+    let penalty = 0;
+    for (const [a, b] of INCOMPATIBLE_COMP_PAIRS) {
+      if (types.has(a) && types.has(b)) penalty -= 22;
+    }
+    return penalty;
+  }
+
+  /** Standalone team quality — synergy, family, balance, coaching, MTG identity. */
+  function evaluateTeamInternal(names, ctx) {
+    const { byName, metaMap } = ctx;
+    const vs = profiles(names, byName, metaMap);
+    const synergyRaw = macroSynergyScore(names, { byName, metaMap, oppNames: [] });
+    const synergy = Math.min(400, synergyRaw);
+    const family = macroFamilyScore(names, byName, metaMap);
+    const bal = teamBalance(vs, 0);
+    const arch = detectArchetype(vs);
+    arch.plan = primaryTeamPlan(vs) || arch.plan;
+    arch.label = COMP_LABELS[arch.plan] || arch.label;
+    const mtgBlock = macroMtgScore(names, { byName, metaMap, oppNames: [] });
+    const coaching = internalCoachingScore(names) + internalIncoherencePenalty(vs) + teamPatternBonus(vs);
+    const archetype = Math.round(arch.completeness * 0.38);
+    const wombo = teamWomboPower(vs);
+    const total =
+      synergy + family + bal.score + coaching + archetype + mtgBlock.score + Math.round(wombo.power * 0.32);
+    return {
+      total,
+      vs,
+      archetype: arch,
+      breakdown: {
+        synergy,
+        family,
+        balance: bal.score,
+        coaching,
+        archetype,
+        mtg: mtgBlock.score,
+        wombo: Math.round(wombo.power * 0.32),
+      },
+      wombo,
+      mtgDetail: mtgBlock.detail,
+    };
+  }
+
+  /** One champ vs one champ — counters, style clash, wombo links. */
+  function pairwiseChampEdge(ourV, enemyV) {
+    let our = 0;
+    let enemy = 0;
+    const reasons = [];
+
+    const ctrUs = listScore(enemyV.name, ourV.counters, CTR_W);
+    const ctrThem = listScore(ourV.name, enemyV.counters, CTR_W);
+    our += ctrUs;
+    enemy += Math.round(ctrThem * 0.52);
+    if (ctrUs >= 18) reasons.push(`${ourV.name} > ${enemyV.name}`);
+    if (ctrThem >= 18) reasons.push(`${enemyV.name} > ${ourV.name}`);
+
+    if (ourV.peel >= 0.55 && enemyV.engage >= 0.5) {
+      our += 7;
+      reasons.push(`${ourV.name} peel vs engage`);
+    }
+    if (enemyV.peel >= 0.55 && ourV.engage >= 0.5) {
+      enemy += 7;
+    }
+    if (ourV.tags?.has?.("poke") && enemyV.tags?.has?.("frontline") && enemyV.scaling < 0.5) {
+      our += 5;
+    }
+    if (enemyV.tags?.has?.("poke") && ourV.tags?.has?.("frontline") && ourV.scaling < 0.5) {
+      enemy += 5;
+    }
+    if (ourV.burst >= 0.55 && enemyV.isMarksman) our += 6;
+    if (enemyV.burst >= 0.55 && ourV.isMarksman) enemy += 6;
+
+    const ck = CK();
+    if (ck?.coachingSynergyScore) {
+      const syn = ck.coachingSynergyScore(ourV.name, [enemyV.name]).score;
+      if (syn < -8) {
+        enemy += Math.round(Math.abs(syn) * 0.35);
+        reasons.push(`Anti-synergie ${ourV.name}/${enemyV.name}`);
+      }
+    }
+
+    return { our, enemy, reasons };
+  }
+
+  function laneMatchupEdge(ourV, enemyV, slot) {
+    const base = pairwiseChampEdge(ourV, enemyV);
+    const w = LANE_MATCHUP_WEIGHT[slot] || 1;
+    const tierUs = (TIER_PTS[ourV.tierMeta] || 10) - (TIER_PTS[enemyV.tierMeta] || 10);
+    let our = Math.round(base.our * w);
+    let enemy = Math.round(base.enemy * w);
+    if (tierUs >= 8) our += 6;
+    if (tierUs <= -8) enemy += 6;
+    if (slot === "Bot" && ourV.isMarksman && enemyV.isMarksman) {
+      our += Math.round((ourV.carry - enemyV.carry) * 12);
+    }
+    return { our, enemy, reasons: base.reasons.map((r) => `${SLOT_LABELS[slot] || slot}: ${r}`) };
+  }
+
+  function jungleCrossEdge(jungleV, laneV, laneSlot) {
+    const w = JGL_GANK_WEIGHT[laneSlot] || 0.3;
+    let our = 0;
+    let enemy = 0;
+    const ctr = listScore(laneV.name, jungleV.counters, CTR_W);
+    const ctrBack = listScore(jungleV.name, laneV.counters, CTR_W);
+    our += Math.round(ctr * w);
+    enemy += Math.round(ctrBack * w * 0.55);
+    if (jungleV.early >= 0.45 && laneV.peel < 0.45) our += Math.round(8 * w);
+    if (laneV.early >= 0.45 && jungleV.peel < 0.45) enemy += Math.round(8 * w);
+    return { our, enemy };
+  }
+
+  function planClashEdge(ourVs, enemyVs) {
+    const ourPlan = primaryTeamPlan(ourVs);
+    const enemyPlan = primaryTeamPlan(enemyVs);
+    let our = 0;
+    let enemy = 0;
+    const reasons = [];
+
+    for (const [counter, victim] of COMP_TYPE_COUNTERS) {
+      if (ourPlan === counter && enemyPlan === victim) {
+        our += 52;
+        reasons.push(`${COMP_LABELS[counter] || counter} > ${COMP_LABELS[victim] || victim}`);
+      }
+      if (enemyPlan === counter && ourPlan === victim) {
+        enemy += 52;
+        reasons.push(`${COMP_LABELS[counter] || counter} > ${COMP_LABELS[ourPlan] || ourPlan}`);
+      }
+    }
+
+    const ourRange = ourVs.filter((v) => v.tags?.has?.("poke")).length;
+    const enemyRange = enemyVs.filter((v) => v.tags?.has?.("poke")).length;
+    const ourEngage = ourVs.filter((v) => v.engage >= 0.45 || (v.compTypes || []).includes("teamfight_engage")).length;
+    const enemyEngage = enemyVs.filter((v) => v.engage >= 0.45 || (v.compTypes || []).includes("teamfight_engage")).length;
+    if (ourRange >= 2 && enemyEngage >= 2) {
+      our += 38;
+      reasons.push("Range/poke kite vs engage");
+    }
+    if (enemyRange >= 2 && ourEngage >= 2) {
+      enemy += 38;
+      reasons.push("Range/poke kite vs engage");
+    }
+
+    const ourArch = detectArchetype(ourVs);
+    const enemyArch = detectArchetype(enemyVs);
+    if (ourArch.plan === "hypercarry" && (enemyPlan === "all_in" || enemyPlan === "lane_tempo")) enemy += 22;
+    if (enemyArch.plan === "hypercarry" && (ourPlan === "all_in" || ourPlan === "lane_tempo")) our += 22;
+    if (ourPlan === "teamfight_engage" && enemyArch.gaps?.includes("frontline")) our += 14;
+    if (enemyPlan === "teamfight_engage" && ourArch.gaps?.includes("frontline")) enemy += 14;
+
+    return { our, enemy, ourPlan, enemyPlan, reasons };
+  }
+
+  /**
+   * Full cross-draft interaction matrix — every our×enemy champ + lane matchups + jungle
+   * + win-condition clash + MTG beatdown + color hosers + wombo threats.
+   */
+  function crossDraftInteractions(ourVs, enemyVs, ourComp, enemyComp, ctx) {
+    const { byName, metaMap } = ctx;
+    let ourEdge = 0;
+    let enemyEdge = 0;
+    const topPairs = [];
+    const pie = MTG();
+
+    for (const u of ourVs) {
+      for (const e of enemyVs) {
+        const pair = pairwiseChampEdge(u, e);
+        ourEdge += pair.our;
+        enemyEdge += pair.enemy;
+        const net = pair.our - pair.enemy;
+        if (Math.abs(net) >= 12 && pair.reasons.length) {
+          topPairs.push({ our: u.name, enemy: e.name, edge: net, reason: pair.reasons[0] });
+        }
+      }
+    }
+
+    for (const slot of SLOTS) {
+      const on = ourComp?.[slot];
+      const en = enemyComp?.[slot];
+      if (!on || !en) continue;
+      const u = buildProfile(getData(byName, metaMap, on), metaMap);
+      const e = buildProfile(getData(byName, metaMap, en), metaMap);
+      const lane = laneMatchupEdge(u, e, slot);
+      ourEdge += lane.our;
+      enemyEdge += lane.enemy;
+      const net = lane.our - lane.enemy;
+      if (Math.abs(net) >= 10) {
+        topPairs.push({ our: on, enemy: en, edge: net, reason: lane.reasons[0] || `${slot} matchup` });
+      }
+    }
+
+    const ourJgl = ourComp?.Jungle;
+    const enemyJgl = enemyComp?.Jungle;
+    if (ourJgl) {
+      const jv = buildProfile(getData(byName, metaMap, ourJgl), metaMap);
+      for (const laneSlot of ["Top", "Mid", "Bot"]) {
+        const target = enemyComp?.[laneSlot];
+        if (!target) continue;
+        const lv = buildProfile(getData(byName, metaMap, target), metaMap);
+        const g = jungleCrossEdge(jv, lv, laneSlot);
+        ourEdge += g.our;
+        enemyEdge += g.enemy;
+      }
+    }
+    if (enemyJgl) {
+      const jv = buildProfile(getData(byName, metaMap, enemyJgl), metaMap);
+      for (const laneSlot of ["Top", "Mid", "Bot"]) {
+        const target = ourComp?.[laneSlot];
+        if (!target) continue;
+        const lv = buildProfile(getData(byName, metaMap, target), metaMap);
+        const g = jungleCrossEdge(jv, lv, laneSlot);
+        enemyEdge += g.our;
+        ourEdge += g.enemy;
+      }
+    }
+
+    const plan = planClashEdge(ourVs, enemyVs);
+    ourEdge += plan.our;
+    enemyEdge += plan.enemy;
+    if (plan.reasons.length) {
+      topPairs.push({ our: plan.ourPlan || "?", enemy: plan.enemyPlan || "?", edge: plan.our - plan.enemy, reason: plan.reasons[0] });
+    }
+
+    const ourWombo = teamWomboPower(ourVs);
+    const enemyWombo = teamWomboPower(enemyVs);
+
+    if (pie) {
+      const ourColors = ourVs.map((p) => p.colors).filter(Boolean);
+      const enemyColors = enemyVs.map((p) => p.colors).filter(Boolean);
+      const ourSum = pie.sumVectors(ourColors.map((c) => pie.colorVectorFrom(c)));
+      const enemySum = pie.sumVectors(enemyColors.map((c) => pie.colorVectorFrom(c)));
+
+      for (const u of ourVs) {
+        const h = pie.colorMatchupPenalty(u.colors, enemySum);
+        const capped = Math.max(-16, Math.min(12, h.score));
+        ourEdge += capped;
+        if (capped <= -10) topPairs.push({ our: u.name, enemy: "MTG", edge: capped, reason: h.reasons[0] || "Hoser couleur" });
+      }
+      for (const e of enemyVs) {
+        const h = pie.colorMatchupPenalty(e.colors, ourSum);
+        enemyEdge += Math.max(-16, Math.min(12, h.score));
+      }
+
+      const beat = pie.analyzeBeatdownMatchup(ourVs, enemyVs);
+      if (beat.alignmentBonus) {
+        ourEdge += beat.alignmentBonus;
+        if (beat.alignmentBonus < 0) enemyEdge += Math.abs(beat.alignmentBonus) * 0.65;
+        if (beat.hint) topPairs.push({ our: beat.ourRole, enemy: beat.enemyRole, edge: beat.alignmentBonus, reason: beat.hint });
+      }
+    }
+
+    const ck = CK();
+    if (ck?.denyComboBanScore) {
+      for (const n of ourVs.map((v) => v.name)) {
+        const deny = ck.denyComboBanScore(n, enemyVs.map((v) => v.name));
+        if (deny.score > 0) enemyEdge += Math.round(deny.score * 0.28);
+      }
+      for (const n of enemyVs.map((v) => v.name)) {
+        const deny = ck.denyComboBanScore(n, ourVs.map((v) => v.name));
+        if (deny.score > 0) ourEdge += Math.round(deny.score * 0.28);
+      }
+    }
+
+    topPairs.sort((a, b) => Math.abs(b.edge) - Math.abs(a.edge));
+
+    return {
+      our: Math.round(ourEdge),
+      enemy: Math.round(enemyEdge),
+      matchup: Math.round(ourEdge - enemyEdge),
+      topPairs: topPairs.slice(0, 8),
+      plan,
+      ourWombo,
+      enemyWombo,
+    };
+  }
+
+  function duelWinProb(ourTotal, enemyTotal) {
+    const margin = ourTotal - enemyTotal;
+    if (Math.abs(margin) < 0.5) return { our: 0.5, enemy: 0.5 };
+    const raw = 1 / (1 + Math.exp(-margin / 30));
+    const our = Math.min(0.94, Math.max(0.06, raw));
+    return { our, enemy: 1 - our };
+  }
+
+  function duelWinProbFromMargin(margin) {
+    if (Math.abs(margin) < 0.5) return { our: 0.5, enemy: 0.5 };
+    const raw = 1 / (1 + Math.exp(-margin / 26));
+    const our = Math.min(0.94, Math.max(0.06, raw));
+    return { our, enemy: 1 - our };
+  }
+
+  /**
+   * Full 5v5 draft duel — internal comp quality + every cross interaction.
+   * Used by Macro tab comp prediction (compareComps).
+   */
+  function evaluateDraftDuel(ourNames, enemyNames, ctx) {
+    const { ourComp = {}, enemyComp = {}, byName, metaMap } = ctx;
+    const ourInternal = evaluateTeamInternal(ourNames, { byName, metaMap });
+    const enemyInternal = evaluateTeamInternal(enemyNames, { byName, metaMap });
+    const cross = crossDraftInteractions(
+      ourInternal.vs,
+      enemyInternal.vs,
+      ourComp,
+      enemyComp,
+      { byName, metaMap }
+    );
+
+    const internalDelta = ourInternal.total - enemyInternal.total;
+    const crossNet = cross.our - cross.enemy;
+    const planSwing = (cross.plan?.enemy || 0) - (cross.plan?.our || 0);
+    const margin = Math.round(internalDelta * 0.3 + crossNet * 1.35 + planSwing * 0.25);
+
+    const displayBase = 500;
+    const ourTotal = displayBase + Math.round(margin / 2) + Math.round(ourInternal.total * 0.22);
+    const enemyTotal = displayBase - Math.round(margin / 2) + Math.round(enemyInternal.total * 0.22);
+    const ourInteraction = Math.round(cross.our * 0.72);
+    const enemyInteraction = Math.round(cross.enemy * 0.72);
+
+    return {
+      our: {
+        total: ourTotal,
+        internal: ourInternal.total,
+        breakdown: {
+          ...ourInternal.breakdown,
+          interaction: ourInteraction,
+          matchup: cross.matchup,
+        },
+        archetype: ourInternal.archetype,
+      },
+      enemy: {
+        total: enemyTotal,
+        internal: enemyInternal.total,
+        breakdown: {
+          ...enemyInternal.breakdown,
+          interaction: enemyInteraction,
+          matchup: -cross.matchup,
+        },
+        archetype: enemyInternal.archetype,
+      },
+      margin,
+      winProb: duelWinProbFromMargin(margin),
+      detail: {
+        cross,
+        plans: { our: cross.plan?.ourPlan, enemy: cross.plan?.enemyPlan },
+        beatdown: ourInternal.mtgDetail?.beatdown || enemyInternal.mtgDetail?.beatdown,
+        topInteractions: cross.topPairs,
+      },
     };
   }
 
@@ -1114,6 +1592,9 @@
     detectCompPlan: detectArchetype,
     detectArchetype,
     evaluateTeam,
+    evaluateTeamInternal,
+    evaluateDraftDuel,
+    crossDraftInteractions,
     evaluateTeamMacro,
     macroFamilyScore,
     macroSynergyScore,
