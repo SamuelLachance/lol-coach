@@ -60,6 +60,7 @@
       s.bans[side] = Array.from({ length: BANS_PER_TEAM }, (_, i) => c[i] || null);
     }
     if (s.focus === undefined) s.focus = null;
+    if (s.hoverPick === undefined) s.hoverPick = null;
     return s;
   }
 
@@ -360,21 +361,39 @@
 
   function invalidateRecommendationCache() { recommendationCache = null; }
 
+  function getRecommendationTarget(s) {
+    const f = s.focus;
+    if (f?.type === "pick" && f.slot) return { type: "pick", side: f.side, slot: f.slot };
+    if (f?.type === "ban") return { type: "ban", side: f.side, banIndex: f.banIndex };
+    if (s.hoverPick?.slot) return { type: "pick", side: s.hoverPick.side, slot: s.hoverPick.slot, hover: true };
+    return null;
+  }
+
   function recommendationCacheKey(s, side, all, step) {
-    return [s.id, s.stepIndex, side, step?.type, JSON.stringify(s.bans), JSON.stringify(s.picks)].join("\0");
+    return [
+      s.id,
+      s.stepIndex,
+      side,
+      step?.type,
+      JSON.stringify(s.focus),
+      JSON.stringify(s.hoverPick),
+      JSON.stringify(s.bans),
+      JSON.stringify(s.picks),
+    ].join("\0");
   }
 
   function getRecommendations(s, champs, meta, byName, all = [], limit = 8, forSide = null) {
     const step = getStep(s);
     if (!step || isComplete(s)) return { type: "none", items: [], forSide: null };
     const avail = available(champs, s, all);
-    const side = forSide || step.side;
+    const target = getRecommendationTarget(s);
+    const side = target?.side || forSide || step.side;
     const cacheKey = recommendationCacheKey(s, side, all, step);
     if (recommendationCache?.key === cacheKey && recommendationCache.limit >= limit) {
       return { ...recommendationCache.result, items: recommendationCache.result.items.slice(0, limit) };
     }
 
-    if (step.type === "ban") {
+    if (step.type === "ban" || target?.type === "ban") {
       const banPhase = step.banPhase || 1;
       const items = avail
         .map((c) => {
@@ -389,18 +408,34 @@
       return result;
     }
 
-    const hint = recommendedSlotForPick(s, side);
-    const candidates = pickCandidatesForSide(s, side, avail, meta);
-    const items = candidates.map((c) => {
-      const { score, reasons, slot } = scoreCandidate(s, side, c, byName, meta, hint);
-      return { champion: c, score, reasons, slot };
-    }).filter((item) => item.score > -1000).sort((a, b) => b.score - a.score).slice(0, limit);
+    const focusSlot = target?.type === "pick" ? target.slot : null;
+    const hint = focusSlot || recommendedSlotForPick(s, side);
+    const candidates = focusSlot ? avail : pickCandidatesForSide(s, side, avail, meta);
+    const items = candidates
+      .map((c) => {
+        if (focusSlot) {
+          const ctx = scoringCtx(s, side, byName, meta, focusSlot);
+          ctx.focusSlot = focusSlot;
+          ctx.allowOffRole = true;
+          const sc = SC();
+          const r = sc ? sc.scorePick(c, focusSlot, ctx) : { score: 0, reasons: [], slot: focusSlot };
+          return { champion: c, score: r.score, reasons: r.reasons, slot: focusSlot };
+        }
+        const { score, reasons, slot } = scoreCandidate(s, side, c, byName, meta, hint);
+        return { champion: c, score, reasons, slot };
+      })
+      .filter((item) => item.score > -1000)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit);
 
+    const slotLabel = SLOT_LABELS[hint] || hint;
     const result = {
       type: "pick",
       side,
       slot: hint,
-      coachHint: getDraftCoachHint(s, side, byName, meta),
+      coachHint: focusSlot
+        ? `Suggestions ${slotLabel}${target.hover ? " (survol)" : ""}`
+        : getDraftCoachHint(s, side, byName, meta),
       items,
       forSide: side,
     };

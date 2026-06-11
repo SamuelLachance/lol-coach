@@ -3629,6 +3629,19 @@ body::before {
   background: rgba(110, 231, 183, 0.08) !important;
 }
 
+.draft-cell-hover {
+  border-color: rgba(110, 231, 183, 0.45) !important;
+  border-style: dashed !important;
+  box-shadow: 0 0 0 1px rgba(110, 231, 183, 0.2);
+  background: rgba(110, 231, 183, 0.04) !important;
+}
+
+.enemy-team .draft-cell-hover {
+  border-color: rgba(224, 93, 93, 0.45) !important;
+  box-shadow: 0 0 0 1px rgba(224, 93, 93, 0.2);
+  background: rgba(224, 93, 93, 0.04) !important;
+}
+
 .draft-cell-swap-target {
   border-color: rgba(240, 198, 116, 0.55) !important;
   border-style: solid !important;

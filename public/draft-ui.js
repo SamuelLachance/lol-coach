@@ -44,7 +44,10 @@
     if (!coach?.state) return;
     coach.state.draftSessions.forEach((s) => window.LoLDraft.normalizeSession(s));
     const payload = {
-      sessions: coach.state.draftSessions,
+      sessions: coach.state.draftSessions.map((s) => {
+        const { hoverPick: _hover, ...rest } = s;
+        return rest;
+      }),
       activeId: coach.state.activeDraftId,
     };
     if (global.LoLUserSession) {
@@ -157,6 +160,7 @@
     }
 
     el.querySelectorAll(".draft-cell-focused").forEach((c) => c.classList.remove("draft-cell-focused"));
+    el.querySelectorAll(".draft-cell-hover").forEach((c) => c.classList.remove("draft-cell-hover"));
     el.querySelectorAll(".draft-cell-swap-target").forEach((c) => c.classList.remove("draft-cell-swap-target"));
 
     el.querySelectorAll(".draft-cell[data-focus-type]").forEach((cell) => {
@@ -166,6 +170,8 @@
       const slot = cell.dataset.slot || null;
       if (isCellFocused(session, type, side, banIndex, slot)) {
         cell.classList.add("draft-cell-focused");
+      } else if (isCellHovered(session, type, side, slot)) {
+        cell.classList.add("draft-cell-hover");
       }
       if (type === "pick" && isSwapTarget(session, side, slot)) {
         cell.classList.add("draft-cell-swap-target");
@@ -193,18 +199,35 @@
   }
 
   function afterFocusChange(session) {
+    window.LoLDraft.invalidateRecommendationCache();
     syncBoardFocus(session);
     syncPoolFocus(session);
+    refreshSuggestChips(session);
     if (coach.els.draftPool?.querySelector(".draft-pool-grid")) {
       renderPool({ gridOnly: true, preserveScroll: true });
     }
   }
 
-  /** Sort/highlight slot: focused lane first, else explicit role chip. */
+  /** Sort/highlight slot: focused lane, then hover, else role chip. */
   function poolSortSlot(session) {
     const focusSlot = session.focus?.type === "pick" && session.focus.slot ? session.focus.slot : null;
+    const hoverSlot = !focusSlot && session.hoverPick?.slot ? session.hoverPick.slot : null;
     const chipRole = coach.state.draftPoolRole || "all";
-    return focusSlot || (chipRole !== "all" ? chipRole : null);
+    return focusSlot || hoverSlot || (chipRole !== "all" ? chipRole : null);
+  }
+
+  function isCellHovered(session, type, side, slot) {
+    if (session.focus?.type === "pick" && session.focus.slot) return false;
+    const h = session.hoverPick;
+    if (!h || type !== "pick" || !slot) return false;
+    return h.side === side && h.slot === slot;
+  }
+
+  function setHoverPick(session, side, slot) {
+    const prev = session.hoverPick;
+    if (prev?.side === side && prev?.slot === slot) return;
+    session.hoverPick = slot ? { side, slot } : null;
+    afterFocusChange(session);
   }
 
   function isCellFocused(session, type, side, banIndex, slot) {
@@ -626,6 +649,19 @@
       e.preventDefault();
       clearCellAction(cell);
     });
+    container.addEventListener("mouseenter", (e) => {
+      const cell = e.target.closest(".draft-cell[data-focus-type='pick']");
+      if (!cell || !container.contains(cell)) return;
+      const session = getActiveSession();
+      if (!session) return;
+      setHoverPick(session, cell.dataset.side, cell.dataset.slot);
+    }, true);
+    container.addEventListener("mouseleave", (e) => {
+      if (!container.contains(e.relatedTarget)) {
+        const session = getActiveSession();
+        if (session?.hoverPick) setHoverPick(session, null, null);
+      }
+    });
     bindBoardDragDrop(container);
   }
 
@@ -748,11 +784,12 @@
       6
     );
     if (!rec.items?.length) return "";
+    const hintText = rec.coachHint || "Top picks calculés · glisser-déposer sur une case";
     return `
       <div class="draft-suggest-wrap">
         <div class="draft-suggest-head">
           <span class="draft-suggest-title">Suggestions coach</span>
-          <span class="draft-suggest-hint muted">Top picks calculés · pas un pool perso · glisser-déposer sur une case</span>
+          <span class="draft-suggest-hint muted">${coach.escapeHtml(hintText)}</span>
         </div>
         <div class="draft-suggest-row" aria-label="Suggestions coach">
           ${rec.items
@@ -784,6 +821,17 @@
       requestIdleCallback(run, { timeout: 200 });
     } else {
       requestAnimationFrame(run);
+    }
+  }
+
+  function refreshSuggestChips(session) {
+    const host = document.getElementById("draft-suggest-host");
+    if (!host) return;
+    const html = buildSuggestChipsHtml(session);
+    if (html) {
+      host.outerHTML = html;
+    } else {
+      host.innerHTML = "";
     }
   }
 

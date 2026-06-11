@@ -651,12 +651,13 @@
   }
 
   function scorePick(champ, slot, ctx) {
-    const { state, side, byName, meta, depth = 0, hintSlot = null } = ctx;
+    const { state, side, byName, meta, depth = 0, hintSlot = null, allowOffRole = false, focusSlot = null } = ctx;
     const v = buildProfile(champ, meta);
     const w = phaseWeights(depth);
     const reasons = [];
+    const offRole = !playsSlot(champ, meta, slot);
 
-    if (!playsSlot(champ, meta, slot)) {
+    if (offRole && !allowOffRole) {
       return { score: -9999, reasons: [`Lane incompatible (${SLOT_LABELS[slot]})`], slot };
     }
 
@@ -791,13 +792,26 @@
       reasons.push("Pocket counter coaching");
     }
 
+    if (offRole && allowOffRole) {
+      score -= 28;
+      reasons.push(`Flex ${SLOT_LABELS[slot] || slot} (<${MIN_LANE_RATE()}%)`);
+    } else if (focusSlot === slot) {
+      score += 12;
+      reasons.push(`Cible ${SLOT_LABELS[slot] || slot}`);
+    }
+
     if (!reasons.length) reasons.push(`${SLOT_LABELS[slot] || slot} optimal`);
 
     return { score, reasons: [...new Set(reasons)].slice(0, 8), slot, eval: after };
   }
 
   function scorePickCandidate(champ, ctx) {
-    const { allowedSlots, preferredSlot, hintSlot, meta } = ctx;
+    const { allowedSlots, preferredSlot, hintSlot, meta, focusSlot, allowOffRole } = ctx;
+
+    if (focusSlot) {
+      return scorePick(champ, focusSlot, { ...ctx, hintSlot: focusSlot, allowOffRole: allowOffRole ?? true });
+    }
+
     let slots = allowedSlots?.length ? allowedSlots.slice() : SLOTS.slice();
     const lane = LV();
     slots = lane ? lane.filterSlots(champ, meta, slots) : slots.filter((sl) => playsSlot(champ, meta, sl));
