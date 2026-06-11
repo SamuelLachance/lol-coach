@@ -353,9 +353,17 @@
     const engage = typeCounts.teamfight_engage || 0;
 
     const scalingCarries = vs.filter((v) => v.isMarksman || (v.carry || 0) >= 0.55 || v.compTypes?.includes("hypercarry")).length;
+    const marksmanCount = vs.filter((v) => v.isMarksman).length;
     const peelTotal = axes.peel;
     const hasEnchanter = vs.some((v) => v.familyKey === "support_enchanter" || (v.tags?.has?.("peel") && v.tags?.has?.("support")));
-    if (hyper >= 1 || scalingCarries >= 2 || (axes.scaling >= 1.0 && peelTotal >= 1.2)) {
+    const diveAssassins = vs.filter((v) => v.tags?.has?.("dive") || v.tags?.has?.("assassin")).length;
+    const globalCount = vs.filter((v) => v.compTypes?.includes("pick_global") || v.tags?.has?.("global")).length;
+    const protectedCarry = marksmanCount >= 1 && hasEnchanter && diveAssassins === 0;
+
+    if (diveAssassins >= 1 && !protectedCarry) {
+      plan = globalCount >= 1 ? "pick_global" : "beatdown";
+      completeness = 28 + diveAssassins * 14 + (globalCount >= 2 ? 16 : 0) + (axes.engage >= 1 ? 10 : 0);
+    } else if (protectedCarry || (hyper >= 1 && marksmanCount >= 1 && peelTotal >= 1.0)) {
       plan = "hypercarry";
       completeness = 22 + scalingCarries * 12 + (hasEnchanter ? 32 : 0) + (peelTotal >= 1.5 ? 18 : peelTotal >= 0.9 ? 10 : 0);
       if (axes.front < 1) gaps.push("frontline");

@@ -1,0 +1,533 @@
+{
+  "approach": "logic-based (MOBA composition theory, NOT win-rate statistics)",
+  "analyzed": 25000,
+  "skipped": 0,
+  "unknownChamps": [],
+  "abbrevMapSize": 614,
+  "manualAliases": 51,
+  "logicExplained": 9275,
+  "logicExplainRatePct": 37.1,
+  "algoAccuracyPct": 50.81,
+  "algoCorrect": 12657,
+  "algoWrong": 12252,
+  "algoTies": 91,
+  "logicAlgoAgree": {
+    "bothCorrect": 6937,
+    "logicOnly": 2312,
+    "algoOnly": 5720,
+    "bothWrong": 9940,
+    "skillcheck": 91
+  },
+  "topCategories": [
+    {
+      "category": "execution_skillcheck",
+      "count": 15725,
+      "pct": 62.9
+    },
+    {
+      "category": "win_condition",
+      "count": 4528,
+      "pct": 18.1
+    },
+    {
+      "category": "anti_dash_vs_dive",
+      "count": 1960,
+      "pct": 7.8
+    },
+    {
+      "category": "peel_vs_engage",
+      "count": 1861,
+      "pct": 7.4
+    },
+    {
+      "category": "disengage_vs_wombo",
+      "count": 257,
+      "pct": 1
+    },
+    {
+      "category": "scaling_timing",
+      "count": 197,
+      "pct": 0.8
+    },
+    {
+      "category": "poke_vs_engage",
+      "count": 137,
+      "pct": 0.5
+    },
+    {
+      "category": "zone_vs_dive",
+      "count": 123,
+      "pct": 0.5
+    },
+    {
+      "category": "pick_vs_scaling",
+      "count": 85,
+      "pct": 0.3
+    },
+    {
+      "category": "range_vs_melee",
+      "count": 85,
+      "pct": 0.3
+    },
+    {
+      "category": "double_enchanter_vs_dive",
+      "count": 38,
+      "pct": 0.2
+    },
+    {
+      "category": "split_vs_teamfight",
+      "count": 3,
+      "pct": 0
+    },
+    {
+      "category": "tempo_vs_scale",
+      "count": 1,
+      "pct": 0
+    }
+  ],
+  "topAlgoGaps": [
+    {
+      "key": "execution_skillcheck|algo_favored_blue|actual_red",
+      "count": 5891,
+      "example": {
+        "blue": [
+          "Gnar",
+          "Trundle",
+          "Syndra",
+          "Zeri",
+          "Yuumi"
+        ],
+        "red": [
+          "Aatrox",
+          "Volibear",
+          "Zoé",
+          "Jinx",
+          "Thresh"
+        ],
+        "winner": 2,
+        "logicReason": "Comps hypercarry protégé vs hypercarry protégé — exécution, gold lead et macro décident (pas de clash structurel dominant).",
+        "algoMargin": 806,
+        "plans": {
+          "blue": "hypercarry",
+          "red": "hypercarry"
+        }
+      }
+    },
+    {
+      "key": "execution_skillcheck|algo_favored_red|actual_blue",
+      "count": 4049,
+      "example": {
+        "blue": [
+          "Jayce",
+          "Jarvan IV",
+          "Syndra",
+          "Zeri",
+          "Leona"
+        ],
+        "red": [
+          "Gnar",
+          "Viego",
+          "Ryze",
+          "Twitch",
+          "Nautilus"
+        ],
+        "winner": 1,
+        "logicReason": "Comps hypercarry protégé vs hypercarry protégé — exécution, gold lead et macro décident (pas de clash structurel dominant).",
+        "algoMargin": -280,
+        "plans": {
+          "blue": "hypercarry",
+          "red": "hypercarry"
+        }
+      }
+    },
+    {
+      "key": "win_condition|algo_favored_blue|actual_red",
+      "count": 957,
+      "example": {
+        "blue": [
+          "Gragas",
+          "Lee Sin",
+          "LeBlanc",
+          "Jinx",
+          "Nautilus"
+        ],
+        "red": [
+          "Gnar",
+          "Xin Zhao",
+          "Ahri",
+          "Aphelios",
+          "Renata Glasc"
+        ],
+        "winner": 2,
+        "logicReason": "Win condition plus complète (hypercarry 602 vs hypercarry 524) : moins de gaps structurels.",
+        "algoMargin": 949,
+        "plans": {
+          "blue": "hypercarry",
+          "red": "hypercarry"
+        }
+      }
+    },
+    {
+      "key": "anti_dash_vs_dive|algo_favored_blue|actual_red",
+      "count": 567,
+      "example": {
+        "blue": [
+          "Sion",
+          "Rek'Sai",
+          "LeBlanc",
+          "Aphelios",
+          "Lulu"
+        ],
+        "red": [
+          "Camille",
+          "Xin Zhao",
+          "Vex",
+          "Ezreal",
+          "Bard"
+        ],
+        "winner": 2,
+        "logicReason": "Anti-dash + front (Camille/Xin Zhao/Vex/Ezreal/Bard) neutralise la mobilité du dive Sion/Rek'Sai/LeBlanc/Aphelios/Lulu.",
+        "algoMargin": 1446,
+        "plans": {
+          "blue": "hypercarry",
+          "red": "poke_disengage"
+        }
+      }
+    },
+    {
+      "key": "win_condition|algo_favored_red|actual_blue",
+      "count": 315,
+      "example": {
+        "blue": [
+          "Jayce",
+          "Lee Sin",
+          "LeBlanc",
+          "Jinx",
+          "Rakan"
+        ],
+        "red": [
+          "Ornn",
+          "Xin Zhao",
+          "Ahri",
+          "Aphelios",
+          "Leona"
+        ],
+        "winner": 1,
+        "logicReason": "Win condition plus complète (hypercarry 602 vs hypercarry 524) : moins de gaps structurels.",
+        "algoMargin": -210,
+        "plans": {
+          "blue": "hypercarry",
+          "red": "hypercarry"
+        }
+      }
+    },
+    {
+      "key": "anti_dash_vs_dive|algo_favored_red|actual_blue",
+      "count": 113,
+      "example": {
+        "blue": [
+          "Jax",
+          "Viego",
+          "Vex",
+          "Xayah",
+          "Nautilus"
+        ],
+        "red": [
+          "Gnar",
+          "Lee Sin",
+          "Zoé",
+          "Ziggs",
+          "Leona"
+        ],
+        "winner": 1,
+        "logicReason": "Anti-dash + front (Jax/Viego/Vex/Xayah/Nautilus) neutralise la mobilité du dive Gnar/Lee Sin/Zoé/Ziggs/Leona.",
+        "algoMargin": -217,
+        "plans": {
+          "blue": "teamfight_engage",
+          "red": "poke_disengage"
+        }
+      }
+    },
+    {
+      "key": "peel_vs_engage|algo_favored_blue|actual_red",
+      "count": 97,
+      "example": {
+        "blue": [
+          "Gnar",
+          "Lee Sin",
+          "Ahri",
+          "Kalista",
+          "Rakan"
+        ],
+        "red": [
+          "Yone",
+          "Viego",
+          "Veigar",
+          "Aphelios",
+          "Nautilus"
+        ],
+        "winner": 2,
+        "logicReason": "hypercarry protégé (Yone/Viego/Veigar/Aphelios/Nautilus) : peel + scale absorbe l'engage frontal de teamfight engage — le carry survit au wombo puis DPS.",
+        "algoMargin": 388,
+        "plans": {
+          "blue": "teamfight_engage",
+          "red": "hypercarry"
+        }
+      }
+    },
+    {
+      "key": "disengage_vs_wombo|algo_favored_blue|actual_red",
+      "count": 76,
+      "example": {
+        "blue": [
+          "Ornn",
+          "Xin Zhao",
+          "Zilean",
+          "Tristana",
+          "Nautilus"
+        ],
+        "red": [
+          "Mordekaiser",
+          "Lee Sin",
+          "Ahri",
+          "Ezreal",
+          "Karma"
+        ],
+        "winner": 2,
+        "logicReason": "Disengage casse le wombo : Mordekaiser/Lee Sin/Ahri/Ezreal/Karma reset la fight quand Ornn/Xin Zhao/Zilean/Tristana/Nautilus commit l'engage.",
+        "algoMargin": 1233,
+        "plans": {
+          "blue": "hypercarry",
+          "red": "hypercarry"
+        }
+      }
+    },
+    {
+      "key": "scaling_timing|algo_favored_blue|actual_red",
+      "count": 46,
+      "example": {
+        "blue": [
+          "Aatrox",
+          "Rek'Sai",
+          "Azir",
+          "Varus",
+          "Karma"
+        ],
+        "red": [
+          "Ornn",
+          "Trundle",
+          "Zilean",
+          "Miss Fortune",
+          "Yuumi"
+        ],
+        "winner": 2,
+        "logicReason": "Scale + front (Ornn/Trundle/Zilean/Miss Fortune/Yuumi) : absorbe le spike early de Aatrox/Rek'Sai/Azir/Varus/Karma, win condition late supérieure.",
+        "algoMargin": 907,
+        "plans": {
+          "blue": "hypercarry",
+          "red": "hypercarry"
+        }
+      }
+    },
+    {
+      "key": "zone_vs_dive|algo_favored_blue|actual_red",
+      "count": 37,
+      "example": {
+        "blue": [
+          "Kled",
+          "Gragas",
+          "Kassadin",
+          "Caitlyn",
+          "Tahm Kench"
+        ],
+        "red": [
+          "Rumble",
+          "Sejuani",
+          "Taliyah",
+          "Jhin",
+          "Thresh"
+        ],
+        "winner": 2,
+        "logicReason": "Contrôle de zone (Rumble/Sejuani/Taliyah/Jhin/Thresh) choke les angles — la comp dive (Kled/Gragas/Kassadin/Caitlyn/Tahm Kench) ne peut pas entrer.",
+        "algoMargin": 2714,
+        "plans": {
+          "blue": "hypercarry",
+          "red": "teamfight_engage"
+        }
+      }
+    },
+    {
+      "key": "pick_vs_scaling|algo_favored_blue|actual_red",
+      "count": 22,
+      "example": {
+        "blue": [
+          "Akali",
+          "Jarvan IV",
+          "Ahri",
+          "Aphelios",
+          "Leona"
+        ],
+        "red": [
+          "Gangplank",
+          "Xin Zhao",
+          "LeBlanc",
+          "Jinx",
+          "Nautilus"
+        ],
+        "winner": 2,
+        "logicReason": "Pick/global (Gangplank/Xin Zhao/LeBlanc/Jinx/Nautilus) punition un hypercarry immobile (Akali/Jarvan IV/Ahri/Aphelios/Leona) — cross-map picks avant le scale.",
+        "algoMargin": 302,
+        "plans": {
+          "blue": "hypercarry",
+          "red": "hypercarry"
+        }
+      }
+    },
+    {
+      "key": "range_vs_melee|algo_favored_blue|actual_red",
+      "count": 15,
+      "example": {
+        "blue": [
+          "Kennen",
+          "Jarvan IV",
+          "Twisted Fate",
+          "Jinx",
+          "Nautilus"
+        ],
+        "red": [
+          "Graves",
+          "Xin Zhao",
+          "LeBlanc",
+          "Caitlyn",
+          "Lux"
+        ],
+        "winner": 2,
+        "logicReason": "Abus de portée (Graves/Xin Zhao/LeBlanc/Caitlyn/Lux) : siege/poke punition une comp engage mélée sans réponse range.",
+        "algoMargin": 382,
+        "plans": {
+          "blue": "hypercarry",
+          "red": "hypercarry"
+        }
+      }
+    },
+    {
+      "key": "zone_vs_dive|algo_favored_red|actual_blue",
+      "count": 15,
+      "example": {
+        "blue": [
+          "Cho'Gath",
+          "Kha'Zix",
+          "Taliyah",
+          "Varus",
+          "Zyra"
+        ],
+        "red": [
+          "Urgot",
+          "Rengar",
+          "Syndra",
+          "Caitlyn",
+          "Braum"
+        ],
+        "winner": 1,
+        "logicReason": "Contrôle de zone (Cho'Gath/Kha'Zix/Taliyah/Varus/Zyra) choke les angles — la comp dive (Urgot/Rengar/Syndra/Caitlyn/Braum) ne peut pas entrer.",
+        "algoMargin": -63,
+        "plans": {
+          "blue": "poke_disengage",
+          "red": "hypercarry"
+        }
+      }
+    },
+    {
+      "key": "poke_vs_engage|algo_favored_blue|actual_red",
+      "count": 12,
+      "example": {
+        "blue": [
+          "Renekton",
+          "Jarvan IV",
+          "Zoé",
+          "Miss Fortune",
+          "Nautilus"
+        ],
+        "red": [
+          "Kennen",
+          "Gragas",
+          "Yasuo",
+          "Varus",
+          "Thresh"
+        ],
+        "winner": 2,
+        "logicReason": "poke + disengage kite teamfight engage : range + disengage empêche le engage mélée de toucher la backline.",
+        "algoMargin": 438,
+        "plans": {
+          "blue": "teamfight_engage",
+          "red": "poke_disengage"
+        }
+      }
+    },
+    {
+      "key": "peel_vs_engage|algo_favored_red|actual_blue",
+      "count": 10,
+      "example": {
+        "blue": [
+          "Aatrox",
+          "Olaf",
+          "Karma",
+          "Kai'Sa",
+          "Leona"
+        ],
+        "red": [
+          "Gnar",
+          "Sejuani",
+          "Irelia",
+          "Xayah",
+          "Alistar"
+        ],
+        "winner": 1,
+        "logicReason": "hypercarry protégé (Aatrox/Olaf/Karma/Kai'Sa/Leona) : peel + scale absorbe l'engage frontal de teamfight engage — le carry survit au wombo puis DPS.",
+        "algoMargin": -38,
+        "plans": {
+          "blue": "hypercarry",
+          "red": "teamfight_engage"
+        }
+      }
+    }
+  ],
+  "sampleGames": [],
+  "userComp": {
+    "logic": {
+      "category": "execution_skillcheck",
+      "reasonFr": "Comps hypercarry protégé vs hypercarry protégé — exécution, gold lead et macro décident (pas de clash structurel dominant).",
+      "winnerPlan": "hypercarry",
+      "loserPlan": "hypercarry"
+    },
+    "duel": {
+      "margin": -717,
+      "winProb": {
+        "our": 0.2589105581708137,
+        "enemy": 0.7410894418291862
+      },
+      "plans": {
+        "blue": "hypercarry",
+        "red": "hypercarry"
+      },
+      "aligned": true
+    }
+  },
+  "logicRuleCategories": [
+    "peel_vs_engage",
+    "poke_vs_engage",
+    "range_vs_melee",
+    "disengage_vs_wombo",
+    "pick_vs_scaling",
+    "tempo_vs_scale",
+    "split_vs_teamfight",
+    "engage_vs_split",
+    "dive_vs_poke",
+    "zone_vs_dive",
+    "scaling_timing",
+    "double_enchanter_vs_dive",
+    "anti_dash_vs_dive",
+    "win_condition",
+    "execution_skillcheck"
+  ]
+}
