@@ -45,7 +45,7 @@
     coach.state.draftSessions.forEach((s) => window.LoLDraft.normalizeSession(s));
     const payload = {
       sessions: coach.state.draftSessions.map((s) => {
-        const { hoverPick: _hover, ...rest } = s;
+        const { hoverPick: _hover, hoverSource: _hoverSrc, ...rest } = s;
         return rest;
       }),
       activeId: coach.state.activeDraftId,
@@ -122,8 +122,10 @@
   function renderAll() {
     if (!ensureDraftElements()) return;
     const session = getActiveSession();
-    if (session && !session.focus && !window.LoLDraft.isComplete(session)) {
-      window.LoLDraft.suggestNextFocus(session);
+    if (session && !window.LoLDraft.isComplete(session)) {
+      window.LoLDraft.resyncStepIndex(session);
+      if (window.LoLDraft.refreshAutoPickFocus) window.LoLDraft.refreshAutoPickFocus(session);
+      else if (!session.focus) window.LoLDraft.suggestNextFocus(session);
     }
     try {
       renderSessionBar();
@@ -157,6 +159,10 @@
     if (!el?.querySelector(".draft-cell")) {
       renderBoard();
       return;
+    }
+
+    if (!session.hoverSource && !session.focus?.userLocked && window.LoLDraft.refreshDraftHover) {
+      window.LoLDraft.refreshDraftHover(session);
     }
 
     el.querySelectorAll(".draft-cell-focused").forEach((c) => c.classList.remove("draft-cell-focused"));
@@ -199,6 +205,14 @@
   }
 
   function afterFocusChange(session) {
+    const step = window.LoLDraft.getStep(session);
+    if (
+      step?.type === "pick" &&
+      !session.focus?.userLocked &&
+      window.LoLDraft.refreshAutoPickFocus
+    ) {
+      window.LoLDraft.refreshAutoPickFocus(session);
+    }
     window.LoLDraft.invalidateRecommendationCache();
     syncBoardFocus(session);
     syncDraftCoachUI(session);
@@ -227,11 +241,14 @@
     normalizeSessionFocus(session);
     const f = session.focus;
     if (f?.type === "ban") return null;
-    if (f?.slot && f?.side) {
+    if (f?.userLocked && f?.slot && f?.side) {
       return { type: "pick", side: f.side, slot: f.slot };
     }
     if (session.hoverPick?.slot) {
       return { type: "pick", side: session.hoverPick.side, slot: session.hoverPick.slot, hover: true };
+    }
+    if (f?.slot && f?.side) {
+      return { type: "pick", side: f.side, slot: f.slot };
     }
     return null;
   }
@@ -244,18 +261,41 @@
   }
 
   function isCellHovered(session, type, side, slot) {
-    if (session.focus?.type === "pick" && session.focus.slot) return false;
-    const h = session.hoverPick;
-    if (!h || type !== "pick" || !slot) return false;
-    return h.side === side && h.slot === slot;
+    if (session.focus?.userLocked && session.focus?.type === "pick" && session.focus.slot) return false;
+    if (type !== "pick" || !slot) return false;
+    const src = session.hoverSource;
+    if (src?.side === side && src.slot === slot) return true;
+    const tgt = session.hoverPick;
+    if (!tgt) return false;
+    if (tgt.side === side && tgt.slot === slot) {
+      return !src || src.side !== side || src.slot !== slot;
+    }
+    return false;
   }
 
   function setHoverPick(session, side, slot) {
     normalizeSessionFocus(session);
-    if (session.focus?.slot && session.focus?.side) return;
-    const prev = session.hoverPick;
-    if (prev?.side === side && prev?.slot === slot) return;
-    session.hoverPick = slot ? { side, slot } : null;
+    if (session.focus?.userLocked && session.focus?.slot && session.focus?.side) return;
+    const prevSrc = session.hoverSource;
+    const prevTgt = session.hoverPick;
+    if (!slot) {
+      if (!prevSrc && !prevTgt) return;
+      session.hoverSource = null;
+      session.hoverPick = null;
+      afterFocusChange(session);
+      return;
+    }
+    const resolved = window.LoLDraft.resolveHoverPick(session, side, slot);
+    if (
+      prevSrc?.side === side &&
+      prevSrc?.slot === slot &&
+      prevTgt?.side === resolved?.side &&
+      prevTgt?.slot === resolved?.slot
+    ) {
+      return;
+    }
+    session.hoverSource = { side, slot };
+    session.hoverPick = resolved;
     afterFocusChange(session);
   }
 
@@ -308,6 +348,7 @@
 
     if (comp[slot]) {
       session.hoverPick = null;
+      session.hoverSource = null;
       session.focus = { type: "swap", side, slot };
       saveSessionsDebounced();
       afterFocusChange(session);
@@ -315,9 +356,18 @@
     }
 
     session.hoverPick = null;
-    session.focus = { type: "pick", side, slot };
+    session.hoverSource = null;
+    const step = window.LoLDraft.getStep(session);
+    const onTurn = step?.type === "pick" && step.side === side;
+    const preferred = onTurn ? window.LoLDraft.preferredBlindSlot(session, side) : null;
+    const offCoachLane = onTurn && preferred && slot !== preferred;
+    session.focus = { type: "pick", side, slot, userLocked: offCoachLane };
     window.LoLDraft.normalizeSession(session);
-    window.LoLDraft.syncLegacySlots(session);
+    if (onTurn && window.LoLDraft.refreshAutoPickFocus) {
+      window.LoLDraft.refreshAutoPickFocus(session);
+    } else {
+      window.LoLDraft.syncLegacySlots(session);
+    }
     saveSessionsDebounced();
     afterFocusChange(session);
   }
@@ -334,19 +384,16 @@
   }
 
   function restoreFocusAfterAction(session, payload, result) {
-    if (result.inOrder) {
-      window.LoLDraft.suggestNextFocus(session);
-      return;
-    }
-    if (payload.type === "ban" && payload.banIndex != null) {
+    window.LoLDraft.resyncStepIndex(session);
+    if (payload.type === "ban" && payload.banIndex != null && !result.inOrder) {
       session.focus = { type: "ban", side: payload.side, banIndex: payload.banIndex };
       return;
     }
-    if (payload.type === "pick" && payload.slot) {
-      session.focus = { type: "pick", side: payload.side, slot: payload.slot };
-      return;
+    if (window.LoLDraft.refreshAutoPickFocus) {
+      window.LoLDraft.refreshAutoPickFocus(session);
+    } else {
+      window.LoLDraft.suggestNextFocus(session);
     }
-    window.LoLDraft.suggestNextFocus(session);
   }
 
   function draftCtx() {
@@ -609,7 +656,8 @@
     const step = window.LoLDraft.getStep(session);
     const sideActive = step?.side === side;
 
-    const slots = window.LoLDraft.SLOTS.map((slot) => {
+    const slotOrder = window.LoLDraft.DISPLAY_SLOTS || window.LoLDraft.HOVER_SLOT_PRIORITY || window.LoLDraft.SLOTS;
+    const slots = slotOrder.map((slot) => {
       const name = comp[slot];
       const champ = name ? coach.state.byName.get(name) : null;
       const pickMeta = name ? window.LoLDraft.pickAtSlot(session, side, slot) : null;

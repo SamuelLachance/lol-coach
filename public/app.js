@@ -517,12 +517,20 @@ function rebuildEffectiveChampions() {
   if (!Array.isArray(state.baseChampions) || !state.baseChampions.length || !state.patchConfig) {
     state.champions = Array.isArray(state.baseChampions) ? [...state.baseChampions] : [];
     state.byName.clear();
-    state.champions.forEach((c) => state.byName.set(c.name, c));
+    state.champions.forEach((c) => {
+      state.byName.set(c.name, c);
+      if (c.nameEn) state.byName.set(c.nameEn, c);
+      if (c.key) state.byName.set(c.key, c);
+    });
     return;
   }
   state.champions = window.LoLPatch.getPlayable(state.baseChampions, state.patchConfig);
   state.byName.clear();
-  state.champions.forEach((c) => state.byName.set(c.name, c));
+  state.champions.forEach((c) => {
+    state.byName.set(c.name, c);
+    if (c.nameEn) state.byName.set(c.nameEn, c);
+    if (c.key) state.byName.set(c.key, c);
+  });
 }
 
 function persistPatchConfig() {
@@ -2391,10 +2399,41 @@ const TACTIC_TEMPLATES = {
   },
 };
 
-function verdictLabel(v) {
-  if (v === "win") return '<span class="verdict win">Favorable</span>';
-  if (v === "lose") return '<span class="verdict lose">Défavorable</span>';
-  return '<span class="verdict even">Égal</span>';
+function tacticsLaneVerdict(ourName, enemyName, slot) {
+  const SC = window.LoLDraftScoring;
+  if (!SC?.scoreLaneMatchup || !ourName || !enemyName || !slot) {
+    return { verdict: "unknown", margin: 0, note: "Lane incomplète." };
+  }
+  return SC.scoreLaneMatchup(
+    ourName,
+    enemyName,
+    slot,
+    state.byName,
+    state.tacticsMeta?.champions || {}
+  );
+}
+
+function verdictLabel(v, margin) {
+  if (v === "win") {
+    const cls = typeof margin === "number" && margin > 0 && margin < 5 ? "win slight" : "win";
+    const txt = cls.includes("slight") ? "Légèrement favorable" : "Favorable";
+    return `<span class="verdict ${cls}">${txt}</span>`;
+  }
+  if (v === "lose") {
+    const cls = typeof margin === "number" && margin < 0 && margin > -5 ? "lose slight" : "lose";
+    const txt = cls.includes("slight") ? "Légèrement défavorable" : "Défavorable";
+    return `<span class="verdict ${cls}">${txt}</span>`;
+  }
+  if (v === "even") {
+    const resolved =
+      typeof margin === "number" && margin !== 0
+        ? margin > 0
+          ? "win"
+          : "lose"
+        : null;
+    if (resolved) return verdictLabel(resolved, margin);
+  }
+  return '<span class="verdict unknown">—</span>';
 }
 
 const TACTICS_SLOT_ICONS = { Top: "▣", Jungle: "🔥", Mid: "⚡", Bot: "◎", Support: "✚" };
@@ -2821,7 +2860,7 @@ function renderTacticsCompScoreHtml(comp) {
           ${breakdownRow("Familles / templates", "family")}
           ${breakdownRow("Équilibre (AD/AP/front)", "balance")}
           ${breakdownRow("Coaching / mix", "coaching")}
-          ${breakdownRow("Win condition", "archetype")}
+          ${breakdownRow("Win condition", "winCondition")}
           ${breakdownRow("Identité MTG", "mtg")}
           ${breakdownRow("Wombo / combos", "wombo")}
           ${breakdownRow("Interactions draft", "interaction")}
@@ -2985,25 +3024,24 @@ function getTacticsPoolFiltered() {
   const macroFocus =
     (state.tacticsFocus?.type === "pick" && state.tacticsFocus.slot && state.tacticsFocus) ||
     (state.tacticsHover?.slot && state.tacticsHover);
-  if (macroFocus?.slot && window.LoLDraftScoring?.scoreMacroPick) {
+  if (macroFocus?.slot && window.LoLDraft?.scoreCompPick) {
     const side = macroFocus.side;
     const slot = macroFocus.slot;
-    const teamNames = compPickNames(tacticsComp(side));
-    const enemyNames = compPickNames(tacticsComp(side === "our" ? "enemy" : "our"));
     const LV = window.LoLLaneViability;
     const laneViable = LV
       ? new Set(filtered.filter((c) => LV.playsSlot(c, metaMap, slot)).map((c) => c.name))
       : null;
     const scores = new Map();
     for (const c of filtered) {
-      const r = window.LoLDraftScoring.scoreMacroPick(c, slot, {
-        teamNames,
-        enemyNames,
-        byName: state.byName,
-        metaMap,
+      const r = window.LoLDraft.scoreCompPick(
+        c,
+        state.ourComp,
+        state.enemyComp,
         side,
-        allowOffRole: false,
-      });
+        slot,
+        state.byName,
+        metaMap
+      );
       scores.set(c.name, r.score);
     }
     filtered = [...filtered].sort((a, b) => {
@@ -3368,7 +3406,7 @@ function renderRoleAdviceSection(roleAdvice) {
       const r = roleAdvice.slots[slot];
       if (!r?.champion) return "";
       const champ = state.byName.get(r.champion);
-      const verdictCls = r.matchupVerdict === "win" ? "win" : r.matchupVerdict === "lose" ? "lose" : "even";
+      const verdictCls = r.matchupVerdict === "win" ? "win" : r.matchupVerdict === "lose" ? "lose" : "unknown";
       const icon = TACTICS_SLOT_ICONS[slot] || "";
       const slotKey = slot.toLowerCase();
       return `<article class="tactics-role-card tactics-role-card--${slotKey}">
@@ -3417,6 +3455,11 @@ function runTacticsAnalysis() {
 
   const metaMap = state.tacticsMeta?.champions || {};
   const result = window.LoLTactics.recommend(state.ourComp, state.enemyComp, metaMap, state.byName);
+  const lanes = {};
+  for (const s of slots) {
+    lanes[s] = tacticsLaneVerdict(state.ourComp[s], state.enemyComp[s], s);
+    result.lanes[s] = lanes[s];
+  }
 
   const laneRows = slots
     .map(
@@ -3424,9 +3467,9 @@ function runTacticsAnalysis() {
     <tr>
       <td>${s}</td>
       <td>${escapeHtml(state.ourComp[s])}</td>
-      <td>${verdictLabel(result.lanes[s]?.verdict)}</td>
+      <td>${verdictLabel(lanes[s]?.verdict, lanes[s]?.margin)}</td>
       <td>${escapeHtml(state.enemyComp[s])}</td>
-      <td class="lane-note">${escapeHtml(result.lanes[s]?.note || "")}</td>
+      <td class="lane-note">${escapeHtml(lanes[s]?.note || "")}</td>
     </tr>`
     )
     .join("");

@@ -34,10 +34,13 @@
 
   const PICK_STEPS = LOL_DRAFT_STEPS.filter((s) => s.type === "pick");
   const PICK_ORDER_BLUE = ["Bot", "Jungle", "Mid", "Support", "Top"];
-  const PICK_ORDER_RED = ["Top", "Support", "Mid", "Jungle", "Bot"];
+  const PICK_ORDER_RED = ["Bot", "Jungle", "Mid", "Support", "Top"];
+  const DISPLAY_SLOTS = ["Bot", "Jungle", "Mid", "Support", "Top"];
   const BLIND_PICK_SLOTS = ["Bot", "Jungle", "Mid"];
   const LATE_MATCHUP_SLOTS = ["Support", "Top"];
-  const PICK_SLOT_PRIORITY = PICK_ORDER_BLUE;
+  /** Survol draft — priorité coach (indépendante de l'ordre de pick rouge). */
+  const HOVER_SLOT_PRIORITY = ["Bot", "Jungle", "Mid", "Support", "Top"];
+  const PICK_SLOT_PRIORITY = HOVER_SLOT_PRIORITY;
   const SLOT_LABELS = { Bot: "ADC", Jungle: "Jungle", Mid: "Mid", Support: "Support", Top: "Top" };
   const MIN_LANE_PLAY_RATE = 10;
 
@@ -70,6 +73,7 @@
     if (s.focus === undefined) s.focus = null;
     else if (s.focus) s.focus = normalizeFocus(s.focus);
     if (s.hoverPick === undefined) s.hoverPick = null;
+    if (s.hoverSource === undefined) s.hoverSource = null;
     return s;
   }
 
@@ -82,8 +86,8 @@
       stepIndex: 0,
       bans: { blue: [], red: [] },
       picks: { blue: [], red: [] },
-      activeSlot: "Top",
-      enemyActiveSlot: "Top",
+      activeSlot: "Bot",
+      enemyActiveSlot: "Bot",
       focus: null,
       history: [],
       createdAt: Date.now(),
@@ -161,24 +165,29 @@
   }
 
   function pickOrderForSide(side) {
-    const ck = global.CoachingDraftKnowledge;
-    if (ck?.pickOrderForSide) return ck.pickOrderForSide(side);
-    return side === "red" ? PICK_ORDER_RED : PICK_ORDER_BLUE;
+    return HOVER_SLOT_PRIORITY.slice();
   }
 
-  function nextPreferredSlotFrom(by, side) {
-    for (const slot of pickOrderForSide(side)) if (!by[slot]) return slot;
+  /** Coach priority — enemy reveals remontent (counter lane). */
+  function coachSlotPriority(s, side) {
+    const priority = dynamicHoverPriority(s, side);
+    return priority.length ? priority : HOVER_SLOT_PRIORITY.slice();
+  }
+
+  function nextPreferredSlotFrom(by, side, s = null) {
+    const order = s ? coachSlotPriority(s, side) : pickOrderForSide(side);
+    for (const slot of order) if (!by[slot]) return slot;
     return null;
   }
 
   function nextBlindSlotFrom(by, side = "blue") {
     return nextPreferredSlotFrom(by, side);
   }
-  function nextBlindSlot(s, side) { return nextPreferredSlotFrom(pickBySlot(s, side), side); }
+  function nextBlindSlot(s, side) { return nextPreferredSlotFrom(pickBySlot(s, side), side, s); }
   function isBlindPickPhase(s, side) {
     const by = pickBySlot(s, side);
     const n = sidePicks(s, side).length;
-    return n < 5 && nextPreferredSlotFrom(by, side) !== null;
+    return n < 5 && nextPreferredSlotFrom(by, side, s) !== null;
   }
 
   function pickBySlotExcluding(s, side, excludeName) {
@@ -194,11 +203,11 @@
   function allowedSlotsForNextPick(s, side, excludeName = null) {
     const by = excludeName ? pickBySlotExcluding(s, side, excludeName) : pickBySlot(s, side);
     const open = openSlotsFrom(by);
-    const order = pickOrderForSide(side);
-    const next = nextPreferredSlotFrom(by, side);
+    const order = coachSlotPriority(s, side);
+    const next = order.find((sl) => open.includes(sl)) || null;
 
     if (next && open.includes(next)) {
-      if (side === "blue" && LATE_MATCHUP_SLOTS.includes(next) && !isLaneMatchupKnown(s, side, next)) {
+      if (LATE_MATCHUP_SLOTS.includes(next) && !isLaneMatchupKnown(s, side, next)) {
         const early = order.filter((sl) => open.includes(sl) && !LATE_MATCHUP_SLOTS.includes(sl));
         if (early.length) return [early[0]];
       }
@@ -208,7 +217,7 @@
     const allowed = [];
     for (const slot of order) {
       if (!open.includes(slot)) continue;
-      if (side === "blue" && LATE_MATCHUP_SLOTS.includes(slot) && !isLaneMatchupKnown(s, side, slot)) continue;
+      if (LATE_MATCHUP_SLOTS.includes(slot) && !isLaneMatchupKnown(s, side, slot)) continue;
       allowed.push(slot);
     }
     return allowed.length ? allowed : open;
@@ -216,13 +225,13 @@
 
   function layoutAllowedSlots(s, side, excludeName = null) {
     const by = excludeName ? pickBySlotExcluding(s, side, excludeName) : pickBySlot(s, side);
-    const order = pickOrderForSide(side);
+    const order = coachSlotPriority(s, side);
     const open = openSlotsFrom(by);
     const out = [];
     for (const slot of order) {
       if (by[slot]) out.push(slot);
       else if (open.includes(slot)) {
-        if (side === "blue" && LATE_MATCHUP_SLOTS.includes(slot) && !isLaneMatchupKnown(s, side, slot)) continue;
+        if (LATE_MATCHUP_SLOTS.includes(slot) && !isLaneMatchupKnown(s, side, slot)) continue;
         out.push(slot);
       }
     }
@@ -231,9 +240,103 @@
 
   function preferredBlindSlot(s, side, excludeName = null) {
     const allowed = allowedSlotsForNextPick(s, side, excludeName);
-    return allowed[0] || openSlotsFrom(excludeName ? pickBySlotExcluding(s, side, excludeName) : pickBySlot(s, side))[0] || pickOrderForSide(side)[0];
+    return allowed[0] || coachSlotPriority(s, side).find((sl) => openSlotsFrom(
+      excludeName ? pickBySlotExcluding(s, side, excludeName) : pickBySlot(s, side)
+    ).includes(sl)) || HOVER_SLOT_PRIORITY[0];
   }
   function recommendedSlotForPick(s, side) { return preferredBlindSlot(s, side); }
+
+  function activePickSide(s) {
+    const step = getStep(s);
+    return step?.type === "pick" ? step.side : null;
+  }
+
+  /**
+   * Priorité coach — ADC → Jungle → Mid → Support → Top.
+   * Lanes où l'adversaire a déjà pické remontent (counter), pour blue ou red.
+   */
+  function dynamicHoverPriority(s, forSide) {
+    if (!forSide) return HOVER_SLOT_PRIORITY.slice();
+    const enemy = forSide === "blue" ? "red" : "blue";
+    const teamBy = pickBySlot(s, forSide);
+    const enemyBy = pickBySlot(s, enemy);
+    const counterFirst = [];
+    const restOpen = [];
+    for (const slot of HOVER_SLOT_PRIORITY) {
+      if (!teamBy[slot] && enemyBy[slot]) counterFirst.push(slot);
+    }
+    for (const slot of HOVER_SLOT_PRIORITY) {
+      if (!teamBy[slot] && !counterFirst.includes(slot)) restOpen.push(slot);
+    }
+    return [...counterFirst, ...restOpen];
+  }
+
+  /** Coach reprend la main si l'utilisateur a verrouillé une lane hors priorité (ex. Top alors que ADC adverse). */
+  function coachFocusOverridesUserLock(s, side, lockedSlot) {
+    if (!lockedSlot) return false;
+    const priority = dynamicHoverPriority(s, side);
+    const preferred = priority[0];
+    if (!preferred || preferred === lockedSlot) return false;
+    const enemy = side === "blue" ? "red" : "blue";
+    const enemyBy = pickBySlot(s, enemy);
+    const teamBy = pickBySlot(s, side);
+    if (!teamBy[preferred] && enemyBy[preferred]) return true;
+    if (LATE_MATCHUP_SLOTS.includes(lockedSlot) && !isLaneMatchupKnown(s, side, lockedSlot)) return true;
+    return false;
+  }
+
+  function defaultHoverPick(s, forSide = null) {
+    const side = forSide || activePickSide(s) || ourSide(s);
+    const next = dynamicHoverPriority(s, side)[0];
+    return next ? { side, slot: next } : null;
+  }
+
+  /**
+   * Survol → suggestions pour l'équipe au tour (ou la colonne survolée en prep).
+   * Pick adverse révélé → lane miroir pour counter.
+   */
+  function resolveHoverPick(s, hoveredSide, hoveredSlot) {
+    if (!hoveredSide || !hoveredSlot) return null;
+
+    const stepSide = activePickSide(s);
+    const coachSide = stepSide || hoveredSide;
+    const oppSide = coachSide === "blue" ? "red" : "blue";
+    const coachBy = pickBySlot(s, coachSide);
+    const oppBy = pickBySlot(s, oppSide);
+
+    if (hoveredSide === oppSide && oppBy[hoveredSlot]) {
+      return { side: coachSide, slot: hoveredSlot };
+    }
+
+    if (hoveredSide === coachSide) {
+      return { side: coachSide, slot: hoveredSlot };
+    }
+
+    if (hoveredSide === oppSide) {
+      const slot = dynamicHoverPriority(s, coachSide)[0] || hoveredSlot;
+      return { side: coachSide, slot };
+    }
+
+    const slot = dynamicHoverPriority(s, coachSide)[0] || hoveredSlot;
+    return { side: coachSide, slot };
+  }
+
+  /** Réaligne le survol quand l'adversaire révèle un pick (sans lane cliquée). */
+  function refreshDraftHover(s) {
+    normalizeSession(s);
+    if (s.focus?.userLocked) return s.hoverPick || null;
+    const step = getStep(s);
+    if (step?.type !== "pick") {
+      s.hoverPick = null;
+      s.hoverSource = null;
+      return null;
+    }
+    const def = defaultHoverPick(s, step.side);
+    if (!def) return null;
+    s.hoverPick = def;
+    s.hoverSource = { side: step.side, slot: def.slot };
+    return def;
+  }
 
   function getData(byName, meta, name) {
     return byName?.get?.(name) || meta?.[name] || { name, optimalSlots: [] };
@@ -483,10 +586,12 @@
 
     if (isTeamFirstPick(s, side)) {
       if (side === "blue") return "B1 Bleu : ADC OP · Jungle OP · ou flex (Cours 3)";
-      return "R1 Rouge : Top counter · ordre " + order;
+      return `R1 Rouge : ${label} · ordre coach ${order}`;
     }
-    if (side === "blue" && slot === "Bot" && n === 1) return `Pick ${n} Bleu : ADC blind (Cait/Varus/Aphelios/Jinx/Xayah)`;
-    if (side === "red" && slot === "Top" && n <= 2) return `Pick ${n} Rouge : Top/Supp counter en priorité`;
+    if (slot === "Bot" && n === 1) return `Pick ${n} ${sideLabel} : ADC blind (Cait/Varus/Aphelios/Jinx/Xayah)`;
+    if (slot === "Bot" && enemyPickBySlot(s, side).Bot) {
+      return `Pick ${n} ${sideLabel} : ADC counter vs ${enemyPickBySlot(s, side).Bot}`;
+    }
     if (LATE_MATCHUP_SLOTS.includes(slot) && side === "blue" && !isLaneMatchupKnown(s, side, slot)) {
       return `Attendre matchup avant ${label} · priorité ${order}`;
     }
@@ -689,7 +794,7 @@
     return result;
   }
 
-  function suggestNextFocus(s) {
+  function suggestNextFocus(s, opts = {}) {
     normalizeSession(s);
     if (isComplete(s)) { s.focus = null; return null; }
     const step = getStep(s);
@@ -701,11 +806,43 @@
         return s.focus;
       }
     } else {
-      s.focus = { type: "pick", side: step.side, slot: preferredBlindSlot(s, step.side) || null };
+      const nextSlot = preferredBlindSlot(s, step.side) || null;
+      const sameSide = s.focus?.side === step.side;
+      const lockedSlot = sameSide ? s.focus?.slot : null;
+      const lockOverridden = lockedSlot && coachFocusOverridesUserLock(s, step.side, lockedSlot);
+      const keepUserLane =
+        s.focus?.userLocked &&
+        sameSide &&
+        lockedSlot &&
+        !lockOverridden &&
+        !opts.forceSlot;
+      s.focus = {
+        type: "pick",
+        side: step.side,
+        slot: keepUserLane ? lockedSlot : nextSlot,
+        userLocked: keepUserLane,
+      };
       return s.focus;
     }
     s.focus = null;
     return null;
+  }
+
+  function refreshAutoPickFocus(s) {
+    normalizeSession(s);
+    const step = getStep(s);
+    if (!step || step.type !== "pick" || isComplete(s)) return null;
+    if (
+      s.focus?.userLocked &&
+      s.focus?.side === step.side &&
+      s.focus?.slot &&
+      !coachFocusOverridesUserLock(s, step.side, s.focus.slot)
+    ) {
+      return s.focus;
+    }
+    const focus = suggestNextFocus(s, { forceSlot: true });
+    refreshDraftHover(s);
+    return focus;
   }
 
   function syncLegacySlots(s) {
@@ -796,42 +933,63 @@
     return null;
   }
 
+  function scoreCompPick(champ, ourComp, enemyComp, pickSide, slot, byName, metaMap, opts = {}) {
+    const sc = SC();
+    if (!sc?.scoreMacroPick) return { score: 0, reasons: [], slot };
+    return sc.scoreMacroPick(champ, slot, {
+      ourComp,
+      enemyComp,
+      byName,
+      metaMap,
+      side: pickSide,
+      allowOffRole: opts.allowOffRole === true,
+    });
+  }
+
   function getMacroRecommendations(ourComp, enemyComp, focus, hover, champs, metaMap, byName, limit = 6) {
     const target = macroFocusTarget(focus, hover);
     if (!target?.slot) return { type: "none", items: [], coachHint: "", forSide: null };
 
     const side = target.side;
     const slot = target.slot;
-    const comp = side === "our" ? ourComp : enemyComp;
-    const oppComp = side === "our" ? enemyComp : ourComp;
-    const teamNames = namesFromComp(comp);
-    const enemyNames = namesFromComp(oppComp);
+    const draftSide = side === "enemy" ? "red" : "blue";
     const taken = new Set([...namesFromComp(ourComp), ...namesFromComp(enemyComp)]);
     const avail = (champs || []).filter((c) => c?.name && !taken.has(c.name));
     const viable = laneViableForSlot(avail, metaMap, slot);
-    const sc = SC();
 
     const items = viable
       .map((c) => {
-        const r = sc
-          ? sc.scoreMacroPick(c, slot, { teamNames, enemyNames, byName, metaMap, side, allowOffRole: false })
-          : { score: 0, reasons: [], slot };
+        const r = scoreCompPick(c, ourComp, enemyComp, side, slot, byName, metaMap);
         return { champion: c, score: r.score, reasons: r.reasons, slot };
       })
-      .filter((item) => item.score > -500)
+      .filter((item) => item.score > -1000)
       .sort((a, b) => b.score - a.score)
       .slice(0, limit);
 
     const slotLabel = SLOT_LABELS[slot] || slot;
     const teamLabel = side === "our" ? "Notre équipe" : "Adversaire";
+    const session = compsToMacroSession(ourComp, enemyComp);
+    const coachHint = getDraftCoachHint(session, draftSide, byName, metaMap);
     return {
       type: "pick",
       side,
       slot,
       forSide: side,
-      coachHint: `${teamLabel} · ${slotLabel} · ≥${MIN_LANE_PLAY_RATE}% · famille > combo > trinité${target.hover ? " (survol)" : ""}`,
+      coachHint: coachHint
+        ? `${teamLabel} · ${slotLabel} · ≥${MIN_LANE_PLAY_RATE}% · ${coachHint}${target.hover ? " (survol)" : ""}`
+        : `${teamLabel} · ${slotLabel} · ≥${MIN_LANE_PLAY_RATE}%${target.hover ? " (survol)" : ""}`,
       items,
     };
+  }
+
+  function compsToMacroSession(ourComp, enemyComp) {
+    const s = createSession("macro-score", "blue");
+    s.stepIndex = 7;
+    for (const slot of SLOTS) {
+      if (ourComp[slot]) assignPickDirect(s, "blue", ourComp[slot], slot, { pinned: true });
+      if (enemyComp[slot]) assignPickDirect(s, "red", enemyComp[slot], slot, { pinned: true });
+    }
+    return s;
   }
 
   function compareComps(ourComp, enemyComp, byName, metaMap) {
@@ -856,8 +1014,9 @@
   }
 
   global.LoLDraft = {
-    SLOTS, BANS_PER_TEAM, BAN_PHASE1_COUNT, BAN_PHASE2_COUNT, PICK_STEPS, PICK_SLOT_PRIORITY,
-    PICK_ORDER_BLUE, PICK_ORDER_RED, pickOrderForSide,
+    SLOTS, BANS_PER_TEAM, BAN_PHASE1_COUNT, BAN_PHASE2_COUNT, PICK_STEPS,
+    HOVER_SLOT_PRIORITY, PICK_SLOT_PRIORITY, DISPLAY_SLOTS,
+    PICK_ORDER_BLUE, PICK_ORDER_RED, pickOrderForSide, coachSlotPriority,
     BLIND_PICK_SLOTS, LATE_MATCHUP_SLOTS, SLOT_LABELS, MIN_LANE_PLAY_RATE,
     MTG_COLORS, COLOR_LABELS, COLOR_HEX,
     buildDraftSteps, normalizeSession, createSession, getSteps, totalSteps, getStep, isComplete,
@@ -867,12 +1026,13 @@
     getRecommendations, invalidateRecommendationCache, isBlueFirstPick, isTeamFirstPick, nextBlindSlot,
     allowedSlotsForNextPick, layoutAllowedSlots, recommendedSlotForPick, preferredBlindSlot,
     isBlindPickPhase, isLaneMatchupKnown, getDraftCoachHint,
-    applyAction, recordAction, manualAssign, clearSlot, actionLabel, suggestNextFocus, syncLegacySlots,
+    dynamicHoverPriority, defaultHoverPick, resolveHoverPick, refreshDraftHover, activePickSide,
+    applyAction, recordAction, manualAssign, clearSlot, actionLabel, suggestNextFocus, refreshAutoPickFocus, syncLegacySlots,
     resyncStepIndex, undo, resetSession, swapPickSlots, toComps, analyzeLive, stepLabel, formatSummary,
     scorePick: (c, s, side, slot, meta, byName) => scorePick(c, s, side, byName, meta, slot),
     scorePickForSlot,
     laneViableForSlot,
     scoreBan, evaluateTeam, measureTeam: measureTeam, buildVector, phaseWeights, detectCompPlan,
-    compareComps, getMacroRecommendations, teamColorSummary, colorCoherence, playableSlotsFor, playsSlotFor, lanePlayRate: () => null,
+    compareComps, getMacroRecommendations, scoreCompPick, compsToMacroSession, teamColorSummary, colorCoherence, playableSlotsFor, playsSlotFor, lanePlayRate: () => null,
   };
 })(typeof window !== "undefined" ? window : globalThis);

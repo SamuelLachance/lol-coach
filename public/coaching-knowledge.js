@@ -8,7 +8,7 @@
   }
 
   const PICK_ORDER_BLUE = ["Bot", "Jungle", "Mid", "Support", "Top"];
-  const PICK_ORDER_RED = ["Top", "Support", "Mid", "Jungle", "Bot"];
+  const PICK_ORDER_RED = ["Bot", "Jungle", "Mid", "Support", "Top"];
 
   const FIRST_PICK_ADC = ["Caitlyn", "Varus", "Aphelios", "Jinx", "Xayah"];
   const FIRST_PICK_JUNGLE = ["Jarvan IV", "Vi", "Lee Sin", "Elise", "Pantheon", "Sejuani", "Maokai", "Nocturne"];
@@ -155,7 +155,7 @@
   }
 
   function pickOrderForSide(side) {
-    return side === "red" ? PICK_ORDER_RED : PICK_ORDER_BLUE;
+    return PICK_ORDER_BLUE.slice();
   }
 
   function getPartners(name) {

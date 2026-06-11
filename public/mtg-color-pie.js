@@ -141,17 +141,53 @@
 
   function combinationScore(combo) {
     switch (combo.type) {
-      case "mono": return 28;
-      case "guild": return 42;
-      case "enemy_dual": return 18;
-      case "shard": return 55;
-      case "wedge": return 48;
-      case "dual": return 22;
-      case "tricolor": return 12;
-      case "four": return 6;
-      case "five": return -18;
-      default: return 0;
+      case "mono": return 32;
+      case "guild": return 48;
+      case "enemy_dual": return 40;
+      case "shard": return 58;
+      case "wedge": return 52;
+      case "dual": return 30;
+      case "tricolor": return 24;
+      case "four": return 20;
+      case "five": return 14;
+      default: return 8;
     }
+  }
+
+  /** Closest named MTG identity (guild / shard / wedge / enemy pair) for a spread team. */
+  function bestFitCombination(active, dominant, teamSum) {
+    let codes = (dominant?.length >= 2 ? dominant : active) || [];
+    if (codes.length >= 4 && dominant?.length >= 2) codes = dominant;
+    if (codes.length >= 5 && teamSum?.length === 5) {
+      const ranked = WHEEL.map((c, i) => [c, teamSum[i] || 0]).sort((a, b) => b[1] - a[1]);
+      codes = ranked.slice(0, 3).map(([c]) => c);
+    }
+    const direct = detectCombination(codes);
+    if (["mono", "guild", "enemy_dual", "shard", "wedge"].includes(direct.type)) {
+      return direct;
+    }
+
+    let best = direct;
+    let bestScore = combinationScore(direct);
+    const pools = [
+      ...Object.entries(GUILDS).map(([key, def]) => ({ type: "guild", name: def.name, colors: def.colors, key })),
+      ...Object.entries(ENEMY_DUAL).map(([key, def]) => ({ type: "enemy_dual", name: def.name, colors: def.colors, key })),
+      ...Object.entries(SHARDS).map(([name, def]) => ({ type: "shard", name, colors: def.colors, key: name })),
+      ...Object.entries(WEDGES).map(([name, def]) => ({ type: "wedge", name, colors: def.colors, key: name })),
+    ];
+
+    for (const cand of pools) {
+      const overlap = cand.colors.filter((c) => codes.includes(c)).length;
+      if (overlap < 2) continue;
+      const coverage = overlap / cand.colors.length;
+      if (coverage < 0.55) continue;
+      const fitScore = combinationScore(cand) + overlap * 10 + Math.round(coverage * 18);
+      if (fitScore > bestScore) {
+        best = cand;
+        bestScore = fitScore;
+      }
+    }
+    return best;
   }
 
   function pairRelationScore(d1, d2) {
@@ -194,40 +230,45 @@
     const teamSum = sumVectors(cis.map((c) => colorVectorFrom(c)));
     const dominant = dominantFromSum(teamSum);
     const active = activeColorsFromSum(teamSum);
-    const combination = detectCombination(active.length ? active : dominant);
+    const combination = bestFitCombination(active, dominant, teamSum);
     let score = combinationScore(combination);
 
-    if (combination.type === "mono" && vectors.length >= 2) score += vectors.length * 8;
-    if (combination.type === "guild" && vectors.length >= 3) score += 22;
-    if (combination.type === "shard" && vectors.length >= 4) score += 35;
-    if (combination.type === "wedge" && vectors.length >= 4) score += 28;
+    if (combination.type === "mono" && vectors.length >= 2) score += vectors.length * 10;
+    if (combination.type === "guild" && vectors.length >= 3) score += 28;
+    if (combination.type === "enemy_dual" && vectors.length >= 3) score += 24;
+    if (combination.type === "shard" && vectors.length >= 4) score += 38;
+    if (combination.type === "wedge" && vectors.length >= 4) score += 32;
+    if (combination.type === "five" && vectors.length >= 4) score += 8;
+    if (active.length >= 4 && ["guild", "enemy_dual", "shard", "wedge"].includes(combination.type)) score += 22;
 
     const conflicts = [];
-    if (combination.type === "five" && vectors.length >= 4) {
-      conflicts.push("Identité 5 couleurs — manque de plan");
-    }
-    if (active.length >= 4 && !["shard", "wedge", "four"].includes(combination.type)) {
-      score -= 22;
-      conflicts.push("Couleurs dispersées sans shard/wedge");
+    if (active.length >= 4 && ["dual", "tricolor", "multicolor"].includes(combination.type)) {
+      score -= 10;
+      conflicts.push("Identité couleur diffuse — clarifie le plan");
     }
 
     for (let i = 0; i < cis.length; i += 1) {
       for (let j = i + 1; j < cis.length; j += 1) {
         const d1 = cis[i].dominant || dominantFromSum(colorVectorFrom(cis[i]));
         const d2 = cis[j].dominant || dominantFromSum(colorVectorFrom(cis[j]));
-        score += pairRelationScore(d1, d2);
+        score += Math.round(pairRelationScore(d1, d2) * 0.85);
         for (const x of d1) {
           for (const y of d2) {
             if (isEnemy(x, y)) {
-              conflicts.push(`${LABELS[x]} vs ${LABELS[y]} (${vectors[i].name}/${vectors[j].name})`);
-              score -= 14;
+              if (combination.type === "wedge" || combination.type === "enemy_dual") {
+                score += 4;
+              } else {
+                conflicts.push(`${LABELS[x]} vs ${LABELS[y]} (${vectors[i].name}/${vectors[j].name})`);
+                score -= 5;
+              }
             }
           }
         }
         if (cis[i].identity && cis[j].identity) {
           const ci = detectCombination([...new Set(`${cis[i].identity}${cis[j].identity}`.split(""))].filter((c) => WHEEL.includes(c)));
-          if (ci.type === "guild") score += 8;
-          if (ci.type === "enemy_dual" && d1.some((x) => d2.some((y) => isEnemy(x, y)))) score -= 6;
+          if (ci.type === "guild") score += 10;
+          if (ci.type === "enemy_dual") score += 8;
+          if (ci.type === "shard" || ci.type === "wedge") score += 6;
         }
       }
     }
@@ -504,6 +545,7 @@
     dominantFromSum,
     activeColorsFromSum,
     detectCombination,
+    bestFitCombination,
     combinationScore,
     pairRelationScore,
     identityAlignBonus,

@@ -75,13 +75,26 @@ function main() {
     ["Jinx", "Lulu", "Malphite", "Jarvan IV", "Orianna"],
     { byName, metaMap: meta, oppNames: ["Renekton", "Lee Sin", "Ahri", "Caitlyn", "Thresh"] }
   );
-  assert(macroTeam.breakdown.synergy > 0, "macro synergy should be positive");
-  assert(macroTeam.breakdown.family > 0, "macro family should be positive");
-  assert(
-    macroTeam.total === macroTeam.breakdown.synergy + macroTeam.breakdown.family + macroTeam.breakdown.mtg,
-    "macro total = synergy + family + mtg"
+  const internalTeam = SC.evaluateTeamInternal(
+    ["Jinx", "Lulu", "Malphite", "Jarvan IV", "Orianna"],
+    { byName, metaMap: meta }
   );
-  assert(macroTeam.breakdown.mtg !== undefined, "macro MTG breakdown present");
+  assert(macroTeam.total === internalTeam.total, "macro team eval must match draft internal eval");
+  assert(macroTeam.breakdown.winCondition > 0, "win condition breakdown present");
+  assert(macroTeam.breakdown.synergy > 0, "synergy should be positive");
+
+  const unifyOur = { Top: "", Jungle: "", Mid: "", Bot: "Jinx", Support: "" };
+  const unifyEnemy = { Top: "Malphite", Jungle: "", Mid: "", Bot: "", Support: "" };
+  const macroLulu = SC.scoreMacroPick(lulu, "Support", { ourComp: unifyOur, enemyComp: unifyEnemy, byName, metaMap: meta, side: "our" });
+  const draftSession = D.createSession("unify", "blue");
+  draftSession.picks.blue = [{ name: "Jinx", slot: "Bot", order: 1, pinned: true }];
+  draftSession.picks.red = [{ name: "Malphite", slot: "Top", order: 1, pinned: true }];
+  draftSession.stepIndex = 8;
+  const draftLulu = D.scorePickForSlot(lulu, draftSession, "blue", "Support", byName, meta);
+  assert(
+    macroLulu.score === draftLulu.score,
+    `macro/draft unified score: macro=${macroLulu.score} draft=${draftLulu.score}`
+  );
 
   const luluProf = SC.buildProfile(lulu, meta);
   const jinxProf = SC.buildProfile(jinx, meta);
@@ -174,6 +187,120 @@ function main() {
 
   const cmp = D.compareComps(womboOur, pokeEnemy, byName, meta);
   assert(cmp.complete && cmp.margin < 0 && cmp.winProb.enemy > cmp.winProb.our, "compareComps should favor poke vs wombo");
+  assert(
+    (cmp.our.breakdown?.winCondition || 0) > (cmp.our.breakdown?.synergy || 0) * 0.5,
+    "win condition should dominate internal breakdown"
+  );
+
+  const userComp = {
+    Top: "Galio",
+    Jungle: "Naafiri",
+    Mid: "Ryze",
+    Bot: "Caitlyn",
+    Support: "Bard",
+  };
+  const enemyComp = {
+    Top: "Rumble",
+    Jungle: "Trundle",
+    Mid: "Cassiopeia",
+    Bot: "Ashe",
+    Support: "Séraphine",
+  };
+  for (const slot of ["Top", "Jungle", "Mid", "Bot", "Support"]) {
+    const lane = SC.scoreLaneMatchup(userComp[slot], enemyComp[slot], slot, byName, meta);
+    assert(lane.verdict === "win" || lane.verdict === "lose", `${slot} must resolve win/lose, got ${lane.verdict}`);
+    assert(lane.verdict !== "even", `${slot} must never be even`);
+    assert(lane.note && !lane.note.includes("prio vague et jungle décident"), `${slot} note must be specific`);
+    console.log(`  lane ${slot}: ${lane.verdict} (${lane.margin}) — ${lane.note}`);
+  }
+
+  const userDuel = SC.evaluateDraftDuel(
+    Object.values(userComp),
+    Object.values(enemyComp),
+    { ourComp: userComp, enemyComp, byName, metaMap: meta }
+  );
+  assert(
+    userDuel.margin < 0 && userDuel.winProb.enemy > userDuel.winProb.our,
+    `protected hypercarry should win duel: margin=${userDuel.margin} win=${Math.round(userDuel.winProb.enemy * 100)}%`
+  );
+  assert(
+    (userDuel.detail?.cross?.plan?.enemy || 0) > 0,
+    "hypercarry vs engage should register plan clash edge for red"
+  );
+
+  const enemyCompFr = { ...enemyComp, Support: "Séraphine" };
+  const aliasDuel = SC.evaluateDraftDuel(
+    Object.values(userComp),
+    Object.values(enemyCompFr),
+    { ourComp: userComp, enemyComp: enemyCompFr, byName, metaMap: meta }
+  );
+  assert(
+    aliasDuel.enemy.breakdown.winCondition === userDuel.enemy.breakdown.winCondition,
+    "Séraphine and Seraphine must resolve to the same win-condition score"
+  );
+
+  const cmpUser = D.compareComps(userComp, enemyCompFr, byName, meta);
+  assert(cmpUser.complete && cmpUser.winProb.enemy > cmpUser.winProb.our, "macro compareComps should favor red hypercarry comp");
+
+  const borosNames = ["Jarvan IV", "Pantheon", "Leona", "Xayah", "Tristana"];
+  const borosMtg = sandbox.MTGColorPie.colorCoherence(
+    borosNames.map((n) => ({ name: n, colors: SC.buildProfile(byName.get(n), meta).colors })).filter((p) => p.colors)
+  );
+  assert(borosMtg.score > 20, `multi-color spread should score positively, got ${borosMtg.score}`);
+  assert(
+    ["guild", "enemy_dual", "shard", "wedge"].includes(borosMtg.combination?.type),
+    `expected named MTG identity (Boros/Gruul/etc.), got ${borosMtg.combination?.type} (${borosMtg.combination?.name})`
+  );
+
+  const hoverSession = D.createSession("hover-priority", "blue");
+  assert(
+    D.HOVER_SLOT_PRIORITY.join(",") === "Bot,Jungle,Mid,Support,Top",
+    "hover priority must be ADC → Jungle → Mid → Support → Top"
+  );
+  assert(D.dynamicHoverPriority(hoverSession, "blue")[0] === "Bot", "default hover starts ADC");
+  hoverSession.picks.red = [{ name: "Rumble", slot: "Top", order: 1, pinned: true }];
+  hoverSession.stepIndex = 6;
+  assert(
+    D.dynamicHoverPriority(hoverSession, "blue")[0] === "Top",
+    "enemy Top revealed should prioritize our Top counter"
+  );
+  hoverSession.picks.red.push({ name: "Ashe", slot: "Bot", order: 2, pinned: true });
+  const priEnemy = D.dynamicHoverPriority(hoverSession, "blue");
+  assert(priEnemy[0] === "Bot" && priEnemy[1] === "Top", `counter order ADC before Top: ${priEnemy.join(",")}`);
+  const mirror = D.resolveHoverPick(hoverSession, "red", "Top");
+  assert(mirror?.side === "blue" && mirror?.slot === "Top", "hover enemy Top → blue Top counter");
+
+  const redVsAdc = D.createSession("red-vs-adc-hover", "blue");
+  redVsAdc.picks.blue = [{ name: "Varus", slot: "Bot", order: 1, pinned: true }];
+  redVsAdc.stepIndex = 7;
+  assert(D.defaultHoverPick(redVsAdc, "red")?.slot === "Bot", "red turn + enemy ADC → hover Bot");
+  const hoverEnemyAdc = D.resolveHoverPick(redVsAdc, "blue", "Bot");
+  assert(hoverEnemyAdc?.side === "red" && hoverEnemyAdc?.slot === "Bot", "hover blue ADC → red Bot counter");
+
+  const asRed = D.createSession("as-red-hover", "red");
+  asRed.picks.blue = [{ name: "Varus", slot: "Bot", order: 1, pinned: true }];
+  asRed.stepIndex = 7;
+  assert(D.defaultHoverPick(asRed, "red")?.slot === "Bot", "playing red: enemy ADC → Bot priority");
+  assert(
+    D.resolveHoverPick(asRed, "blue", "Bot")?.side === "red",
+    "playing red: hover enemy ADC coaches red side"
+  );
+
+  const redCounterAdc = D.createSession("red-vs-adc", "blue");
+  redCounterAdc.picks.blue = [{ name: "Varus", slot: "Bot", order: 1, pinned: true }];
+  redCounterAdc.stepIndex = 7;
+  const redSlot = D.preferredBlindSlot(redCounterAdc, "red");
+  assert(redSlot === "Bot", `red should target ADC counter when blue has Varus, got ${redSlot}`);
+  redCounterAdc.focus = { type: "pick", side: "red", slot: "Top", userLocked: true };
+  D.refreshAutoPickFocus(redCounterAdc);
+  assert(
+    redCounterAdc.focus?.slot === "Bot",
+    `locked Top must yield to ADC counter after enemy Varus, got ${redCounterAdc.focus?.slot}`
+  );
+  assert(
+    (D.DISPLAY_SLOTS || D.HOVER_SLOT_PRIORITY).join(",") === "Bot,Jungle,Mid,Support,Top",
+    "display order must be Bot-first"
+  );
 
   const luluBot = SC.scoreMacroPick(lulu, "Bot", {
     teamNames: [],

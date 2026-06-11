@@ -26,26 +26,14 @@
     return meta?.bestCounters || meta?.worstMatchups || [];
   }
 
-  function laneVerdict(ours, theirs, metaMap) {
-    if (!ours || !theirs) return { verdict: "unknown", note: "Lane incomplète." };
-    const o = metaMap[ours];
-    const e = metaMap[theirs];
-    if (countersOf(o).includes(theirs)) {
-      return { verdict: "lose", note: `${ours} est en difficulté vs ${theirs} (counter).` };
+  function laneVerdict(ours, theirs, metaMap, slot, byName) {
+    const scoring = global.LoLDraftScoring || global.LoLDraft?.LoLDraftScoring;
+    if (!ours || !theirs) return { verdict: "unknown", margin: 0, note: "Lane incomplète." };
+    if (!slot) return { verdict: "unknown", margin: 0, note: "Lane incomplète." };
+    if (scoring?.scoreLaneMatchup) {
+      return scoring.scoreLaneMatchup(ours, theirs, slot, byName || {}, metaMap);
     }
-    if (countersOf(e).includes(ours)) {
-      return { verdict: "win", note: `${theirs} est counter par ${ours}.` };
-    }
-    if (hasTag(o, "scaling") && hasTag(e, "assassin")) {
-      return { verdict: "lose", note: `${ours} doit respecter le spike de ${theirs} avant de scale.` };
-    }
-    if (hasTag(o, "poke") && hasTag(e, "frontline")) {
-      return { verdict: "even", note: "Poke vs front — jouer la distance et les resets." };
-    }
-    if (hasTag(o, "frontline") && hasTag(e, "mage_burst")) {
-      return { verdict: "win", note: `Frontline absorbe le burst de ${theirs}.` };
-    }
-    return { verdict: "even", note: "Matchup skill — prio vague et jungle décident." };
+    return { verdict: "lose", margin: -1, note: `${theirs} avantage — moteur matchup indisponible.` };
   }
 
   function pickAssignees(comp, metaMap, tag, max = 2) {
@@ -87,7 +75,7 @@
     pick_global: "Pick / Global",
   };
 
-  function recommendMacro(comp, enemy, metaMap) {
+  function recommendMacro(comp, enemy, metaMap, byName) {
     const ourTags = teamTags(comp, metaMap);
     const enTags = teamTags(enemy, metaMap);
     const compType = dominantCompType(comp, metaMap);
@@ -105,7 +93,7 @@
 
     // Lane priority
     const lanes = {};
-    for (const s of SLOTS) lanes[s] = laneVerdict(comp[s], enemy[s], metaMap);
+    for (const s of SLOTS) lanes[s] = laneVerdict(comp[s], enemy[s], metaMap, s, byName);
     const wins = SLOTS.filter((s) => lanes[s]?.verdict === "win");
     const loses = SLOTS.filter((s) => lanes[s]?.verdict === "lose");
 
@@ -662,7 +650,7 @@
       early.unshift(`Matchup défavorable vs ${enemyName} — joue safe, scale avec le plan ${tactics.compTypeLabel || "d'équipe"}.`);
     } else if (lane?.verdict === "win" && enemyName) {
       early.unshift(`Lane favorable vs ${enemyName} — convertis en plates/vision sans overextend.`);
-    } else if (lane?.note && lane.verdict === "even") {
+    } else if (lane?.note) {
       early.push(lane.note);
     }
 
@@ -699,10 +687,10 @@
     };
   }
 
-  function buildRoleAdvice(ourComp, enemyComp, metaMap, tactics) {
+  function buildRoleAdvice(ourComp, enemyComp, metaMap, tactics, byName) {
     const slots = {};
     for (const slot of SLOTS) {
-      const lane = laneVerdict(ourComp[slot], enemyComp[slot], metaMap);
+      const lane = laneVerdict(ourComp[slot], enemyComp[slot], metaMap, slot, byName);
       slots[slot] = buildSlotAdvice(slot, ourComp, enemyComp, metaMap, tactics, lane);
     }
     return {
@@ -713,15 +701,16 @@
   }
 
   function recommend(ourComp, enemyComp, metaMap, championsByName) {
+    const byName = championsByName || {};
     const lanes = {};
     for (const s of SLOTS) {
-      lanes[s] = laneVerdict(ourComp[s], enemyComp[s], metaMap);
+      lanes[s] = laneVerdict(ourComp[s], enemyComp[s], metaMap, s, byName);
     }
 
-    const tactics = recommendMacro(ourComp, enemyComp, metaMap);
+    const tactics = recommendMacro(ourComp, enemyComp, metaMap, byName);
     const avoid = buildAvoid(ourComp, enemyComp, metaMap, tactics);
     const winPlan = buildWinPlan(tactics, ourComp);
-    const roleAdvice = buildRoleAdvice(ourComp, enemyComp, metaMap, tactics);
+    const roleAdvice = buildRoleAdvice(ourComp, enemyComp, metaMap, tactics, byName);
 
     return { lanes, tactics, avoid, winPlan, roleAdvice, itemGuides: null };
   }
