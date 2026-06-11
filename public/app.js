@@ -866,9 +866,12 @@ function compPickNames(comp) {
 function mtgTeamPanelHtml(names, title) {
   if (!names.length || !window.LoLDraft?.teamColorSummary) return "";
   const summary = window.LoLDraft.teamColorSummary(names, state.byName, state.tacticsMeta?.champions || {});
-  const pair = (summary.dominant || [])
-    .slice(0, 2)
-    .map((code) => ({ code, val: summary.bars?.find((b) => b.code === code)?.value || 12 }));
+  const pair =
+    summary.pastilles ||
+    window.MTGColorPie?.pastillePairFromSummary?.(summary) ||
+    (summary.dominant || [])
+      .slice(0, 2)
+      .map((code) => ({ code, val: summary.bars?.find((b) => b.code === code)?.value || 12 }));
   const pastilles =
     pair.length > 0
       ? `<span class="mtg-pastilles mtg-pastilles--inline">${pair

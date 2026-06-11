@@ -102,6 +102,22 @@
     return WHEEL.map((c, i) => [c, sum[i]]).filter(([, v]) => v >= threshold).map(([c]) => c);
   }
 
+  /** Team-level dominant colors — absolute threshold marks every color on a 5-man roster. */
+  function topColorsFromSum(sum, limit = 2) {
+    return WHEEL.map((c, i) => [c, sum[i] || 0])
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, limit)
+      .map(([c]) => c);
+  }
+
+  function teamDominantFromSum(sum) {
+    const max = Math.max(...sum, 0);
+    if (max <= 0) return [];
+    const cutoff = max * 0.72;
+    const dom = WHEEL.filter((c, i) => (sum[i] || 0) >= cutoff);
+    return dom.length >= 2 ? dom : topColorsFromSum(sum, 2);
+  }
+
   function activeColorsFromSum(sum, threshold = 0.12) {
     return WHEEL.filter((c, i) => sum[i] >= threshold);
   }
@@ -228,7 +244,7 @@
     }
 
     const teamSum = sumVectors(cis.map((c) => colorVectorFrom(c)));
-    const dominant = dominantFromSum(teamSum);
+    const dominant = cis.length >= 3 ? teamDominantFromSum(teamSum) : dominantFromSum(teamSum);
     const active = activeColorsFromSum(teamSum);
     const combination = bestFitCombination(active, dominant, teamSum);
     let score = combinationScore(combination);
@@ -506,6 +522,20 @@
     return { score, reasons: [...new Set(reasons)].slice(0, 2) };
   }
 
+  function pastillePairFromSummary(summary) {
+    const bars = summary?.bars || [];
+    const byCode = (code) => bars.find((b) => b.code === code)?.value || 0;
+    const combo = summary?.combination;
+    let codes = combo?.colors?.length ? [...combo.colors] : null;
+    if (!codes?.length) {
+      codes = [...bars].sort((a, b) => b.value - a.value).slice(0, 2).map((b) => b.code);
+    } else {
+      codes.sort((a, b) => byCode(b) - byCode(a));
+      if (codes.length > 2) codes = codes.slice(0, 2);
+    }
+    return codes.map((code) => ({ code, val: byCode(code) || 12 }));
+  }
+
   function teamColorSummary(names, byName, meta) {
     const vectors = (names || [])
       .map((n) => {
@@ -523,8 +553,7 @@
       value: Math.round((coherence.teamSum?.[i] || 0) * 24),
     }));
     const tags = harmonyTags(coherence.dominant, coherence.combination);
-
-    return {
+    const summary = {
       score: coherence.score,
       dominant: coherence.dominant,
       active: coherence.active,
@@ -539,6 +568,8 @@
         .map((p) => `${p.goal} par ${p.means}`)
         .slice(0, 2),
     };
+    summary.pastilles = pastillePairFromSummary(summary);
+    return summary;
   }
 
   function harmonyTags(dominantCodes, combination) {
@@ -582,6 +613,8 @@
     colorVectorFrom,
     sumVectors,
     dominantFromSum,
+    teamDominantFromSum,
+    topColorsFromSum,
     activeColorsFromSum,
     detectCombination,
     bestFitCombination,
@@ -596,6 +629,7 @@
     pickBeatdownFit,
     colorMatchupPenalty,
     teamColorSummary,
+    pastillePairFromSummary,
     colorCoherence,
     teamMacroIdentityScore,
     colorPickBonus,

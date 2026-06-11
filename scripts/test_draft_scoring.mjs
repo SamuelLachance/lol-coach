@@ -307,6 +307,24 @@ function main() {
     `MTG identity should weigh visibly vs synergy: mtg=${userDuel.our.breakdown.mtg} syn=${userDuel.our.breakdown.synergy}`
   );
 
+  function pastilleCodes(names) {
+    return sandbox.MTGColorPie.pastillePairFromSummary(
+      sandbox.MTGColorPie.teamColorSummary(names, byName, meta)
+    )
+      .map((p) => p.code)
+      .join("");
+  }
+
+  const bluePastilles = pastilleCodes(["Galio", "Naafiri", "Ryze", "Caitlyn", "Bard"]);
+  const redPastilles = pastilleCodes(["Rumble", "Trundle", "Cassiopeia", "Ashe", "Séraphine"]);
+  const rbPastilles = pastilleCodes(["Draven", "Nautilus", "Renekton", "Elise", "Syndra"]);
+  assert(bluePastilles !== "WU", `blue comp pastilles must not default to WU, got ${bluePastilles}`);
+  assert(redPastilles !== "WU", `red comp pastilles must not default to WU, got ${redPastilles}`);
+  assert(rbPastilles !== "WU", `RB comp pastilles must not default to WU, got ${rbPastilles}`);
+  assert(rbPastilles.includes("R"), `RB comp should show red, got ${rbPastilles}`);
+  assert(bluePastilles.includes("U"), `blue comp should show blue, got ${bluePastilles}`);
+  console.log(`  MTG pastilles blue=${bluePastilles} red=${redPastilles} rb=${rbPastilles}`);
+
   const hoverSession = D.createSession("hover-priority", "blue");
   assert(
     D.HOVER_SLOT_PRIORITY.join(",") === "Bot,Jungle,Mid,Support,Top",
