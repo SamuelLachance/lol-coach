@@ -276,6 +276,191 @@
     return { score: Math.round(s), label, teamCombo, champCombo: champActive };
   }
 
+  /** Philosophies WUBRG — Rosewater "X through Y" */
+  const PHILOSOPHY = {
+    W: { goal: "Paix", means: "Structure", lol: "peel, frontline, protection" },
+    U: { goal: "Perfection", means: "Connaissance", lol: "contrôle, setup, tempo" },
+    B: { goal: "Pouvoir", means: "Opportunité", lol: "pick, snowball, finisher" },
+    R: { goal: "Liberté", means: "Action", lol: "aggro, tempo, all-in" },
+    G: { goal: "Croissance", means: "Acceptation", lol: "scaling, front, nature" },
+  };
+
+  function colorWeight(ci, code) {
+    if (!ci) return 0;
+    return Number(ci[code]) || 0;
+  }
+
+  /** Team vectors for Who's The Beatdown? (Mike Flores / Dojo) */
+  function teamMetrics(vs) {
+    if (!vs?.length) return { damage: 0, removal: 0, control: 0 };
+    const dmg = vs.reduce((s, v) => {
+      let x = (v.early || 0) * 28 + (v.burst || 0) * 22;
+      if (v.tags?.has?.("dive")) x += 18;
+      if (v.tags?.has?.("marksman") && (v.carry || 0) > 0.5) x += 14;
+      x += colorWeight(v.colors, "R") * 0.9;
+      return s + x;
+    }, 0);
+    const removal = vs.reduce((s, v) => {
+      let x = (v.spellSetup || 0) * 18;
+      if (v.tags?.has?.("assassin")) x += 16;
+      x += colorWeight(v.colors, "B") * 0.8;
+      return s + x;
+    }, 0);
+    const control = vs.reduce((s, v) => {
+      let x = (v.peel || 0) * 22 + (v.scaling || 0) * 16;
+      if (v.tags?.has?.("poke")) x += 12;
+      x += colorWeight(v.colors, "U") * 0.75 + colorWeight(v.colors, "W") * 0.6;
+      return s + x;
+    }, 0);
+    return { damage: Math.round(dmg), removal: Math.round(removal), control: Math.round(control) };
+  }
+
+  function inferBeatdownRole(metrics) {
+    const beat = metrics.damage;
+    const ctrl = metrics.removal + Math.round(metrics.control * 0.85);
+    if (ctrl > beat + 18) return "control";
+    if (beat > ctrl + 12) return "beatdown";
+    return beat >= ctrl ? "beatdown" : "control";
+  }
+
+  /**
+   * Who's the beatdown? — damage → beatdown, removal/control → control.
+   * Misassignment of role in similar comps = predicted loss.
+   */
+  function analyzeBeatdownMatchup(ourVs, enemyVs) {
+    const our = teamMetrics(ourVs);
+    const enemy = teamMetrics(enemyVs);
+    let ourRole = inferBeatdownRole(our);
+    let enemyRole = inferBeatdownRole(enemy);
+
+    if (enemy.damage > our.damage + 22 && ourRole === "beatdown") ourRole = "control";
+    if (our.damage > enemy.damage + 22 && enemyRole === "beatdown") enemyRole = "control";
+
+    let alignmentBonus = 0;
+    const hints = [];
+    if (ourRole === "control" && our.removal + our.control < enemy.damage * 0.45) {
+      alignmentBonus -= 16;
+      hints.push("Control sans removal — race perdue");
+    } else if (ourRole === "beatdown" && our.damage < enemy.damage - 8) {
+      alignmentBonus -= 14;
+      hints.push("Beatdown plus lent que l'adversaire");
+    } else if (ourRole === "control" && our.removal + our.control >= enemy.damage * 0.5) {
+      alignmentBonus += 16;
+      hints.push("Rôle control viable vs aggro");
+    } else if (ourRole === "beatdown" && our.damage >= enemy.damage) {
+      alignmentBonus += 14;
+      hints.push("Rôle beatdown viable");
+    }
+
+    return {
+      ourRole,
+      enemyRole,
+      our,
+      enemy,
+      alignmentBonus,
+      hint: hints[0] || (ourRole === "beatdown" ? "Jouer la race" : "Stabiliser puis outscale"),
+    };
+  }
+
+  function pickBeatdownFit(champV, allyVs, enemyVs) {
+    if (!champV || !enemyVs?.length) return { score: 0, reasons: [], needRole: null };
+    const before = teamMetrics(allyVs);
+    const enemy = teamMetrics(enemyVs);
+    const needRole =
+      enemy.damage > before.damage + 15
+        ? "control"
+        : before.damage + 8 < enemy.damage
+          ? "control"
+          : inferBeatdownRole(before);
+
+    const champAggro =
+      (champV.early || 0) * 30 + (champV.burst || 0) * 18 + colorWeight(champV.colors, "R");
+    const champCtrl =
+      (champV.peel || 0) * 25 + colorWeight(champV.colors, "W") + colorWeight(champV.colors, "U");
+
+    let score = 0;
+    const reasons = [];
+    if (needRole === "control") {
+      if (champAggro > 28 && champCtrl < 12) {
+        score -= 22;
+        reasons.push("Mauvais rôle — aggro vs comp rapide");
+      }
+      if (champCtrl >= 14) {
+        score += 16;
+        reasons.push("Pick control (peel/setup)");
+      }
+      if (colorWeight(champV.colors, "B") >= 6) {
+        score += 8;
+        reasons.push("Removal/pick noir");
+      }
+    } else {
+      if (champAggro >= 16) {
+        score += 14;
+        reasons.push("Pick beatdown (tempo)");
+      }
+      if (champCtrl > 22 && champAggro < 10) {
+        score -= 12;
+        reasons.push("Trop lent pour la race");
+      }
+    }
+    return { score, reasons, needRole };
+  }
+
+  /** Enemy color hosers — tension W/B, W/R, U/R, U/G, B/G */
+  function colorMatchupPenalty(champColors, enemyTeamSum) {
+    if (!champColors || !enemyTeamSum) return { score: 0, reasons: [] };
+    const enemyDom = dominantFromSum(enemyTeamSum, 0.28);
+    const champDom = champColors.dominant || dominantFromSum(colorVectorFrom(champColors), 0.22);
+    let score = 0;
+    const reasons = [];
+    for (const e of enemyDom) {
+      for (const c of champDom) {
+        if (isEnemy(e, c)) {
+          score -= 14;
+          reasons.push(`Hoser ${LABELS[e]} vs ${LABELS[c]}`);
+        } else if (isAllied(e, c)) {
+          score += 6;
+        }
+      }
+    }
+    return { score, reasons: [...new Set(reasons)].slice(0, 2) };
+  }
+
+  function teamColorSummary(names, byName, meta) {
+    const vectors = (names || [])
+      .map((n) => {
+        const champ = byName?.get?.(n) || meta?.[n] || { name: n };
+        const ci = champ.colorIdentity || meta?.[n]?.colorIdentity;
+        return ci ? { name: n, colors: ci } : null;
+      })
+      .filter(Boolean);
+
+    const coherence = colorCoherence(vectors);
+    const bars = WHEEL.map((c, i) => ({
+      code: c,
+      label: LABELS[c],
+      hex: HEX[c],
+      value: Math.round((coherence.teamSum?.[i] || 0) * 24),
+    }));
+    const tags = harmonyTags(coherence.dominant, coherence.combination);
+
+    return {
+      score: coherence.score,
+      dominant: coherence.dominant,
+      active: coherence.active,
+      conflicts: coherence.conflicts,
+      identity: coherence.identity,
+      combination: coherence.combination,
+      bars,
+      tags,
+      philosophy: (coherence.dominant || [])
+        .map((c) => PHILOSOPHY[c])
+        .filter(Boolean)
+        .map((p) => `${p.goal} par ${p.means}`)
+        .slice(0, 2),
+    };
+  }
+
   function harmonyTags(dominantCodes, combination) {
     const tags = [];
     const combo = combination || detectCombination(dominantCodes || []);
@@ -322,6 +507,14 @@
     combinationScore,
     pairRelationScore,
     identityAlignBonus,
+    PHILOSOPHY,
+    colorWeight,
+    teamMetrics,
+    inferBeatdownRole,
+    analyzeBeatdownMatchup,
+    pickBeatdownFit,
+    colorMatchupPenalty,
+    teamColorSummary,
     colorCoherence,
     colorPickBonus,
     harmonyTags,

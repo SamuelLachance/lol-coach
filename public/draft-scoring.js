@@ -31,6 +31,7 @@
   const WOMBO_THEMES = new Set(["knockup_wombo", "teamfight_engage"]);
 
   const CK = () => global.CoachingDraftKnowledge;
+  const MTG = () => global.MTGColorPie;
 
   const COMP_LABELS = {
     hypercarry: "Hypercarry",
@@ -97,10 +98,82 @@
     return (champ.abilities || []).map((a) => a.description || "").join(" ");
   }
 
+  function getColorIdentity(champ, meta) {
+    return champ?.colorIdentity || meta?.[champ?.name]?.colorIdentity || null;
+  }
+
+  /** MTG WUBRG + beatdown role — pick & comp scoring */
+  function applyMtgPickScore(v, allies, oppNames, byName, metaMap, w) {
+    const pie = MTG();
+    if (!pie || !v.colors) return { score: 0, reasons: [] };
+
+    const allyVs = profiles(allies, byName, metaMap);
+    const enemyVs = profiles(oppNames, byName, metaMap);
+    const allyColors = allyVs.map((p) => p.colors).filter(Boolean);
+    const teamSum = pie.sumVectors(allyColors.map((c) => pie.colorVectorFrom(c)));
+
+    let score = 0;
+    const reasons = [];
+
+    const harmony = pie.colorPickBonus(v.colors, allyColors, teamSum);
+    if (harmony.score) {
+      score += Math.round(harmony.score * (w?.plan || 0.55) * 0.42);
+      if (harmony.label) reasons.push(harmony.label);
+      else if (harmony.teamCombo?.name) reasons.push(`Identité ${harmony.teamCombo.name}`);
+    }
+
+    if (enemyVs.length) {
+      const oppColors = enemyVs.map((p) => p.colors).filter(Boolean);
+      const oppSum = pie.sumVectors(oppColors.map((c) => pie.colorVectorFrom(c)));
+      const hoser = pie.colorMatchupPenalty(v.colors, oppSum);
+      score += hoser.score;
+      reasons.push(...hoser.reasons);
+
+      const beat = pie.pickBeatdownFit(v, allyVs, enemyVs);
+      score += beat.score;
+      reasons.push(...beat.reasons);
+    }
+
+    const projected = allyVs.concat([v]);
+    const coh = pie.colorCoherence(projected.map((p) => ({ name: p.name, colors: p.colors })));
+    if (coh.conflicts?.length) {
+      score -= Math.min(28, coh.conflicts.length * 9);
+      reasons.push(coh.conflicts[0]);
+    } else if (coh.combination?.type === "guild" && allyVs.length >= 1) {
+      score += 10;
+    }
+
+    return { score, reasons: [...new Set(reasons)].slice(0, 4) };
+  }
+
+  function macroMtgScore(names, ctx) {
+    const pie = MTG();
+    if (!pie || names.length < 2) return { score: 0, detail: null };
+
+    const { byName, metaMap, oppNames = [] } = ctx;
+    const vs = profiles(names, byName, metaMap);
+    const vectors = vs.map((p) => ({ name: p.name, colors: p.colors })).filter((p) => p.colors);
+    const coherence = pie.colorCoherence(vectors);
+    let score = Math.round(coherence.score * 0.7);
+
+    let beatdown = null;
+    if (oppNames.length) {
+      const oppVs = profiles(oppNames, byName, metaMap);
+      beatdown = pie.analyzeBeatdownMatchup(vs, oppVs);
+      score += beatdown.alignmentBonus || 0;
+    }
+
+    return {
+      score: Math.round(score),
+      detail: { coherence, beatdown },
+    };
+  }
+
   /** Profil draft enrichi par champion. */
   function buildProfile(champ, meta) {
     const name = champ.name;
     const m = meta?.[name] || {};
+    const colors = getColorIdentity(champ, meta);
     const tags = new Set(m.tags || []);
     const type = (champ.type || m.type || "").toLowerCase();
     const dp = champ.draftProfile || m.draftProfile || {};
@@ -173,6 +246,7 @@
       spells,
       isMarksman: tags.has("marksman") || /marksman|tireur|à distance/i.test(type),
       isSupportOnly: (slots.length <= 1 && slots[0] === "Support") || (/support/i.test(type) && !tags.has("marksman")),
+      colors,
     };
   }
 
@@ -325,13 +399,25 @@
       if (archetype) coachingAdj += archetypeHitCount(archetype, names) * 8;
     }
 
-    const total = bal.score + syn * 0.9 + ctr * 0.9 + arch.completeness * 0.45 + coachingAdj;
+    let mtgAdj = 0;
+    const pie = MTG();
+    if (pie && vs.length >= 2) {
+      const mtgVec = vs.map((p) => ({ name: p.name, colors: p.colors })).filter((p) => p.colors);
+      const mtgCoh = pie.colorCoherence(mtgVec);
+      mtgAdj = Math.round(mtgCoh.score * 0.35);
+      if (oppNames.length) {
+        const beat = pie.analyzeBeatdownMatchup(vs, oppVs);
+        mtgAdj += beat.alignmentBonus || 0;
+      }
+    }
+
+    const total = bal.score + syn * 0.9 + ctr * 0.9 + arch.completeness * 0.45 + coachingAdj + mtgAdj;
     return {
       total,
       vs,
       gaps: bal.gaps,
       archetype: arch,
-      breakdown: { balance: bal.score, synergy: syn, counter: ctr, coaching: coachingAdj },
+      breakdown: { balance: bal.score, synergy: syn, counter: ctr, coaching: coachingAdj, mtg: mtgAdj },
     };
   }
 
@@ -432,13 +518,16 @@
     const vs = profiles(names, byName, metaMap);
     const synergy = macroSynergyScore(names, { byName, metaMap, oppNames });
     const family = macroFamilyScore(names, byName, metaMap);
+    const mtgBlock = macroMtgScore(names, ctx);
+    const mtg = mtgBlock.score;
     const arch = detectArchetype(vs);
     return {
-      total: synergy + family,
+      total: synergy + family + mtg,
       vs,
       archetype: arch,
       gaps: arch.gaps || [],
-      breakdown: { synergy, family },
+      breakdown: { synergy, family, mtg },
+      mtgDetail: mtgBlock.detail,
     };
   }
 
@@ -529,9 +618,14 @@
       reasons.push(`Complète ${tpl.label}`);
     }
 
+    const v = buildProfile(champ, metaMap);
+    const mtg = applyMtgPickScore(v, allies, enemyNames, byName, metaMap, { plan: 1 });
+    score += mtg.score;
+    reasons.push(...mtg.reasons);
+
     return {
       score: Math.round(score),
-      reasons: [...new Set(reasons)].slice(0, 6),
+      reasons: [...new Set(reasons)].slice(0, 8),
       slot,
       breakdown: coaching.breakdown,
     };
@@ -974,6 +1068,10 @@
       reasons.push(`Cible ${SLOT_LABELS[slot] || slot}`);
     }
 
+    const mtg = applyMtgPickScore(v, allies, oppNames, byName, meta, w);
+    score += mtg.score;
+    reasons.push(...mtg.reasons);
+
     if (!reasons.length) reasons.push(`${SLOT_LABELS[slot] || slot} optimal`);
 
     return { score, reasons: [...new Set(reasons)].slice(0, 8), slot, eval: after };
@@ -1019,6 +1117,9 @@
     evaluateTeamMacro,
     macroFamilyScore,
     macroSynergyScore,
+    macroMtgScore,
+    applyMtgPickScore,
+    getColorIdentity,
     scoreMacroPick,
     phaseWeights,
     playableSlotsFor: playableSlots,

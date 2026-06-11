@@ -77,7 +77,17 @@ function main() {
   );
   assert(macroTeam.breakdown.synergy > 0, "macro synergy should be positive");
   assert(macroTeam.breakdown.family > 0, "macro family should be positive");
-  assert(macroTeam.total === macroTeam.breakdown.synergy + macroTeam.breakdown.family, "macro total = synergy + family");
+  assert(
+    macroTeam.total === macroTeam.breakdown.synergy + macroTeam.breakdown.family + macroTeam.breakdown.mtg,
+    "macro total = synergy + family + mtg"
+  );
+  assert(macroTeam.breakdown.mtg !== undefined, "macro MTG breakdown present");
+
+  const luluProf = SC.buildProfile(lulu, meta);
+  const jinxProf = SC.buildProfile(jinx, meta);
+  assert(luluProf.colors?.identity, "Lulu should have MTG color identity");
+  const mtgHarmony = sandbox.MTGColorPie.colorPickBonus(luluProf.colors, [jinxProf.colors], sandbox.MTGColorPie.sumVectors([sandbox.MTGColorPie.colorVectorFrom(jinxProf.colors)]));
+  assert(mtgHarmony.score > 0, "Lulu should harmonize MTG-wise with Jinx hypercarry");
 
   const rec = D.getMacroRecommendations(
     { Top: "", Jungle: "", Mid: "", Bot: "Jinx", Support: "" },
