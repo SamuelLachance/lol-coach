@@ -6,7 +6,7 @@
   const publicUrl = typeof location !== "undefined" ? location.origin + location.pathname.replace(/\/[^/]*$/, "/") : "";
 
   window.LoLSiteConfig = {
-    APP_BUILD: "20250611-23",
+    APP_BUILD: "20250611-24",
     publicHost: host || "localhost",
     publicUrl: isGithubPages || isTryCloudflare ? publicUrl : "http://lolcoach.gotdns.ch",
     hosting: isGithubPages ? "github-pages" : isTryCloudflare ? "cloudflare-tunnel" : "local",

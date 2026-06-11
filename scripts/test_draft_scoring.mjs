@@ -192,6 +192,26 @@ function main() {
     "win condition should dominate internal breakdown"
   );
 
+  function assertWinProbMatchesDisplayScores(cmp, label) {
+    const sum = cmp.our.score + cmp.enemy.score;
+    const expectedOur = cmp.our.score / sum;
+    assert(
+      Math.abs(cmp.winProb.our - expectedOur) < 0.0001,
+      `${label}: winProb must match score ratio (${cmp.winProb.our} vs ${expectedOur})`
+    );
+    assert(
+      (cmp.our.score > cmp.enemy.score) === (cmp.winProb.our > 0.5),
+      `${label}: favored side in points must match win %`
+    );
+  }
+  assertWinProbMatchesDisplayScores(cmp, "wombo vs poke");
+
+  const sample648 = SC.duelWinProbFromDisplayScores(648, 527);
+  assert(
+    Math.round(sample648.our * 100) === 55 && Math.round(sample648.enemy * 100) === 45,
+    `648 vs 527 should read ~55/45, got ${Math.round(sample648.our * 100)}/${Math.round(sample648.enemy * 100)}`
+  );
+
   const userComp = {
     Top: "Galio",
     Jungle: "Naafiri",
@@ -241,6 +261,7 @@ function main() {
 
   const cmpUser = D.compareComps(userComp, enemyCompFr, byName, meta);
   assert(cmpUser.complete && cmpUser.winProb.enemy > cmpUser.winProb.our, "macro compareComps should favor red hypercarry comp");
+  assertWinProbMatchesDisplayScores(cmpUser, "hypercarry comp");
 
   const borosNames = ["Jarvan IV", "Pantheon", "Leona", "Xayah", "Tristana"];
   const borosMtg = sandbox.MTGColorPie.colorCoherence(
@@ -293,22 +314,33 @@ function main() {
   redCounterAdc.stepIndex = 7;
   const redSlot = D.preferredBlindSlot(redCounterAdc, "red");
   assert(redSlot === "Bot", `red should target ADC counter when blue has Varus, got ${redSlot}`);
+  D.suggestNextFocus(redCounterAdc);
+  assert(
+    redCounterAdc.focus?.slot === "Bot" && !redCounterAdc.focus?.userLocked,
+    `default focus after enemy Varus must be Bot, got ${redCounterAdc.focus?.slot}`
+  );
   redCounterAdc.focus = { type: "pick", side: "red", slot: "Top", userLocked: true };
   D.normalizeSession(redCounterAdc);
   assert(
-    redCounterAdc.focus?.slot === "Bot",
-    `locked Top must yield to ADC counter after enemy Varus, got ${redCounterAdc.focus?.slot}`
+    redCounterAdc.focus?.slot === "Top" && redCounterAdc.focus?.userLocked,
+    `user-locked Top must survive normalize after enemy Varus, got ${redCounterAdc.focus?.slot}`
   );
   const topHover = D.resolveHoverPick(redCounterAdc, "red", "Top");
-  assert(topHover?.slot === "Bot", `hovering red Top on turn must coach Bot, got ${topHover?.slot}`);
+  assert(topHover?.slot === "Top", `hovering red Top when user-locked must preview Top, got ${topHover?.slot}`);
+  const coachTop = D.coachPickTarget(redCounterAdc, "red");
+  assert(coachTop?.slot === "Top", `coachPickTarget must respect user-locked Top, got ${coachTop?.slot}`);
   const recTop = D.getRecommendations(redCounterAdc, champs, meta, byName, [], 6, null, { skipCache: true });
   assert(
-    recTop.slot === "Bot" && (recTop.coachHint.includes("ADC") || recTop.coachHint.includes("≥")),
-    `recommendations must stay ADC after Top hover: ${recTop.coachHint}`
+    recTop.slot === "Top" && recTop.coachHint.includes("Top"),
+    `recommendations must coach user-locked Top: ${recTop.coachHint}`
   );
   assert(
-    (D.DISPLAY_SLOTS || D.HOVER_SLOT_PRIORITY).join(",") === "Bot,Jungle,Mid,Support,Top",
-    "display order must be Bot-first"
+    D.DISPLAY_SLOTS.join(",") === "Top,Jungle,Mid,Bot,Support",
+    "display order must be standard lane order (Top → Support)"
+  );
+  assert(
+    D.HOVER_SLOT_PRIORITY.join(",") === "Bot,Jungle,Mid,Support,Top",
+    "hover/coach priority must stay Bot-first"
   );
 
   const luluBot = SC.scoreMacroPick(lulu, "Bot", {

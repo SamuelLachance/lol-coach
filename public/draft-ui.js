@@ -260,7 +260,6 @@
   }
 
   function isCellHovered(session, type, side, slot) {
-    if (session.focus?.userLocked && session.focus?.type === "pick" && session.focus.slot) return false;
     if (type !== "pick" || !slot) return false;
     const src = session.hoverSource;
     if (src?.side === side && src.slot === slot) return true;
@@ -274,7 +273,6 @@
 
   function setHoverPick(session, side, slot) {
     normalizeSessionFocus(session);
-    if (session.focus?.userLocked && session.focus?.slot && session.focus?.side) return;
     const prevSrc = session.hoverSource;
     const prevTgt = session.hoverPick;
     if (!slot) {
@@ -356,17 +354,8 @@
 
     session.hoverPick = null;
     session.hoverSource = null;
-    const step = window.LoLDraft.getStep(session);
-    const onTurn = step?.type === "pick" && step.side === side;
-    const preferred = onTurn ? window.LoLDraft.preferredBlindSlot(session, side) : null;
-    const offCoachLane = onTurn && preferred && slot !== preferred;
-    session.focus = { type: "pick", side, slot, userLocked: offCoachLane };
-    window.LoLDraft.normalizeSession(session);
-    if (onTurn && window.LoLDraft.refreshAutoPickFocus) {
-      window.LoLDraft.refreshAutoPickFocus(session);
-    } else {
-      window.LoLDraft.syncLegacySlots(session);
-    }
+    session.focus = { type: "pick", side, slot, userLocked: true };
+    window.LoLDraft.syncLegacySlots(session);
     saveSessionsDebounced();
     afterFocusChange(session);
   }

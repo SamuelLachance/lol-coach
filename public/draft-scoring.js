@@ -1141,6 +1141,14 @@
     return { our, enemy: 1 - our };
   }
 
+  /** Win % shown in Macro — must match displayed point totals (648 vs 527 → ~55/45). */
+  function duelWinProbFromDisplayScores(ourTotal, enemyTotal) {
+    const sum = (ourTotal || 0) + (enemyTotal || 0);
+    if (sum <= 0) return { our: 0.5, enemy: 0.5 };
+    const our = ourTotal / sum;
+    return { our, enemy: 1 - our };
+  }
+
   /**
    * Full 5v5 draft duel — internal comp quality + every cross interaction.
    * Used by Macro tab comp prediction (compareComps).
@@ -1193,6 +1201,7 @@
     );
     const ourInteraction = Math.round(cross.our * 0.72);
     const enemyInteraction = Math.round(cross.enemy * 0.72);
+    const displayMargin = ourTotal - enemyTotal;
 
     return {
       our: {
@@ -1215,13 +1224,15 @@
         },
         archetype: enemyInternal.archetype,
       },
-      margin,
-      winProb: duelWinProbFromMargin(margin),
+      margin: displayMargin,
+      internalMargin: margin,
+      winProb: duelWinProbFromDisplayScores(ourTotal, enemyTotal),
       detail: {
         cross,
         plans: { our: cross.plan?.ourPlan, enemy: cross.plan?.enemyPlan },
         beatdown: ourInternal.mtgDetail?.beatdown || enemyInternal.mtgDetail?.beatdown,
         topInteractions: cross.topPairs,
+        internalMargin: margin,
       },
     };
   }
@@ -1716,6 +1727,7 @@
     evaluateTeam,
     evaluateTeamInternal,
     evaluateDraftDuel,
+    duelWinProbFromDisplayScores,
     crossDraftInteractions,
     evaluateTeamMacro,
     macroFamilyScore,

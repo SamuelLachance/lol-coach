@@ -35,7 +35,7 @@
   const PICK_STEPS = LOL_DRAFT_STEPS.filter((s) => s.type === "pick");
   const PICK_ORDER_BLUE = ["Bot", "Jungle", "Mid", "Support", "Top"];
   const PICK_ORDER_RED = ["Bot", "Jungle", "Mid", "Support", "Top"];
-  const DISPLAY_SLOTS = ["Bot", "Jungle", "Mid", "Support", "Top"];
+  const DISPLAY_SLOTS = ["Top", "Jungle", "Mid", "Bot", "Support"];
   const BLIND_PICK_SLOTS = ["Bot", "Jungle", "Mid"];
   const LATE_MATCHUP_SLOTS = ["Support", "Top"];
   /** Survol draft — priorité coach (indépendante de l'ordre de pick rouge). */
@@ -75,8 +75,19 @@
     if (s.hoverPick === undefined) s.hoverPick = null;
     if (s.hoverSource === undefined) s.hoverSource = null;
     resyncStepIndex(s);
-    alignCoachPickFocus(s);
+    if (needsCoachPickAlign(s)) alignCoachPickFocus(s);
     return s;
+  }
+
+  /** Auto-align only when focus is missing, wrong side, or non-user-locked stale slot. */
+  function needsCoachPickAlign(s) {
+    const step = getStep(s);
+    if (!step || step.type !== "pick" || isComplete(s)) return false;
+    const side = step.side;
+    const f = s.focus;
+    if (!f || f.type !== "pick" || f.side !== side || !f.slot) return true;
+    if (f.userLocked) return false;
+    return false;
   }
 
   /** Force focus/hover to coach priority on the active pick turn (ADC first, enemy reveals = counter). */
@@ -91,8 +102,7 @@
       f?.userLocked &&
       f.type === "pick" &&
       f.side === side &&
-      f.slot &&
-      !coachFocusOverridesUserLock(s, side, f.slot);
+      f.slot;
     if (!keepLocked) {
       s.focus = { type: "pick", side, slot: preferred, userLocked: false };
       s.hoverPick = { side, slot: preferred };
@@ -333,6 +343,9 @@
     }
 
     if (stepSide && hoveredSide === stepSide) {
+      if (s.focus?.userLocked && s.focus.side === stepSide && s.focus.slot) {
+        return { side: stepSide, slot: hoveredSlot };
+      }
       const preferred = dynamicHoverPriority(s, stepSide)[0] || hoveredSlot;
       return { side: stepSide, slot: preferred };
     }
@@ -522,13 +535,7 @@
     const preferred = preferredBlindSlot(s, side);
     if (!preferred) return null;
     const f = normalizeFocus(s.focus);
-    if (
-      f?.userLocked &&
-      f.type === "pick" &&
-      f.side === side &&
-      f.slot &&
-      !coachFocusOverridesUserLock(s, side, f.slot)
-    ) {
+    if (f?.userLocked && f.type === "pick" && f.side === side && f.slot) {
       return { type: "pick", side, slot: f.slot };
     }
     return { type: "pick", side, slot: preferred };
@@ -861,12 +868,10 @@
       const nextSlot = preferredBlindSlot(s, step.side) || null;
       const sameSide = s.focus?.side === step.side;
       const lockedSlot = sameSide ? s.focus?.slot : null;
-      const lockOverridden = lockedSlot && coachFocusOverridesUserLock(s, step.side, lockedSlot);
       const keepUserLane =
         s.focus?.userLocked &&
         sameSide &&
         lockedSlot &&
-        !lockOverridden &&
         !opts.forceSlot;
       s.focus = {
         type: "pick",
@@ -884,12 +889,7 @@
     normalizeSession(s);
     const step = getStep(s);
     if (!step || step.type !== "pick" || isComplete(s)) return null;
-    if (
-      s.focus?.userLocked &&
-      s.focus?.side === step.side &&
-      s.focus?.slot &&
-      !coachFocusOverridesUserLock(s, step.side, s.focus.slot)
-    ) {
+    if (s.focus?.userLocked && s.focus?.side === step.side && s.focus?.slot) {
       return s.focus;
     }
     const focus = suggestNextFocus(s, { forceSlot: true });
