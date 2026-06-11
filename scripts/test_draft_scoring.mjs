@@ -138,6 +138,27 @@ function main() {
       `macro suggest ${item.champion.name} must be ≥10% Support lane rate`
     );
   }
+  assert(
+    rec.coachHint.includes("Notre équipe") && rec.coachHint.includes("Support"),
+    `macro coach hint should use draft-style French labels: ${rec.coachHint}`
+  );
+
+  const macroSession = D.compsToMacroSession(
+    { Top: "", Jungle: "", Mid: "", Bot: "Jinx", Support: "" },
+    { Top: "Malphite", Jungle: "", Mid: "", Bot: "", Support: "" }
+  );
+  const draftSupportRec = D.getRecommendations(macroSession, champs, meta, byName, [], 8, "blue", {
+    skipCache: true,
+    focusTarget: { type: "pick", side: "blue", slot: "Support" },
+  });
+  assert(
+    rec.items[0]?.champion.name === draftSupportRec.items[0]?.champion.name,
+    `macro pipeline must match draft getRecommendations: macro=${rec.items[0]?.champion.name} draft=${draftSupportRec.items[0]?.champion.name}`
+  );
+  assert(
+    rec.items[0]?.score === draftSupportRec.items[0]?.score,
+    `macro/draft unified top score: macro=${rec.items[0]?.score} draft=${draftSupportRec.items[0]?.score}`
+  );
 
   const draftRec = D.getRecommendations(session, champs, meta, byName, [], 12, "blue", {
     skipCache: true,

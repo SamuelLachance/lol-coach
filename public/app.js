@@ -2566,6 +2566,37 @@ function isTacticsSwapTarget(side, slot) {
   return Boolean(comp[f.slot] || comp[slot]);
 }
 
+/** Draft-side lane target for macro pool sort + scorePickForSlot. */
+function tacticsRecommendTarget() {
+  const focus = state.tacticsFocus;
+  if (focus?.type === "swap" && focus.slot && focus.side) {
+    return window.LoLDraft?.macroRecommendFocusTarget
+      ? window.LoLDraft.macroRecommendFocusTarget(focus, null)
+      : { type: "pick", side: focus.side === "enemy" ? "red" : "blue", slot: focus.slot };
+  }
+  if (focus?.type === "pick" && focus.slot && focus.side) {
+    return window.LoLDraft?.macroRecommendFocusTarget
+      ? window.LoLDraft.macroRecommendFocusTarget(focus, null)
+      : { type: "pick", side: focus.side === "enemy" ? "red" : "blue", slot: focus.slot };
+  }
+  if (state.tacticsHover?.slot) {
+    return window.LoLDraft?.macroRecommendFocusTarget
+      ? window.LoLDraft.macroRecommendFocusTarget(null, state.tacticsHover)
+      : {
+          type: "pick",
+          side: state.tacticsHover.side === "enemy" ? "red" : "blue",
+          slot: state.tacticsHover.slot,
+          hover: true,
+        };
+  }
+  return null;
+}
+
+function tacticsMacroSession() {
+  if (!window.LoLDraft?.compsToMacroSession) return null;
+  return window.LoLDraft.compsToMacroSession(state.ourComp, state.enemyComp);
+}
+
 /** Sort/highlight slot: focused lane, hover, else role chip. */
 function tacticsPoolSortSlot() {
   const focusSlot =
@@ -2618,14 +2649,16 @@ function buildTacticsSuggestChipsHtml() {
     6
   );
   if (!rec.items?.length) return "";
-  const hintText = rec.coachHint || "Famille > combo > trinité";
+  const hintText = rec.coachHint || "Top picks calculés · glisser-déposer sur une case";
+  const recTarget = tacticsRecommendTarget();
+  const slotKey = recTarget ? `${recTarget.side}-${recTarget.slot}` : "auto";
   return `
-    <div class="draft-suggest-wrap">
+    <div class="draft-suggest-wrap" data-suggest-slot="${escapeHtml(slotKey)}">
       <div class="draft-suggest-head">
         <span class="draft-suggest-title">Suggestions coach</span>
         <span class="draft-suggest-hint muted">${escapeHtml(hintText)}</span>
       </div>
-      <div class="draft-suggest-row" aria-label="Suggestions macro">
+      <div class="draft-suggest-row" aria-label="Suggestions coach">
         ${rec.items
           .map(
             (item, i) => `
@@ -2940,6 +2973,7 @@ function renderTacticsPoolGrid(champions, sortSlot) {
         ${championIconHtml(c, { size: "pool" })}
         <span class="draft-pool-name">${escapeHtml(c.name)}</span>
         ${c.tierMeta ? `<span class="draft-pool-tier tier-${c.tierMeta.toLowerCase()}">${c.tierMeta}</span>` : ""}
+        ${mtgPastillesHtml ? mtgPastillesHtml(c, { variant: "compact" }) : ""}
       </button>`;
     })
     .join("");
@@ -3029,7 +3063,11 @@ function getTacticsPoolFiltered() {
   const sortSlot = tacticsPoolSortSlot();
   const metaMap = state.tacticsMeta?.champions || {};
   const q = searchQuery.toLowerCase();
-  let filtered = state.champions.filter((c) => {
+  const session = tacticsMacroSession();
+  let filtered = session && window.LoLDraft?.availableChampions
+    ? window.LoLDraft.availableChampions(state.champions, session, [])
+    : state.champions.slice();
+  filtered = filtered.filter((c) => {
     if (!q) return true;
     return c.name.toLowerCase().includes(q) || (c.nameEn || "").toLowerCase().includes(q);
   });
@@ -3040,24 +3078,18 @@ function getTacticsPoolFiltered() {
     filtered = PR.sortPool(filtered, { sortSlot, tierRank, metaMap });
   }
 
-  const macroFocus =
-    (state.tacticsFocus?.type === "pick" && state.tacticsFocus.slot && state.tacticsFocus) ||
-    (state.tacticsHover?.slot && state.tacticsHover);
-  if (macroFocus?.slot && window.LoLDraft?.scoreCompPick) {
-    const side = macroFocus.side;
-    const slot = macroFocus.slot;
-    const LV = window.LoLLaneViability;
-    const laneViable = LV
-      ? new Set(filtered.filter((c) => LV.playsSlot(c, metaMap, slot)).map((c) => c.name))
+  const recTarget = tacticsRecommendTarget();
+  if (recTarget?.slot && session && window.LoLDraft?.scorePickForSlot) {
+    const laneViable = window.LoLDraft.laneViableForSlot
+      ? new Set(window.LoLDraft.laneViableForSlot(filtered, metaMap, recTarget.slot).map((c) => c.name))
       : null;
     const scores = new Map();
     for (const c of filtered) {
-      const r = window.LoLDraft.scoreCompPick(
+      const r = window.LoLDraft.scorePickForSlot(
         c,
-        state.ourComp,
-        state.enemyComp,
-        side,
-        slot,
+        session,
+        recTarget.side,
+        recTarget.slot,
         state.byName,
         metaMap
       );
@@ -3079,12 +3111,15 @@ function getTacticsPoolFiltered() {
 function tacticsPoolActionText() {
   const focus = state.tacticsFocus;
   if (focus?.type === "swap") {
-    return `${focus.side === "our" ? "Notre" : "Adversaire"} · swap ${focus.slot} → clique un autre poste`;
+    const team = focus.side === "our" ? "Notre équipe" : "Adversaire";
+    return `${team} · ${focus.slot} — clique un autre poste pour échanger (reclique pour annuler)`;
   }
   if (focus?.type === "pick") {
-    return `${focus.side === "our" ? "Notre" : "Adversaire"} · ${focus.slot} → choisis un champion`;
+    const team = focus.side === "our" ? "Notre équipe" : "Adversaire";
+    const slotLabel = window.LoLDraft?.SLOT_LABELS?.[focus.slot] || focus.slot;
+    return `${team} · ${slotLabel} — choisis un champion dans la liste`;
   }
-  return "Clique une lane ci-dessus, puis un champion";
+  return "Clique une lane · puis un champion · clic droit = retirer";
 }
 
 function bindTacticsPoolEvents(el) {
@@ -3214,7 +3249,7 @@ function renderTacticsPool({ gridOnly = false } = {}) {
       <h2 class="draft-pool-title">Champions</h2>
       <span class="draft-pool-count">${filtered.length} dispo · ${tacticsPoolSortLabel(role, sortSlot)}</span>
     </div>
-    <p class="draft-pool-lead muted">Coaching pur LoL · famille &gt; combo &gt; trinité · lane focusée = tri + suggestions · flex OK · build ${escapeHtml(window.LoLSiteConfig?.APP_BUILD || "?")}.</p>
+    <p class="draft-pool-lead muted">Clic poste → autre poste = échanger · clic poste + champion = placer · lane focusée = tri + suggestions · flex OK · build ${escapeHtml(window.LoLSiteConfig?.APP_BUILD || "?")}.</p>
     <div class="draft-pool-action${focus?.type === "pick" ? " focus-ready" : ""}">${escapeHtml(actionText)}</div>
     <div id="tactics-suggest-host">${buildTacticsSuggestChipsHtml()}</div>
     ${roleFilters}

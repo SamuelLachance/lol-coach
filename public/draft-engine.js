@@ -993,10 +993,31 @@
     return { our, enemy: 1 - our };
   }
 
+  function macroSideToDraft(macroSide) {
+    return macroSide === "enemy" ? "red" : "blue";
+  }
+
+  function macroSideFromDraft(draftSide) {
+    return draftSide === "red" ? "enemy" : "our";
+  }
+
+  /** Macro tab lane focus — click slot or hover empty/filled cell (our/enemy sides). */
   function macroFocusTarget(focus, hover) {
     if (focus?.type === "pick" && focus.slot) return { side: focus.side, slot: focus.slot };
+    if (focus?.type === "swap" && focus.slot) return { side: focus.side, slot: focus.slot };
     if (hover?.slot) return { side: hover.side, slot: hover.slot, hover: true };
     return null;
+  }
+
+  function macroRecommendFocusTarget(focus, hover) {
+    const target = macroFocusTarget(focus, hover);
+    if (!target?.slot) return null;
+    return {
+      type: "pick",
+      side: macroSideToDraft(target.side),
+      slot: target.slot,
+      hover: target.hover || undefined,
+    };
   }
 
   function scoreCompPick(champ, ourComp, enemyComp, pickSide, slot, byName, metaMap, opts = {}) {
@@ -1014,37 +1035,29 @@
 
   function getMacroRecommendations(ourComp, enemyComp, focus, hover, champs, metaMap, byName, limit = 6) {
     const target = macroFocusTarget(focus, hover);
-    if (!target?.slot) return { type: "none", items: [], coachHint: "", forSide: null };
+    const focusTarget = macroRecommendFocusTarget(focus, hover);
+    if (!target?.slot || !focusTarget?.slot) {
+      return { type: "none", items: [], coachHint: "", forSide: null };
+    }
 
-    const side = target.side;
-    const slot = target.slot;
-    const draftSide = side === "enemy" ? "red" : "blue";
-    const taken = new Set([...namesFromComp(ourComp), ...namesFromComp(enemyComp)]);
-    const avail = (champs || []).filter((c) => c?.name && !taken.has(c.name));
-    const viable = laneViableForSlot(avail, metaMap, slot);
-
-    const items = viable
-      .map((c) => {
-        const r = scoreCompPick(c, ourComp, enemyComp, side, slot, byName, metaMap);
-        return { champion: c, score: r.score, reasons: r.reasons, slot };
-      })
-      .filter((item) => item.score > -1000)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, limit);
-
-    const slotLabel = SLOT_LABELS[slot] || slot;
-    const teamLabel = side === "our" ? "Notre équipe" : "Adversaire";
     const session = compsToMacroSession(ourComp, enemyComp);
-    const coachHint = getDraftCoachHint(session, draftSide, byName, metaMap);
+    const rec = getRecommendations(session, champs, metaMap, byName, [], limit, focusTarget.side, {
+      skipCache: true,
+      focusTarget,
+    });
+
+    const teamLabel = target.side === "our" ? "Notre équipe" : "Adversaire";
+    const coachHint = rec.coachHint
+      ? `${teamLabel} · ${rec.coachHint}`
+      : `${teamLabel} · ${SLOT_LABELS[target.slot] || target.slot} · ≥${MIN_LANE_PLAY_RATE}%${target.hover ? " (survol)" : ""}`;
+
     return {
-      type: "pick",
-      side,
-      slot,
-      forSide: side,
-      coachHint: coachHint
-        ? `${teamLabel} · ${slotLabel} · ≥${MIN_LANE_PLAY_RATE}% · ${coachHint}${target.hover ? " (survol)" : ""}`
-        : `${teamLabel} · ${slotLabel} · ≥${MIN_LANE_PLAY_RATE}%${target.hover ? " (survol)" : ""}`,
-      items,
+      type: rec.type,
+      side: target.side,
+      slot: target.slot,
+      forSide: target.side,
+      coachHint,
+      items: rec.items,
     };
   }
 
@@ -1100,6 +1113,8 @@
     scorePickForSlot,
     laneViableForSlot,
     scoreBan, evaluateTeam, measureTeam: measureTeam, buildVector, phaseWeights, detectCompPlan,
-    compareComps, getMacroRecommendations, scoreCompPick, compsToMacroSession, teamColorSummary, colorCoherence, playableSlotsFor, playsSlotFor, lanePlayRate: () => null,
+    compareComps, getMacroRecommendations, scoreCompPick, compsToMacroSession,
+    macroSideToDraft, macroSideFromDraft, macroFocusTarget, macroRecommendFocusTarget,
+    teamColorSummary, colorCoherence, playableSlotsFor, playsSlotFor, lanePlayRate: () => null,
   };
 })(typeof window !== "undefined" ? window : globalThis);
