@@ -2508,13 +2508,20 @@ function isTacticsSwapTarget(side, slot) {
   return Boolean(comp[f.slot] || comp[slot]);
 }
 
+/** Sort/highlight slot: focused lane first, else explicit role chip. */
+function tacticsPoolSortSlot() {
+  const focusSlot =
+    state.tacticsFocus?.type === "pick" && state.tacticsFocus.slot ? state.tacticsFocus.slot : null;
+  const chipRole = state.tacticsPoolRole || "all";
+  return focusSlot || (chipRole !== "all" ? chipRole : null);
+}
+
 function setTacticsPickFocus(side, slot, { resortPool = false } = {}) {
   state.tacticsFocus = { type: "pick", side, slot };
-  state.tacticsPoolRole = slot;
   syncTacticsSlotFocus();
   if (resortPool && els.tacticsPool?.querySelector(".draft-pool-grid")) {
-    const { filtered, role } = getTacticsPoolFiltered();
-    updateTacticsPoolGrid(els.tacticsPool, filtered, role, { preserveScroll: true });
+    const { filtered, role, sortSlot } = getTacticsPoolFiltered();
+    updateTacticsPoolGrid(els.tacticsPool, filtered, role, sortSlot, { preserveScroll: true });
   } else {
     syncTacticsPoolChrome();
   }
@@ -2583,18 +2590,18 @@ function syncTacticsFocusHint() {
 function syncTacticsPoolChrome() {
   if (!els.tacticsPool) return;
   syncTacticsPoolFocus(els.tacticsPool);
-  const { filtered, role } = getTacticsPoolFiltered();
+  const { filtered, role, sortSlot } = getTacticsPoolFiltered();
   const countEl = els.tacticsPool.querySelector(".draft-pool-count");
   if (countEl) {
-    countEl.textContent = `${filtered.length} dispo · ${tacticsPoolSortLabel(role)}`;
+    countEl.textContent = `${filtered.length} dispo · ${tacticsPoolSortLabel(role, sortSlot)}`;
   }
   window.LoLPoolRoles?.syncRoleFilterChips(els.tacticsPool, role);
 }
 
 function refreshTacticsPoolGrid({ preserveScroll = true } = {}) {
   if (!els.tacticsPool?.querySelector(".draft-pool-grid")) return;
-  const { filtered, role } = getTacticsPoolFiltered();
-  updateTacticsPoolGrid(els.tacticsPool, filtered, role, { preserveScroll });
+  const { filtered, role, sortSlot } = getTacticsPoolFiltered();
+  updateTacticsPoolGrid(els.tacticsPool, filtered, role, sortSlot, { preserveScroll });
 }
 
 function syncTacticsSlotFocus() {
@@ -2641,19 +2648,20 @@ function assignTacticsChampion(name) {
   const { side, slot } = state.tacticsFocus;
   const champ = state.byName.get(name);
   const metaMap = tacticsMetaMap();
-  if (window.LoLLaneViability && champ && !window.LoLLaneViability.playsSlot(champ, metaMap, slot)) {
-    const min = window.LoLLaneViability.MIN_LANE_RATE;
-    if (els.tacticsFocusHint) {
-      els.tacticsFocusHint.textContent = `${name} n'est pas viable en ${slot} (< ${min}% lane rate).`;
-    }
-    return;
-  }
+  const offMeta =
+    window.LoLLaneViability && champ && !window.LoLLaneViability.playsSlot(champ, metaMap, slot);
   const comp = tacticsComp(side);
   comp[slot] = name;
   const next = tacticsSlots().find((s) => !comp[s]);
   state.tacticsFocus = next ? { type: "pick", side, slot: next } : null;
-  if (next) state.tacticsPoolRole = next;
   renderTacticsDraft();
+  if (els.tacticsFocusHint) {
+    const team = side === "our" ? "Notre équipe" : "Adversaire";
+    const flexNote = offMeta ? ` · flex hors meta (< ${window.LoLLaneViability.MIN_LANE_RATE}%)` : "";
+    els.tacticsFocusHint.textContent = next
+      ? `${name} → ${slot}${flexNote} · ${team} · ${next} suivant`
+      : `${name} → ${slot}${flexNote} · ${team} · comp complète`;
+  }
   syncTacticsAdvice();
   scheduleUserSessionSave();
 }
@@ -2743,22 +2751,37 @@ function updateTacticsCompScore() {
   el.innerHTML = renderTacticsCompScoreHtml(comp);
 }
 
-function tacticsPoolSortLabel(role) {
+function tacticsPoolSortLabel(role, sortSlot) {
   const PR = window.LoLPoolRoles;
-  const roleLabel = PR ? PR.roleFilterLabel(role) : role;
-  return `${roleLabel} · tier`;
+  const filterLabel = PR ? PR.roleFilterLabel(role) : role;
+  const sortLabel =
+    sortSlot && sortSlot !== role && sortSlot !== "all"
+      ? ` · tri ${PR?.SLOT_LABELS?.[sortSlot] || sortSlot}`
+      : "";
+  return `${filterLabel}${sortLabel} · tier`;
 }
 
-function renderTacticsPoolGrid(champions, role) {
+function renderTacticsPoolGrid(champions, sortSlot) {
   const PR = window.LoLPoolRoles;
   const metaMap = state.tacticsMeta?.champions || {};
-  const sortSlot = role && role !== "all" ? role : null;
+  const slot = sortSlot && sortSlot !== "all" ? sortSlot : null;
   return champions
     .map((c) => {
-      const laneScore = sortSlot && PR ? PR.laneScore(c, sortSlot, metaMap) : 0;
-      const lanePick = sortSlot && laneScore >= 10;
+      const laneScore = slot && PR ? PR.laneScore(c, slot, metaMap) : 0;
+      const lanePick = slot && laneScore >= 10;
+      const flexPick = slot && !lanePick;
+      const cardClass = lanePick
+        ? " draft-pool-card--lane"
+        : flexPick
+          ? " draft-pool-card--offlane"
+          : "";
+      const titleExtra = slot
+        ? lanePick
+          ? ` · viable ${slot}`
+          : ` · flex ${slot} (<10%)`
+        : "";
       return `
-      <button type="button" class="draft-pool-card${lanePick ? " draft-pool-card--lane" : ""}" data-champ="${escapeHtml(c.name)}" title="${escapeHtml(c.name)}${lanePick ? ` · ${sortSlot}` : ""}">
+      <button type="button" class="draft-pool-card${cardClass}" data-champ="${escapeHtml(c.name)}" title="${escapeHtml(c.name)}${titleExtra}">
         ${championIconHtml(c, { size: "pool" })}
         <span class="draft-pool-name">${escapeHtml(c.name)}</span>
         ${c.tierMeta ? `<span class="draft-pool-tier tier-${c.tierMeta.toLowerCase()}">${c.tierMeta}</span>` : ""}
@@ -2847,18 +2870,21 @@ function updateFilterButtonVisibility(view) {
 function getTacticsPoolFiltered() {
   const PR = window.LoLPoolRoles;
   const searchQuery = state.tacticsPoolSearch || "";
-  const role = state.tacticsPoolRole || "all";
+  const chipRole = state.tacticsPoolRole || "all";
+  const sortSlot = tacticsPoolSortSlot();
   const metaMap = state.tacticsMeta?.champions || {};
   const q = searchQuery.toLowerCase();
   let filtered = state.champions.filter((c) => {
     if (!q) return true;
     return c.name.toLowerCase().includes(q) || (c.nameEn || "").toLowerCase().includes(q);
   });
-  if (PR) {
-    filtered = PR.filterByRole(filtered, role, metaMap);
-    filtered = PR.sortPool(filtered, { sortSlot: role, tierRank, metaMap });
+  if (PR && chipRole !== "all") {
+    filtered = PR.filterByRole(filtered, chipRole, metaMap);
   }
-  return { searchQuery, filtered, role };
+  if (PR) {
+    filtered = PR.sortPool(filtered, { sortSlot, tierRank, metaMap });
+  }
+  return { searchQuery, filtered, role: chipRole, sortSlot };
 }
 
 function tacticsPoolActionText() {
@@ -2906,10 +2932,10 @@ function syncTacticsPoolFocus(el) {
   actionEl.classList.toggle("focus-ready", state.tacticsFocus?.type === "pick");
 }
 
-function updateTacticsPoolGrid(el, filtered, role, { preserveScroll = false } = {}) {
+function updateTacticsPoolGrid(el, filtered, role, sortSlot, { preserveScroll = false } = {}) {
   const countEl = el.querySelector(".draft-pool-count");
   if (countEl) {
-    countEl.textContent = `${filtered.length} dispo · ${tacticsPoolSortLabel(role)}`;
+    countEl.textContent = `${filtered.length} dispo · ${tacticsPoolSortLabel(role, sortSlot)}`;
   }
   window.LoLPoolRoles?.syncRoleFilterChips(el, role);
 
@@ -2917,7 +2943,7 @@ function updateTacticsPoolGrid(el, filtered, role, { preserveScroll = false } = 
   if (gridEl) {
     const scrollTop = preserveScroll ? gridEl.scrollTop : 0;
     gridEl.innerHTML = filtered.length
-      ? renderTacticsPoolGrid(filtered, role)
+      ? renderTacticsPoolGrid(filtered, sortSlot)
       : `<p class="muted draft-pool-empty">Aucun champion trouvé${role && role !== "all" ? " pour ce poste" : ""}.</p>`;
     if (preserveScroll) gridEl.scrollTop = scrollTop;
   }
@@ -2927,10 +2953,10 @@ function renderTacticsPool({ gridOnly = false } = {}) {
   const el = els.tacticsPool;
   if (!el) return;
 
-  const { searchQuery, filtered, role } = getTacticsPoolFiltered();
+  const { searchQuery, filtered, role, sortSlot } = getTacticsPoolFiltered();
 
   if (gridOnly && el.querySelector("#tactics-pool-search")) {
-    updateTacticsPoolGrid(el, filtered, role, { preserveScroll: true });
+    updateTacticsPoolGrid(el, filtered, role, sortSlot, { preserveScroll: true });
     syncTacticsPoolFocus(el);
     return;
   }
@@ -2942,15 +2968,16 @@ function renderTacticsPool({ gridOnly = false } = {}) {
   el.innerHTML = `
     <div class="draft-pool-header">
       <h2 class="draft-pool-title">Champions</h2>
-      <span class="draft-pool-count">${filtered.length} dispo · ${tacticsPoolSortLabel(role)}</span>
+      <span class="draft-pool-count">${filtered.length} dispo · ${tacticsPoolSortLabel(role, sortSlot)}</span>
     </div>
+    <p class="draft-pool-lead muted">Tous les champions restent visibles · lane focusée = tri + pick sur ce poste (flex OK) · filtre optionnel.</p>
     <div class="draft-pool-action${focus?.type === "pick" ? " focus-ready" : ""}">${escapeHtml(actionText)}</div>
     ${roleFilters}
     <div class="draft-pool-toolbar">
       <input type="search" class="draft-pool-search" placeholder="Rechercher…" value="${escapeHtml(searchQuery)}" id="tactics-pool-search" />
     </div>
     <div class="draft-pool-grid draft-pool-grid-alpha">
-      ${filtered.length ? renderTacticsPoolGrid(filtered, role) : `<p class="muted draft-pool-empty">Aucun champion trouvé${role && role !== "all" ? " pour ce poste" : ""}.</p>`}
+      ${filtered.length ? renderTacticsPoolGrid(filtered, sortSlot) : `<p class="muted draft-pool-empty">Aucun champion trouvé${role && role !== "all" ? " pour ce poste" : ""}.</p>`}
     </div>
   `;
 
