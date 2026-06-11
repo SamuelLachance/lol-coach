@@ -197,8 +197,9 @@
     const { byName, metaMap, oppNames = [] } = ctx;
     const vs = profiles(names, byName, metaMap);
     const vectors = vs.map((p) => ({ name: p.name, colors: p.colors })).filter((p) => p.colors);
-    const coherence = pie.colorCoherence(vectors);
-    let score = Math.round(Math.max(-90, Math.min(270, coherence.score * 1.35)));
+    const macroFn = pie.teamMacroIdentityScore || pie.colorCoherence;
+    const coherence = macroFn(vectors);
+    let score = coherence.score;
 
     let beatdown = null;
     if (oppNames.length) {
@@ -208,7 +209,7 @@
     }
 
     return {
-      score: Math.round(score),
+      score: Math.round(Math.max(0, Math.min(580, score))),
       detail: { coherence, beatdown },
     };
   }
@@ -450,8 +451,9 @@
     const pie = MTG();
     if (pie && vs.length >= 2) {
       const mtgVec = vs.map((p) => ({ name: p.name, colors: p.colors })).filter((p) => p.colors);
-      const mtgCoh = pie.colorCoherence(mtgVec);
-      mtgAdj = Math.round(mtgCoh.score * 1.1);
+      const macroFn = pie.teamMacroIdentityScore || pie.colorCoherence;
+      const mtgCoh = macroFn(mtgVec);
+      mtgAdj = mtgCoh.score;
       if (oppNames.length) {
         const beat = pie.analyzeBeatdownMatchup(vs, oppVs);
         mtgAdj += beat.alignmentBonus || 0;
@@ -797,7 +799,7 @@
     const winCondition = winConditionScore(vs, names, byName, metaMap);
     const wombo = teamWomboPower(vs);
     const secondary = Math.round(
-      synergy * 0.28 + family * 0.32 + bal.score * 0.35 + coaching * 0.45 + mtgBlock.score * 0.85 + wombo.power * 0.12
+      synergy * 0.28 + family * 0.32 + bal.score * 0.35 + coaching * 0.45 + mtgBlock.score * 1.05 + wombo.power * 0.12
     );
     const total = winCondition + secondary;
     return {

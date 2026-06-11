@@ -284,6 +284,45 @@
     };
   }
 
+  /** Macro / comp breakdown — hundreds-scale; avoids pick-level pair penalties crushing named identities. */
+  function teamMacroIdentityScore(vectors) {
+    const coherence = colorCoherence(vectors);
+    const combo = coherence.combination;
+    if (!vectors?.length || !combo) return coherence;
+
+    let score = combinationScore(combo) * 2.65;
+    if (vectors.length >= 5) score += 92;
+    else score += vectors.length * 22;
+
+    const typeBonus = {
+      guild: 78,
+      shard: 72,
+      wedge: 68,
+      enemy_dual: 62,
+      mono: 58,
+    };
+    score += typeBonus[combo.type] || 0;
+
+    let alignHits = 0;
+    for (const v of vectors) {
+      if (!v.colors) continue;
+      if (identityAlignBonus(v.colors.identity, combo) >= 55) alignHits += 1;
+    }
+    score += alignHits * 34;
+
+    const softConflict = combo.type === "wedge" || combo.type === "enemy_dual";
+    const conflictMult = softConflict ? 14 : 36;
+    const conflictCap = softConflict ? 34 : combo.type === "shard" ? 138 : combo.type === "guild" ? 108 : 88;
+    score -= Math.min(conflictCap, (coherence.conflicts?.length || 0) * conflictMult);
+
+    score += Math.round(Math.max(-48, Math.min(96, coherence.score * 0.14)));
+
+    return {
+      ...coherence,
+      score: Math.round(Math.max(85, Math.min(560, score))),
+    };
+  }
+
   function colorPickBonus(champColors, teamColors, teamSum) {
     if (!champColors || !teamColors?.length) return { score: 0, label: null };
     let s = 0;
@@ -558,6 +597,7 @@
     colorMatchupPenalty,
     teamColorSummary,
     colorCoherence,
+    teamMacroIdentityScore,
     colorPickBonus,
     harmonyTags,
   };

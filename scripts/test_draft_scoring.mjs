@@ -292,6 +292,21 @@ function main() {
     `expected named MTG identity (Boros/Gruul/etc.), got ${borosMtg.combination?.type} (${borosMtg.combination?.name})`
   );
 
+  const userMacroMtgOur = SC.macroMtgScore(Object.values(userComp), { byName, metaMap: meta, oppNames: [] });
+  const userMacroMtgEn = SC.macroMtgScore(Object.values(enemyCompFr), { byName, metaMap: meta, oppNames: [] });
+  assert(
+    userMacroMtgOur.score >= 200 && userMacroMtgEn.score >= 150,
+    `MTG identity must scale to hundreds in breakdown: blue=${userMacroMtgOur.score} red=${userMacroMtgEn.score}`
+  );
+  assert(
+    userDuel.our.breakdown.mtg === userMacroMtgOur.score && userDuel.enemy.breakdown.mtg === userMacroMtgEn.score,
+    `breakdown MTG must match macroMtgScore: ui ${userDuel.our.breakdown.mtg}/${userDuel.enemy.breakdown.mtg} macro ${userMacroMtgOur.score}/${userMacroMtgEn.score}`
+  );
+  assert(
+    userDuel.our.breakdown.mtg >= userDuel.our.breakdown.synergy * 0.35,
+    `MTG identity should weigh visibly vs synergy: mtg=${userDuel.our.breakdown.mtg} syn=${userDuel.our.breakdown.synergy}`
+  );
+
   const hoverSession = D.createSession("hover-priority", "blue");
   assert(
     D.HOVER_SLOT_PRIORITY.join(",") === "Bot,Jungle,Mid,Support,Top",
