@@ -544,6 +544,107 @@ function main() {
   });
   assert(luluBot.score < -500, `Lulu Bot macro should reject off-role, got ${luluBot.score}`);
 
+  // Logic-based comp rules (NOT win-rate statistics)
+  const pokePlanHits = (duel.detail?.cross?.plan?.hits || []).map((h) => h.reason).join(" ");
+  assert(
+    /poke|disengage|Disengage kite/i.test(pokePlanHits),
+    `Logic poke>engage: plan clash must cite disengage, got ${pokePlanHits}`
+  );
+
+  const hyperPeelProfiles = ["Ashe", "Séraphine", "Rumble", "Trundle", "Cassiopeia"].map((n) =>
+    SC.buildProfile(byName.get(n) || champs.find((c) => c.name === n || c.nameEn === n), meta)
+  );
+  const engageProfiles = ["Galio", "Naafiri", "Ryze", "Caitlyn", "Bard"].map((n) =>
+    SC.buildProfile(byName.get(n), meta)
+  );
+  const peelClash = LDI.evaluateCompClashes(
+    hyperPeelProfiles,
+    engageProfiles,
+    "hypercarry",
+    "teamfight_engage",
+    D.detectCompPlan(hyperPeelProfiles),
+    D.detectCompPlan(engageProfiles)
+  );
+  assert(
+    peelClash.hits.some((h) => /Hypercarry|Peel enchanter|protégé|enchanter/i.test(h.reason)),
+    `Logic peel>engage must fire for protected hypercarry: ${peelClash.hits.map((h) => h.reason).join("; ")}`
+  );
+
+  const engageVsSplit = SC.evaluateDraftDuel(
+    ["Ornn", "Sejuani", "Orianna", "Jinx", "Rell"],
+    ["Fiora", "Viego", "Twisted Fate", "Ezreal", "Karma"],
+    {
+      ourComp: { Top: "Ornn", Jungle: "Sejuani", Mid: "Orianna", Bot: "Jinx", Support: "Rell" },
+      enemyComp: { Top: "Fiora", Jungle: "Viego", Mid: "Twisted Fate", Bot: "Ezreal", Support: "Karma" },
+      byName,
+      metaMap: meta,
+    }
+  );
+  assert(
+    engageVsSplit.margin > 0 && engageVsSplit.winProb.our > engageVsSplit.winProb.enemy,
+    `Logic engage>split: margin=${engageVsSplit.margin}`
+  );
+
+  const tempoProfiles = ["Renekton", "Lee Sin", "LeBlanc", "Lucian", "Nautilus"].map((n) =>
+    SC.buildProfile(byName.get(n), meta)
+  );
+  const unpeeledHyperProfiles = ["Gangplank", "Lillia", "Viktor", "Aphelios", "Blitzcrank"].map((n) =>
+    SC.buildProfile(byName.get(n), meta)
+  );
+  const tempoClash = LDI.evaluateCompClashes(
+    tempoProfiles,
+    unpeeledHyperProfiles,
+    "all_in",
+    "hypercarry",
+    D.detectCompPlan(tempoProfiles),
+    D.detectCompPlan(unpeeledHyperProfiles)
+  );
+  assert(
+    tempoClash.hits.some((h) => /All-in tempo > hypercarry non protégé/i.test(h.reason)),
+    `Logic all-in>unpeeled hyper rule must fire: ${tempoClash.hits.map((h) => h.reason).join("; ")}`
+  );
+
+  const logicGalioComp = SC.evaluateDraftDuel(
+    Object.values(userComp),
+    Object.values(enemyCompFr),
+    { ourComp: userComp, enemyComp: enemyCompFr, byName, metaMap: meta }
+  );
+  assert(
+    logicGalioComp.detail?.cross?.plan?.enemyPlan === "hypercarry",
+    `Logic user comp: red must be hypercarry, got ${logicGalioComp.detail?.cross?.plan?.enemyPlan}`
+  );
+  assert(
+    logicGalioComp.detail?.cross?.plan?.hits?.some((h) => /Hypercarry|front-to-back|peel|Peel enchanter/i.test(h.reason)),
+    "Logic hypercarry peel > engage rule must fire for user comp"
+  );
+  assert(
+    logicGalioComp.margin < 0,
+    `Logic user comp: protected hypercarry (red) must win duel, margin=${logicGalioComp.margin}`
+  );
+
+  assert(ruleCount >= 210, `Logic tuning should load 210+ rules, got ${ruleCount}`);
+
+  const swapS = D.createSession("swap", "blue");
+  D.recordAction(swapS, { type: "pick", side: "blue", name: "Jinx", slot: "Bot" }, [swapS], { byName, metaMap: meta });
+  D.recordAction(swapS, { type: "pick", side: "blue", name: "Lulu", slot: "Support" }, [swapS], { byName, metaMap: meta });
+  const swapRes = D.swapPickSlots(swapS, "blue", "Bot", "Support");
+  assert(swapRes.ok, "swapPickSlots filled-filled should succeed");
+  assert(/échangés/i.test(swapRes.message), `swap message expected: ${swapRes.message}`);
+  const afterSwap = D.pickBySlot(swapS, "blue");
+  assert(afterSwap.Bot === "Lulu" && afterSwap.Support === "Jinx", "swapPickSlots should exchange champions");
+
+  const moveS = D.createSession("move", "blue");
+  D.recordAction(moveS, { type: "pick", side: "blue", name: "Malphite", slot: "Top" }, [moveS], { byName, metaMap: meta });
+  const moveRes = D.swapPickSlots(moveS, "blue", "Top", "Mid");
+  assert(moveRes.ok, "swapPickSlots move to empty should succeed");
+  assert(D.pickBySlot(moveS, "blue").Mid === "Malphite" && !D.pickBySlot(moveS, "blue").Top, "champ should move to empty slot");
+
+  const replaceS = D.createSession("replace", "blue");
+  D.recordAction(replaceS, { type: "pick", side: "blue", name: "Jinx", slot: "Bot" }, [replaceS], { byName, metaMap: meta });
+  const replaceRes = D.manualAssign(replaceS, { type: "pick", side: "blue", name: "Caitlyn", slot: "Bot" }, [replaceS], { byName, metaMap: meta });
+  assert(replaceRes.ok, "manualAssign should replace occupied slot");
+  assert(D.pickBySlot(replaceS, "blue").Bot === "Caitlyn", "occupied slot should be replaced");
+
   console.log("OK — LoL draft scoring smoke tests passed");
   console.log(`  phaseWeights depth0→1: tier ${w0.tier.toFixed(2)}→${w1.tier.toFixed(2)}, counter ${w0.counter.toFixed(2)}→${w1.counter.toFixed(2)}`);
   console.log(`  hypercarry plan: ${plan.label} (${plan.completeness}%)`);

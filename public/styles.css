@@ -3650,6 +3650,14 @@ body::before {
   background: rgba(255, 255, 255, 0.05);
 }
 
+.draft-board-swap-mode .draft-pick-cell {
+  cursor: cell;
+}
+
+.draft-board-swap-mode .draft-cell-swap-target {
+  cursor: pointer;
+}
+
 .draft-cell-focused {
   border-color: var(--accent) !important;
   border-style: solid !important;

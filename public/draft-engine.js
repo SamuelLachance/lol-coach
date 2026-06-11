@@ -357,7 +357,7 @@
   /** Réaligne le survol quand l'adversaire révèle un pick (sans lane cliquée). */
   function refreshDraftHover(s) {
     normalizeSession(s, { resyncStep: false });
-    if (s.focus?.userLocked) return s.hoverPick || null;
+    if (s.focus?.userLocked || s.focus?.type === "swap") return s.hoverPick || null;
     const step = getStep(s);
     if (step?.type !== "pick") {
       s.hoverPick = null;
@@ -771,7 +771,12 @@
     if (na) s.picks[side].push({ name: na, slot: b });
     s.updatedAt = Date.now();
     invalidateRecommendationCache();
-    return { ok: true };
+    const label = (sl) => SLOT_LABELS[sl] || sl;
+    let message;
+    if (na && nb) message = `${na} ↔ ${nb} échangés (${label(a)} ↔ ${label(b)})`;
+    else if (na) message = `${na} déplacé → ${label(b)}`;
+    else message = `${nb} déplacé → ${label(a)}`;
+    return { ok: true, message };
   }
 
   function manualAssign(s, action, all = [], ctx = {}) {
@@ -799,12 +804,11 @@
       s.bans[side][idx] = name;
     } else {
       const list = sidePicks(s, side).filter((p) => p.name !== name);
-      if (list.length >= 5) return { ok: false, error: "Picks pleins." };
+      if (list.length >= 5 && !pickBySlot(s, side)[hintSlot]) return { ok: false, error: "Picks pleins." };
       const champData = getData(ctx.byName, ctx.metaMap, name);
       const metaMap = ctx.metaMap || {};
-      const requestedSlot = hintSlot && !pickBySlot(s, side)[hintSlot] ? hintSlot : null;
-      if (requestedSlot) {
-        assignPickDirect(s, side, name, requestedSlot, { pinned: true });
+      if (hintSlot) {
+        assignPickDirect(s, side, name, hintSlot, { pinned: true });
       } else {
         const slot = scorePick(champData, s, side, ctx.byName, metaMap, hintSlot).slot;
         assignPickDirect(s, side, name, slot, { pinned: false });
@@ -887,6 +891,7 @@
 
   function refreshAutoPickFocus(s) {
     normalizeSession(s, { resyncStep: false });
+    if (s.focus?.type === "swap") return s.focus;
     const step = getStep(s);
     if (!step || isComplete(s)) return null;
     if (step.type === "ban") {
@@ -919,7 +924,10 @@
         const phase = f.banIndex < BAN_PHASE1_COUNT ? "phase 1" : "phase 2";
         return `Ban ${fr} (${phase}, ${f.banIndex + 1}/5) → champion`;
       }
-      if (f.type === "swap") return `Swap ${fr} · clique un autre poste`;
+      if (f.type === "swap") {
+        const slotLabel = SLOT_LABELS[f.slot] || f.slot;
+        return `${fr} · ${slotLabel} · autre poste = échanger · champion = placer`;
+      }
       if (f.slot) return `Pick ${fr} · ${SLOT_LABELS[f.slot] || f.slot} → champion`;
       const hint = getDraftCoachHint(s, f.side, byName, meta);
       return hint ? `Pick ${fr} → champion · ${hint}` : `Pick ${fr} → champion`;

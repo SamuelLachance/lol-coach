@@ -161,9 +161,16 @@
       return;
     }
 
-    if (!session.hoverSource && !session.focus?.userLocked && window.LoLDraft.refreshDraftHover) {
+    if (
+      !session.hoverSource &&
+      !session.focus?.userLocked &&
+      session.focus?.type !== "swap" &&
+      window.LoLDraft.refreshDraftHover
+    ) {
       window.LoLDraft.refreshDraftHover(session);
     }
+
+    el.classList.toggle("draft-board-swap-mode", session.focus?.type === "swap");
 
     el.querySelectorAll(".draft-cell-focused").forEach((c) => c.classList.remove("draft-cell-focused"));
     el.querySelectorAll(".draft-cell-hover").forEach((c) => c.classList.remove("draft-cell-hover"));
@@ -208,6 +215,7 @@
     const step = window.LoLDraft.getStep(session);
     if (
       step?.type === "pick" &&
+      session.focus?.type !== "swap" &&
       !session.focus?.userLocked &&
       !session.hoverSource &&
       window.LoLDraft.refreshAutoPickFocus
@@ -241,6 +249,9 @@
   function draftRecommendTarget(session) {
     normalizeSessionFocus(session);
     const f = session.focus;
+    if (f?.type === "swap" && f.slot && f.side) {
+      return { type: "pick", side: f.side, slot: f.slot };
+    }
     if (f?.userLocked && f.type === "pick" && f.slot && f.side) {
       return { type: "pick", side: f.side, slot: f.slot };
     }
@@ -282,6 +293,7 @@
 
   function setHoverPick(session, side, slot) {
     normalizeSessionFocus(session);
+    if (session.focus?.type === "swap") return;
     const prevSrc = session.hoverSource;
     const prevTgt = session.hoverPick;
     if (!slot) {
@@ -340,27 +352,29 @@
   }
 
   function handlePickCellClick(session, side, slot) {
-    const comp = window.LoLDraft.pickBySlot(session, side);
     const focus = session.focus;
 
-    if (focus?.type === "swap" && focus.side === side) {
-      if (focus.slot === slot) {
+    if (focus?.type === "swap") {
+      if (focus.side === side && focus.slot === slot) {
         session.focus = null;
-      } else {
+      } else if (focus.side === side) {
         const result = window.LoLDraft.swapPickSlots(session, side, focus.slot, slot);
         if (!result.ok) showDraftFlash(result.error, "error");
         else showDraftFlash(result.message, "success");
         session.focus = null;
+        flushSaveSessions();
+        renderBoard();
+        syncDraftCoachUI(session);
+        afterFocusChange(session);
+        return;
+      } else {
+        session.hoverPick = null;
+        session.hoverSource = null;
+        session.focus = { type: "swap", side, slot };
+        saveSessionsDebounced();
+        afterFocusChange(session);
+        return;
       }
-      saveSessionsDebounced();
-      afterFocusChange(session);
-      return;
-    }
-
-    if (comp[slot]) {
-      session.hoverPick = null;
-      session.hoverSource = null;
-      session.focus = { type: "swap", side, slot };
       saveSessionsDebounced();
       afterFocusChange(session);
       return;
@@ -368,8 +382,7 @@
 
     session.hoverPick = null;
     session.hoverSource = null;
-    session.focus = { type: "pick", side, slot, userLocked: true };
-    window.LoLDraft.syncLegacySlots(session);
+    session.focus = { type: "swap", side, slot };
     saveSessionsDebounced();
     afterFocusChange(session);
   }
@@ -450,6 +463,13 @@
 
     window.LoLDraft.resyncStepIndex(session);
 
+    if (session.focus?.type === "swap" && session.focus.side && session.focus.slot) {
+      const { side, slot } = session.focus;
+      session.focus = null;
+      recordChampionAction({ type: "pick", side, name, slot });
+      return;
+    }
+
     const locked =
       session.focus?.userLocked &&
       session.focus?.type === "pick" &&
@@ -480,11 +500,6 @@
       showDraftError("Sélectionne une case ban ou une lane, puis le champion.");
       return;
     }
-    if (focus.type === "swap") {
-      showDraftError("Mode swap actif — clique un autre poste pour échanger.");
-      return;
-    }
-
     recordChampionAction({
       type: focus.type,
       side: focus.side,
@@ -1092,7 +1107,7 @@
         <h2 class="draft-pool-title">Champions</h2>
         <span class="draft-pool-count">${poolCountLabel(filtered.length, role, sortSlot)}</span>
       </div>
-      <p class="draft-pool-lead muted">Tous les champions restent visibles · case focusée = tri + pick sur ce poste (flex OK) · filtre optionnel · <strong>clic droit</strong> = retirer.</p>
+      <p class="draft-pool-lead muted">Clic poste → autre poste = échanger/déplacer · clic poste + champion = placer/remplacer · filtre optionnel · <strong>clic droit</strong> = retirer.</p>
       ${
         actionText
           ? `<div class="draft-pool-action${hasFocus ? " focus-ready" : ""}">${coach.escapeHtml(actionText)}</div>`
