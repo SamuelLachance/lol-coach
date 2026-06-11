@@ -437,11 +437,14 @@
       clearFromBoard(s, action.championName);
       const champData = getData(ctx.byName, ctx.metaMap, action.championName);
       const metaMap = ctx.metaMap || {};
-      let slot = action.slot && !pickBySlot(s, step.side)[action.slot] ? action.slot : null;
-      if (slot && !playsSlotFor(champData, metaMap, slot)) slot = null;
-      if (!slot) slot = scorePick(champData, s, step.side, ctx.byName, metaMap).slot;
-      assignPickDirect(s, step.side, action.championName, slot, { pinned: Boolean(action.slot && slot === action.slot) });
-      if (!action.slot) relayoutAll(s, ctx);
+      const requestedSlot = action.slot && !pickBySlot(s, step.side)[action.slot] ? action.slot : null;
+      if (requestedSlot) {
+        assignPickDirect(s, step.side, action.championName, requestedSlot, { pinned: true });
+      } else {
+        const slot = scorePick(champData, s, step.side, ctx.byName, metaMap).slot;
+        assignPickDirect(s, step.side, action.championName, slot, { pinned: false });
+        relayoutAll(s, ctx);
+      }
     }
     s.stepIndex++;
     s.updatedAt = Date.now();
@@ -534,11 +537,14 @@
       if (list.length >= 5) return { ok: false, error: "Picks pleins." };
       const champData = getData(ctx.byName, ctx.metaMap, name);
       const metaMap = ctx.metaMap || {};
-      let slot = hintSlot && !pickBySlot(s, side)[hintSlot] ? hintSlot : null;
-      if (slot && !playsSlotFor(champData, metaMap, slot)) slot = null;
-      if (!slot) slot = scorePick(champData, s, side, ctx.byName, metaMap, hintSlot).slot;
-      assignPickDirect(s, side, name, slot, { pinned: Boolean(hintSlot && slot === hintSlot) });
-      if (!hintSlot) relayoutAll(s, ctx);
+      const requestedSlot = hintSlot && !pickBySlot(s, side)[hintSlot] ? hintSlot : null;
+      if (requestedSlot) {
+        assignPickDirect(s, side, name, requestedSlot, { pinned: true });
+      } else {
+        const slot = scorePick(champData, s, side, ctx.byName, metaMap, hintSlot).slot;
+        assignPickDirect(s, side, name, slot, { pinned: false });
+        relayoutAll(s, ctx);
+      }
       const placed = s.picks[side].find((p) => p.name === name);
       if (!placed) return { ok: false, error: "Placement impossible." };
       resyncStepIndex(s);

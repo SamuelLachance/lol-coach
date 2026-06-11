@@ -168,20 +168,18 @@
   }
 
   function afterFocusChange(session) {
-    let poolResort = false;
-    if (session.focus?.type === "pick" && session.focus.slot) {
-      const prev = coach.state.draftPoolRole;
-      coach.state.draftPoolRole = session.focus.slot;
-      poolResort = prev !== session.focus.slot;
-      if (poolResort) coach.persistUserSession?.();
-    }
     syncBoardFocus(session);
     syncPoolFocus(session);
-    if (poolResort && coach.els.draftPool?.querySelector(".draft-pool-grid")) {
+    if (coach.els.draftPool?.querySelector(".draft-pool-grid")) {
       renderPool({ gridOnly: true, preserveScroll: true });
-    } else if (window.LoLPoolRoles && coach.els.draftPool) {
-      window.LoLPoolRoles.syncRoleFilterChips(coach.els.draftPool, coach.state.draftPoolRole || "all");
     }
+  }
+
+  /** Sort/highlight slot: focused lane first, else explicit role chip. */
+  function poolSortSlot(session) {
+    const focusSlot = session.focus?.type === "pick" && session.focus.slot ? session.focus.slot : null;
+    const chipRole = coach.state.draftPoolRole || "all";
+    return focusSlot || (chipRole !== "all" ? chipRole : null);
   }
 
   function isCellFocused(session, type, side, banIndex, slot) {
@@ -286,7 +284,19 @@
     }
     if (payload.type === "pick" && result.slot) {
       const note = result.inOrder ? "" : " (hors séquence)";
-      showDraftFlash(`${payload.name} → ${result.slot}${note}`, result.inOrder ? "success" : "warn");
+      const champ = coach.state.byName.get(payload.name);
+      const metaMap = draftMetaMap();
+      const offMeta =
+        payload.slot &&
+        result.slot === payload.slot &&
+        window.LoLDraft.playsSlotFor &&
+        champ &&
+        !window.LoLDraft.playsSlotFor(champ, metaMap, payload.slot);
+      const flexNote = offMeta ? " · flex hors meta" : "";
+      showDraftFlash(
+        `${payload.name} → ${result.slot}${note}${flexNote}`,
+        offMeta ? "warn" : result.inOrder ? "success" : "warn"
+      );
     }
     restoreFocusAfterAction(session, payload, result);
     flushSaveSessions();
@@ -687,7 +697,8 @@
   }
 
   function renderPoolAlphabetical(champions) {
-    return renderPoolGrid(champions, coach.state.draftPoolRole || "all");
+    const session = getActiveSession();
+    return renderPoolGrid(champions, session ? poolSortSlot(session) : coach.state.draftPoolRole || "all");
   }
 
   function buildSuggestChipsHtml(session) {
@@ -744,13 +755,16 @@
   function getPoolFiltered(session) {
     const PR = window.LoLPoolRoles;
     const searchQuery = coach.state.draftPoolSearch || "";
-    const role = coach.state.draftPoolRole || "all";
+    const chipRole = coach.state.draftPoolRole || "all";
+    const sortSlot = poolSortSlot(session);
     const metaMap = coach.state.tacticsMeta?.champions || draftMetaMap();
     const q = searchQuery.toLowerCase();
     let avail = window.LoLDraft.availableChampions(coach.state.champions, session, allSessions());
+    if (PR && chipRole !== "all") {
+      avail = PR.filterByRole(avail, chipRole, metaMap);
+    }
     if (PR) {
-      avail = PR.filterByRole(avail, role, metaMap);
-      avail = PR.sortPool(avail, { sortSlot: role, tierRank: coach.tierRank, metaMap });
+      avail = PR.sortPool(avail, { sortSlot, tierRank: coach.tierRank, metaMap });
     } else {
       avail = [...avail].sort((a, b) => a.name.localeCompare(b.name, "fr"));
     }
@@ -758,19 +772,30 @@
       if (!q) return true;
       return c.name.toLowerCase().includes(q) || (c.nameEn || "").toLowerCase().includes(q);
     });
-    return { searchQuery, filtered, role };
+    return { searchQuery, filtered, role: chipRole, sortSlot };
   }
 
-  function renderPoolGrid(champions, role) {
+  function renderPoolGrid(champions, sortSlot) {
     const PR = window.LoLPoolRoles;
     const metaMap = coach.state.tacticsMeta?.champions || draftMetaMap();
-    const sortSlot = role && role !== "all" ? role : null;
+    const slot = sortSlot && sortSlot !== "all" ? sortSlot : null;
     return champions
       .map((c) => {
-        const laneScore = sortSlot && PR ? PR.laneScore(c, sortSlot, metaMap) : 0;
-        const lanePick = sortSlot && laneScore >= 10;
+        const laneScore = slot && PR ? PR.laneScore(c, slot, metaMap) : 0;
+        const lanePick = slot && laneScore >= 10;
+        const flexPick = slot && !lanePick;
+        const cardClass = lanePick
+          ? " draft-pool-card--lane"
+          : flexPick
+            ? " draft-pool-card--offlane"
+            : "";
+        const titleExtra = slot
+          ? lanePick
+            ? ` · viable ${slot}`
+            : ` · flex ${slot} (<10%)`
+          : "";
         return `
-        <button type="button" class="draft-pool-card${lanePick ? " draft-pool-card--lane" : ""}" draggable="true" data-champ="${coach.escapeHtml(c.name)}" title="${coach.escapeHtml(c.name)}">
+        <button type="button" class="draft-pool-card${cardClass}" draggable="true" data-champ="${coach.escapeHtml(c.name)}" title="${coach.escapeHtml(c.name)}${titleExtra}">
           ${coach.championIconHtml(c, { size: "pool" })}
           <span class="draft-pool-name">${coach.escapeHtml(c.name)}</span>
           ${c.tierMeta ? `<span class="draft-pool-tier tier-${c.tierMeta.toLowerCase()}">${c.tierMeta}</span>` : ""}
@@ -780,10 +805,14 @@
       .join("");
   }
 
-  function poolCountLabel(count, role) {
+  function poolCountLabel(count, role, sortSlot) {
     const PR = window.LoLPoolRoles;
-    const roleLabel = PR ? PR.roleFilterLabel(role) : role;
-    return `${count} dispo · ${roleLabel} · tier`;
+    const filterLabel = PR ? PR.roleFilterLabel(role) : role;
+    const sortLabel =
+      sortSlot && sortSlot !== role && sortSlot !== "all"
+        ? ` · tri ${PR?.SLOT_LABELS?.[sortSlot] || sortSlot}`
+        : "";
+    return `${count} dispo · ${filterLabel}${sortLabel} · tier`;
   }
 
   function bindPoolCards(root) {
@@ -798,16 +827,16 @@
     /* délégué dans bindPoolEvents */
   }
 
-  function updatePoolGrid(el, filtered, role, { preserveScroll = false } = {}) {
+  function updatePoolGrid(el, filtered, role, sortSlot, { preserveScroll = false } = {}) {
     const countEl = el.querySelector(".draft-pool-count");
-    if (countEl) countEl.textContent = poolCountLabel(filtered.length, role);
+    if (countEl) countEl.textContent = poolCountLabel(filtered.length, role, sortSlot);
     window.LoLPoolRoles?.syncRoleFilterChips(el, role);
 
     const gridEl = el.querySelector(".draft-pool-grid");
     if (gridEl) {
       const scrollTop = preserveScroll ? gridEl.scrollTop : 0;
       gridEl.innerHTML = filtered.length
-        ? renderPoolGrid(filtered, role)
+        ? renderPoolGrid(filtered, sortSlot)
         : `<p class="muted draft-pool-empty">Aucun champion disponible${role && role !== "all" ? " pour ce poste" : ""}.</p>`;
       if (preserveScroll) gridEl.scrollTop = scrollTop;
       bindPoolCards(gridEl);
@@ -820,10 +849,10 @@
     if (!el || !session) return;
     coach.els.draftPool = el;
 
-    const { searchQuery, filtered, role } = getPoolFiltered(session);
+    const { searchQuery, filtered, role, sortSlot } = getPoolFiltered(session);
 
     if (gridOnly && el.querySelector("#draft-pool-search")) {
-      updatePoolGrid(el, filtered, role, { preserveScroll });
+      updatePoolGrid(el, filtered, role, sortSlot, { preserveScroll });
       return;
     }
 
@@ -834,9 +863,9 @@
     el.innerHTML = `
       <div class="draft-pool-header">
         <h2 class="draft-pool-title">Champions</h2>
-        <span class="draft-pool-count">${poolCountLabel(filtered.length, role)}</span>
+        <span class="draft-pool-count">${poolCountLabel(filtered.length, role, sortSlot)}</span>
       </div>
-      <p class="draft-pool-lead muted">Filtre par poste ci-dessous · clic case → champ · glisser-déposer · <strong>clic droit</strong> = retirer.</p>
+      <p class="draft-pool-lead muted">Tous les champions restent visibles · case focusée = tri + pick sur ce poste (flex OK) · filtre optionnel · <strong>clic droit</strong> = retirer.</p>
       ${
         actionText
           ? `<div class="draft-pool-action${hasFocus ? " focus-ready" : ""}">${coach.escapeHtml(actionText)}</div>`
@@ -848,7 +877,7 @@
         <input type="search" class="draft-pool-search" placeholder="Rechercher…" value="${coach.escapeHtml(searchQuery)}" id="draft-pool-search" />
       </div>
       <div class="draft-pool-grid draft-pool-grid-alpha">
-        ${filtered.length ? renderPoolGrid(filtered, role) : `<p class="muted draft-pool-empty">Aucun champion disponible${role && role !== "all" ? " pour ce poste" : ""}.</p>`}
+        ${filtered.length ? renderPoolGrid(filtered, sortSlot) : `<p class="muted draft-pool-empty">Aucun champion disponible${role && role !== "all" ? " pour ce poste" : ""}.</p>`}
       </div>
     `;
 
