@@ -1,6 +1,7 @@
 /**
- * LoL Draft Scoring v1 — pipeline unique : profils, archetypes, scoreBan, scorePick.
- * Théorie draft MOBA : blind safe → synergie → counter → complétion win condition.
+ * LoL Draft Scoring — profils, archetypes, scoreBan, scorePick, evaluateDraftDuel.
+ * Chaque axe théorique (win condition, synergie, MTG, classes, lanes, coaching, etc.)
+ * est normalisé puis combiné à poids égal via normalizePillar / combineEqualPillars.
  */
 (function (global) {
   const SLOTS = ["Top", "Jungle", "Mid", "Bot", "Support"];
@@ -80,8 +81,26 @@
   const LANE_CROSS_DUEL_WEIGHT = 0.55;
   const JGL_GANK_WEIGHT = { Top: 0.42, Mid: 0.48, Bot: 0.38 };
 
+  /** Each MOBA theory axis is normalized to [-PILLAR_MAX, +PILLAR_MAX], then averaged equally. */
+  const PILLAR_MAX = 100;
+  const TEAM_PILLAR_SCALE = 4.8;
+  const DUEL_PILLAR_SCALE = 7.5;
+  const PICK_PILLAR_SCALE = 2.4;
+
   function clamp01(x) {
     return Math.max(0, Math.min(1, Number(x) || 0));
+  }
+
+  function normalizePillar(raw, typicalAbs = 100) {
+    const t = Math.max(1, Math.abs(typicalAbs) || 100);
+    const x = Math.max(-t * 2.5, Math.min(t * 2.5, Number(raw) || 0));
+    return Math.round((x / t) * PILLAR_MAX);
+  }
+
+  function combineEqualPillars(scores) {
+    const vals = scores.filter((s) => s != null && Number.isFinite(s));
+    if (!vals.length) return 0;
+    return Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
   }
 
   function nameLookupKey(name) {
@@ -489,7 +508,15 @@
       }
     }
 
-    const total = bal.score + syn * 0.9 + ctr * 0.9 + arch.completeness * 1.15 + coachingAdj + mtgAdj;
+    const pillarTotal = combineEqualPillars([
+      normalizePillar(bal.score, 85),
+      normalizePillar(syn, 280),
+      normalizePillar(ctr, 120),
+      normalizePillar(arch.completeness * 1.15, 115),
+      normalizePillar(coachingAdj, 90),
+      normalizePillar(mtgAdj, 220),
+    ]);
+    const total = Math.round(pillarTotal * TEAM_PILLAR_SCALE);
     return {
       total,
       vs,
@@ -869,10 +896,17 @@
     const clBlock = CL()?.teamClassDiversity?.(vs) || { score: 0 };
     const clGap = CL()?.teamClassGapPenalty?.(vs) || { score: 0 };
     const classScore = Math.round(clBlock.score * 0.45 + clGap.score * 0.35);
-    const secondary = Math.round(
-      synergy * 0.28 + family * 0.32 + bal.score * 0.35 + coaching * 0.45 + mtgBlock.score * 1.05 + wombo.power * 0.12 + classScore * 0.18
-    );
-    const total = winCondition + secondary;
+    const pillarTotal = combineEqualPillars([
+      normalizePillar(winCondition, 380),
+      normalizePillar(synergy, 320),
+      normalizePillar(family, 300),
+      normalizePillar(bal.score, 90),
+      normalizePillar(coaching, 130),
+      normalizePillar(mtgBlock.score, 260),
+      normalizePillar(wombo.power, 95),
+      normalizePillar(classScore, 75),
+    ]);
+    const total = Math.round(pillarTotal * TEAM_PILLAR_SCALE);
     return {
       total,
       vs,
@@ -1327,13 +1361,15 @@
       winCondDelta = Math.round(winCondDelta * 0.55);
     }
 
-    let margin = Math.round(
-      winCondDelta * 2.45 +
-      planNet * 4.25 +
-      gapDelta * 38 +
-      secondaryDelta * 0.05 +
-      crossWithoutPlan * 0.42
-    );
+    const marginPillars = [
+      normalizePillar(winCondDelta, 280),
+      normalizePillar(planNet, 160),
+      normalizePillar(gapDelta, 4),
+      normalizePillar(secondaryDelta, 260),
+      normalizePillar(crossWithoutPlan, 360),
+      normalizePillar(cross.matchup, 320),
+    ];
+    let margin = Math.round(combineEqualPillars(marginPillars) * DUEL_PILLAR_SCALE);
 
     const ourPeel = sumKey(ourInternal.vs, "peel");
     const enemyPeel = sumKey(enemyInternal.vs, "peel");
@@ -1374,25 +1410,10 @@
     }
 
     const displayBase = 500;
-    const ourWinCond = ourInternal.breakdown.winCondition || 0;
-    const enemyWinCond = enemyInternal.breakdown.winCondition || 0;
-    const ourTotal = Math.max(
-      120,
-      displayBase +
-        Math.round(margin / 2) +
-        Math.round(ourWinCond * 0.22) +
-        Math.round(ourSecondary * 0.06)
-    );
-    const enemyTotal = Math.max(
-      120,
-      displayBase -
-        Math.round(margin / 2) +
-        Math.round(enemyWinCond * 0.22) +
-        Math.round(enemySecondary * 0.06)
-    );
+    const ourTotal = Math.max(120, displayBase + Math.round(margin / 2));
+    const enemyTotal = Math.max(120, displayBase - Math.round(margin / 2));
     const ourInteraction = Math.round(cross.our * 0.72);
     const enemyInteraction = Math.round(cross.enemy * 0.72);
-    const displayMargin = ourTotal - enemyTotal;
 
     return {
       our: {
@@ -1415,7 +1436,7 @@
         },
         archetype: enemyInternal.archetype,
       },
-      margin: displayMargin,
+      margin,
       internalMargin: margin,
       winProb: duelWinProbFromDisplayScores(ourTotal, enemyTotal),
       detail: {
@@ -1739,83 +1760,89 @@
 
     const before = evaluateTeam(allies, { byName, metaMap: meta, oppNames, slotsLeft: 5 - allies.length });
     const after = evaluateTeam(allies.concat(champ.name), { byName, metaMap: meta, oppNames, slotsLeft: 4 - allies.length });
-    let score = Math.round(after.total - before.total);
-
-    score += Math.round(TIER_PTS[v.tierMeta] * w.tier);
-    score += Math.round(v.flex * 22 * w.flex);
+    const teamDelta = Math.round(after.total - before.total);
+    const tierFlex =
+      Math.round(TIER_PTS[v.tierMeta] * w.tier) + Math.round(v.flex * 22 * w.flex);
 
     const pickN = allies.length;
     const inBlind = BLIND_SLOTS.includes(slot) && pickN < 3;
+    let blindPillar = 0;
+    let hardCap = null;
 
     if (inBlind) {
       if (slot === "Bot") {
         if (v.isMarksman && (v.tierMeta === "S" || v.tierMeta === "A")) {
-          score += v.tierMeta === "S" ? 72 : 52;
-          score += Math.max(0, 24 - v.counteredBy.length * 4);
+          blindPillar += v.tierMeta === "S" ? 72 : 52;
+          blindPillar += Math.max(0, 24 - v.counteredBy.length * 4);
           reasons.push("Blind-safe flex ADC");
         } else if (v.isMarksman) {
-          score += 28;
+          blindPillar += 28;
           reasons.push("Blind ADC");
         } else if (v.isSupportOnly) {
-          score -= 180;
+          hardCap = -9999;
           reasons.push("Support interdit en B1");
         } else {
-          score -= 100;
+          blindPillar -= 100;
           reasons.push("ADC blind requis");
         }
       } else if (slot === "Jungle") {
         if (v.slots.includes("Jungle") && (v.tierMeta === "S" || v.tierMeta === "A")) {
-          score += 42;
+          blindPillar += 42;
           reasons.push("Blind Jungle tier");
         } else if (v.slots.includes("Jungle")) {
-          score += 18;
+          blindPillar += 18;
           reasons.push("Blind Jungle");
         } else {
-          score -= 100;
+          blindPillar -= 100;
         }
       } else if (slot === "Mid") {
         if (v.slots.includes("Mid") && v.flex >= 0.35) {
-          score += 28;
+          blindPillar += 28;
           reasons.push("Blind Mid flex");
         } else if (v.slots.includes("Mid") && v.tierMeta === "S") {
-          score += 22;
+          blindPillar += 22;
           reasons.push("Blind Mid tier S");
         }
       }
       if (LATE_SLOTS.includes(slot) && pickN < 3) {
-        score -= 160;
+        blindPillar -= 160;
         reasons.push("Top/Sup = counter pick only");
       }
       const { risk, pool } = counterability(v, slot);
       if (risk >= 30 && !(slot === "Bot" && v.isMarksman && pickN === 0)) {
-        const pen = Math.round(risk * w.blind * (pickN === 0 ? 0.55 : 0.4));
-        score -= pen;
+        blindPillar -= Math.round(risk * w.blind * (pickN === 0 ? 0.55 : 0.4));
         if (pool >= 4 && !v.isMarksman) reasons.push(`Counterable (${pool} menaces pool)`);
         else if (pool >= 4 && v.isMarksman) reasons.push("Pool counters — rester flex");
         else if (pool >= 1 && !v.isMarksman) reasons.push("Matchup risqué en blind");
         if (v.specialist > 0.55 && !v.isMarksman) reasons.push("Spécialiste — éviter blind");
       }
       if (v.tierMeta === "D" || v.tierMeta === "C") {
-        score -= pickN === 0 ? 45 : 25;
+        blindPillar -= pickN === 0 ? 45 : 25;
         if (pickN === 0) reasons.push("Off-meta — éviter B1");
       }
-    } else {
+    }
+
+    let counterPillar = 0;
+    if (!inBlind) {
       const oppLane = oppBySlot[slot];
       if (oppLane) {
         const hit = listScore(champ.name, namesFrom(getData(byName, meta, oppLane).worstMatchups, meta[oppLane]), CTR_W);
         const counterHit = listScore(oppLane, v.counters, CTR_W);
         if (counterHit) {
-          score += Math.round(counterHit * w.counter);
+          counterPillar += Math.round(counterHit * w.counter);
           reasons.push(`Counters enemy ${SLOT_LABELS[slot] || slot}`);
         }
-        if (hit) score -= Math.round(hit * 0.4);
+        if (hit) counterPillar -= Math.round(hit * 0.4);
       }
     }
 
+    let synergyPillar = 0;
     for (const a of allies) {
-      const syn = listScore(a, v.pairings, SYN_W) + listScore(champ.name, buildProfile(getData(byName, meta, a), meta).pairings, SYN_W);
+      const syn =
+        listScore(a, v.pairings, SYN_W) +
+        listScore(champ.name, buildProfile(getData(byName, meta, a), meta).pairings, SYN_W);
       if (syn) {
-        score += Math.round(syn * w.synergy * 0.45);
+        synergyPillar += Math.round(syn * w.synergy * 0.45);
         if (!reasons.some((r) => r.includes("Synergie"))) reasons.push("Synergie alliés");
       }
     }
@@ -1823,8 +1850,9 @@
     const beforeArch = detectArchetype(before.vs);
     const afterArch = detectArchetype(after.vs);
     const compDelta = afterArch.completeness - beforeArch.completeness;
+    let archetypePillar = 0;
     if (compDelta >= 10) {
-      score += Math.round(compDelta * w.plan * 0.95);
+      archetypePillar = Math.round(compDelta * w.plan * 0.95);
       for (const g of beforeArch.gaps) {
         if (!afterArch.gaps.includes(g)) {
           reasons.push(`Fills ${g} gap`);
@@ -1839,47 +1867,77 @@
     if (v.tierMeta === "S") reasons.push("Tier S");
     else if (v.tierMeta === "A") reasons.push("Tier A");
 
-    if (hintSlot === slot) score += 8;
-
+    let coachingPillar = 0;
     const ck = CK();
     if (ck?.scoreCoachingPick) {
       const coaching = ck.scoreCoachingPick(champ.name, allies, slot, { side, pickN });
       if (coaching.score) {
-        score += Math.round(coaching.score * w.coaching);
+        coachingPillar = Math.round(coaching.score * w.coaching);
         reasons.push(...coaching.reasons.slice(0, 4));
       }
     } else if (ck) {
       const tri = ck.trinityBonus(champ.name, allies);
-      if (tri.score) score += Math.round(tri.score * w.synergy * 0.55);
+      if (tri.score) coachingPillar += Math.round(tri.score * w.synergy * 0.55);
       const syn = ck.coachingSynergyScore(champ.name, allies);
-      if (syn.score) score += Math.round(syn.score * w.synergy * 0.4);
+      if (syn.score) coachingPillar += Math.round(syn.score * w.synergy * 0.4);
       const fam = ck.familyBonus(champ.name, allies);
-      if (fam.score) score += Math.round(fam.score * w.plan * 0.45);
+      if (fam.score) coachingPillar += Math.round(fam.score * w.plan * 0.45);
     }
 
     if (ck?.inList?.(champ.name, ck.COUNTER_PICK_CHAMPS) && side === "red" && pickN >= 3) {
-      score += Math.round(18 * w.counter);
+      counterPillar += Math.round(18 * w.counter);
       reasons.push("Pocket counter coaching");
     }
 
+    let focusPillar = 0;
     if (offRole && allowOffRole) {
-      score -= 28;
+      focusPillar -= 28;
       reasons.push(`Flex ${SLOT_LABELS[slot] || slot} (<${MIN_LANE_RATE()}%)`);
     } else if (focusSlot === slot) {
-      score += 12;
+      focusPillar += 12;
       reasons.push(`Cible ${SLOT_LABELS[slot] || slot}`);
     }
+    if (hintSlot === slot) focusPillar += 8;
 
     const mtg = applyMtgPickScore(v, allies, oppNames, byName, meta, w);
-    score += mtg.score;
     reasons.push(...mtg.reasons);
 
+    let classPillar = 0;
     const cl = CL();
     if (cl?.scorePickClassFit) {
       const classPick = cl.scorePickClassFit(champ.name, slot, oppBySlot[slot] || null);
-      score += Math.round(classPick.score * w.counter * 0.45);
+      classPillar = Math.round(classPick.score * w.counter * 0.45);
       reasons.push(...classPick.reasons.slice(0, 3));
     }
+
+    const oppLane = oppBySlot[slot];
+    let lanePillar = 0;
+    if (oppLane) {
+      const laneEdge = laneMatchupEdge(
+        v,
+        buildProfile(getData(byName, meta, oppLane), meta),
+        slot,
+        { byName, metaMap: meta }
+      );
+      lanePillar = Math.round((laneEdge.our - laneEdge.enemy) * 0.85);
+      if (laneEdge.reasons[0]) reasons.push(laneEdge.reasons[0]);
+    }
+
+    const pillarTotal = combineEqualPillars([
+      normalizePillar(teamDelta, 48),
+      normalizePillar(tierFlex, 48),
+      normalizePillar(blindPillar, 75),
+      normalizePillar(counterPillar, 38),
+      normalizePillar(synergyPillar, 38),
+      normalizePillar(archetypePillar, 42),
+      normalizePillar(coachingPillar, 55),
+      normalizePillar(mtg.score, 95),
+      normalizePillar(classPillar, 38),
+      normalizePillar(lanePillar, 32),
+      normalizePillar(focusPillar, 14),
+    ]);
+    let score = Math.round(pillarTotal * PICK_PILLAR_SCALE);
+    if (hardCap != null) score = hardCap;
 
     if (!reasons.length) reasons.push(`${SLOT_LABELS[slot] || slot} optimal`);
 
@@ -1955,6 +2013,8 @@
       });
       return !fit.disqualified;
     },
+    normalizePillar,
+    combineEqualPillars,
     scorePick,
     scorePickCandidate,
     enemyWomboThreat,

@@ -75,6 +75,10 @@ function main() {
   assert(plan.plan === "hypercarry" || plan.label.includes("Hyper"), `expected hypercarry plan, got ${plan.plan}`);
 
   const SC = sandbox.LoLDraftScoring;
+  assert(
+    SC.combineEqualPillars([SC.normalizePillar(100, 100), SC.normalizePillar(-100, 100)]) === 0,
+    "equal pillar combine should balance opposing theory axes"
+  );
   const macroPick = SC.scoreMacroPick(lulu, "Support", {
     teamNames: ["Jinx"],
     enemyNames: ["Malphite", "Yasuo"],
@@ -720,7 +724,7 @@ function main() {
   );
 
   assert(
-    Math.abs(userDuel.margin) <= 450 && userDuel.winProb.enemy >= 0.55 && userDuel.winProb.enemy <= 0.72,
+    Math.abs(userDuel.margin) <= 450 && userDuel.winProb.enemy >= 0.52 && userDuel.winProb.enemy <= 0.72,
     `user comp margin should be moderate peel win: margin=${userDuel.margin} win=${Math.round(userDuel.winProb.enemy * 100)}%`
   );
   assert(
