@@ -413,6 +413,23 @@ function main() {
   assert(pickFlow.stepIndex === 6, `after bans stepIndex must be 6, got ${pickFlow.stepIndex}`);
   assert(D.getStep(pickFlow)?.type === "pick", "first pick step expected");
 
+  const banFocus = D.createSession("ban-focus", "blue");
+  banFocus.focus = { type: "ban", side: "blue", banIndex: 0 };
+  const b1 = D.getStep(banFocus);
+  const b1Result = D.applyAction(
+    banFocus,
+    { championName: "Renata Glasc", banIndex: b1.banIndex },
+    [],
+    { byName, metaMap: meta }
+  );
+  assert(b1Result.ok, "first ban should succeed");
+  assert(banFocus.bans.blue[0] === "Renata Glasc", "B1 must be filled");
+  assert(
+    banFocus.focus?.type === "ban" && banFocus.focus.side === "red" && banFocus.focus.banIndex === 0,
+    `focus must advance to enemy B1, got ${JSON.stringify(banFocus.focus)}`
+  );
+  assert(!banFocus.hoverPick && !banFocus.hoverSource, "hover must clear after ban");
+
   pickFlow.focus = { type: "pick", side: "blue", slot: "Bot", userLocked: true };
   D.normalizeSession(pickFlow, { resyncStep: false });
   assert(

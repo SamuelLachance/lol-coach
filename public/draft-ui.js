@@ -268,6 +268,8 @@
 
   function isCellHovered(session, type, side, slot) {
     if (type !== "pick" || !slot) return false;
+    const comp = window.LoLDraft.pickBySlot(session, side);
+    if (comp[slot]) return false;
     const src = session.hoverSource;
     if (src?.side === side && src.slot === slot) return true;
     const tgt = session.hoverPick;
@@ -289,6 +291,7 @@
       afterFocusChange(session);
       return;
     }
+    if (window.LoLDraft.pickBySlot(session, side)[slot]) return;
     const resolved = window.LoLDraft.resolveHoverPick(session, side, slot);
     if (
       prevSrc?.side === side &&
@@ -309,9 +312,13 @@
     if (!f || f.side !== side) return false;
     if (f.type === "swap" && type === "pick") return f.slot === slot;
     if (f.type && f.type !== type) return false;
-    if (type === "ban") return f.banIndex === banIndex;
-    if (f.slot) return f.slot === slot;
+    if (type === "ban") {
+      if (session.bans[side][banIndex]) return false;
+      return f.banIndex === banIndex;
+    }
     const comp = window.LoLDraft.pickBySlot(session, side);
+    if (comp[slot] && f.type !== "swap") return false;
+    if (f.slot) return f.slot === slot;
     return !comp[slot];
   }
 
@@ -371,7 +378,9 @@
     const type = cell.dataset.focusType;
     const side = cell.dataset.side;
     if (type === "ban") {
-      setFocus(session, { type: "ban", side, banIndex: parseInt(cell.dataset.banIndex, 10) });
+      const banIndex = parseInt(cell.dataset.banIndex, 10);
+      if (session.bans[side][banIndex]) return;
+      setFocus(session, { type: "ban", side, banIndex });
       afterFocusChange(session);
       return;
     }
@@ -380,14 +389,18 @@
 
   function restoreFocusAfterAction(session, payload, result) {
     window.LoLDraft.resyncStepIndex(session);
+    session.hoverPick = null;
+    session.hoverSource = null;
     if (payload.type === "ban" && payload.banIndex != null && !result.inOrder) {
       session.focus = { type: "ban", side: payload.side, banIndex: payload.banIndex };
       return;
     }
-    if (window.LoLDraft.refreshAutoPickFocus) {
-      window.LoLDraft.refreshAutoPickFocus(session);
-    } else {
-      window.LoLDraft.suggestNextFocus(session);
+    if (window.LoLDraft.suggestNextFocus) {
+      window.LoLDraft.suggestNextFocus(session, { forceSlot: true });
+    }
+    const step = window.LoLDraft.getStep(session);
+    if (step?.type === "pick" && window.LoLDraft.refreshDraftHover) {
+      window.LoLDraft.refreshDraftHover(session);
     }
   }
 
@@ -458,7 +471,7 @@
       const side = session.focus?.side || step.side;
       const slot = session.focus?.slot || window.LoLDraft.preferredBlindSlot(session, side) || null;
       session.focus = slot ? { type: "pick", side, slot } : { type: "pick", side };
-    } else if (!session.focus) {
+    } else if (step?.type === "ban" || !session.focus) {
       window.LoLDraft.suggestNextFocus(session);
     }
 

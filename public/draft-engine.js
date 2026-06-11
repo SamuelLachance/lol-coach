@@ -714,6 +714,9 @@
       alignCoachPickFocus(s);
       return { ok: true, slot: s.picks[step.side].find((p) => p.name === action.championName)?.slot };
     }
+    suggestNextFocus(s, { forceSlot: true });
+    s.hoverPick = null;
+    s.hoverSource = null;
     return { ok: true };
   }
 
@@ -885,7 +888,12 @@
   function refreshAutoPickFocus(s) {
     normalizeSession(s, { resyncStep: false });
     const step = getStep(s);
-    if (!step || step.type !== "pick" || isComplete(s)) return null;
+    if (!step || isComplete(s)) return null;
+    if (step.type === "ban") {
+      s.hoverPick = null;
+      s.hoverSource = null;
+      return suggestNextFocus(s, { forceSlot: true });
+    }
     if (s.focus?.userLocked && s.focus?.side === step.side && s.focus?.slot) {
       return s.focus;
     }
