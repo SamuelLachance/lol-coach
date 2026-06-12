@@ -16,6 +16,32 @@ body {
 /* ─── Mobile ≤900px ─────────────────────────────────────────────────────────── */
 
 @media (max-width: 900px) {
+  /* ui-spacious.css définit une grille 2 colonnes desktop — forcer pleine largeur */
+  .app,
+  .app.draft-focus,
+  .app.tactics-focus,
+  .app.patch-focus,
+  .app.champion-page-focus,
+  .app.mtg-guide-focus {
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "header"
+      "main" !important;
+  }
+
+  .header-brand {
+    grid-area: brand;
+  }
+
+  .header-search {
+    grid-area: search;
+    min-width: 0;
+  }
+
+  #filter-toggle {
+    grid-area: filter;
+  }
+
   .mobile-filters {
     display: flex !important;
     flex-wrap: wrap;

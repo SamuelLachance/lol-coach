@@ -368,12 +368,24 @@ body {
 /* ─── Mobile ───────────────────────────────────────────────────────────────── */
 
 @media (max-width: 900px) {
+  .app,
+  .app.draft-focus,
+  .app.tactics-focus,
+  .app.patch-focus,
+  .app.champion-page-focus,
+  .app.mtg-guide-focus {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "main";
+  }
+
   .main {
     padding: var(--space-sm) var(--space-md) calc(var(--space-xl) + 4rem);
   }
 
   .champion-grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
 
   .sidebar:not(.hidden) {
