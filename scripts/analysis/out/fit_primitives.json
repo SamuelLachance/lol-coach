@@ -1,0 +1,147 @@
+{
+  "games": 12549,
+  "train": {
+    "plage": "0..6274",
+    "n": 6274,
+    "accuracyPct": 54.73,
+    "ci95": [
+      53.5,
+      55.96
+    ],
+    "logLoss": 0.6851,
+    "brier": 0.246,
+    "baselineBlueAlwaysPct": 51.12
+  },
+  "test": {
+    "plage": "6274..12549",
+    "n": 6275,
+    "accuracyPct": 51.38,
+    "ci95": [
+      50.14,
+      52.61
+    ],
+    "logLoss": 0.6965,
+    "brier": 0.2516,
+    "baselineBlueAlwaysPct": 53.82
+  },
+  "biais": 0.0454,
+  "coefficients": [
+    {
+      "metric": "marksman",
+      "poidsStandardise": 0.1654
+    },
+    {
+      "metric": "disengage",
+      "poidsStandardise": -0.1281
+    },
+    {
+      "metric": "scaling",
+      "poidsStandardise": -0.12
+    },
+    {
+      "metric": "front",
+      "poidsStandardise": 0.1
+    },
+    {
+      "metric": "classMageBurst",
+      "poidsStandardise": 0.0956
+    },
+    {
+      "metric": "assassin",
+      "poidsStandardise": -0.0945
+    },
+    {
+      "metric": "womboSetup",
+      "poidsStandardise": -0.0925
+    },
+    {
+      "metric": "engage",
+      "poidsStandardise": -0.0819
+    },
+    {
+      "metric": "burst",
+      "poidsStandardise": 0.0798
+    },
+    {
+      "metric": "global",
+      "poidsStandardise": 0.0721
+    },
+    {
+      "metric": "early",
+      "poidsStandardise": 0.0684
+    },
+    {
+      "metric": "immobile",
+      "poidsStandardise": -0.059
+    },
+    {
+      "metric": "hardEngage",
+      "poidsStandardise": -0.0584
+    },
+    {
+      "metric": "classDiversity",
+      "poidsStandardise": 0.0557
+    },
+    {
+      "metric": "poke",
+      "poidsStandardise": -0.0548
+    },
+    {
+      "metric": "siege",
+      "poidsStandardise": -0.0513
+    },
+    {
+      "metric": "split",
+      "poidsStandardise": 0.04
+    },
+    {
+      "metric": "classEngage",
+      "poidsStandardise": 0.0399
+    },
+    {
+      "metric": "dive",
+      "poidsStandardise": -0.0379
+    },
+    {
+      "metric": "classSlayer",
+      "poidsStandardise": 0.0365
+    },
+    {
+      "metric": "enchanter",
+      "poidsStandardise": -0.0363
+    },
+    {
+      "metric": "ccHeavy",
+      "poidsStandardise": 0.0357
+    },
+    {
+      "metric": "classFrontline",
+      "poidsStandardise": 0.0346
+    },
+    {
+      "metric": "antiDash",
+      "poidsStandardise": 0.0328
+    },
+    {
+      "metric": "zone",
+      "poidsStandardise": 0.0183
+    },
+    {
+      "metric": "peel",
+      "poidsStandardise": -0.0113
+    },
+    {
+      "metric": "classPeel",
+      "poidsStandardise": -0.0073
+    },
+    {
+      "metric": "spellShield",
+      "poidsStandardise": 0.007
+    },
+    {
+      "metric": "classMarksman",
+      "poidsStandardise": 0.0043
+    }
+  ],
+  "note": "Poids standardisés : signe positif = la métrique favorise réellement le camp qui l'a en excédent. Comparer au signe supposé par les règles du moteur."
+}

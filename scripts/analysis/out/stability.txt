@@ -1,0 +1,160 @@
+full=12549 parties · H1=6275 · H2=6274
+
+############ COMP_CLASH_RULES (n>=40) ############
+edge%	obs%	att%	n	z	q(BH)	H1	H2	stable	règle
+-17.6	32.08	49.67	53	-2.56	0.0645	-20.99	-8.73	true	Teamfight groupé > split isolé
+-7	43.03	50.02	337	-2.57	0.0645	-8.09	-6.46	true	Enchanter disengage > engage brut
+-6.29	43.55	49.84	969	-3.92	0.0018	-7.84	-5.03	true	Hypercarry protégé > engage/dive frontal
+-6.28	43.62	49.9	1575	-4.98	0	-5.77	-6.76	true	Peel enchanter > dive sur carry immobile
+-5.8	44	49.8	425	-2.39	0.0818	-6.92	-4.73	true	Poke + disengage > engage frontal
+-5.79	44.38	50.17	498	-2.58	0.0645	-8	1.76	false	Double burst Mage > comp sans frontline
+-4.67	45	49.67	60	-0.72	0.6132	-4.03	-7.7	true	Poke/disengage kite > engage frontal
+-4.65	45.32	49.97	737	-2.52	0.0645	-5.14	-3.65	true	Wombo setup > comp sans disengage
+-4.09	45.45	49.54	528	-1.88	0.1466	-12.04	-1.37	true	ADC long range + disengage > all-in bot
+-3.95	45.78	49.73	83	-0.72	0.6132	2.92	-14.43	false	Siege à distance > engage mélée
+-3.94	45.88	49.83	340	-1.46	0.2697	-7.93	-1.52	true	Famille disengage > engage
+-3.68	46.47	50.16	936	-2.26	0.0974	-7.93	-2.76	true	Front peel + enchanter > dive
+-3.5	46.45	49.94	999	-2.21	0.0974	-6.49	-0.69	true	Kite range vs comp engage
+-3.26	47.06	50.32	85	-0.6	0.6891	-14.22	1.29	false	Double enchanter peel > comp dive
+-2.83	47	49.83	566	-1.35	0.2894	-2.97	-2.87	true	Engage Vanguard/Diver > backline sans peel
+-2.78	47.01	49.79	2897	-2.99	0.036	-1.39	-3.66	true	Stealth > comp sans reveal
+-2.4	47.49	49.89	2110	-2.2	0.0974	-2.3	-2.39	true	Poke kite vs comp dive
+-2.3	48	50.3	125	-0.51	0.7144	-3	2.83	false	Double global punition scale
+-1.62	48.25	49.87	3830	-2.01	0.1252	3.17	-4.27	false	Marksman DPS > double Tank sans burst
+-1.38	48.65	50.03	4668	-1.89	0.1466	-1.58	-1.25	true	CC lockdown > comp mobile dive
+-1.02	49.08	50.11	654	-0.53	0.7144	-0.16	-2.14	true	Range abuse vs frontline mélée
+-1.01	48.99	50	2764	-1.06	0.4163	-1.62	-0.8	true	Anti-dash + front > comp dive
+-0.49	50	50.49	40	-0.06	0.9967	20.31	-4.66	null	Zone choke > comp dive
+-0.17	50	50.17	178	-0.05	0.9967	-0.61	0.62	false	Disengage casse le wombo
+-0.02	50.12	50.13	429	0	0.9967	2.1	-4.13	false	Peel/disengage > wombo setup
+-0.01	49.99	50	6049	-0.02	0.9967	-0.99	0.92	false	ADC + peel Enchanter > dive Slayer
+0.16	50.06	49.91	771	0.08	0.9967	4.13	-1.59	false	Double split > comp groupée
+0.33	50.51	50.18	5555	0.49	0.7144	0.68	0.11	true	Shred %PV > double frontline
+1.25	51.39	50.14	3277	1.43	0.2701	-2.86	3.87	false	Double frontline Tank > comp Slayer
+1.43	51.31	49.88	1869	1.24	0.3341	0.53	3.22	true	Invade early > jungler scale
+1.78	51.79	50	1819	1.53	0.2473	0.16	2.9	true	Canalisation libre > sans interrupt
+2.54	52.21	49.67	1584	2.02	0.1252	4.6	1.54	true	Assassin pick > carry protégé lent
+2.83	52.71	49.88	850	1.65	0.2121	1.48	4.98	true	Reveal/vision > stealth comp
+3.65	53.67	50.02	844	2.12	0.1103	-0.09	8.73	false	Tank absorbe le burst Mage
+4.42	54.44	50.01	338	1.63	0.2121	4.24	4.57	true	Side pressure > ADC scale immobile
+6.79	56	49.21	50	0.96	0.4692	0.42	17.51	true	Multi-dive > backline poke fragile
+7.5	57.72	50.22	123	1.66	0.2121	10.3	4.37	true	Global + side lane > force 5v5
+8.23	58.18	49.96	55	1.22	0.3341	9.85	6.76	true	Interrupt CC > canalisation
+8.24	58.82	50.58	68	1.36	0.2894	14.78	5.3	true	Catch comp > carries immobiles
+→ 26/39 règles au signe inversé (edge < 0)
+
+############ TEAM_TRAIT_RULES (n>=40) ############
+edge%	obs%	att%	n	z	q(BH)	H1	H2	stable	règle
+-3.26	47.06	50.32	85	-0.6	0.9638	-14.22	1.29	false	Double enchanter > comp dive
+-1.76	48.78	50.54	41	-0.23	0.9638	11.38	-4.66	null	Zone control équipe > dive
+-1.61	48.22	49.83	365	-0.62	0.9638	-4.16	-0.69	true	Double peel > dive
+-1.01	48.99	50	2764	-1.06	0.9638	-1.62	-0.8	true	Anti-dash + front équipe > dive
+-0.17	50	50.17	178	-0.05	0.9638	-0.61	0.62	false	Disengage casse le wombo comp
+0.2	50.15	49.95	333	0.07	0.9638	-5.47	4.65	false	Spell-shield > hook comp
+0.95	51.3	50.35	308	0.33	0.9638	1.26	0.8	true	Double global > split sans réponse
+1.77	51.92	50.16	3536	2.09	0.3271	2.76	0.93	true	Carry %PV > double frontline
+5.51	56	50.49	50	0.78	0.9638	5.78	null	null	Double invade > comp scale
+→ 5/9 règles au signe inversé (edge < 0)
+
+############ CHAMP_PAIR_RULES même lane (n>=40) ############
+edge%	obs%	att%	n	z	q(BH)	H1	H2	stable	règle
+-10.6	39.67	50.26	121	-2.33	0.1982	-21.24	-2.67	true	(a, d) => norm(a.name) === norm("Galio") && (d.burst || 0) >= 0.55 && (d.ap ||
+-8.08	41.86	49.94	86	-1.5	0.5447	-12.98	-4.48	true	(a, d) => hasMech(a, "peelTank") && hasMech(d, "diveAssassin")
+-5.67	44.04	49.71	109	-1.18	0.5456	-5.4	-5.61	true	(a, d) => hasMech(a, "aoeMage") && hasMech(d, "enchanter")
+-5.11	44.44	49.55	540	-2.38	0.1982	-12.91	-2.2	true	(a, d) => hasMech(a, "longRangeAdc") && hasMech(d, "shortRangeAdc")
+-2.6	47.92	50.51	48	-0.36	0.7996	0.09	-6.07	false	(a, d) => subOf(a) === "Enchanter" && subOf(d) === "Assassin"
+-2.34	47.88	50.23	969	-1.46	0.5447	-5.49	-0.12	true	(a, d) => (a.peel || 0) >= 0.55 && hasMech(d, "diveAssassin")
+-1.93	48.11	50.04	185	-0.53	0.7495	2.45	-6.47	false	(a, d) => hasMech(a, "windwall") && (hasMech(d, "siegePoke") || d.tags?.has?.(
+-1.51	48.47	49.98	1993	-1.35	0.5447	-0.52	-2.08	true	(a, d) => hasMech(a, "antiDash") && (d.tags?.has?.("dive") || hasMech(d, "dive
+-1.15	49.03	50.18	1917	-1.01	0.5769	0.16	-1.56	false	(a, d) => hasMech(a, "zoneControl") && (d.tags?.has?.("dive") || hasMech(d, "d
+-1.13	48.9	50.03	5370	-1.66	0.5447	-2.05	-0.07	true	(a, d) => (a.tags?.has?.("poke") || hasMech(a, "siegePoke")) && (d.tags?.has?.
+-1.09	48.96	50.06	1734	-0.92	0.5993	-1.53	-0.78	true	(a, d) => norm(a.name) === norm("Trundle") && (d.tank || 0) >= 0.5
+-0.99	48.95	49.94	2866	-1.06	0.5769	-1.84	0.38	false	(a, d) => hasMech(a, "disengage") && hasMech(d, "hardEngage")
+-0.61	49.21	49.81	2776	-0.63	0.7175	3.58	-2.14	false	(a, d) => ["Juggernaut", "Diver"].includes(subOf(a)) && ["Vanguard", "Warden"]
+-0.48	49.54	50.02	541	-0.22	0.8821	-1.55	0.55	false	(a, d) => hasMech(a, "spellShield") && (d.engage || 0) >= 0.5 && (d.spellSetup
+-0.12	49.69	49.8	960	-0.07	0.9783	-1.2	1.69	false	(a, d) => subOf(a) === "Assassin" && ["Artillery", "Burst"].includes(subOf(d))
+-0.08	49.69	49.77	161	-0.02	0.9838	-3.93	2.04	false	(a, d) => hasMech(a, "cleansePeel") && (d.spellSetup || 0) >= 0.5
+0.31	50.16	49.85	3481	0.37	0.7996	-0.6	0.91	false	(a, d) => (a.burst || 0) >= 0.55 && d.isMarksman && !hasMech(d, "disengage")
+0.39	50.66	50.27	3097	0.43	0.7971	1.7	-2.91	false	(a, d) => hasMech(a, "globalUlt") && hasMech(d, "immobileCarry")
+0.42	50.49	50.07	5352	0.61	0.7175	0.73	0.21	true	(a, d) => hasMech(a, "tankShred") && (d.tank || 0) >= 0.5
+0.7	50.8	50.1	7746	1.23	0.5447	-0.83	2.08	false	(a, d) => (a.peel || 0) >= 0.55 && (d.engage || 0) >= 0.5
+1.1	50.95	49.85	738	0.6	0.7175	0.17	2.49	true	(a, d) => hasMech(a, "revealStealth") && hasMech(d, "stealth")
+1.16	51.11	49.95	2880	1.25	0.5447	1.18	1.02	true	(a, d) => hasMech(a, "invadeEarly") && (d.early || 0) < 0.35
+1.5	51.39	49.88	4610	2.05	0.3024	1.51	1.58	true	(a, d) => hasMech(a, "splitPush") && (d.tank || 0) >= 0.6 && (d.scaling || 0) 
+1.88	51.77	49.89	396	0.75	0.7173	6.38	0.21	true	(a, d) => hasMech(a, "zoneControl") && d.isMarksman && !hasMech(d, "disengage"
+2.14	52.43	50.29	206	0.61	0.7175	-6.24	8.36	false	(a, d) => subOf(a) === "Vanguard" && subOf(d) === "Assassin"
+2.45	52.58	50.13	504	1.1	0.5769	4.2	1.47	true	(a, d) => (a.peel || 0) >= 0.55 && (d.burst || 0) >= 0.55 && d.isMarksman
+2.64	52.66	50.03	3173	2.96	0.0915	2.72	2.6	true	(a, d) => hasMech(a, "percentHp") && (d.tank || 0) >= 0.55
+6.12	55.88	49.76	102	1.24	0.5447	8.27	4.56	true	(a, d) => subOf(a) === "Marksman" && ["Vanguard", "Warden"].includes(subOf(d))
+7.75	57.5	49.75	40	0.98	0.5769	0.56	8.54	null	(a, d) => hasMech(a, "pointCc") && hasMech(d, "diveAssassin")
+8.36	58.57	50.21	70	1.4	0.5447	-2.93	12.67	false	(a, d) => norm(a.name) === norm("Caitlyn") && hasMech(d, "shortRangeAdc")
+→ 16/30 règles au signe inversé (edge < 0)
+
+############ CHAMP_PAIR_RULES toutes paires (n>=40) ############
+edge%	obs%	att%	n	z	q(BH)	H1	H2	stable	règle
+-13.35	35.71	49.06	42	-1.73	0.2853	-18.63	-10.89	true	(a, d) => norm(a.name) === norm("Ashe") && hasMech(d, "diveAssassin")
+-9.76	40.54	50.3	148	-2.37	0.2145	-16.81	-3.6	true	(a, d) => norm(a.name) === norm("Galio") && (d.burst || 0) >= 0.55 && (d.ap ||
+-4.64	44.9	49.54	628	-2.33	0.2145	-12.92	-1.43	true	(a, d) => hasMech(a, "longRangeAdc") && hasMech(d, "shortRangeAdc")
+-4.46	45.84	50.3	397	-1.78	0.2814	-5.27	1.38	false	(a, d) => norm(a.name) === norm("Ryze") && hasMech(d, "splitPush")
+-3.97	46.25	50.22	640	-2.01	0.2284	-7.84	-0.26	true	(a, d) => hasMech(a, "peelTank") && hasMech(d, "diveAssassin")
+-3.69	46.26	49.95	802	-2.09	0.2145	-2.66	-4.68	true	(a, d) => hasMech(a, "windwall") && (hasMech(d, "siegePoke") || d.tags?.has?.(
+-2.77	47.27	50.04	55	-0.41	0.8318	-1.14	-7.68	true	(a, d) => norm(a.name) === norm("Galio") && hasMech(d, "diveAssassin")
+-1.56	48.39	49.95	8769	-2.92	0.1427	-2.14	-0.87	true	(a, d) => (a.tags?.has?.("poke") || hasMech(a, "siegePoke")) && (d.tags?.has?.
+-1.43	48.57	50	6051	-2.22	0.2145	-1.52	-1.28	true	(a, d) => hasMech(a, "disengage") && hasMech(d, "hardEngage")
+-1.29	48.88	50.18	2328	-1.25	0.4776	-5.73	1.28	false	(a, d) => subOf(a) === "Vanguard" && subOf(d) === "Burst"
+-1.11	48.94	50.06	1798	-0.95	0.6681	-1.76	-0.72	true	(a, d) => norm(a.name) === norm("Trundle") && (d.tank || 0) >= 0.5
+-1.07	49.12	50.19	1244	-0.75	0.759	-3.15	0.26	false	(a, d) => subOf(a) === "Enchanter" && subOf(d) === "Assassin"
+-0.91	49.06	49.97	481	-0.4	0.8318	1.47	-2.43	false	(a, d) => hasMech(a, "cleansePeel") && (d.spellSetup || 0) >= 0.5
+-0.77	49.29	50.06	2471	-0.77	0.759	-2.5	1.4	false	(a, d) => (a.peel || 0) >= 0.55 && hasMech(d, "diveAssassin")
+-0.45	49.53	49.98	2794	-0.48	0.8318	1.02	-1.19	false	(a, d) => (a.peel || 0) >= 0.55 && (d.burst || 0) >= 0.55 && d.isMarksman
+-0.07	50.17	50.24	1172	-0.05	0.9712	-6.01	3.84	false	(a, d) => subOf(a) === "Vanguard" && subOf(d) === "Assassin"
+0.02	49.86	49.83	8996	0.06	0.9712	-0.1	0.1	false	(a, d) => (a.burst || 0) >= 0.55 && d.isMarksman && !hasMech(d, "disengage")
+0.06	49.94	49.88	903	0.04	0.9712	0.04	0.12	true	(a, d) => hasMech(a, "pointCc") && hasMech(d, "diveAssassin")
+0.19	50.1	49.91	1046	0.12	0.9712	2.35	-2.07	false	(a, d) => hasMech(a, "aoeMage") && hasMech(d, "enchanter")
+0.2	50.15	49.95	333	0.07	0.9712	-5.47	4.65	false	(a, d) => hasMech(a, "spellShield") && hasMech(d, "hookCc")
+0.26	50.28	50.02	3691	0.32	0.8565	-0.7	0.68	false	(a, d) => hasMech(a, "antiDash") && (d.tags?.has?.("dive") || hasMech(d, "dive
+0.29	50.44	50.15	3279	0.33	0.8565	0.54	0.11	true	(a, d) => hasMech(a, "zoneControl") && d.isMarksman && !hasMech(d, "disengage"
+0.35	50.23	49.88	7006	0.59	0.8087	2.01	-0.9	false	(a, d) => subOf(a) === "Marksman" && ["Vanguard", "Warden"].includes(subOf(d))
+0.45	50.63	50.18	6656	0.73	0.759	0.78	0.24	true	(a, d) => hasMech(a, "tankShred") && (d.tank || 0) >= 0.5
+0.54	50.58	50.04	10265	1.09	0.591	0.57	0.44	true	(a, d) => (a.peel || 0) >= 0.55 && (d.engage || 0) >= 0.5
+0.54	50.5	49.96	5226	0.78	0.759	0.48	0.69	true	(a, d) => hasMech(a, "invadeEarly") && (d.early || 0) < 0.35
+0.55	50.45	49.9	1659	0.45	0.8318	0.56	0.56	true	(a, d) => subOf(a) === "Assassin" && ["Artillery", "Burst"].includes(subOf(d))
+0.56	50.74	50.18	3587	0.67	0.7773	1.93	0.03	true	(a, d) => hasMech(a, "zoneControl") && (d.tags?.has?.("dive") || hasMech(d, "d
+0.64	50.54	49.9	6033	0.99	0.6562	2.42	-0.67	false	(a, d) => ["Juggernaut", "Diver"].includes(subOf(a)) && ["Vanguard", "Warden"]
+0.79	50.74	49.95	739	0.43	0.8318	1.12	-0.03	false	(a, d) => hasMech(a, "aoeMage") && hasMech(d, "stealth")
+1.26	51.58	50.31	4056	1.62	0.2953	2.04	-0.03	false	(a, d) => hasMech(a, "globalUlt") && hasMech(d, "immobileCarry")
+1.4	51.31	49.91	5872	2.15	0.2145	1.77	1.07	true	(a, d) => hasMech(a, "splitPush") && (d.tank || 0) >= 0.6 && (d.scaling || 0) 
+1.67	51.82	50.15	3939	2.1	0.2145	2.22	1.22	true	(a, d) => hasMech(a, "percentHp") && (d.tank || 0) >= 0.55
+2.11	52.18	50.06	1792	1.79	0.2814	2.6	1.95	true	(a, d) => hasMech(a, "spellShield") && (d.engage || 0) >= 0.5 && (d.spellSetup
+2.38	52.54	50.16	1140	1.61	0.2953	3	1.13	true	(a, d) => hasMech(a, "diveAssassin") && hasMech(d, "immobileCarry")
+2.57	52.53	49.97	1342	1.88	0.2766	3.44	1.43	true	(a, d) => hasMech(a, "interruptChannel") && hasMech(d, "channelUlt")
+2.66	52.63	49.97	152	0.66	0.7773	7.16	-3.72	false	(a, d) => norm(a.name) === norm("Rumble") && d.isMarksman && !hasMech(d, "dise
+2.83	52.71	49.88	850	1.65	0.2953	1.48	4.98	true	(a, d) => hasMech(a, "revealStealth") && hasMech(d, "stealth")
+3.12	53.66	50.54	82	0.57	0.8087	13.43	-0.89	false	(a, d) => norm(a.name) === norm("Séraphine") && hasMech(d, "diveAssassin")
+8.61	58.82	50.22	68	1.42	0.3765	2.96	13.56	true	(a, d) => norm(a.name) === norm("Bard") && hasMech(d, "immobileCarry")
+9.02	59.21	50.19	76	1.57	0.2967	1.83	12.34	true	(a, d) => norm(a.name) === norm("Caitlyn") && hasMech(d, "shortRangeAdc")
+→ 16/41 règles au signe inversé (edge < 0)
+
+############ CURATED_COUNTERS toutes positions (n>=40) ############
+edge%	obs%	att%	n	z	q(BH)	H1	H2	stable	règle
+-9.51	40.16	49.67	127	-2.14	0.2289	-8.07	-9.48	true	Nautilus > Kalista
+-6.77	43.48	50.25	69	-1.12	0.6243	-11.17	-2.09	true	Poppy > Jarvan IV
+-2.32	47.27	49.6	55	-0.35	0.8836	-2.68	3.81	null	Syndra > Orianna
+-1.29	48.87	50.17	133	-0.3	0.8836	-2.88	-0.93	true	Trundle > Ornn
+-0.59	49.35	49.94	154	-0.15	0.8836	-19.86	1.63	false	Poppy > Zeri
+1.45	51.61	50.16	62	0.23	0.8836	-7.38	9.05	false	Gwen > Aatrox
+2.05	51.74	49.69	201	0.58	0.8836	48.88	2	null	Trundle > Sejuani
+3.45	54.17	50.72	48	0.48	0.8836	5.55	-1.09	false	Nocturne > Aphelios
+6.32	55.76	49.44	269	2.07	0.2289	-2.71	10.89	false	Nautilus > Lucian
+7.99	57.5	49.51	40	1.01	0.6243	null	8.26	null	Olaf > Sejuani
+8.64	58.33	49.69	48	1.2	0.6243	5.45	10.44	true	Poppy > Camille
+8.95	59.04	50.09	83	1.63	0.4118	4.87	20.52	true	Ryze > Trundle
+→ 5/12 règles au signe inversé (edge < 0)
+
+############ CURATED_COUNTERS même lane (n>=40) ############
+edge%	obs%	att%	n	z	q(BH)	H1	H2	stable	règle
+-5.51	44	49.51	50	-0.78	0.7662	-6.06	3.81	null	Syndra > Orianna
+-3.75	46.43	50.18	56	-0.56	0.7662	-11.4	5.85	false	Poppy > Jarvan IV
+-0.94	48.57	49.51	70	-0.16	0.875	null	-0.67	null	Trundle > Sejuani
+7.79	57.69	49.91	52	1.12	0.7662	4.89	9.85	true	Gwen > Aatrox
+→ 3/4 règles au signe inversé (edge < 0)

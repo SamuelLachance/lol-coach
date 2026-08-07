@@ -1,0 +1,5699 @@
+{
+  "dataset": "2022_LoL_esports_match_data_from_OraclesElixir.csv",
+  "games": 12549,
+  "blueBaselinePct": 52.47,
+  "unknownChampions": [],
+  "compClashRules": [
+    {
+      "label": "Poke/siege > all-in tempo",
+      "idx": 5,
+      "score": 82,
+      "set": "COMP_CLASH_RULES",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 1,
+      "favoredWinPct": 100,
+      "expectedPct": 47.53,
+      "edgePct": 52.47,
+      "ci95": [
+        20.65,
+        100
+      ]
+    },
+    {
+      "label": "Double enchanter scale > spike early",
+      "idx": 8,
+      "score": 115,
+      "set": "COMP_CLASH_RULES",
+      "n": 3,
+      "nBothSides": 0,
+      "favoredBlue": 2,
+      "favoredRed": 1,
+      "favoredWinPct": 100,
+      "expectedPct": 50.82,
+      "edgePct": 49.18,
+      "ci95": [
+        43.85,
+        100
+      ]
+    },
+    {
+      "label": "Tempo early > scale sans peel",
+      "idx": 28,
+      "score": 118,
+      "set": "COMP_CLASH_RULES",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 2,
+      "favoredRed": 0,
+      "favoredWinPct": 100,
+      "expectedPct": 52.47,
+      "edgePct": 47.53,
+      "ci95": [
+        34.24,
+        100
+      ]
+    },
+    {
+      "label": "Engage > poke sans disengage",
+      "idx": 55,
+      "score": 90,
+      "set": "COMP_CLASH_RULES",
+      "n": 13,
+      "nBothSides": 0,
+      "favoredBlue": 7,
+      "favoredRed": 6,
+      "favoredWinPct": 69.23,
+      "expectedPct": 50.19,
+      "edgePct": 19.04,
+      "ci95": [
+        42.37,
+        87.32
+      ]
+    },
+    {
+      "label": "Catch comp > carries immobiles",
+      "idx": 21,
+      "score": 102,
+      "set": "COMP_CLASH_RULES",
+      "n": 68,
+      "nBothSides": 0,
+      "favoredBlue": 42,
+      "favoredRed": 26,
+      "favoredWinPct": 58.82,
+      "expectedPct": 50.58,
+      "edgePct": 8.24,
+      "ci95": [
+        46.96,
+        69.74
+      ]
+    },
+    {
+      "label": "Interrupt CC > canalisation",
+      "idx": 60,
+      "score": 85,
+      "set": "COMP_CLASH_RULES",
+      "n": 55,
+      "nBothSides": 0,
+      "favoredBlue": 27,
+      "favoredRed": 28,
+      "favoredWinPct": 58.18,
+      "expectedPct": 49.96,
+      "edgePct": 8.23,
+      "ci95": [
+        45.03,
+        70.26
+      ]
+    },
+    {
+      "label": "Global + side lane > force 5v5",
+      "idx": 14,
+      "score": 68,
+      "set": "COMP_CLASH_RULES",
+      "n": 123,
+      "nBothSides": 0,
+      "favoredBlue": 67,
+      "favoredRed": 56,
+      "favoredWinPct": 57.72,
+      "expectedPct": 50.22,
+      "edgePct": 7.5,
+      "ci95": [
+        48.89,
+        66.09
+      ]
+    },
+    {
+      "label": "Pick/global punition > hypercarry",
+      "idx": 17,
+      "score": 88,
+      "set": "COMP_CLASH_RULES",
+      "n": 7,
+      "nBothSides": 0,
+      "favoredBlue": 3,
+      "favoredRed": 4,
+      "favoredWinPct": 57.14,
+      "expectedPct": 49.65,
+      "edgePct": 7.5,
+      "ci95": [
+        25.05,
+        84.18
+      ]
+    },
+    {
+      "label": "Multi-dive > backline poke fragile",
+      "idx": 31,
+      "score": 112,
+      "set": "COMP_CLASH_RULES",
+      "n": 50,
+      "nBothSides": 0,
+      "favoredBlue": 17,
+      "favoredRed": 33,
+      "favoredWinPct": 56,
+      "expectedPct": 49.21,
+      "edgePct": 6.79,
+      "ci95": [
+        42.31,
+        68.84
+      ]
+    },
+    {
+      "label": "Snowball early > jungler scale",
+      "idx": 53,
+      "score": 52,
+      "set": "COMP_CLASH_RULES",
+      "n": 30,
+      "nBothSides": 0,
+      "favoredBlue": 19,
+      "favoredRed": 11,
+      "favoredWinPct": 56.67,
+      "expectedPct": 50.66,
+      "edgePct": 6.01,
+      "ci95": [
+        39.2,
+        72.62
+      ]
+    },
+    {
+      "label": "Side pressure > ADC scale immobile",
+      "idx": 15,
+      "score": 62,
+      "set": "COMP_CLASH_RULES",
+      "n": 338,
+      "nBothSides": 0,
+      "favoredBlue": 170,
+      "favoredRed": 168,
+      "favoredWinPct": 54.44,
+      "expectedPct": 50.01,
+      "edgePct": 4.42,
+      "ci95": [
+        49.11,
+        59.67
+      ]
+    },
+    {
+      "label": "AOE/shield break > peel enchanter",
+      "idx": 45,
+      "score": 62,
+      "set": "COMP_CLASH_RULES",
+      "n": 17,
+      "nBothSides": 0,
+      "favoredBlue": 6,
+      "favoredRed": 11,
+      "favoredWinPct": 52.94,
+      "expectedPct": 49.27,
+      "edgePct": 3.67,
+      "ci95": [
+        30.96,
+        73.84
+      ]
+    },
+    {
+      "label": "Tank absorbe le burst Mage",
+      "idx": 69,
+      "score": 65,
+      "set": "COMP_CLASH_RULES",
+      "n": 844,
+      "nBothSides": 28,
+      "favoredBlue": 426,
+      "favoredRed": 418,
+      "favoredWinPct": 53.67,
+      "expectedPct": 50.02,
+      "edgePct": 3.65,
+      "ci95": [
+        50.3,
+        57.01
+      ]
+    },
+    {
+      "label": "Reveal/vision > stealth comp",
+      "idx": 58,
+      "score": 72,
+      "set": "COMP_CLASH_RULES",
+      "n": 850,
+      "nBothSides": 0,
+      "favoredBlue": 404,
+      "favoredRed": 446,
+      "favoredWinPct": 52.71,
+      "expectedPct": 49.88,
+      "edgePct": 2.83,
+      "ci95": [
+        49.34,
+        56.04
+      ]
+    },
+    {
+      "label": "Assassin pick > carry protégé lent",
+      "idx": 19,
+      "score": 58,
+      "set": "COMP_CLASH_RULES",
+      "n": 1584,
+      "nBothSides": 91,
+      "favoredBlue": 685,
+      "favoredRed": 899,
+      "favoredWinPct": 52.21,
+      "expectedPct": 49.67,
+      "edgePct": 2.54,
+      "ci95": [
+        49.75,
+        54.66
+      ]
+    },
+    {
+      "label": "Enchanter scale > spike early non protégé",
+      "idx": 44,
+      "score": 105,
+      "set": "COMP_CLASH_RULES",
+      "n": 19,
+      "nBothSides": 0,
+      "favoredBlue": 12,
+      "favoredRed": 7,
+      "favoredWinPct": 52.63,
+      "expectedPct": 50.65,
+      "edgePct": 1.98,
+      "ci95": [
+        31.71,
+        72.67
+      ]
+    },
+    {
+      "label": "Canalisation libre > sans interrupt",
+      "idx": 61,
+      "score": 78,
+      "set": "COMP_CLASH_RULES",
+      "n": 1819,
+      "nBothSides": 61,
+      "favoredBlue": 911,
+      "favoredRed": 908,
+      "favoredWinPct": 51.79,
+      "expectedPct": 50,
+      "edgePct": 1.78,
+      "ci95": [
+        49.49,
+        54.08
+      ]
+    },
+    {
+      "label": "Invade early > jungler scale",
+      "idx": 52,
+      "score": 58,
+      "set": "COMP_CLASH_RULES",
+      "n": 1869,
+      "nBothSides": 7,
+      "favoredBlue": 890,
+      "favoredRed": 979,
+      "favoredWinPct": 51.31,
+      "expectedPct": 49.88,
+      "edgePct": 1.43,
+      "ci95": [
+        49.04,
+        53.57
+      ]
+    },
+    {
+      "label": "Double frontline Tank > comp Slayer",
+      "idx": 63,
+      "score": 95,
+      "set": "COMP_CLASH_RULES",
+      "n": 3277,
+      "nBothSides": 46,
+      "favoredBlue": 1733,
+      "favoredRed": 1544,
+      "favoredWinPct": 51.39,
+      "expectedPct": 50.14,
+      "edgePct": 1.25,
+      "ci95": [
+        49.68,
+        53.1
+      ]
+    },
+    {
+      "label": "Dive tempo > hypercarry non protégé",
+      "idx": 27,
+      "score": 98,
+      "set": "COMP_CLASH_RULES",
+      "n": 8,
+      "nBothSides": 0,
+      "favoredBlue": 3,
+      "favoredRed": 5,
+      "favoredWinPct": 50,
+      "expectedPct": 49.38,
+      "edgePct": 0.62,
+      "ci95": [
+        21.52,
+        78.48
+      ]
+    },
+    {
+      "label": "Shred %PV > double frontline",
+      "idx": 57,
+      "score": 65,
+      "set": "COMP_CLASH_RULES",
+      "n": 5555,
+      "nBothSides": 1037,
+      "favoredBlue": 2979,
+      "favoredRed": 2576,
+      "favoredWinPct": 50.51,
+      "expectedPct": 50.18,
+      "edgePct": 0.33,
+      "ci95": [
+        49.2,
+        51.83
+      ]
+    },
+    {
+      "label": "Double split > comp groupée",
+      "idx": 13,
+      "score": 72,
+      "set": "COMP_CLASH_RULES",
+      "n": 771,
+      "nBothSides": 1,
+      "favoredBlue": 371,
+      "favoredRed": 400,
+      "favoredWinPct": 50.06,
+      "expectedPct": 49.91,
+      "edgePct": 0.16,
+      "ci95": [
+        46.54,
+        53.59
+      ]
+    },
+    {
+      "label": "ADC + peel Enchanter > dive Slayer",
+      "idx": 66,
+      "score": 82,
+      "set": "COMP_CLASH_RULES",
+      "n": 6049,
+      "nBothSides": 1109,
+      "favoredBlue": 3026,
+      "favoredRed": 3023,
+      "favoredWinPct": 49.99,
+      "expectedPct": 50,
+      "edgePct": -0.01,
+      "ci95": [
+        48.73,
+        51.25
+      ]
+    },
+    {
+      "label": "Peel/disengage > wombo setup",
+      "idx": 33,
+      "score": 102,
+      "set": "COMP_CLASH_RULES",
+      "n": 429,
+      "nBothSides": 1,
+      "favoredBlue": 226,
+      "favoredRed": 203,
+      "favoredWinPct": 50.12,
+      "expectedPct": 50.13,
+      "edgePct": -0.02,
+      "ci95": [
+        45.41,
+        54.83
+      ]
+    },
+    {
+      "label": "Disengage casse le wombo",
+      "idx": 32,
+      "score": 118,
+      "set": "COMP_CLASH_RULES",
+      "n": 178,
+      "nBothSides": 0,
+      "favoredBlue": 95,
+      "favoredRed": 83,
+      "favoredWinPct": 50,
+      "expectedPct": 50.17,
+      "edgePct": -0.17,
+      "ci95": [
+        42.73,
+        57.27
+      ]
+    },
+    {
+      "label": "Triple poke/siege abuse vs engage lent",
+      "idx": 3,
+      "score": 95,
+      "set": "COMP_CLASH_RULES",
+      "n": 36,
+      "nBothSides": 0,
+      "favoredBlue": 20,
+      "favoredRed": 16,
+      "favoredWinPct": 50,
+      "expectedPct": 50.27,
+      "edgePct": -0.27,
+      "ci95": [
+        34.47,
+        65.53
+      ]
+    },
+    {
+      "label": "Zone choke > comp dive",
+      "idx": 36,
+      "score": 125,
+      "set": "COMP_CLASH_RULES",
+      "n": 40,
+      "nBothSides": 0,
+      "favoredBlue": 24,
+      "favoredRed": 16,
+      "favoredWinPct": 50,
+      "expectedPct": 50.49,
+      "edgePct": -0.49,
+      "ci95": [
+        35.2,
+        64.8
+      ]
+    },
+    {
+      "label": "Anti-dash + front > comp dive",
+      "idx": 48,
+      "score": 195,
+      "set": "COMP_CLASH_RULES",
+      "n": 2764,
+      "nBothSides": 109,
+      "favoredBlue": 1383,
+      "favoredRed": 1381,
+      "favoredWinPct": 48.99,
+      "expectedPct": 50,
+      "edgePct": -1.01,
+      "ci95": [
+        47.13,
+        50.85
+      ]
+    },
+    {
+      "label": "Range abuse vs frontline mélée",
+      "idx": 40,
+      "score": 78,
+      "set": "COMP_CLASH_RULES",
+      "n": 654,
+      "nBothSides": 0,
+      "favoredBlue": 341,
+      "favoredRed": 313,
+      "favoredWinPct": 49.08,
+      "expectedPct": 50.11,
+      "edgePct": -1.02,
+      "ci95": [
+        45.27,
+        52.91
+      ]
+    },
+    {
+      "label": "CC lockdown > comp mobile dive",
+      "idx": 46,
+      "score": 74,
+      "set": "COMP_CLASH_RULES",
+      "n": 4668,
+      "nBothSides": 661,
+      "favoredBlue": 2365,
+      "favoredRed": 2303,
+      "favoredWinPct": 48.65,
+      "expectedPct": 50.03,
+      "edgePct": -1.38,
+      "ci95": [
+        47.22,
+        50.08
+      ]
+    },
+    {
+      "label": "Marksman DPS > double Tank sans burst",
+      "idx": 65,
+      "score": 72,
+      "set": "COMP_CLASH_RULES",
+      "n": 3830,
+      "nBothSides": 373,
+      "favoredBlue": 1817,
+      "favoredRed": 2013,
+      "favoredWinPct": 48.25,
+      "expectedPct": 49.87,
+      "edgePct": -1.62,
+      "ci95": [
+        46.67,
+        49.83
+      ]
+    },
+    {
+      "label": "Double global punition scale",
+      "idx": 18,
+      "score": 55,
+      "set": "COMP_CLASH_RULES",
+      "n": 125,
+      "nBothSides": 0,
+      "favoredBlue": 70,
+      "favoredRed": 55,
+      "favoredWinPct": 48,
+      "expectedPct": 50.3,
+      "edgePct": -2.3,
+      "ci95": [
+        39.43,
+        56.69
+      ]
+    },
+    {
+      "label": "Poke kite vs comp dive",
+      "idx": 41,
+      "score": 72,
+      "set": "COMP_CLASH_RULES",
+      "n": 2110,
+      "nBothSides": 43,
+      "favoredBlue": 1006,
+      "favoredRed": 1104,
+      "favoredWinPct": 47.49,
+      "expectedPct": 49.89,
+      "edgePct": -2.4,
+      "ci95": [
+        45.36,
+        49.62
+      ]
+    },
+    {
+      "label": "All-in tempo > hypercarry non protégé",
+      "idx": 24,
+      "score": 88,
+      "set": "COMP_CLASH_RULES",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 2,
+      "favoredRed": 0,
+      "favoredWinPct": 50,
+      "expectedPct": 52.47,
+      "edgePct": -2.47,
+      "ci95": [
+        9.45,
+        90.55
+      ]
+    },
+    {
+      "label": "Stealth > comp sans reveal",
+      "idx": 59,
+      "score": 70,
+      "set": "COMP_CLASH_RULES",
+      "n": 2897,
+      "nBothSides": 60,
+      "favoredBlue": 1326,
+      "favoredRed": 1571,
+      "favoredWinPct": 47.01,
+      "expectedPct": 49.79,
+      "edgePct": -2.78,
+      "ci95": [
+        45.2,
+        48.83
+      ]
+    },
+    {
+      "label": "Engage Vanguard/Diver > backline sans peel",
+      "idx": 67,
+      "score": 78,
+      "set": "COMP_CLASH_RULES",
+      "n": 566,
+      "nBothSides": 6,
+      "favoredBlue": 263,
+      "favoredRed": 303,
+      "favoredWinPct": 47,
+      "expectedPct": 49.83,
+      "edgePct": -2.83,
+      "ci95": [
+        42.92,
+        51.11
+      ]
+    },
+    {
+      "label": "Double enchanter peel > comp dive",
+      "idx": 49,
+      "score": 148,
+      "set": "COMP_CLASH_RULES",
+      "n": 85,
+      "nBothSides": 0,
+      "favoredBlue": 48,
+      "favoredRed": 37,
+      "favoredWinPct": 47.06,
+      "expectedPct": 50.32,
+      "edgePct": -3.26,
+      "ci95": [
+        36.81,
+        57.57
+      ]
+    },
+    {
+      "label": "Kite range vs comp engage",
+      "idx": 2,
+      "score": 118,
+      "set": "COMP_CLASH_RULES",
+      "n": 999,
+      "nBothSides": 4,
+      "favoredBlue": 488,
+      "favoredRed": 511,
+      "favoredWinPct": 46.45,
+      "expectedPct": 49.94,
+      "edgePct": -3.5,
+      "ci95": [
+        43.37,
+        49.55
+      ]
+    },
+    {
+      "label": "Front peel + enchanter > dive",
+      "idx": 50,
+      "score": 118,
+      "set": "COMP_CLASH_RULES",
+      "n": 936,
+      "nBothSides": 23,
+      "favoredBlue": 498,
+      "favoredRed": 438,
+      "favoredWinPct": 46.47,
+      "expectedPct": 50.16,
+      "edgePct": -3.68,
+      "ci95": [
+        43.3,
+        49.68
+      ]
+    },
+    {
+      "label": "Famille disengage > engage",
+      "idx": 54,
+      "score": 108,
+      "set": "COMP_CLASH_RULES",
+      "n": 340,
+      "nBothSides": 0,
+      "favoredBlue": 158,
+      "favoredRed": 182,
+      "favoredWinPct": 45.88,
+      "expectedPct": 49.83,
+      "edgePct": -3.94,
+      "ci95": [
+        40.66,
+        51.2
+      ]
+    },
+    {
+      "label": "Siege à distance > engage mélée",
+      "idx": 1,
+      "score": 132,
+      "set": "COMP_CLASH_RULES",
+      "n": 83,
+      "nBothSides": 0,
+      "favoredBlue": 37,
+      "favoredRed": 46,
+      "favoredWinPct": 45.78,
+      "expectedPct": 49.73,
+      "edgePct": -3.95,
+      "ci95": [
+        35.49,
+        56.45
+      ]
+    },
+    {
+      "label": "ADC long range + disengage > all-in bot",
+      "idx": 62,
+      "score": 55,
+      "set": "COMP_CLASH_RULES",
+      "n": 528,
+      "nBothSides": 0,
+      "favoredBlue": 215,
+      "favoredRed": 313,
+      "favoredWinPct": 45.45,
+      "expectedPct": 49.54,
+      "edgePct": -4.09,
+      "ci95": [
+        41.26,
+        49.72
+      ]
+    },
+    {
+      "label": "Wombo setup > comp sans disengage",
+      "idx": 34,
+      "score": 88,
+      "set": "COMP_CLASH_RULES",
+      "n": 737,
+      "nBothSides": 4,
+      "favoredBlue": 364,
+      "favoredRed": 373,
+      "favoredWinPct": 45.32,
+      "expectedPct": 49.97,
+      "edgePct": -4.65,
+      "ci95": [
+        41.76,
+        48.93
+      ]
+    },
+    {
+      "label": "Poke/disengage kite > engage frontal",
+      "idx": 4,
+      "score": 150,
+      "set": "COMP_CLASH_RULES",
+      "n": 60,
+      "nBothSides": 0,
+      "favoredBlue": 26,
+      "favoredRed": 34,
+      "favoredWinPct": 45,
+      "expectedPct": 49.67,
+      "edgePct": -4.67,
+      "ci95": [
+        33.09,
+        57.51
+      ]
+    },
+    {
+      "label": "Double burst Mage > comp sans frontline",
+      "idx": 64,
+      "score": 88,
+      "set": "COMP_CLASH_RULES",
+      "n": 498,
+      "nBothSides": 17,
+      "favoredBlue": 266,
+      "favoredRed": 232,
+      "favoredWinPct": 44.38,
+      "expectedPct": 50.17,
+      "edgePct": -5.79,
+      "ci95": [
+        40.07,
+        48.77
+      ]
+    },
+    {
+      "label": "Poke + disengage > engage frontal",
+      "idx": 0,
+      "score": 145,
+      "set": "COMP_CLASH_RULES",
+      "n": 425,
+      "nBothSides": 0,
+      "favoredBlue": 195,
+      "favoredRed": 230,
+      "favoredWinPct": 44,
+      "expectedPct": 49.8,
+      "edgePct": -5.8,
+      "ci95": [
+        39.36,
+        48.75
+      ]
+    },
+    {
+      "label": "Peel enchanter > dive sur carry immobile",
+      "idx": 51,
+      "score": 108,
+      "set": "COMP_CLASH_RULES",
+      "n": 1575,
+      "nBothSides": 43,
+      "favoredBlue": 756,
+      "favoredRed": 819,
+      "favoredWinPct": 43.62,
+      "expectedPct": 49.9,
+      "edgePct": -6.28,
+      "ci95": [
+        41.19,
+        46.08
+      ]
+    },
+    {
+      "label": "Hypercarry protégé > engage/dive frontal",
+      "idx": 6,
+      "score": 178,
+      "set": "COMP_CLASH_RULES",
+      "n": 969,
+      "nBothSides": 0,
+      "favoredBlue": 454,
+      "favoredRed": 515,
+      "favoredWinPct": 43.55,
+      "expectedPct": 49.84,
+      "edgePct": -6.29,
+      "ci95": [
+        40.46,
+        46.69
+      ]
+    },
+    {
+      "label": "Enchanter disengage > engage brut",
+      "idx": 56,
+      "score": 148,
+      "set": "COMP_CLASH_RULES",
+      "n": 337,
+      "nBothSides": 2,
+      "favoredBlue": 170,
+      "favoredRed": 167,
+      "favoredWinPct": 43.03,
+      "expectedPct": 50.02,
+      "edgePct": -7,
+      "ci95": [
+        37.85,
+        48.36
+      ]
+    },
+    {
+      "label": "Diversité sous-classes > comp mono-classe",
+      "idx": 68,
+      "score": 48,
+      "set": "COMP_CLASH_RULES",
+      "n": 7,
+      "nBothSides": 0,
+      "favoredBlue": 5,
+      "favoredRed": 2,
+      "favoredWinPct": 42.86,
+      "expectedPct": 51.06,
+      "edgePct": -8.2,
+      "ci95": [
+        15.82,
+        74.95
+      ]
+    },
+    {
+      "label": "Zone control > engage dans choke",
+      "idx": 35,
+      "score": 108,
+      "set": "COMP_CLASH_RULES",
+      "n": 5,
+      "nBothSides": 0,
+      "favoredBlue": 2,
+      "favoredRed": 3,
+      "favoredWinPct": 40,
+      "expectedPct": 49.51,
+      "edgePct": -9.51,
+      "ci95": [
+        11.76,
+        76.93
+      ]
+    },
+    {
+      "label": "Outscale > spike early avec front",
+      "idx": 43,
+      "score": 88,
+      "set": "COMP_CLASH_RULES",
+      "n": 28,
+      "nBothSides": 0,
+      "favoredBlue": 15,
+      "favoredRed": 13,
+      "favoredWinPct": 39.29,
+      "expectedPct": 50.18,
+      "edgePct": -10.89,
+      "ci95": [
+        23.57,
+        57.59
+      ]
+    },
+    {
+      "label": "Double global pick > force teamfight",
+      "idx": 23,
+      "score": 88,
+      "set": "COMP_CLASH_RULES",
+      "n": 10,
+      "nBothSides": 0,
+      "favoredBlue": 7,
+      "favoredRed": 3,
+      "favoredWinPct": 40,
+      "expectedPct": 50.99,
+      "edgePct": -10.99,
+      "ci95": [
+        16.82,
+        68.73
+      ]
+    },
+    {
+      "label": "Teamfight groupé > split isolé",
+      "idx": 16,
+      "score": 100,
+      "set": "COMP_CLASH_RULES",
+      "n": 53,
+      "nBothSides": 0,
+      "favoredBlue": 23,
+      "favoredRed": 30,
+      "favoredWinPct": 32.08,
+      "expectedPct": 49.67,
+      "edgePct": -17.6,
+      "ci95": [
+        21.09,
+        45.48
+      ]
+    },
+    {
+      "label": "Anti-dash > comp dive",
+      "idx": 47,
+      "score": 118,
+      "set": "COMP_CLASH_RULES",
+      "n": 3,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 2,
+      "favoredWinPct": 0,
+      "expectedPct": 49.18,
+      "edgePct": -49.18,
+      "ci95": [
+        0,
+        56.15
+      ]
+    },
+    {
+      "label": "Zone + peel > carries immobiles",
+      "idx": 37,
+      "score": 115,
+      "set": "COMP_CLASH_RULES",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 2,
+      "favoredRed": 0,
+      "favoredWinPct": 0,
+      "expectedPct": 52.47,
+      "edgePct": -52.47,
+      "ci95": [
+        0,
+        65.76
+      ]
+    },
+    {
+      "label": "Engage frontal vs backline nue",
+      "idx": 39,
+      "score": 86,
+      "set": "COMP_CLASH_RULES",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 0,
+      "favoredWinPct": 0,
+      "expectedPct": 52.47,
+      "edgePct": -52.47,
+      "ci95": [
+        0,
+        79.35
+      ]
+    },
+    {
+      "label": "Hypercarry peel > lane tempo",
+      "idx": 7,
+      "score": 95,
+      "set": "COMP_CLASH_RULES",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Front-to-back > dive all-in",
+      "idx": 9,
+      "score": 115,
+      "set": "COMP_CLASH_RULES",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Front-to-back peel > engage brut",
+      "idx": 10,
+      "score": 95,
+      "set": "COMP_CLASH_RULES",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Front-to-back > poke siege kite",
+      "idx": 11,
+      "score": 88,
+      "set": "COMP_CLASH_RULES",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Scale protégé > poke siege",
+      "idx": 12,
+      "score": 95,
+      "set": "COMP_CLASH_RULES",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Pick cross-map > scaling late",
+      "idx": 20,
+      "score": 65,
+      "set": "COMP_CLASH_RULES",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Pick global > front-to-back groupé",
+      "idx": 22,
+      "score": 115,
+      "set": "COMP_CLASH_RULES",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Lane tempo > hypercarry",
+      "idx": 25,
+      "score": 78,
+      "set": "COMP_CLASH_RULES",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Engage frontal > hypercarry sans peel",
+      "idx": 26,
+      "score": 102,
+      "set": "COMP_CLASH_RULES",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Tempo early > scale late non protégé",
+      "idx": 29,
+      "score": 82,
+      "set": "COMP_CLASH_RULES",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Dive coordonné > poke immobile",
+      "idx": 30,
+      "score": 175,
+      "set": "COMP_CLASH_RULES",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Engage vs comp sans frontline",
+      "idx": 38,
+      "score": 98,
+      "set": "COMP_CLASH_RULES",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Scale late > window all-in",
+      "idx": 42,
+      "score": 105,
+      "set": "COMP_CLASH_RULES",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    }
+  ],
+  "teamTraitRules": [
+    {
+      "label": "Engage > duo immobile non protégé",
+      "idx": 2,
+      "score": 52,
+      "set": "TEAM_TRAIT_RULES",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 1,
+      "favoredWinPct": 100,
+      "expectedPct": 47.53,
+      "edgePct": 52.47,
+      "ci95": [
+        20.65,
+        100
+      ]
+    },
+    {
+      "label": "Double invade > comp scale",
+      "idx": 11,
+      "score": 36,
+      "set": "TEAM_TRAIT_RULES",
+      "n": 50,
+      "nBothSides": 0,
+      "favoredBlue": 30,
+      "favoredRed": 20,
+      "favoredWinPct": 56,
+      "expectedPct": 50.49,
+      "edgePct": 5.51,
+      "ci95": [
+        42.31,
+        68.84
+      ]
+    },
+    {
+      "label": "Carry %PV > double frontline",
+      "idx": 10,
+      "score": 40,
+      "set": "TEAM_TRAIT_RULES",
+      "n": 3536,
+      "nBothSides": 205,
+      "favoredBlue": 1881,
+      "favoredRed": 1655,
+      "favoredWinPct": 51.92,
+      "expectedPct": 50.16,
+      "edgePct": 1.77,
+      "ci95": [
+        50.28,
+        53.57
+      ]
+    },
+    {
+      "label": "Double global > split sans réponse",
+      "idx": 1,
+      "score": 48,
+      "set": "TEAM_TRAIT_RULES",
+      "n": 308,
+      "nBothSides": 0,
+      "favoredBlue": 176,
+      "favoredRed": 132,
+      "favoredWinPct": 51.3,
+      "expectedPct": 50.35,
+      "edgePct": 0.95,
+      "ci95": [
+        45.73,
+        56.83
+      ]
+    },
+    {
+      "label": "Spell-shield > hook comp",
+      "idx": 6,
+      "score": 38,
+      "set": "TEAM_TRAIT_RULES",
+      "n": 333,
+      "nBothSides": 3,
+      "favoredBlue": 163,
+      "favoredRed": 170,
+      "favoredWinPct": 50.15,
+      "expectedPct": 49.95,
+      "edgePct": 0.2,
+      "ci95": [
+        44.81,
+        55.49
+      ]
+    },
+    {
+      "label": "Disengage casse le wombo comp",
+      "idx": 8,
+      "score": 72,
+      "set": "TEAM_TRAIT_RULES",
+      "n": 178,
+      "nBothSides": 0,
+      "favoredBlue": 95,
+      "favoredRed": 83,
+      "favoredWinPct": 50,
+      "expectedPct": 50.17,
+      "edgePct": -0.17,
+      "ci95": [
+        42.73,
+        57.27
+      ]
+    },
+    {
+      "label": "Anti-dash + front équipe > dive",
+      "idx": 5,
+      "score": 115,
+      "set": "TEAM_TRAIT_RULES",
+      "n": 2764,
+      "nBothSides": 109,
+      "favoredBlue": 1383,
+      "favoredRed": 1381,
+      "favoredWinPct": 48.99,
+      "expectedPct": 50,
+      "edgePct": -1.01,
+      "ci95": [
+        47.13,
+        50.85
+      ]
+    },
+    {
+      "label": "Double peel > dive",
+      "idx": 7,
+      "score": 52,
+      "set": "TEAM_TRAIT_RULES",
+      "n": 365,
+      "nBothSides": 1,
+      "favoredBlue": 170,
+      "favoredRed": 195,
+      "favoredWinPct": 48.22,
+      "expectedPct": 49.83,
+      "edgePct": -1.61,
+      "ci95": [
+        43.14,
+        53.34
+      ]
+    },
+    {
+      "label": "Zone control équipe > dive",
+      "idx": 9,
+      "score": 62,
+      "set": "TEAM_TRAIT_RULES",
+      "n": 41,
+      "nBothSides": 0,
+      "favoredBlue": 25,
+      "favoredRed": 16,
+      "favoredWinPct": 48.78,
+      "expectedPct": 50.54,
+      "edgePct": -1.76,
+      "ci95": [
+        34.25,
+        63.52
+      ]
+    },
+    {
+      "label": "Double enchanter > comp dive",
+      "idx": 0,
+      "score": 68,
+      "set": "TEAM_TRAIT_RULES",
+      "n": 85,
+      "nBothSides": 0,
+      "favoredBlue": 48,
+      "favoredRed": 37,
+      "favoredWinPct": 47.06,
+      "expectedPct": 50.32,
+      "edgePct": -3.26,
+      "ci95": [
+        36.81,
+        57.57
+      ]
+    },
+    {
+      "label": "Anti-dash équipe > dive",
+      "idx": 4,
+      "score": 58,
+      "set": "TEAM_TRAIT_RULES",
+      "n": 3,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 2,
+      "favoredWinPct": 0,
+      "expectedPct": 49.18,
+      "edgePct": -49.18,
+      "ci95": [
+        0,
+        56.15
+      ]
+    },
+    {
+      "label": "Siege > backline sans front",
+      "idx": 3,
+      "score": 45,
+      "set": "TEAM_TRAIT_RULES",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    }
+  ],
+  "champPairRulesAllPairs": [
+    {
+      "label": "pair#30",
+      "idx": 30,
+      "score": 24,
+      "scope": "toutes paires",
+      "n": 76,
+      "nBothSides": 12473,
+      "favoredBlue": 41,
+      "favoredRed": 35,
+      "favoredWinPct": 59.21,
+      "expectedPct": 50.19,
+      "edgePct": 9.02,
+      "ci95": [
+        47.98,
+        69.56
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Caitlyn\") && hasMech(d, \"shortRangeAdc\")"
+    },
+    {
+      "label": "pair#28",
+      "idx": 28,
+      "score": 22,
+      "scope": "toutes paires",
+      "n": 68,
+      "nBothSides": 12481,
+      "favoredBlue": 37,
+      "favoredRed": 31,
+      "favoredWinPct": 58.82,
+      "expectedPct": 50.22,
+      "edgePct": 8.61,
+      "ci95": [
+        46.96,
+        69.74
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Bard\") && hasMech(d, \"immobileCarry\")"
+    },
+    {
+      "label": "pair#32",
+      "idx": 32,
+      "score": 28,
+      "scope": "toutes paires",
+      "n": 82,
+      "nBothSides": 12467,
+      "favoredBlue": 50,
+      "favoredRed": 32,
+      "favoredWinPct": 53.66,
+      "expectedPct": 50.54,
+      "edgePct": 3.12,
+      "ci95": [
+        42.94,
+        64.05
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Séraphine\") && hasMech(d, \"diveAssassin\")"
+    },
+    {
+      "label": "pair#16",
+      "idx": 16,
+      "score": 32,
+      "scope": "toutes paires",
+      "n": 850,
+      "nBothSides": 11699,
+      "favoredBlue": 404,
+      "favoredRed": 446,
+      "favoredWinPct": 52.71,
+      "expectedPct": 49.88,
+      "edgePct": 2.83,
+      "ci95": [
+        49.34,
+        56.04
+      ],
+      "rule": "(a, d) => hasMech(a, \"revealStealth\") && hasMech(d, \"stealth\")"
+    },
+    {
+      "label": "pair#36",
+      "idx": 36,
+      "score": 26,
+      "scope": "toutes paires",
+      "n": 152,
+      "nBothSides": 12397,
+      "favoredBlue": 75,
+      "favoredRed": 77,
+      "favoredWinPct": 52.63,
+      "expectedPct": 49.97,
+      "edgePct": 2.66,
+      "ci95": [
+        44.73,
+        60.41
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Rumble\") && d.isMarksman && !hasMech(d, \"disengage\")"
+    },
+    {
+      "label": "pair#15",
+      "idx": 15,
+      "score": 36,
+      "scope": "toutes paires",
+      "n": 1342,
+      "nBothSides": 11207,
+      "favoredBlue": 662,
+      "favoredRed": 680,
+      "favoredWinPct": 52.53,
+      "expectedPct": 49.97,
+      "edgePct": 2.57,
+      "ci95": [
+        49.86,
+        55.19
+      ],
+      "rule": "(a, d) => hasMech(a, \"interruptChannel\") && hasMech(d, \"channelUlt\")"
+    },
+    {
+      "label": "pair#12",
+      "idx": 12,
+      "score": 34,
+      "scope": "toutes paires",
+      "n": 1140,
+      "nBothSides": 11409,
+      "favoredBlue": 608,
+      "favoredRed": 532,
+      "favoredWinPct": 52.54,
+      "expectedPct": 50.16,
+      "edgePct": 2.38,
+      "ci95": [
+        49.64,
+        55.43
+      ],
+      "rule": "(a, d) => hasMech(a, \"diveAssassin\") && hasMech(d, \"immobileCarry\")"
+    },
+    {
+      "label": "pair#1",
+      "idx": 1,
+      "score": 28,
+      "scope": "toutes paires",
+      "n": 1792,
+      "nBothSides": 10757,
+      "favoredBlue": 919,
+      "favoredRed": 873,
+      "favoredWinPct": 52.18,
+      "expectedPct": 50.06,
+      "edgePct": 2.11,
+      "ci95": [
+        49.86,
+        54.48
+      ],
+      "rule": "(a, d) => hasMech(a, \"spellShield\") && (d.engage || 0) >= 0.5 && (d.spellSetup || 0) >= 0.4"
+    },
+    {
+      "label": "pair#9",
+      "idx": 9,
+      "score": 35,
+      "scope": "toutes paires",
+      "n": 3939,
+      "nBothSides": 8610,
+      "favoredBlue": 2088,
+      "favoredRed": 1851,
+      "favoredWinPct": 51.82,
+      "expectedPct": 50.15,
+      "edgePct": 1.67,
+      "ci95": [
+        50.25,
+        53.37
+      ],
+      "rule": "(a, d) => hasMech(a, \"percentHp\") && (d.tank || 0) >= 0.55"
+    },
+    {
+      "label": "pair#21",
+      "idx": 21,
+      "score": 22,
+      "scope": "toutes paires",
+      "n": 5872,
+      "nBothSides": 6677,
+      "favoredBlue": 2832,
+      "favoredRed": 3040,
+      "favoredWinPct": 51.31,
+      "expectedPct": 49.91,
+      "edgePct": 1.4,
+      "ci95": [
+        50.03,
+        52.59
+      ],
+      "rule": "(a, d) => hasMech(a, \"splitPush\") && (d.tank || 0) >= 0.6 && (d.scaling || 0) < 0.45"
+    },
+    {
+      "label": "pair#13",
+      "idx": 13,
+      "score": 26,
+      "scope": "toutes paires",
+      "n": 4056,
+      "nBothSides": 8493,
+      "favoredBlue": 2286,
+      "favoredRed": 1770,
+      "favoredWinPct": 51.58,
+      "expectedPct": 50.31,
+      "edgePct": 1.26,
+      "ci95": [
+        50.04,
+        53.11
+      ],
+      "rule": "(a, d) => hasMech(a, \"globalUlt\") && hasMech(d, \"immobileCarry\")"
+    },
+    {
+      "label": "pair#17",
+      "idx": 17,
+      "score": 26,
+      "scope": "toutes paires",
+      "n": 739,
+      "nBothSides": 11810,
+      "favoredBlue": 362,
+      "favoredRed": 377,
+      "favoredWinPct": 50.74,
+      "expectedPct": 49.95,
+      "edgePct": 0.79,
+      "ci95": [
+        47.15,
+        54.34
+      ],
+      "rule": "(a, d) => hasMech(a, \"aoeMage\") && hasMech(d, \"stealth\")"
+    },
+    {
+      "label": "pair#40",
+      "idx": 40,
+      "score": 20,
+      "scope": "toutes paires",
+      "n": 6033,
+      "nBothSides": 6516,
+      "favoredBlue": 2891,
+      "favoredRed": 3142,
+      "favoredWinPct": 50.54,
+      "expectedPct": 49.9,
+      "edgePct": 0.64,
+      "ci95": [
+        49.28,
+        51.8
+      ],
+      "rule": "(a, d) => [\"Juggernaut\", \"Diver\"].includes(subOf(a)) && [\"Vanguard\", \"Warden\"].includes(subOf(d))"
+    },
+    {
+      "label": "pair#19",
+      "idx": 19,
+      "score": 24,
+      "scope": "toutes paires",
+      "n": 3587,
+      "nBothSides": 8962,
+      "favoredBlue": 1921,
+      "favoredRed": 1666,
+      "favoredWinPct": 50.74,
+      "expectedPct": 50.18,
+      "edgePct": 0.56,
+      "ci95": [
+        49.1,
+        52.37
+      ],
+      "rule": "(a, d) => hasMech(a, \"zoneControl\") && (d.tags?.has?.(\"dive\") || hasMech(d, \"diveAssassin\"))"
+    },
+    {
+      "label": "pair#41",
+      "idx": 41,
+      "score": 24,
+      "scope": "toutes paires",
+      "n": 1659,
+      "nBothSides": 10890,
+      "favoredBlue": 797,
+      "favoredRed": 862,
+      "favoredWinPct": 50.45,
+      "expectedPct": 49.9,
+      "edgePct": 0.55,
+      "ci95": [
+        48.05,
+        52.85
+      ],
+      "rule": "(a, d) => subOf(a) === \"Assassin\" && [\"Artillery\", \"Burst\"].includes(subOf(d))"
+    },
+    {
+      "label": "pair#4",
+      "idx": 4,
+      "score": 24,
+      "scope": "toutes paires",
+      "n": 10265,
+      "nBothSides": 2284,
+      "favoredBlue": 5206,
+      "favoredRed": 5059,
+      "favoredWinPct": 50.58,
+      "expectedPct": 50.04,
+      "edgePct": 0.54,
+      "ci95": [
+        49.61,
+        51.55
+      ],
+      "rule": "(a, d) => (a.peel || 0) >= 0.55 && (d.engage || 0) >= 0.5"
+    },
+    {
+      "label": "pair#24",
+      "idx": 24,
+      "score": 22,
+      "scope": "toutes paires",
+      "n": 5226,
+      "nBothSides": 7323,
+      "favoredBlue": 2570,
+      "favoredRed": 2656,
+      "favoredWinPct": 50.5,
+      "expectedPct": 49.96,
+      "edgePct": 0.54,
+      "ci95": [
+        49.14,
+        51.85
+      ],
+      "rule": "(a, d) => hasMech(a, \"invadeEarly\") && (d.early || 0) < 0.35"
+    },
+    {
+      "label": "pair#10",
+      "idx": 10,
+      "score": 32,
+      "scope": "toutes paires",
+      "n": 6656,
+      "nBothSides": 5893,
+      "favoredBlue": 3570,
+      "favoredRed": 3086,
+      "favoredWinPct": 50.63,
+      "expectedPct": 50.18,
+      "edgePct": 0.45,
+      "ci95": [
+        49.43,
+        51.83
+      ],
+      "rule": "(a, d) => hasMech(a, \"tankShred\") && (d.tank || 0) >= 0.5"
+    },
+    {
+      "label": "pair#39",
+      "idx": 39,
+      "score": 22,
+      "scope": "toutes paires",
+      "n": 7006,
+      "nBothSides": 5543,
+      "favoredBlue": 3330,
+      "favoredRed": 3676,
+      "favoredWinPct": 50.23,
+      "expectedPct": 49.88,
+      "edgePct": 0.35,
+      "ci95": [
+        49.06,
+        51.4
+      ],
+      "rule": "(a, d) => subOf(a) === \"Marksman\" && [\"Vanguard\", \"Warden\"].includes(subOf(d))"
+    },
+    {
+      "label": "pair#20",
+      "idx": 20,
+      "score": 24,
+      "scope": "toutes paires",
+      "n": 3279,
+      "nBothSides": 9270,
+      "favoredBlue": 1742,
+      "favoredRed": 1537,
+      "favoredWinPct": 50.44,
+      "expectedPct": 50.15,
+      "edgePct": 0.29,
+      "ci95": [
+        48.73,
+        52.15
+      ],
+      "rule": "(a, d) => hasMech(a, \"zoneControl\") && d.isMarksman && !hasMech(d, \"disengage\")"
+    },
+    {
+      "label": "pair#2",
+      "idx": 2,
+      "score": 36,
+      "scope": "toutes paires",
+      "n": 3691,
+      "nBothSides": 8858,
+      "favoredBlue": 1863,
+      "favoredRed": 1828,
+      "favoredWinPct": 50.28,
+      "expectedPct": 50.02,
+      "edgePct": 0.26,
+      "ci95": [
+        48.67,
+        51.9
+      ],
+      "rule": "(a, d) => hasMech(a, \"antiDash\") && (d.tags?.has?.(\"dive\") || hasMech(d, \"diveAssassin\"))"
+    },
+    {
+      "label": "pair#0",
+      "idx": 0,
+      "score": 40,
+      "scope": "toutes paires",
+      "n": 333,
+      "nBothSides": 12216,
+      "favoredBlue": 163,
+      "favoredRed": 170,
+      "favoredWinPct": 50.15,
+      "expectedPct": 49.95,
+      "edgePct": 0.2,
+      "ci95": [
+        44.81,
+        55.49
+      ],
+      "rule": "(a, d) => hasMech(a, \"spellShield\") && hasMech(d, \"hookCc\")"
+    },
+    {
+      "label": "pair#18",
+      "idx": 18,
+      "score": 22,
+      "scope": "toutes paires",
+      "n": 1046,
+      "nBothSides": 11503,
+      "favoredBlue": 503,
+      "favoredRed": 543,
+      "favoredWinPct": 50.1,
+      "expectedPct": 49.91,
+      "edgePct": 0.19,
+      "ci95": [
+        47.07,
+        53.12
+      ],
+      "rule": "(a, d) => hasMech(a, \"aoeMage\") && hasMech(d, \"enchanter\")"
+    },
+    {
+      "label": "pair#3",
+      "idx": 3,
+      "score": 32,
+      "scope": "toutes paires",
+      "n": 903,
+      "nBothSides": 11646,
+      "favoredBlue": 430,
+      "favoredRed": 473,
+      "favoredWinPct": 49.94,
+      "expectedPct": 49.88,
+      "edgePct": 0.06,
+      "ci95": [
+        46.69,
+        53.2
+      ],
+      "rule": "(a, d) => hasMech(a, \"pointCc\") && hasMech(d, \"diveAssassin\")"
+    },
+    {
+      "label": "pair#11",
+      "idx": 11,
+      "score": 28,
+      "scope": "toutes paires",
+      "n": 8996,
+      "nBothSides": 3553,
+      "favoredBlue": 4190,
+      "favoredRed": 4806,
+      "favoredWinPct": 49.86,
+      "expectedPct": 49.83,
+      "edgePct": 0.02,
+      "ci95": [
+        48.82,
+        50.89
+      ],
+      "rule": "(a, d) => (a.burst || 0) >= 0.55 && d.isMarksman && !hasMech(d, \"disengage\")"
+    },
+    {
+      "label": "pair#37",
+      "idx": 37,
+      "score": 26,
+      "scope": "toutes paires",
+      "n": 1172,
+      "nBothSides": 11377,
+      "favoredBlue": 644,
+      "favoredRed": 528,
+      "favoredWinPct": 50.17,
+      "expectedPct": 50.24,
+      "edgePct": -0.07,
+      "ci95": [
+        47.31,
+        53.03
+      ],
+      "rule": "(a, d) => subOf(a) === \"Vanguard\" && subOf(d) === \"Assassin\""
+    },
+    {
+      "label": "pair#6",
+      "idx": 6,
+      "score": 28,
+      "scope": "toutes paires",
+      "n": 2794,
+      "nBothSides": 9755,
+      "favoredBlue": 1386,
+      "favoredRed": 1408,
+      "favoredWinPct": 49.53,
+      "expectedPct": 49.98,
+      "edgePct": -0.45,
+      "ci95": [
+        47.68,
+        51.39
+      ],
+      "rule": "(a, d) => (a.peel || 0) >= 0.55 && (d.burst || 0) >= 0.55 && d.isMarksman"
+    },
+    {
+      "label": "pair#5",
+      "idx": 5,
+      "score": 30,
+      "scope": "toutes paires",
+      "n": 2471,
+      "nBothSides": 10078,
+      "favoredBlue": 1268,
+      "favoredRed": 1203,
+      "favoredWinPct": 49.29,
+      "expectedPct": 50.06,
+      "edgePct": -0.77,
+      "ci95": [
+        47.32,
+        51.26
+      ],
+      "rule": "(a, d) => (a.peel || 0) >= 0.55 && hasMech(d, \"diveAssassin\")"
+    },
+    {
+      "label": "pair#25",
+      "idx": 25,
+      "score": 26,
+      "scope": "toutes paires",
+      "n": 481,
+      "nBothSides": 12068,
+      "favoredBlue": 238,
+      "favoredRed": 243,
+      "favoredWinPct": 49.06,
+      "expectedPct": 49.97,
+      "edgePct": -0.91,
+      "ci95": [
+        44.62,
+        53.52
+      ],
+      "rule": "(a, d) => hasMech(a, \"cleansePeel\") && (d.spellSetup || 0) >= 0.5"
+    },
+    {
+      "label": "pair#42",
+      "idx": 42,
+      "score": 20,
+      "scope": "toutes paires",
+      "n": 1244,
+      "nBothSides": 11305,
+      "favoredBlue": 669,
+      "favoredRed": 575,
+      "favoredWinPct": 49.12,
+      "expectedPct": 50.19,
+      "edgePct": -1.07,
+      "ci95": [
+        46.34,
+        51.89
+      ],
+      "rule": "(a, d) => subOf(a) === \"Enchanter\" && subOf(d) === \"Assassin\""
+    },
+    {
+      "label": "pair#34",
+      "idx": 34,
+      "score": 30,
+      "scope": "toutes paires",
+      "n": 1798,
+      "nBothSides": 10751,
+      "favoredBlue": 920,
+      "favoredRed": 878,
+      "favoredWinPct": 48.94,
+      "expectedPct": 50.06,
+      "edgePct": -1.11,
+      "ci95": [
+        46.64,
+        51.25
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Trundle\") && (d.tank || 0) >= 0.5"
+    },
+    {
+      "label": "pair#38",
+      "idx": 38,
+      "score": 24,
+      "scope": "toutes paires",
+      "n": 2328,
+      "nBothSides": 10221,
+      "favoredBlue": 1248,
+      "favoredRed": 1080,
+      "favoredWinPct": 48.88,
+      "expectedPct": 50.18,
+      "edgePct": -1.29,
+      "ci95": [
+        46.86,
+        50.91
+      ],
+      "rule": "(a, d) => subOf(a) === \"Vanguard\" && subOf(d) === \"Burst\""
+    },
+    {
+      "label": "pair#7",
+      "idx": 7,
+      "score": 25,
+      "scope": "toutes paires",
+      "n": 6051,
+      "nBothSides": 6498,
+      "favoredBlue": 3028,
+      "favoredRed": 3023,
+      "favoredWinPct": 48.57,
+      "expectedPct": 50,
+      "edgePct": -1.43,
+      "ci95": [
+        47.31,
+        49.83
+      ],
+      "rule": "(a, d) => hasMech(a, \"disengage\") && hasMech(d, \"hardEngage\")"
+    },
+    {
+      "label": "pair#8",
+      "idx": 8,
+      "score": 22,
+      "scope": "toutes paires",
+      "n": 8769,
+      "nBothSides": 3780,
+      "favoredBlue": 4287,
+      "favoredRed": 4482,
+      "favoredWinPct": 48.39,
+      "expectedPct": 49.95,
+      "edgePct": -1.56,
+      "ci95": [
+        47.34,
+        49.43
+      ],
+      "rule": "(a, d) => (a.tags?.has?.(\"poke\") || hasMech(a, \"siegePoke\")) && (d.tags?.has?.(\"frontline\") || (d.tank || 0) >= 0.5) && (d.scaling"
+    },
+    {
+      "label": "pair#26",
+      "idx": 26,
+      "score": 30,
+      "scope": "toutes paires",
+      "n": 55,
+      "nBothSides": 12494,
+      "favoredBlue": 28,
+      "favoredRed": 27,
+      "favoredWinPct": 47.27,
+      "expectedPct": 50.04,
+      "edgePct": -2.77,
+      "ci95": [
+        34.69,
+        60.21
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Galio\") && hasMech(d, \"diveAssassin\")"
+    },
+    {
+      "label": "pair#14",
+      "idx": 14,
+      "score": 30,
+      "scope": "toutes paires",
+      "n": 802,
+      "nBothSides": 11747,
+      "favoredBlue": 393,
+      "favoredRed": 409,
+      "favoredWinPct": 46.26,
+      "expectedPct": 49.95,
+      "edgePct": -3.69,
+      "ci95": [
+        42.83,
+        49.72
+      ],
+      "rule": "(a, d) => hasMech(a, \"windwall\") && (hasMech(d, \"siegePoke\") || d.tags?.has?.(\"poke\"))"
+    },
+    {
+      "label": "pair#22",
+      "idx": 22,
+      "score": 26,
+      "scope": "toutes paires",
+      "n": 640,
+      "nBothSides": 11909,
+      "favoredBlue": 348,
+      "favoredRed": 292,
+      "favoredWinPct": 46.25,
+      "expectedPct": 50.22,
+      "edgePct": -3.97,
+      "ci95": [
+        42.42,
+        50.12
+      ],
+      "rule": "(a, d) => hasMech(a, \"peelTank\") && hasMech(d, \"diveAssassin\")"
+    },
+    {
+      "label": "pair#29",
+      "idx": 29,
+      "score": 20,
+      "scope": "toutes paires",
+      "n": 397,
+      "nBothSides": 12152,
+      "favoredBlue": 223,
+      "favoredRed": 174,
+      "favoredWinPct": 45.84,
+      "expectedPct": 50.3,
+      "edgePct": -4.46,
+      "ci95": [
+        41.01,
+        50.76
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Ryze\") && hasMech(d, \"splitPush\")"
+    },
+    {
+      "label": "pair#23",
+      "idx": 23,
+      "score": 20,
+      "scope": "toutes paires",
+      "n": 628,
+      "nBothSides": 11921,
+      "favoredBlue": 256,
+      "favoredRed": 372,
+      "favoredWinPct": 44.9,
+      "expectedPct": 49.54,
+      "edgePct": -4.64,
+      "ci95": [
+        41.06,
+        48.81
+      ],
+      "rule": "(a, d) => hasMech(a, \"longRangeAdc\") && hasMech(d, \"shortRangeAdc\")"
+    },
+    {
+      "label": "pair#35",
+      "idx": 35,
+      "score": 32,
+      "scope": "toutes paires",
+      "n": 15,
+      "nBothSides": 12534,
+      "favoredBlue": 2,
+      "favoredRed": 13,
+      "favoredWinPct": 40,
+      "expectedPct": 48.19,
+      "edgePct": -8.19,
+      "ci95": [
+        19.82,
+        64.25
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Cassiopeia\") && hasMech(d, \"diveAssassin\")"
+    },
+    {
+      "label": "pair#27",
+      "idx": 27,
+      "score": 24,
+      "scope": "toutes paires",
+      "n": 148,
+      "nBothSides": 12401,
+      "favoredBlue": 83,
+      "favoredRed": 65,
+      "favoredWinPct": 40.54,
+      "expectedPct": 50.3,
+      "edgePct": -9.76,
+      "ci95": [
+        32.97,
+        48.59
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Galio\") && (d.burst || 0) >= 0.55 && (d.ap || 0) >= 0.6"
+    },
+    {
+      "label": "pair#33",
+      "idx": 33,
+      "score": 22,
+      "scope": "toutes paires",
+      "n": 42,
+      "nBothSides": 12507,
+      "favoredBlue": 13,
+      "favoredRed": 29,
+      "favoredWinPct": 35.71,
+      "expectedPct": 49.06,
+      "edgePct": -13.35,
+      "ci95": [
+        22.99,
+        50.83
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Ashe\") && hasMech(d, \"diveAssassin\")"
+    },
+    {
+      "label": "pair#31",
+      "idx": 31,
+      "score": 26,
+      "scope": "toutes paires",
+      "n": 0,
+      "nBothSides": 12549,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ],
+      "rule": "(a, d) => hasMech(a, \"enchanter\") && norm(d.name) === norm(\"Naafiri\")"
+    }
+  ],
+  "champPairRulesSameLane": [
+    {
+      "label": "pair#36",
+      "idx": 36,
+      "score": 26,
+      "scope": "même lane",
+      "n": 14,
+      "nBothSides": 12535,
+      "favoredBlue": 4,
+      "favoredRed": 10,
+      "favoredWinPct": 64.29,
+      "expectedPct": 48.94,
+      "edgePct": 15.34,
+      "ci95": [
+        38.76,
+        83.66
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Rumble\") && d.isMarksman && !hasMech(d, \"disengage\")"
+    },
+    {
+      "label": "pair#17",
+      "idx": 17,
+      "score": 26,
+      "scope": "même lane",
+      "n": 8,
+      "nBothSides": 12541,
+      "favoredBlue": 2,
+      "favoredRed": 6,
+      "favoredWinPct": 62.5,
+      "expectedPct": 48.77,
+      "edgePct": 13.73,
+      "ci95": [
+        30.57,
+        86.32
+      ],
+      "rule": "(a, d) => hasMech(a, \"aoeMage\") && hasMech(d, \"stealth\")"
+    },
+    {
+      "label": "pair#30",
+      "idx": 30,
+      "score": 24,
+      "scope": "même lane",
+      "n": 70,
+      "nBothSides": 12479,
+      "favoredBlue": 38,
+      "favoredRed": 32,
+      "favoredWinPct": 58.57,
+      "expectedPct": 50.21,
+      "edgePct": 8.36,
+      "ci95": [
+        46.88,
+        69.37
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Caitlyn\") && hasMech(d, \"shortRangeAdc\")"
+    },
+    {
+      "label": "pair#3",
+      "idx": 3,
+      "score": 32,
+      "scope": "même lane",
+      "n": 40,
+      "nBothSides": 12509,
+      "favoredBlue": 18,
+      "favoredRed": 22,
+      "favoredWinPct": 57.5,
+      "expectedPct": 49.75,
+      "edgePct": 7.75,
+      "ci95": [
+        42.19,
+        71.49
+      ],
+      "rule": "(a, d) => hasMech(a, \"pointCc\") && hasMech(d, \"diveAssassin\")"
+    },
+    {
+      "label": "pair#38",
+      "idx": 38,
+      "score": 24,
+      "scope": "même lane",
+      "n": 25,
+      "nBothSides": 12524,
+      "favoredBlue": 10,
+      "favoredRed": 15,
+      "favoredWinPct": 56,
+      "expectedPct": 49.51,
+      "edgePct": 6.49,
+      "ci95": [
+        37.07,
+        73.33
+      ],
+      "rule": "(a, d) => subOf(a) === \"Vanguard\" && subOf(d) === \"Burst\""
+    },
+    {
+      "label": "pair#39",
+      "idx": 39,
+      "score": 22,
+      "scope": "même lane",
+      "n": 102,
+      "nBothSides": 12447,
+      "favoredBlue": 46,
+      "favoredRed": 56,
+      "favoredWinPct": 55.88,
+      "expectedPct": 49.76,
+      "edgePct": 6.12,
+      "ci95": [
+        46.21,
+        65.13
+      ],
+      "rule": "(a, d) => subOf(a) === \"Marksman\" && [\"Vanguard\", \"Warden\"].includes(subOf(d))"
+    },
+    {
+      "label": "pair#9",
+      "idx": 9,
+      "score": 35,
+      "scope": "même lane",
+      "n": 3173,
+      "nBothSides": 9376,
+      "favoredBlue": 1603,
+      "favoredRed": 1570,
+      "favoredWinPct": 52.66,
+      "expectedPct": 50.03,
+      "edgePct": 2.64,
+      "ci95": [
+        50.92,
+        54.4
+      ],
+      "rule": "(a, d) => hasMech(a, \"percentHp\") && (d.tank || 0) >= 0.55"
+    },
+    {
+      "label": "pair#35",
+      "idx": 35,
+      "score": 32,
+      "scope": "même lane",
+      "n": 4,
+      "nBothSides": 12545,
+      "favoredBlue": 0,
+      "favoredRed": 4,
+      "favoredWinPct": 50,
+      "expectedPct": 47.53,
+      "edgePct": 2.47,
+      "ci95": [
+        15,
+        85
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Cassiopeia\") && hasMech(d, \"diveAssassin\")"
+    },
+    {
+      "label": "pair#6",
+      "idx": 6,
+      "score": 28,
+      "scope": "même lane",
+      "n": 504,
+      "nBothSides": 12045,
+      "favoredBlue": 265,
+      "favoredRed": 239,
+      "favoredWinPct": 52.58,
+      "expectedPct": 50.13,
+      "edgePct": 2.45,
+      "ci95": [
+        48.22,
+        56.9
+      ],
+      "rule": "(a, d) => (a.peel || 0) >= 0.55 && (d.burst || 0) >= 0.55 && d.isMarksman"
+    },
+    {
+      "label": "pair#37",
+      "idx": 37,
+      "score": 26,
+      "scope": "même lane",
+      "n": 206,
+      "nBothSides": 12343,
+      "favoredBlue": 115,
+      "favoredRed": 91,
+      "favoredWinPct": 52.43,
+      "expectedPct": 50.29,
+      "edgePct": 2.14,
+      "ci95": [
+        45.63,
+        59.14
+      ],
+      "rule": "(a, d) => subOf(a) === \"Vanguard\" && subOf(d) === \"Assassin\""
+    },
+    {
+      "label": "pair#20",
+      "idx": 20,
+      "score": 24,
+      "scope": "même lane",
+      "n": 396,
+      "nBothSides": 12153,
+      "favoredBlue": 189,
+      "favoredRed": 207,
+      "favoredWinPct": 51.77,
+      "expectedPct": 49.89,
+      "edgePct": 1.88,
+      "ci95": [
+        46.85,
+        56.65
+      ],
+      "rule": "(a, d) => hasMech(a, \"zoneControl\") && d.isMarksman && !hasMech(d, \"disengage\")"
+    },
+    {
+      "label": "pair#21",
+      "idx": 21,
+      "score": 22,
+      "scope": "même lane",
+      "n": 4610,
+      "nBothSides": 7939,
+      "favoredBlue": 2197,
+      "favoredRed": 2413,
+      "favoredWinPct": 51.39,
+      "expectedPct": 49.88,
+      "edgePct": 1.5,
+      "ci95": [
+        49.94,
+        52.83
+      ],
+      "rule": "(a, d) => hasMech(a, \"splitPush\") && (d.tank || 0) >= 0.6 && (d.scaling || 0) < 0.45"
+    },
+    {
+      "label": "pair#24",
+      "idx": 24,
+      "score": 22,
+      "scope": "même lane",
+      "n": 2880,
+      "nBothSides": 9669,
+      "favoredBlue": 1413,
+      "favoredRed": 1467,
+      "favoredWinPct": 51.11,
+      "expectedPct": 49.95,
+      "edgePct": 1.16,
+      "ci95": [
+        49.29,
+        52.93
+      ],
+      "rule": "(a, d) => hasMech(a, \"invadeEarly\") && (d.early || 0) < 0.35"
+    },
+    {
+      "label": "pair#16",
+      "idx": 16,
+      "score": 32,
+      "scope": "même lane",
+      "n": 738,
+      "nBothSides": 11811,
+      "favoredBlue": 347,
+      "favoredRed": 391,
+      "favoredWinPct": 50.95,
+      "expectedPct": 49.85,
+      "edgePct": 1.1,
+      "ci95": [
+        47.35,
+        54.54
+      ],
+      "rule": "(a, d) => hasMech(a, \"revealStealth\") && hasMech(d, \"stealth\")"
+    },
+    {
+      "label": "pair#4",
+      "idx": 4,
+      "score": 24,
+      "scope": "même lane",
+      "n": 7746,
+      "nBothSides": 4803,
+      "favoredBlue": 4024,
+      "favoredRed": 3722,
+      "favoredWinPct": 50.8,
+      "expectedPct": 50.1,
+      "edgePct": 0.7,
+      "ci95": [
+        49.69,
+        51.91
+      ],
+      "rule": "(a, d) => (a.peel || 0) >= 0.55 && (d.engage || 0) >= 0.5"
+    },
+    {
+      "label": "pair#10",
+      "idx": 10,
+      "score": 32,
+      "scope": "même lane",
+      "n": 5352,
+      "nBothSides": 7197,
+      "favoredBlue": 2752,
+      "favoredRed": 2600,
+      "favoredWinPct": 50.49,
+      "expectedPct": 50.07,
+      "edgePct": 0.42,
+      "ci95": [
+        49.15,
+        51.82
+      ],
+      "rule": "(a, d) => hasMech(a, \"tankShred\") && (d.tank || 0) >= 0.5"
+    },
+    {
+      "label": "pair#13",
+      "idx": 13,
+      "score": 26,
+      "scope": "même lane",
+      "n": 3097,
+      "nBothSides": 9452,
+      "favoredBlue": 1720,
+      "favoredRed": 1377,
+      "favoredWinPct": 50.66,
+      "expectedPct": 50.27,
+      "edgePct": 0.39,
+      "ci95": [
+        48.9,
+        52.42
+      ],
+      "rule": "(a, d) => hasMech(a, \"globalUlt\") && hasMech(d, \"immobileCarry\")"
+    },
+    {
+      "label": "pair#11",
+      "idx": 11,
+      "score": 28,
+      "scope": "même lane",
+      "n": 3481,
+      "nBothSides": 9068,
+      "favoredBlue": 1635,
+      "favoredRed": 1846,
+      "favoredWinPct": 50.16,
+      "expectedPct": 49.85,
+      "edgePct": 0.31,
+      "ci95": [
+        48.5,
+        51.82
+      ],
+      "rule": "(a, d) => (a.burst || 0) >= 0.55 && d.isMarksman && !hasMech(d, \"disengage\")"
+    },
+    {
+      "label": "pair#25",
+      "idx": 25,
+      "score": 26,
+      "scope": "même lane",
+      "n": 161,
+      "nBothSides": 12388,
+      "favoredBlue": 73,
+      "favoredRed": 88,
+      "favoredWinPct": 49.69,
+      "expectedPct": 49.77,
+      "edgePct": -0.08,
+      "ci95": [
+        42.06,
+        57.33
+      ],
+      "rule": "(a, d) => hasMech(a, \"cleansePeel\") && (d.spellSetup || 0) >= 0.5"
+    },
+    {
+      "label": "pair#41",
+      "idx": 41,
+      "score": 24,
+      "scope": "même lane",
+      "n": 960,
+      "nBothSides": 11589,
+      "favoredBlue": 442,
+      "favoredRed": 518,
+      "favoredWinPct": 49.69,
+      "expectedPct": 49.8,
+      "edgePct": -0.12,
+      "ci95": [
+        46.53,
+        52.85
+      ],
+      "rule": "(a, d) => subOf(a) === \"Assassin\" && [\"Artillery\", \"Burst\"].includes(subOf(d))"
+    },
+    {
+      "label": "pair#1",
+      "idx": 1,
+      "score": 28,
+      "scope": "même lane",
+      "n": 541,
+      "nBothSides": 12008,
+      "favoredBlue": 273,
+      "favoredRed": 268,
+      "favoredWinPct": 49.54,
+      "expectedPct": 50.02,
+      "edgePct": -0.48,
+      "ci95": [
+        45.34,
+        53.74
+      ],
+      "rule": "(a, d) => hasMech(a, \"spellShield\") && (d.engage || 0) >= 0.5 && (d.spellSetup || 0) >= 0.4"
+    },
+    {
+      "label": "pair#40",
+      "idx": 40,
+      "score": 20,
+      "scope": "même lane",
+      "n": 2776,
+      "nBothSides": 9773,
+      "favoredBlue": 1283,
+      "favoredRed": 1493,
+      "favoredWinPct": 49.21,
+      "expectedPct": 49.81,
+      "edgePct": -0.61,
+      "ci95": [
+        47.35,
+        51.07
+      ],
+      "rule": "(a, d) => [\"Juggernaut\", \"Diver\"].includes(subOf(a)) && [\"Vanguard\", \"Warden\"].includes(subOf(d))"
+    },
+    {
+      "label": "pair#7",
+      "idx": 7,
+      "score": 25,
+      "scope": "même lane",
+      "n": 2866,
+      "nBothSides": 9683,
+      "favoredBlue": 1401,
+      "favoredRed": 1465,
+      "favoredWinPct": 48.95,
+      "expectedPct": 49.94,
+      "edgePct": -0.99,
+      "ci95": [
+        47.13,
+        50.78
+      ],
+      "rule": "(a, d) => hasMech(a, \"disengage\") && hasMech(d, \"hardEngage\")"
+    },
+    {
+      "label": "pair#34",
+      "idx": 34,
+      "score": 30,
+      "scope": "même lane",
+      "n": 1734,
+      "nBothSides": 10815,
+      "favoredBlue": 887,
+      "favoredRed": 847,
+      "favoredWinPct": 48.96,
+      "expectedPct": 50.06,
+      "edgePct": -1.09,
+      "ci95": [
+        46.61,
+        51.31
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Trundle\") && (d.tank || 0) >= 0.5"
+    },
+    {
+      "label": "pair#8",
+      "idx": 8,
+      "score": 22,
+      "scope": "même lane",
+      "n": 5370,
+      "nBothSides": 7179,
+      "favoredBlue": 2718,
+      "favoredRed": 2652,
+      "favoredWinPct": 48.9,
+      "expectedPct": 50.03,
+      "edgePct": -1.13,
+      "ci95": [
+        47.57,
+        50.24
+      ],
+      "rule": "(a, d) => (a.tags?.has?.(\"poke\") || hasMech(a, \"siegePoke\")) && (d.tags?.has?.(\"frontline\") || (d.tank || 0) >= 0.5) && (d.scaling"
+    },
+    {
+      "label": "pair#19",
+      "idx": 19,
+      "score": 24,
+      "scope": "même lane",
+      "n": 1917,
+      "nBothSides": 10632,
+      "favoredBlue": 1030,
+      "favoredRed": 887,
+      "favoredWinPct": 49.03,
+      "expectedPct": 50.18,
+      "edgePct": -1.15,
+      "ci95": [
+        46.8,
+        51.27
+      ],
+      "rule": "(a, d) => hasMech(a, \"zoneControl\") && (d.tags?.has?.(\"dive\") || hasMech(d, \"diveAssassin\"))"
+    },
+    {
+      "label": "pair#32",
+      "idx": 32,
+      "score": 28,
+      "scope": "même lane",
+      "n": 16,
+      "nBothSides": 12533,
+      "favoredBlue": 12,
+      "favoredRed": 4,
+      "favoredWinPct": 50,
+      "expectedPct": 51.23,
+      "edgePct": -1.23,
+      "ci95": [
+        28,
+        72
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Séraphine\") && hasMech(d, \"diveAssassin\")"
+    },
+    {
+      "label": "pair#2",
+      "idx": 2,
+      "score": 36,
+      "scope": "même lane",
+      "n": 1993,
+      "nBothSides": 10556,
+      "favoredBlue": 988,
+      "favoredRed": 1005,
+      "favoredWinPct": 48.47,
+      "expectedPct": 49.98,
+      "edgePct": -1.51,
+      "ci95": [
+        46.28,
+        50.66
+      ],
+      "rule": "(a, d) => hasMech(a, \"antiDash\") && (d.tags?.has?.(\"dive\") || hasMech(d, \"diveAssassin\"))"
+    },
+    {
+      "label": "pair#14",
+      "idx": 14,
+      "score": 30,
+      "scope": "même lane",
+      "n": 185,
+      "nBothSides": 12364,
+      "favoredBlue": 94,
+      "favoredRed": 91,
+      "favoredWinPct": 48.11,
+      "expectedPct": 50.04,
+      "edgePct": -1.93,
+      "ci95": [
+        41.02,
+        55.27
+      ],
+      "rule": "(a, d) => hasMech(a, \"windwall\") && (hasMech(d, \"siegePoke\") || d.tags?.has?.(\"poke\"))"
+    },
+    {
+      "label": "pair#5",
+      "idx": 5,
+      "score": 30,
+      "scope": "même lane",
+      "n": 969,
+      "nBothSides": 11580,
+      "favoredBlue": 529,
+      "favoredRed": 440,
+      "favoredWinPct": 47.88,
+      "expectedPct": 50.23,
+      "edgePct": -2.34,
+      "ci95": [
+        44.75,
+        51.03
+      ],
+      "rule": "(a, d) => (a.peel || 0) >= 0.55 && hasMech(d, \"diveAssassin\")"
+    },
+    {
+      "label": "pair#0",
+      "idx": 0,
+      "score": 40,
+      "scope": "même lane",
+      "n": 28,
+      "nBothSides": 12521,
+      "favoredBlue": 8,
+      "favoredRed": 20,
+      "favoredWinPct": 46.43,
+      "expectedPct": 48.94,
+      "edgePct": -2.51,
+      "ci95": [
+        29.53,
+        64.19
+      ],
+      "rule": "(a, d) => hasMech(a, \"spellShield\") && hasMech(d, \"hookCc\")"
+    },
+    {
+      "label": "pair#42",
+      "idx": 42,
+      "score": 20,
+      "scope": "même lane",
+      "n": 48,
+      "nBothSides": 12501,
+      "favoredBlue": 29,
+      "favoredRed": 19,
+      "favoredWinPct": 47.92,
+      "expectedPct": 50.51,
+      "edgePct": -2.6,
+      "ci95": [
+        34.47,
+        61.67
+      ],
+      "rule": "(a, d) => subOf(a) === \"Enchanter\" && subOf(d) === \"Assassin\""
+    },
+    {
+      "label": "pair#29",
+      "idx": 29,
+      "score": 20,
+      "scope": "même lane",
+      "n": 22,
+      "nBothSides": 12527,
+      "favoredBlue": 10,
+      "favoredRed": 12,
+      "favoredWinPct": 45.45,
+      "expectedPct": 49.78,
+      "edgePct": -4.32,
+      "ci95": [
+        26.92,
+        65.34
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Ryze\") && hasMech(d, \"splitPush\")"
+    },
+    {
+      "label": "pair#23",
+      "idx": 23,
+      "score": 20,
+      "scope": "même lane",
+      "n": 540,
+      "nBothSides": 12009,
+      "favoredBlue": 221,
+      "favoredRed": 319,
+      "favoredWinPct": 44.44,
+      "expectedPct": 49.55,
+      "edgePct": -5.11,
+      "ci95": [
+        40.31,
+        48.66
+      ],
+      "rule": "(a, d) => hasMech(a, \"longRangeAdc\") && hasMech(d, \"shortRangeAdc\")"
+    },
+    {
+      "label": "pair#12",
+      "idx": 12,
+      "score": 34,
+      "scope": "même lane",
+      "n": 34,
+      "nBothSides": 12515,
+      "favoredBlue": 15,
+      "favoredRed": 19,
+      "favoredWinPct": 44.12,
+      "expectedPct": 49.71,
+      "edgePct": -5.59,
+      "ci95": [
+        28.88,
+        60.55
+      ],
+      "rule": "(a, d) => hasMech(a, \"diveAssassin\") && hasMech(d, \"immobileCarry\")"
+    },
+    {
+      "label": "pair#18",
+      "idx": 18,
+      "score": 22,
+      "scope": "même lane",
+      "n": 109,
+      "nBothSides": 12440,
+      "favoredBlue": 48,
+      "favoredRed": 61,
+      "favoredWinPct": 44.04,
+      "expectedPct": 49.71,
+      "edgePct": -5.67,
+      "ci95": [
+        35.08,
+        53.4
+      ],
+      "rule": "(a, d) => hasMech(a, \"aoeMage\") && hasMech(d, \"enchanter\")"
+    },
+    {
+      "label": "pair#22",
+      "idx": 22,
+      "score": 26,
+      "scope": "même lane",
+      "n": 86,
+      "nBothSides": 12463,
+      "favoredBlue": 42,
+      "favoredRed": 44,
+      "favoredWinPct": 41.86,
+      "expectedPct": 49.94,
+      "edgePct": -8.08,
+      "ci95": [
+        32,
+        52.42
+      ],
+      "rule": "(a, d) => hasMech(a, \"peelTank\") && hasMech(d, \"diveAssassin\")"
+    },
+    {
+      "label": "pair#27",
+      "idx": 27,
+      "score": 24,
+      "scope": "même lane",
+      "n": 121,
+      "nBothSides": 12428,
+      "favoredBlue": 67,
+      "favoredRed": 54,
+      "favoredWinPct": 39.67,
+      "expectedPct": 50.26,
+      "edgePct": -10.6,
+      "ci95": [
+        31.4,
+        48.57
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Galio\") && (d.burst || 0) >= 0.55 && (d.ap || 0) >= 0.6"
+    },
+    {
+      "label": "pair#15",
+      "idx": 15,
+      "score": 36,
+      "scope": "même lane",
+      "n": 14,
+      "nBothSides": 12535,
+      "favoredBlue": 7,
+      "favoredRed": 7,
+      "favoredWinPct": 35.71,
+      "expectedPct": 50,
+      "edgePct": -14.29,
+      "ci95": [
+        16.34,
+        61.24
+      ],
+      "rule": "(a, d) => hasMech(a, \"interruptChannel\") && hasMech(d, \"channelUlt\")"
+    },
+    {
+      "label": "pair#26",
+      "idx": 26,
+      "score": 30,
+      "scope": "même lane",
+      "n": 15,
+      "nBothSides": 12534,
+      "favoredBlue": 7,
+      "favoredRed": 8,
+      "favoredWinPct": 33.33,
+      "expectedPct": 49.84,
+      "edgePct": -16.5,
+      "ci95": [
+        15.18,
+        58.29
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Galio\") && hasMech(d, \"diveAssassin\")"
+    },
+    {
+      "label": "pair#33",
+      "idx": 33,
+      "score": 22,
+      "scope": "même lane",
+      "n": 1,
+      "nBothSides": 12548,
+      "favoredBlue": 1,
+      "favoredRed": 0,
+      "favoredWinPct": 0,
+      "expectedPct": 52.47,
+      "edgePct": -52.47,
+      "ci95": [
+        0,
+        79.35
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Ashe\") && hasMech(d, \"diveAssassin\")"
+    },
+    {
+      "label": "pair#28",
+      "idx": 28,
+      "score": 22,
+      "scope": "même lane",
+      "n": 0,
+      "nBothSides": 12549,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ],
+      "rule": "(a, d) => norm(a.name) === norm(\"Bard\") && hasMech(d, \"immobileCarry\")"
+    },
+    {
+      "label": "pair#31",
+      "idx": 31,
+      "score": 26,
+      "scope": "même lane",
+      "n": 0,
+      "nBothSides": 12549,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ],
+      "rule": "(a, d) => hasMech(a, \"enchanter\") && norm(d.name) === norm(\"Naafiri\")"
+    }
+  ],
+  "curatedCountersAllPositions": [
+    {
+      "label": "Kassadin > Swain",
+      "attacker": "Kassadin",
+      "defender": "Swain",
+      "reason": "Kassadin scale + MR.",
+      "scope": "toutes positions",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 1,
+      "favoredWinPct": 100,
+      "expectedPct": 47.53,
+      "edgePct": 52.47,
+      "ci95": [
+        20.65,
+        100
+      ]
+    },
+    {
+      "label": "Lee Sin > Elise",
+      "attacker": "Lee Sin",
+      "defender": "Elise",
+      "reason": "Lee Sin early duel vs Elise.",
+      "scope": "toutes positions",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 1,
+      "favoredWinPct": 100,
+      "expectedPct": 50,
+      "edgePct": 50,
+      "ci95": [
+        34.24,
+        100
+      ]
+    },
+    {
+      "label": "Olaf > Skarner",
+      "attacker": "Olaf",
+      "defender": "Skarner",
+      "reason": "Olaf ult ignore suppress.",
+      "scope": "toutes positions",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 1,
+      "favoredWinPct": 100,
+      "expectedPct": 50,
+      "edgePct": 50,
+      "ci95": [
+        34.24,
+        100
+      ]
+    },
+    {
+      "label": "Vayne > Dr. Mundo",
+      "attacker": "Vayne",
+      "defender": "Dr. Mundo",
+      "reason": "Vayne %PV true damage — counter super tanks.",
+      "scope": "toutes positions",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 0,
+      "favoredWinPct": 100,
+      "expectedPct": 52.47,
+      "edgePct": 47.53,
+      "ci95": [
+        20.65,
+        100
+      ]
+    },
+    {
+      "label": "Teemo > Nasus",
+      "attacker": "Teemo",
+      "defender": "Nasus",
+      "reason": "Teemo poke vs Nasus stack.",
+      "scope": "toutes positions",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 0,
+      "favoredWinPct": 100,
+      "expectedPct": 52.47,
+      "edgePct": 47.53,
+      "ci95": [
+        20.65,
+        100
+      ]
+    },
+    {
+      "label": "Vayne > Gnar",
+      "attacker": "Vayne",
+      "defender": "Gnar",
+      "reason": "Vayne %PV vs Mega Gnar.",
+      "scope": "toutes positions",
+      "n": 14,
+      "nBothSides": 0,
+      "favoredBlue": 4,
+      "favoredRed": 10,
+      "favoredWinPct": 71.43,
+      "expectedPct": 48.94,
+      "edgePct": 22.49,
+      "ci95": [
+        45.35,
+        88.28
+      ]
+    },
+    {
+      "label": "Vex > Zed",
+      "attacker": "Vex",
+      "defender": "Zed",
+      "reason": "Vex R follow dash.",
+      "scope": "toutes positions",
+      "n": 7,
+      "nBothSides": 0,
+      "favoredBlue": 4,
+      "favoredRed": 3,
+      "favoredWinPct": 71.43,
+      "expectedPct": 50.35,
+      "edgePct": 21.08,
+      "ci95": [
+        35.89,
+        91.78
+      ]
+    },
+    {
+      "label": "Poppy > Bel'Veth",
+      "attacker": "Poppy",
+      "defender": "Bel'Veth",
+      "reason": "Poppy W vs Bel'Veth dashes.",
+      "scope": "toutes positions",
+      "n": 10,
+      "nBothSides": 0,
+      "favoredBlue": 3,
+      "favoredRed": 7,
+      "favoredWinPct": 70,
+      "expectedPct": 49.01,
+      "edgePct": 20.99,
+      "ci95": [
+        39.68,
+        89.22
+      ]
+    },
+    {
+      "label": "Nocturne > Twisted Fate",
+      "attacker": "Nocturne",
+      "defender": "Twisted Fate",
+      "reason": "Nocturne R deny TF R vision.",
+      "scope": "toutes positions",
+      "n": 7,
+      "nBothSides": 0,
+      "favoredBlue": 5,
+      "favoredRed": 2,
+      "favoredWinPct": 71.43,
+      "expectedPct": 51.06,
+      "edgePct": 20.37,
+      "ci95": [
+        35.89,
+        91.78
+      ]
+    },
+    {
+      "label": "Leona > Séraphine",
+      "attacker": "Leona",
+      "defender": "Séraphine",
+      "reason": "Leona gap close vs enchanter immobile.",
+      "scope": "toutes positions",
+      "n": 31,
+      "nBothSides": 0,
+      "favoredBlue": 21,
+      "favoredRed": 10,
+      "favoredWinPct": 61.29,
+      "expectedPct": 50.88,
+      "edgePct": 10.42,
+      "ci95": [
+        43.82,
+        76.27
+      ]
+    },
+    {
+      "label": "Ryze > Trundle",
+      "attacker": "Ryze",
+      "defender": "Trundle",
+      "reason": "Ryze group TP > Trundle split isolé.",
+      "scope": "toutes positions",
+      "n": 83,
+      "nBothSides": 0,
+      "favoredBlue": 43,
+      "favoredRed": 40,
+      "favoredWinPct": 59.04,
+      "expectedPct": 50.09,
+      "edgePct": 8.95,
+      "ci95": [
+        48.29,
+        68.99
+      ]
+    },
+    {
+      "label": "Poppy > Camille",
+      "attacker": "Poppy",
+      "defender": "Camille",
+      "reason": "Poppy W anti-dash — counter Camille.",
+      "scope": "toutes positions",
+      "n": 48,
+      "nBothSides": 0,
+      "favoredBlue": 21,
+      "favoredRed": 27,
+      "favoredWinPct": 58.33,
+      "expectedPct": 49.69,
+      "edgePct": 8.64,
+      "ci95": [
+        44.28,
+        71.15
+      ]
+    },
+    {
+      "label": "Olaf > Sejuani",
+      "attacker": "Olaf",
+      "defender": "Sejuani",
+      "reason": "Olaf ult ignore CC.",
+      "scope": "toutes positions",
+      "n": 40,
+      "nBothSides": 0,
+      "favoredBlue": 16,
+      "favoredRed": 24,
+      "favoredWinPct": 57.5,
+      "expectedPct": 49.51,
+      "edgePct": 7.99,
+      "ci95": [
+        42.19,
+        71.49
+      ]
+    },
+    {
+      "label": "Leona > Bard",
+      "attacker": "Leona",
+      "defender": "Bard",
+      "reason": "Leona all-in vs Bard roam immobile.",
+      "scope": "toutes positions",
+      "n": 7,
+      "nBothSides": 0,
+      "favoredBlue": 4,
+      "favoredRed": 3,
+      "favoredWinPct": 57.14,
+      "expectedPct": 50.35,
+      "edgePct": 6.79,
+      "ci95": [
+        25.05,
+        84.18
+      ]
+    },
+    {
+      "label": "Nautilus > Lucian",
+      "attacker": "Nautilus",
+      "defender": "Lucian",
+      "reason": "Nautilus point CC vs Lucian dash.",
+      "scope": "toutes positions",
+      "n": 269,
+      "nBothSides": 0,
+      "favoredBlue": 104,
+      "favoredRed": 165,
+      "favoredWinPct": 55.76,
+      "expectedPct": 49.44,
+      "edgePct": 6.32,
+      "ci95": [
+        49.79,
+        61.57
+      ]
+    },
+    {
+      "label": "Nocturne > Caitlyn",
+      "attacker": "Nocturne",
+      "defender": "Caitlyn",
+      "reason": "Nocturne bypass traps.",
+      "scope": "toutes positions",
+      "n": 11,
+      "nBothSides": 0,
+      "favoredBlue": 4,
+      "favoredRed": 7,
+      "favoredWinPct": 54.55,
+      "expectedPct": 49.33,
+      "edgePct": 5.22,
+      "ci95": [
+        28.01,
+        78.73
+      ]
+    },
+    {
+      "label": "Nocturne > Jinx",
+      "attacker": "Nocturne",
+      "defender": "Jinx",
+      "reason": "Nocturne dive immobile ADC.",
+      "scope": "toutes positions",
+      "n": 35,
+      "nBothSides": 0,
+      "favoredBlue": 17,
+      "favoredRed": 18,
+      "favoredWinPct": 54.29,
+      "expectedPct": 49.93,
+      "edgePct": 4.36,
+      "ci95": [
+        38.19,
+        69.53
+      ]
+    },
+    {
+      "label": "Poppy > Nilah",
+      "attacker": "Poppy",
+      "defender": "Nilah",
+      "reason": "Poppy W vs Nilah dash.",
+      "scope": "toutes positions",
+      "n": 11,
+      "nBothSides": 0,
+      "favoredBlue": 6,
+      "favoredRed": 5,
+      "favoredWinPct": 54.55,
+      "expectedPct": 50.22,
+      "edgePct": 4.32,
+      "ci95": [
+        28.01,
+        78.73
+      ]
+    },
+    {
+      "label": "Nocturne > Ashe",
+      "attacker": "Nocturne",
+      "defender": "Ashe",
+      "reason": "Nocturne gap close vs immobile ADC.",
+      "scope": "toutes positions",
+      "n": 9,
+      "nBothSides": 0,
+      "favoredBlue": 7,
+      "favoredRed": 2,
+      "favoredWinPct": 55.56,
+      "expectedPct": 51.37,
+      "edgePct": 4.19,
+      "ci95": [
+        26.66,
+        81.12
+      ]
+    },
+    {
+      "label": "Morgana > Leona",
+      "attacker": "Morgana",
+      "defender": "Leona",
+      "reason": "Black shield vs all-in CC.",
+      "scope": "toutes positions",
+      "n": 11,
+      "nBothSides": 0,
+      "favoredBlue": 7,
+      "favoredRed": 4,
+      "favoredWinPct": 54.55,
+      "expectedPct": 50.67,
+      "edgePct": 3.87,
+      "ci95": [
+        28.01,
+        78.73
+      ]
+    },
+    {
+      "label": "Nocturne > Aphelios",
+      "attacker": "Nocturne",
+      "defender": "Aphelios",
+      "reason": "Nocturne dive immobile ADC.",
+      "scope": "toutes positions",
+      "n": 48,
+      "nBothSides": 0,
+      "favoredBlue": 31,
+      "favoredRed": 17,
+      "favoredWinPct": 54.17,
+      "expectedPct": 50.72,
+      "edgePct": 3.45,
+      "ci95": [
+        40.29,
+        67.42
+      ]
+    },
+    {
+      "label": "Galio > Akali",
+      "attacker": "Galio",
+      "defender": "Akali",
+      "reason": "Galio MR + taunt vs AP assassin.",
+      "scope": "toutes positions",
+      "n": 34,
+      "nBothSides": 0,
+      "favoredBlue": 15,
+      "favoredRed": 19,
+      "favoredWinPct": 52.94,
+      "expectedPct": 49.71,
+      "edgePct": 3.23,
+      "ci95": [
+        36.74,
+        68.55
+      ]
+    },
+    {
+      "label": "Trundle > Sejuani",
+      "attacker": "Trundle",
+      "defender": "Sejuani",
+      "reason": "Trundle duel et steal stats en TF.",
+      "scope": "toutes positions",
+      "n": 201,
+      "nBothSides": 0,
+      "favoredBlue": 88,
+      "favoredRed": 113,
+      "favoredWinPct": 51.74,
+      "expectedPct": 49.69,
+      "edgePct": 2.05,
+      "ci95": [
+        44.87,
+        58.55
+      ]
+    },
+    {
+      "label": "Gwen > Aatrox",
+      "attacker": "Gwen",
+      "defender": "Aatrox",
+      "reason": "Gwen anti-heal + dodge Aatrox Q.",
+      "scope": "toutes positions",
+      "n": 62,
+      "nBothSides": 0,
+      "favoredBlue": 33,
+      "favoredRed": 29,
+      "favoredWinPct": 51.61,
+      "expectedPct": 50.16,
+      "edgePct": 1.45,
+      "ci95": [
+        39.45,
+        63.59
+      ]
+    },
+    {
+      "label": "Syndra > Heimerdinger",
+      "attacker": "Syndra",
+      "defender": "Heimerdinger",
+      "reason": "Syndra burst turrets + Heimer.",
+      "scope": "toutes positions",
+      "n": 4,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 3,
+      "favoredWinPct": 50,
+      "expectedPct": 48.77,
+      "edgePct": 1.23,
+      "ci95": [
+        15,
+        85
+      ]
+    },
+    {
+      "label": "Vayne > Sett",
+      "attacker": "Vayne",
+      "defender": "Sett",
+      "reason": "Vayne kiting vs Sett W.",
+      "scope": "toutes positions",
+      "n": 6,
+      "nBothSides": 0,
+      "favoredBlue": 2,
+      "favoredRed": 4,
+      "favoredWinPct": 50,
+      "expectedPct": 49.18,
+      "edgePct": 0.82,
+      "ci95": [
+        18.76,
+        81.24
+      ]
+    },
+    {
+      "label": "Poppy > Hecarim",
+      "attacker": "Poppy",
+      "defender": "Hecarim",
+      "reason": "Poppy W stop Hecarim E.",
+      "scope": "toutes positions",
+      "n": 22,
+      "nBothSides": 0,
+      "favoredBlue": 9,
+      "favoredRed": 13,
+      "favoredWinPct": 50,
+      "expectedPct": 49.55,
+      "edgePct": 0.45,
+      "ci95": [
+        30.72,
+        69.28
+      ]
+    },
+    {
+      "label": "Cassiopeia > Azir",
+      "attacker": "Cassiopeia",
+      "defender": "Azir",
+      "reason": "Cassiopeia DPS sustain vs Azir immobile.",
+      "scope": "toutes positions",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 1,
+      "favoredWinPct": 50,
+      "expectedPct": 50,
+      "edgePct": 0,
+      "ci95": [
+        9.45,
+        90.55
+      ]
+    },
+    {
+      "label": "Brand > Soraka",
+      "attacker": "Brand",
+      "defender": "Soraka",
+      "reason": "Brand AOE heal break.",
+      "scope": "toutes positions",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 1,
+      "favoredWinPct": 50,
+      "expectedPct": 50,
+      "edgePct": 0,
+      "ci95": [
+        9.45,
+        90.55
+      ]
+    },
+    {
+      "label": "Kassadin > Ryze",
+      "attacker": "Kassadin",
+      "defender": "Ryze",
+      "reason": "Kassadin R chase Ryze.",
+      "scope": "toutes positions",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 1,
+      "favoredWinPct": 50,
+      "expectedPct": 50,
+      "edgePct": 0,
+      "ci95": [
+        9.45,
+        90.55
+      ]
+    },
+    {
+      "label": "Poppy > Zeri",
+      "attacker": "Poppy",
+      "defender": "Zeri",
+      "reason": "Poppy W vs Zeri wall dash.",
+      "scope": "toutes positions",
+      "n": 154,
+      "nBothSides": 0,
+      "favoredBlue": 75,
+      "favoredRed": 79,
+      "favoredWinPct": 49.35,
+      "expectedPct": 49.94,
+      "edgePct": -0.59,
+      "ci95": [
+        41.57,
+        57.17
+      ]
+    },
+    {
+      "label": "Trundle > Ornn",
+      "attacker": "Trundle",
+      "defender": "Ornn",
+      "reason": "Trundle R steal stats — counter classique des tanks.",
+      "scope": "toutes positions",
+      "n": 133,
+      "nBothSides": 0,
+      "favoredBlue": 71,
+      "favoredRed": 62,
+      "favoredWinPct": 48.87,
+      "expectedPct": 50.17,
+      "edgePct": -1.29,
+      "ci95": [
+        40.53,
+        57.28
+      ]
+    },
+    {
+      "label": "Syndra > Orianna",
+      "attacker": "Syndra",
+      "defender": "Orianna",
+      "reason": "Syndra burst vs Orianna immobile.",
+      "scope": "toutes positions",
+      "n": 55,
+      "nBothSides": 0,
+      "favoredBlue": 23,
+      "favoredRed": 32,
+      "favoredWinPct": 47.27,
+      "expectedPct": 49.6,
+      "edgePct": -2.32,
+      "ci95": [
+        34.69,
+        60.21
+      ]
+    },
+    {
+      "label": "Morgana > Thresh",
+      "attacker": "Morgana",
+      "defender": "Thresh",
+      "reason": "Black shield vs hook — counter bot historique.",
+      "scope": "toutes positions",
+      "n": 9,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 8,
+      "favoredWinPct": 44.44,
+      "expectedPct": 48.08,
+      "edgePct": -3.64,
+      "ci95": [
+        18.88,
+        73.34
+      ]
+    },
+    {
+      "label": "Lulu > Pyke",
+      "attacker": "Lulu",
+      "defender": "Pyke",
+      "reason": "Lulu peel vs Pyke execute.",
+      "scope": "toutes positions",
+      "n": 17,
+      "nBothSides": 0,
+      "favoredBlue": 13,
+      "favoredRed": 4,
+      "favoredWinPct": 47.06,
+      "expectedPct": 51.31,
+      "edgePct": -4.25,
+      "ci95": [
+        26.16,
+        69.04
+      ]
+    },
+    {
+      "label": "Caitlyn > Ashe",
+      "attacker": "Caitlyn",
+      "defender": "Ashe",
+      "reason": "Caitlyn range/traps > Ashe immobile.",
+      "scope": "toutes positions",
+      "n": 20,
+      "nBothSides": 0,
+      "favoredBlue": 10,
+      "favoredRed": 10,
+      "favoredWinPct": 45,
+      "expectedPct": 50,
+      "edgePct": -5,
+      "ci95": [
+        25.82,
+        65.79
+      ]
+    },
+    {
+      "label": "Blitzcrank > Renata Glasc",
+      "attacker": "Blitzcrank",
+      "defender": "Renata Glasc",
+      "reason": "Hook catch immobile support.",
+      "scope": "toutes positions",
+      "n": 34,
+      "nBothSides": 0,
+      "favoredBlue": 12,
+      "favoredRed": 22,
+      "favoredWinPct": 44.12,
+      "expectedPct": 49.27,
+      "edgePct": -5.16,
+      "ci95": [
+        28.88,
+        60.55
+      ]
+    },
+    {
+      "label": "Morgana > Nautilus",
+      "attacker": "Morgana",
+      "defender": "Nautilus",
+      "reason": "Black shield vs CC chain.",
+      "scope": "toutes positions",
+      "n": 21,
+      "nBothSides": 0,
+      "favoredBlue": 7,
+      "favoredRed": 14,
+      "favoredWinPct": 42.86,
+      "expectedPct": 49.18,
+      "edgePct": -6.32,
+      "ci95": [
+        24.47,
+        63.45
+      ]
+    },
+    {
+      "label": "Poppy > Jarvan IV",
+      "attacker": "Poppy",
+      "defender": "Jarvan IV",
+      "reason": "Poppy W stop E-Q dash.",
+      "scope": "toutes positions",
+      "n": 69,
+      "nBothSides": 0,
+      "favoredBlue": 38,
+      "favoredRed": 31,
+      "favoredWinPct": 43.48,
+      "expectedPct": 50.25,
+      "edgePct": -6.77,
+      "ci95": [
+        32.43,
+        55.21
+      ]
+    },
+    {
+      "label": "Olaf > Amumu",
+      "attacker": "Olaf",
+      "defender": "Amumu",
+      "reason": "Olaf ult ignore Amumu R.",
+      "scope": "toutes positions",
+      "n": 14,
+      "nBothSides": 0,
+      "favoredBlue": 7,
+      "favoredRed": 7,
+      "favoredWinPct": 42.86,
+      "expectedPct": 50,
+      "edgePct": -7.14,
+      "ci95": [
+        21.38,
+        67.41
+      ]
+    },
+    {
+      "label": "Trundle > Galio",
+      "attacker": "Trundle",
+      "defender": "Galio",
+      "reason": "Trundle R shred > Galio tank.",
+      "scope": "toutes positions",
+      "n": 29,
+      "nBothSides": 0,
+      "favoredBlue": 13,
+      "favoredRed": 16,
+      "favoredWinPct": 41.38,
+      "expectedPct": 49.74,
+      "edgePct": -8.37,
+      "ci95": [
+        25.51,
+        59.26
+      ]
+    },
+    {
+      "label": "Nautilus > Kalista",
+      "attacker": "Nautilus",
+      "defender": "Kalista",
+      "reason": "Nautilus CC stop Kalista hop.",
+      "scope": "toutes positions",
+      "n": 127,
+      "nBothSides": 0,
+      "favoredBlue": 55,
+      "favoredRed": 72,
+      "favoredWinPct": 40.16,
+      "expectedPct": 49.67,
+      "edgePct": -9.51,
+      "ci95": [
+        32.04,
+        48.85
+      ]
+    },
+    {
+      "label": "Vex > Yone",
+      "attacker": "Vex",
+      "defender": "Yone",
+      "reason": "Vex anti-dash vs Yone.",
+      "scope": "toutes positions",
+      "n": 16,
+      "nBothSides": 0,
+      "favoredBlue": 9,
+      "favoredRed": 7,
+      "favoredWinPct": 37.5,
+      "expectedPct": 50.31,
+      "edgePct": -12.81,
+      "ci95": [
+        18.48,
+        61.36
+      ]
+    },
+    {
+      "label": "Gwen > Soraka",
+      "attacker": "Gwen",
+      "defender": "Soraka",
+      "reason": "Gwen anti-heal vs Soraka.",
+      "scope": "toutes positions",
+      "n": 16,
+      "nBothSides": 0,
+      "favoredBlue": 12,
+      "favoredRed": 4,
+      "favoredWinPct": 37.5,
+      "expectedPct": 51.23,
+      "edgePct": -13.73,
+      "ci95": [
+        18.48,
+        61.36
+      ]
+    },
+    {
+      "label": "Trundle > Malphite",
+      "attacker": "Trundle",
+      "defender": "Malphite",
+      "reason": "Trundle R vs armor stack.",
+      "scope": "toutes positions",
+      "n": 11,
+      "nBothSides": 0,
+      "favoredBlue": 8,
+      "favoredRed": 3,
+      "favoredWinPct": 36.36,
+      "expectedPct": 51.12,
+      "edgePct": -14.76,
+      "ci95": [
+        15.17,
+        64.62
+      ]
+    },
+    {
+      "label": "Vex > Yasuo",
+      "attacker": "Vex",
+      "defender": "Yasuo",
+      "reason": "Vex anti-dash — counter reconnu Yasuo.",
+      "scope": "toutes positions",
+      "n": 21,
+      "nBothSides": 0,
+      "favoredBlue": 6,
+      "favoredRed": 15,
+      "favoredWinPct": 33.33,
+      "expectedPct": 48.94,
+      "edgePct": -15.61,
+      "ci95": [
+        17.19,
+        54.63
+      ]
+    },
+    {
+      "label": "Poppy > Samira",
+      "attacker": "Poppy",
+      "defender": "Samira",
+      "reason": "Poppy W stop Samira dash combo.",
+      "scope": "toutes positions",
+      "n": 6,
+      "nBothSides": 0,
+      "favoredBlue": 2,
+      "favoredRed": 4,
+      "favoredWinPct": 33.33,
+      "expectedPct": 49.18,
+      "edgePct": -15.84,
+      "ci95": [
+        9.68,
+        70
+      ]
+    },
+    {
+      "label": "Yasuo > Varus",
+      "attacker": "Yasuo",
+      "defender": "Varus",
+      "reason": "Yasuo windwall vs Varus Q.",
+      "scope": "toutes positions",
+      "n": 8,
+      "nBothSides": 0,
+      "favoredBlue": 4,
+      "favoredRed": 4,
+      "favoredWinPct": 12.5,
+      "expectedPct": 50,
+      "edgePct": -37.5,
+      "ci95": [
+        2.24,
+        47.09
+      ]
+    },
+    {
+      "label": "Zed > Syndra",
+      "attacker": "Zed",
+      "defender": "Syndra",
+      "reason": "Zed outplay et burst vs mage immobile.",
+      "scope": "toutes positions",
+      "n": 4,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 3,
+      "favoredWinPct": 0,
+      "expectedPct": 48.77,
+      "edgePct": -48.77,
+      "ci95": [
+        0,
+        48.99
+      ]
+    },
+    {
+      "label": "Morgana > Blitzcrank",
+      "attacker": "Morgana",
+      "defender": "Blitzcrank",
+      "reason": "Black shield vs hook.",
+      "scope": "toutes positions",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 0,
+      "favoredWinPct": 0,
+      "expectedPct": 52.47,
+      "edgePct": -52.47,
+      "ci95": [
+        0,
+        79.35
+      ]
+    },
+    {
+      "label": "Fizz > Lux",
+      "attacker": "Fizz",
+      "defender": "Lux",
+      "reason": "Fizz E dodge + burst — counter mage immobile.",
+      "scope": "toutes positions",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 0,
+      "favoredWinPct": 0,
+      "expectedPct": 52.47,
+      "edgePct": -52.47,
+      "ci95": [
+        0,
+        79.35
+      ]
+    },
+    {
+      "label": "Poppy > Naafiri",
+      "attacker": "Poppy",
+      "defender": "Naafiri",
+      "reason": "Poppy W vs Naafiri dash.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Fizz > Xerath",
+      "attacker": "Fizz",
+      "defender": "Xerath",
+      "reason": "Fizz gap close vs poke immobile.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Galio > Katarina",
+      "attacker": "Galio",
+      "defender": "Katarina",
+      "reason": "Galio MR + interrupt channel.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Rammus > Maître Yi",
+      "attacker": "Rammus",
+      "defender": "Maître Yi",
+      "reason": "Rammus W reflect vs auto-attack.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Malzahar > Zed",
+      "attacker": "Malzahar",
+      "defender": "Zed",
+      "reason": "Malzahar R suppress + passive shield.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Quinn > Darius",
+      "attacker": "Quinn",
+      "defender": "Darius",
+      "reason": "Quinn kiting — counter classique Darius.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Leona > Milio",
+      "attacker": "Leona",
+      "defender": "Milio",
+      "reason": "Leona all-in before Milio cleanse timing.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Poppy > Ambessa",
+      "attacker": "Poppy",
+      "defender": "Ambessa",
+      "reason": "Poppy W anti-dash fighter.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Nocturne > Smolder",
+      "attacker": "Nocturne",
+      "defender": "Smolder",
+      "reason": "Nocturne dive before Smolder scale.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Zed > Hwei",
+      "attacker": "Zed",
+      "defender": "Hwei",
+      "reason": "Zed gap close vs immobile mage.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Brand > Yuumi",
+      "attacker": "Brand",
+      "defender": "Yuumi",
+      "reason": "Brand AOE vs Yuumi attach heal.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Vayne > Illaoi",
+      "attacker": "Vayne",
+      "defender": "Illaoi",
+      "reason": "Vayne %PV vs tentacles tank.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Poppy > Briar",
+      "attacker": "Poppy",
+      "defender": "Briar",
+      "reason": "Poppy W vs Briar dash.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Zed > Mel",
+      "attacker": "Zed",
+      "defender": "Mel",
+      "reason": "Zed bypass reflect avec R timing.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Malphite > Rumble",
+      "attacker": "Malphite",
+      "defender": "Rumble",
+      "reason": "Malphite armor + zone vs AP bruiser.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Ashe > Naafiri",
+      "attacker": "Ashe",
+      "defender": "Naafiri",
+      "reason": "Ashe peel ult > Naafiri dive.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Séraphine > Naafiri",
+      "attacker": "Séraphine",
+      "defender": "Naafiri",
+      "reason": "Séraphine peel > Naafiri dive.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    },
+    {
+      "label": "Cassiopeia > Naafiri",
+      "attacker": "Cassiopeia",
+      "defender": "Naafiri",
+      "reason": "Cassiopeia W > Naafiri dash.",
+      "scope": "toutes positions",
+      "n": 0,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 0,
+      "favoredWinPct": null,
+      "expectedPct": null,
+      "edgePct": null,
+      "ci95": [
+        null,
+        null
+      ]
+    }
+  ],
+  "curatedCountersSameLane": [
+    {
+      "label": "Nautilus > Lucian",
+      "attacker": "Nautilus",
+      "defender": "Lucian",
+      "reason": "Nautilus point CC vs Lucian dash.",
+      "scope": "même lane",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 1,
+      "favoredWinPct": 100,
+      "expectedPct": 47.53,
+      "edgePct": 52.47,
+      "ci95": [
+        20.65,
+        100
+      ]
+    },
+    {
+      "label": "Poppy > Zeri",
+      "attacker": "Poppy",
+      "defender": "Zeri",
+      "reason": "Poppy W vs Zeri wall dash.",
+      "scope": "même lane",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 1,
+      "favoredWinPct": 100,
+      "expectedPct": 47.53,
+      "edgePct": 52.47,
+      "ci95": [
+        20.65,
+        100
+      ]
+    },
+    {
+      "label": "Kassadin > Swain",
+      "attacker": "Kassadin",
+      "defender": "Swain",
+      "reason": "Kassadin scale + MR.",
+      "scope": "même lane",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 1,
+      "favoredWinPct": 100,
+      "expectedPct": 47.53,
+      "edgePct": 52.47,
+      "ci95": [
+        20.65,
+        100
+      ]
+    },
+    {
+      "label": "Lee Sin > Elise",
+      "attacker": "Lee Sin",
+      "defender": "Elise",
+      "reason": "Lee Sin early duel vs Elise.",
+      "scope": "même lane",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 1,
+      "favoredWinPct": 100,
+      "expectedPct": 47.53,
+      "edgePct": 52.47,
+      "ci95": [
+        20.65,
+        100
+      ]
+    },
+    {
+      "label": "Olaf > Skarner",
+      "attacker": "Olaf",
+      "defender": "Skarner",
+      "reason": "Olaf ult ignore suppress.",
+      "scope": "même lane",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 1,
+      "favoredWinPct": 100,
+      "expectedPct": 47.53,
+      "edgePct": 52.47,
+      "ci95": [
+        20.65,
+        100
+      ]
+    },
+    {
+      "label": "Vex > Zed",
+      "attacker": "Vex",
+      "defender": "Zed",
+      "reason": "Vex R follow dash.",
+      "scope": "même lane",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 1,
+      "favoredWinPct": 100,
+      "expectedPct": 50,
+      "edgePct": 50,
+      "ci95": [
+        34.24,
+        100
+      ]
+    },
+    {
+      "label": "Teemo > Nasus",
+      "attacker": "Teemo",
+      "defender": "Nasus",
+      "reason": "Teemo poke vs Nasus stack.",
+      "scope": "même lane",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 0,
+      "favoredWinPct": 100,
+      "expectedPct": 52.47,
+      "edgePct": 47.53,
+      "ci95": [
+        20.65,
+        100
+      ]
+    },
+    {
+      "label": "Poppy > Camille",
+      "attacker": "Poppy",
+      "defender": "Camille",
+      "reason": "Poppy W anti-dash — counter Camille.",
+      "scope": "même lane",
+      "n": 11,
+      "nBothSides": 0,
+      "favoredBlue": 4,
+      "favoredRed": 7,
+      "favoredWinPct": 72.73,
+      "expectedPct": 49.33,
+      "edgePct": 23.4,
+      "ci95": [
+        43.43,
+        90.25
+      ]
+    },
+    {
+      "label": "Poppy > Bel'Veth",
+      "attacker": "Poppy",
+      "defender": "Bel'Veth",
+      "reason": "Poppy W vs Bel'Veth dashes.",
+      "scope": "même lane",
+      "n": 10,
+      "nBothSides": 0,
+      "favoredBlue": 3,
+      "favoredRed": 7,
+      "favoredWinPct": 70,
+      "expectedPct": 49.01,
+      "edgePct": 20.99,
+      "ci95": [
+        39.68,
+        89.22
+      ]
+    },
+    {
+      "label": "Olaf > Sejuani",
+      "attacker": "Olaf",
+      "defender": "Sejuani",
+      "reason": "Olaf ult ignore CC.",
+      "scope": "même lane",
+      "n": 22,
+      "nBothSides": 0,
+      "favoredBlue": 7,
+      "favoredRed": 15,
+      "favoredWinPct": 68.18,
+      "expectedPct": 49.1,
+      "edgePct": 19.08,
+      "ci95": [
+        47.32,
+        83.64
+      ]
+    },
+    {
+      "label": "Leona > Séraphine",
+      "attacker": "Leona",
+      "defender": "Séraphine",
+      "reason": "Leona gap close vs enchanter immobile.",
+      "scope": "même lane",
+      "n": 3,
+      "nBothSides": 0,
+      "favoredBlue": 2,
+      "favoredRed": 1,
+      "favoredWinPct": 66.67,
+      "expectedPct": 50.82,
+      "edgePct": 15.84,
+      "ci95": [
+        20.77,
+        93.85
+      ]
+    },
+    {
+      "label": "Leona > Bard",
+      "attacker": "Leona",
+      "defender": "Bard",
+      "reason": "Leona all-in vs Bard roam immobile.",
+      "scope": "même lane",
+      "n": 6,
+      "nBothSides": 0,
+      "favoredBlue": 4,
+      "favoredRed": 2,
+      "favoredWinPct": 66.67,
+      "expectedPct": 50.82,
+      "edgePct": 15.84,
+      "ci95": [
+        30,
+        90.32
+      ]
+    },
+    {
+      "label": "Gwen > Aatrox",
+      "attacker": "Gwen",
+      "defender": "Aatrox",
+      "reason": "Gwen anti-heal + dodge Aatrox Q.",
+      "scope": "même lane",
+      "n": 52,
+      "nBothSides": 0,
+      "favoredBlue": 25,
+      "favoredRed": 27,
+      "favoredWinPct": 57.69,
+      "expectedPct": 49.91,
+      "edgePct": 7.79,
+      "ci95": [
+        44.19,
+        70.13
+      ]
+    },
+    {
+      "label": "Trundle > Ornn",
+      "attacker": "Trundle",
+      "defender": "Ornn",
+      "reason": "Trundle R steal stats — counter classique des tanks.",
+      "scope": "même lane",
+      "n": 9,
+      "nBothSides": 0,
+      "favoredBlue": 2,
+      "favoredRed": 7,
+      "favoredWinPct": 55.56,
+      "expectedPct": 48.63,
+      "edgePct": 6.93,
+      "ci95": [
+        26.66,
+        81.12
+      ]
+    },
+    {
+      "label": "Morgana > Leona",
+      "attacker": "Morgana",
+      "defender": "Leona",
+      "reason": "Black shield vs all-in CC.",
+      "scope": "même lane",
+      "n": 11,
+      "nBothSides": 0,
+      "favoredBlue": 7,
+      "favoredRed": 4,
+      "favoredWinPct": 54.55,
+      "expectedPct": 50.67,
+      "edgePct": 3.87,
+      "ci95": [
+        28.01,
+        78.73
+      ]
+    },
+    {
+      "label": "Morgana > Thresh",
+      "attacker": "Morgana",
+      "defender": "Thresh",
+      "reason": "Black shield vs hook — counter bot historique.",
+      "scope": "même lane",
+      "n": 8,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 8,
+      "favoredWinPct": 50,
+      "expectedPct": 47.53,
+      "edgePct": 2.47,
+      "ci95": [
+        21.52,
+        78.48
+      ]
+    },
+    {
+      "label": "Syndra > Heimerdinger",
+      "attacker": "Syndra",
+      "defender": "Heimerdinger",
+      "reason": "Syndra burst turrets + Heimer.",
+      "scope": "même lane",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 2,
+      "favoredWinPct": 50,
+      "expectedPct": 47.53,
+      "edgePct": 2.47,
+      "ci95": [
+        9.45,
+        90.55
+      ]
+    },
+    {
+      "label": "Vayne > Sett",
+      "attacker": "Vayne",
+      "defender": "Sett",
+      "reason": "Vayne kiting vs Sett W.",
+      "scope": "même lane",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 2,
+      "favoredWinPct": 50,
+      "expectedPct": 47.53,
+      "edgePct": 2.47,
+      "ci95": [
+        9.45,
+        90.55
+      ]
+    },
+    {
+      "label": "Vayne > Gnar",
+      "attacker": "Vayne",
+      "defender": "Gnar",
+      "reason": "Vayne %PV vs Mega Gnar.",
+      "scope": "même lane",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 2,
+      "favoredWinPct": 50,
+      "expectedPct": 47.53,
+      "edgePct": 2.47,
+      "ci95": [
+        9.45,
+        90.55
+      ]
+    },
+    {
+      "label": "Caitlyn > Ashe",
+      "attacker": "Caitlyn",
+      "defender": "Ashe",
+      "reason": "Caitlyn range/traps > Ashe immobile.",
+      "scope": "même lane",
+      "n": 16,
+      "nBothSides": 0,
+      "favoredBlue": 6,
+      "favoredRed": 10,
+      "favoredWinPct": 50,
+      "expectedPct": 49.38,
+      "edgePct": 0.62,
+      "ci95": [
+        28,
+        72
+      ]
+    },
+    {
+      "label": "Cassiopeia > Azir",
+      "attacker": "Cassiopeia",
+      "defender": "Azir",
+      "reason": "Cassiopeia DPS sustain vs Azir immobile.",
+      "scope": "même lane",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 1,
+      "favoredWinPct": 50,
+      "expectedPct": 50,
+      "edgePct": 0,
+      "ci95": [
+        9.45,
+        90.55
+      ]
+    },
+    {
+      "label": "Brand > Soraka",
+      "attacker": "Brand",
+      "defender": "Soraka",
+      "reason": "Brand AOE heal break.",
+      "scope": "même lane",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 1,
+      "favoredWinPct": 50,
+      "expectedPct": 50,
+      "edgePct": 0,
+      "ci95": [
+        9.45,
+        90.55
+      ]
+    },
+    {
+      "label": "Kassadin > Ryze",
+      "attacker": "Kassadin",
+      "defender": "Ryze",
+      "reason": "Kassadin R chase Ryze.",
+      "scope": "même lane",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 1,
+      "favoredWinPct": 50,
+      "expectedPct": 50,
+      "edgePct": 0,
+      "ci95": [
+        9.45,
+        90.55
+      ]
+    },
+    {
+      "label": "Trundle > Sejuani",
+      "attacker": "Trundle",
+      "defender": "Sejuani",
+      "reason": "Trundle duel et steal stats en TF.",
+      "scope": "même lane",
+      "n": 70,
+      "nBothSides": 0,
+      "favoredBlue": 28,
+      "favoredRed": 42,
+      "favoredWinPct": 48.57,
+      "expectedPct": 49.51,
+      "edgePct": -0.94,
+      "ci95": [
+        37.25,
+        60.05
+      ]
+    },
+    {
+      "label": "Poppy > Hecarim",
+      "attacker": "Poppy",
+      "defender": "Hecarim",
+      "reason": "Poppy W stop Hecarim E.",
+      "scope": "même lane",
+      "n": 15,
+      "nBothSides": 0,
+      "favoredBlue": 6,
+      "favoredRed": 9,
+      "favoredWinPct": 46.67,
+      "expectedPct": 49.51,
+      "edgePct": -2.84,
+      "ci95": [
+        24.81,
+        69.88
+      ]
+    },
+    {
+      "label": "Poppy > Jarvan IV",
+      "attacker": "Poppy",
+      "defender": "Jarvan IV",
+      "reason": "Poppy W stop E-Q dash.",
+      "scope": "même lane",
+      "n": 56,
+      "nBothSides": 0,
+      "favoredBlue": 30,
+      "favoredRed": 26,
+      "favoredWinPct": 46.43,
+      "expectedPct": 50.18,
+      "edgePct": -3.75,
+      "ci95": [
+        34.02,
+        59.3
+      ]
+    },
+    {
+      "label": "Blitzcrank > Renata Glasc",
+      "attacker": "Blitzcrank",
+      "defender": "Renata Glasc",
+      "reason": "Hook catch immobile support.",
+      "scope": "même lane",
+      "n": 33,
+      "nBothSides": 0,
+      "favoredBlue": 12,
+      "favoredRed": 21,
+      "favoredWinPct": 45.45,
+      "expectedPct": 49.33,
+      "edgePct": -3.87,
+      "ci95": [
+        29.84,
+        62.01
+      ]
+    },
+    {
+      "label": "Lulu > Pyke",
+      "attacker": "Lulu",
+      "defender": "Pyke",
+      "reason": "Lulu peel vs Pyke execute.",
+      "scope": "même lane",
+      "n": 17,
+      "nBothSides": 0,
+      "favoredBlue": 13,
+      "favoredRed": 4,
+      "favoredWinPct": 47.06,
+      "expectedPct": 51.31,
+      "edgePct": -4.25,
+      "ci95": [
+        26.16,
+        69.04
+      ]
+    },
+    {
+      "label": "Syndra > Orianna",
+      "attacker": "Syndra",
+      "defender": "Orianna",
+      "reason": "Syndra burst vs Orianna immobile.",
+      "scope": "même lane",
+      "n": 50,
+      "nBothSides": 0,
+      "favoredBlue": 20,
+      "favoredRed": 30,
+      "favoredWinPct": 44,
+      "expectedPct": 49.51,
+      "edgePct": -5.51,
+      "ci95": [
+        31.16,
+        57.69
+      ]
+    },
+    {
+      "label": "Morgana > Nautilus",
+      "attacker": "Morgana",
+      "defender": "Nautilus",
+      "reason": "Black shield vs CC chain.",
+      "scope": "même lane",
+      "n": 17,
+      "nBothSides": 0,
+      "favoredBlue": 6,
+      "favoredRed": 11,
+      "favoredWinPct": 41.18,
+      "expectedPct": 49.27,
+      "edgePct": -8.1,
+      "ci95": [
+        21.61,
+        63.99
+      ]
+    },
+    {
+      "label": "Vex > Yone",
+      "attacker": "Vex",
+      "defender": "Yone",
+      "reason": "Vex anti-dash vs Yone.",
+      "scope": "même lane",
+      "n": 11,
+      "nBothSides": 0,
+      "favoredBlue": 5,
+      "favoredRed": 6,
+      "favoredWinPct": 36.36,
+      "expectedPct": 49.78,
+      "edgePct": -13.41,
+      "ci95": [
+        15.17,
+        64.62
+      ]
+    },
+    {
+      "label": "Galio > Akali",
+      "attacker": "Galio",
+      "defender": "Akali",
+      "reason": "Galio MR + taunt vs AP assassin.",
+      "scope": "même lane",
+      "n": 14,
+      "nBothSides": 0,
+      "favoredBlue": 7,
+      "favoredRed": 7,
+      "favoredWinPct": 35.71,
+      "expectedPct": 50,
+      "edgePct": -14.29,
+      "ci95": [
+        16.34,
+        61.24
+      ]
+    },
+    {
+      "label": "Vex > Yasuo",
+      "attacker": "Vex",
+      "defender": "Yasuo",
+      "reason": "Vex anti-dash — counter reconnu Yasuo.",
+      "scope": "même lane",
+      "n": 18,
+      "nBothSides": 0,
+      "favoredBlue": 4,
+      "favoredRed": 14,
+      "favoredWinPct": 33.33,
+      "expectedPct": 48.63,
+      "edgePct": -15.3,
+      "ci95": [
+        16.28,
+        56.25
+      ]
+    },
+    {
+      "label": "Yasuo > Varus",
+      "attacker": "Yasuo",
+      "defender": "Varus",
+      "reason": "Yasuo windwall vs Varus Q.",
+      "scope": "même lane",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 1,
+      "favoredWinPct": 0,
+      "expectedPct": 47.53,
+      "edgePct": -47.53,
+      "ci95": [
+        0,
+        79.35
+      ]
+    },
+    {
+      "label": "Gwen > Soraka",
+      "attacker": "Gwen",
+      "defender": "Soraka",
+      "reason": "Gwen anti-heal vs Soraka.",
+      "scope": "même lane",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 0,
+      "favoredRed": 1,
+      "favoredWinPct": 0,
+      "expectedPct": 47.53,
+      "edgePct": -47.53,
+      "ci95": [
+        0,
+        79.35
+      ]
+    },
+    {
+      "label": "Zed > Syndra",
+      "attacker": "Zed",
+      "defender": "Syndra",
+      "reason": "Zed outplay et burst vs mage immobile.",
+      "scope": "même lane",
+      "n": 2,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 1,
+      "favoredWinPct": 0,
+      "expectedPct": 50,
+      "edgePct": -50,
+      "ci95": [
+        0,
+        65.76
+      ]
+    },
+    {
+      "label": "Morgana > Blitzcrank",
+      "attacker": "Morgana",
+      "defender": "Blitzcrank",
+      "reason": "Black shield vs hook.",
+      "scope": "même lane",
+      "n": 1,
+      "nBothSides": 0,
+      "favoredBlue": 1,
+      "favoredRed": 0,
+      "favoredWinPct": 0,
+      "expectedPct": 52.47,
+      "edgePct": -52.47,
+      "ci95": [
+        0,
+        79.35
+      ]
+    }
+  ],
+  "planSolo": [
+    {
+      "plan": "pick_global",
+      "n": 7611,
+      "winPct": 50.57,
+      "ci95": [
+        49.45,
+        51.69
+      ]
+    },
+    {
+      "plan": "beatdown",
+      "n": 6579,
+      "winPct": 49.98,
+      "ci95": [
+        48.77,
+        51.19
+      ]
+    },
+    {
+      "plan": "split_push",
+      "n": 5249,
+      "winPct": 52.11,
+      "ci95": [
+        50.75,
+        53.45
+      ]
+    },
+    {
+      "plan": "poke_disengage",
+      "n": 3635,
+      "winPct": 48.83,
+      "ci95": [
+        47.21,
+        50.46
+      ]
+    },
+    {
+      "plan": "hypercarry",
+      "n": 1690,
+      "winPct": 44.56,
+      "ci95": [
+        42.2,
+        46.94
+      ]
+    },
+    {
+      "plan": "teamfight_engage",
+      "n": 312,
+      "winPct": 44.87,
+      "ci95": [
+        39.45,
+        50.42
+      ]
+    },
+    {
+      "plan": "all_in",
+      "n": 19,
+      "winPct": 31.58,
+      "ci95": [
+        15.36,
+        53.99
+      ]
+    },
+    {
+      "plan": "lane_tempo",
+      "n": 3,
+      "winPct": 100,
+      "ci95": [
+        43.85,
+        100
+      ]
+    }
+  ],
+  "planMatrix": [
+    {
+      "A": "beatdown",
+      "B": "pick_global",
+      "n": 2046,
+      "winPctA": 49.61,
+      "expectedPctA": 49.96,
+      "edgePctA": -0.35,
+      "ci95A": [
+        47.45,
+        51.77
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "pick_global",
+      "B": "split_push",
+      "n": 1655,
+      "winPctA": 49.49,
+      "expectedPctA": 50.24,
+      "edgePctA": -0.75,
+      "ci95A": [
+        47.08,
+        51.89
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "beatdown",
+      "B": "split_push",
+      "n": 1508,
+      "winPctA": 46.49,
+      "expectedPctA": 50.19,
+      "edgePctA": -3.7,
+      "ci95A": [
+        43.98,
+        49.01
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "pick_global",
+      "B": "poke_disengage",
+      "n": 1159,
+      "winPctA": 49.78,
+      "expectedPctA": 50.06,
+      "edgePctA": -0.27,
+      "ci95A": [
+        46.91,
+        52.66
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "beatdown",
+      "B": "poke_disengage",
+      "n": 950,
+      "winPctA": 53.37,
+      "expectedPctA": 50.13,
+      "edgePctA": 3.24,
+      "ci95A": [
+        50.19,
+        56.52
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "poke_disengage",
+      "B": "split_push",
+      "n": 762,
+      "winPctA": 46.98,
+      "expectedPctA": 49.88,
+      "edgePctA": -2.9,
+      "ci95A": [
+        43.46,
+        50.53
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "hypercarry",
+      "B": "pick_global",
+      "n": 498,
+      "winPctA": 42.57,
+      "expectedPctA": 49.78,
+      "edgePctA": -7.21,
+      "ci95A": [
+        38.3,
+        46.95
+      ],
+      "encodedInCode": "pick_global bat hypercarry",
+      "encodedDirectionMatchesData": true
+    },
+    {
+      "A": "beatdown",
+      "B": "hypercarry",
+      "n": 468,
+      "winPctA": 55.56,
+      "expectedPctA": 50.06,
+      "edgePctA": 5.49,
+      "ci95A": [
+        51.03,
+        59.99
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "hypercarry",
+      "B": "split_push",
+      "n": 338,
+      "winPctA": 45.56,
+      "expectedPctA": 49.99,
+      "edgePctA": -4.42,
+      "ci95A": [
+        40.33,
+        50.89
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "hypercarry",
+      "B": "poke_disengage",
+      "n": 265,
+      "winPctA": 45.28,
+      "expectedPctA": 49.79,
+      "edgePctA": -4.5,
+      "ci95A": [
+        39.4,
+        51.3
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "pick_global",
+      "B": "teamfight_engage",
+      "n": 112,
+      "winPctA": 58.93,
+      "expectedPctA": 50.35,
+      "edgePctA": 8.58,
+      "ci95A": [
+        49.67,
+        67.6
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "beatdown",
+      "B": "teamfight_engage",
+      "n": 62,
+      "winPctA": 51.61,
+      "expectedPctA": 49.68,
+      "edgePctA": 1.93,
+      "ci95A": [
+        39.45,
+        63.59
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "poke_disengage",
+      "B": "teamfight_engage",
+      "n": 60,
+      "winPctA": 45,
+      "expectedPctA": 49.67,
+      "edgePctA": -4.67,
+      "ci95A": [
+        33.09,
+        57.51
+      ],
+      "encodedInCode": "poke_disengage bat teamfight_engage",
+      "encodedDirectionMatchesData": false
+    },
+    {
+      "A": "split_push",
+      "B": "teamfight_engage",
+      "n": 53,
+      "winPctA": 67.92,
+      "expectedPctA": 50.33,
+      "edgePctA": 17.6,
+      "ci95A": [
+        54.52,
+        78.91
+      ],
+      "encodedInCode": "split_push bat teamfight_engage",
+      "encodedDirectionMatchesData": true
+    },
+    {
+      "A": "hypercarry",
+      "B": "teamfight_engage",
+      "n": 23,
+      "winPctA": 43.48,
+      "expectedPctA": 49.46,
+      "edgePctA": -5.99,
+      "ci95A": [
+        25.63,
+        63.19
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "all_in",
+      "B": "pick_global",
+      "n": 8,
+      "winPctA": 50,
+      "expectedPctA": 51.85,
+      "edgePctA": -1.85,
+      "ci95A": [
+        21.52,
+        78.48
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "all_in",
+      "B": "beatdown",
+      "n": 5,
+      "winPctA": 20,
+      "expectedPctA": 50.49,
+      "edgePctA": -30.49,
+      "ci95A": [
+        3.62,
+        62.45
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "all_in",
+      "B": "split_push",
+      "n": 3,
+      "winPctA": 0,
+      "expectedPctA": 49.18,
+      "edgePctA": -49.18,
+      "ci95A": [
+        0,
+        56.15
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "all_in",
+      "B": "hypercarry",
+      "n": 2,
+      "winPctA": 50,
+      "expectedPctA": 52.47,
+      "edgePctA": -2.47,
+      "ci95A": [
+        9.45,
+        90.55
+      ],
+      "encodedInCode": "all_in bat hypercarry",
+      "encodedDirectionMatchesData": false
+    },
+    {
+      "A": "beatdown",
+      "B": "lane_tempo",
+      "n": 2,
+      "winPctA": 0,
+      "expectedPctA": 52.47,
+      "edgePctA": -52.47,
+      "ci95A": [
+        0,
+        65.76
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "all_in",
+      "B": "poke_disengage",
+      "n": 1,
+      "winPctA": 0,
+      "expectedPctA": 52.47,
+      "edgePctA": -52.47,
+      "ci95A": [
+        0,
+        79.35
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    },
+    {
+      "A": "lane_tempo",
+      "B": "pick_global",
+      "n": 1,
+      "winPctA": 100,
+      "expectedPctA": 47.53,
+      "edgePctA": 52.47,
+      "ci95A": [
+        20.65,
+        100
+      ],
+      "encodedInCode": null,
+      "encodedDirectionMatchesData": null
+    }
+  ],
+  "compTypeCountersEncoded": [
+    [
+      "poke_disengage",
+      "teamfight_engage"
+    ],
+    [
+      "poke_siege",
+      "teamfight_engage"
+    ],
+    [
+      "pick_global",
+      "hypercarry"
+    ],
+    [
+      "all_in",
+      "hypercarry"
+    ],
+    [
+      "lane_tempo",
+      "hypercarry"
+    ],
+    [
+      "split_push",
+      "teamfight_engage"
+    ],
+    [
+      "teamfight_engage",
+      "split_push"
+    ],
+    [
+      "front_to_back",
+      "beatdown"
+    ],
+    [
+      "front_to_back",
+      "all_in"
+    ],
+    [
+      "scaling_late",
+      "lane_tempo"
+    ],
+    [
+      "scaling_late",
+      "all_in"
+    ],
+    [
+      "pick_global",
+      "poke_siege"
+    ],
+    [
+      "beatdown",
+      "poke_siege"
+    ]
+  ],
+  "compTypeCountersCheck": [
+    {
+      "counter": "pick_global",
+      "victim": "hypercarry",
+      "n": 498,
+      "winPctCounter": 57.43,
+      "expectedPctCounter": 50.22,
+      "edgePctCounter": 7.21,
+      "ci95Counter": [
+        53.05,
+        61.7
+      ],
+      "verdict": "confirmé"
+    },
+    {
+      "counter": "poke_disengage",
+      "victim": "teamfight_engage",
+      "n": 60,
+      "winPctCounter": 45,
+      "expectedPctCounter": 49.67,
+      "edgePctCounter": -4.67,
+      "ci95Counter": [
+        33.09,
+        57.51
+      ],
+      "verdict": "INVERSÉ"
+    },
+    {
+      "counter": "split_push",
+      "victim": "teamfight_engage",
+      "n": 53,
+      "winPctCounter": 67.92,
+      "expectedPctCounter": 50.33,
+      "edgePctCounter": 17.59,
+      "ci95Counter": [
+        54.52,
+        78.91
+      ],
+      "verdict": "confirmé"
+    },
+    {
+      "counter": "teamfight_engage",
+      "victim": "split_push",
+      "n": 53,
+      "winPctCounter": 32.08,
+      "expectedPctCounter": 49.67,
+      "edgePctCounter": -17.59,
+      "ci95Counter": [
+        21.09,
+        45.48
+      ],
+      "verdict": "INVERSÉ"
+    },
+    {
+      "counter": "all_in",
+      "victim": "hypercarry",
+      "n": 2,
+      "winPctCounter": 50,
+      "expectedPctCounter": 52.47,
+      "edgePctCounter": -2.47,
+      "ci95Counter": [
+        9.45,
+        90.55
+      ],
+      "verdict": "INVERSÉ"
+    },
+    {
+      "counter": "poke_siege",
+      "victim": "teamfight_engage",
+      "n": 0,
+      "note": "jamais observé"
+    },
+    {
+      "counter": "lane_tempo",
+      "victim": "hypercarry",
+      "n": 0,
+      "note": "jamais observé"
+    },
+    {
+      "counter": "front_to_back",
+      "victim": "beatdown",
+      "n": 0,
+      "note": "jamais observé"
+    },
+    {
+      "counter": "front_to_back",
+      "victim": "all_in",
+      "n": 0,
+      "note": "jamais observé"
+    },
+    {
+      "counter": "scaling_late",
+      "victim": "lane_tempo",
+      "n": 0,
+      "note": "jamais observé"
+    },
+    {
+      "counter": "scaling_late",
+      "victim": "all_in",
+      "n": 0,
+      "note": "jamais observé"
+    },
+    {
+      "counter": "pick_global",
+      "victim": "poke_siege",
+      "n": 0,
+      "note": "jamais observé"
+    },
+    {
+      "counter": "beatdown",
+      "victim": "poke_siege",
+      "n": 0,
+      "note": "jamais observé"
+    }
+  ],
+  "aggregates": [
+    {
+      "label": "COMP_CLASH_RULES (score net bleu−rouge)",
+      "pearson": -0.0388,
+      "nNonZero": 12178,
+      "signAccuracyPct": 48.28,
+      "ci95": [
+        47.4,
+        49.17
+      ]
+    },
+    {
+      "label": "TEAM_TRAIT_RULES (score net)",
+      "pearson": -0.0028,
+      "nNonZero": 6212,
+      "signAccuracyPct": 50.45,
+      "ci95": [
+        49.21,
+        51.69
+      ]
+    },
+    {
+      "label": "CHAMP_PAIR_RULES (score net, 25 paires)",
+      "pearson": 0.0085,
+      "nNonZero": 12535,
+      "signAccuracyPct": 50.32,
+      "ci95": [
+        49.45,
+        51.2
+      ]
+    },
+    {
+      "label": "CURATED_COUNTERS (score net)",
+      "pearson": 0.0055,
+      "nNonZero": 1592,
+      "signAccuracyPct": 50.5,
+      "ci95": [
+        48.05,
+        52.95
+      ]
+    },
+    {
+      "label": "lane-matchups.json (somme des marges)",
+      "pearson": -0.0152,
+      "nNonZero": 12450,
+      "signAccuracyPct": 49.2,
+      "ci95": [
+        48.33,
+        50.08
+      ]
+    }
+  ],
+  "laneMatchups": {
+    "perSlot": [
+      {
+        "slot": "Top",
+        "n": 12549,
+        "pearsonRawMatrix": -0.0123,
+        "pearsonEngineEdge": 0.0001,
+        "accuracyRawPct": 49.73,
+        "accuracyRawN": 12094,
+        "accuracyRawCi95": [
+          48.84,
+          50.62
+        ],
+        "accuracyEnginePct": 49.8,
+        "accuracyEngineN": 12495,
+        "accuracyEngineCi95": [
+          48.92,
+          50.67
+        ]
+      },
+      {
+        "slot": "Jungle",
+        "n": 12549,
+        "pearsonRawMatrix": -0.0333,
+        "pearsonEngineEdge": -0.0198,
+        "accuracyRawPct": 49.05,
+        "accuracyRawN": 12452,
+        "accuracyRawCi95": [
+          48.17,
+          49.93
+        ],
+        "accuracyEnginePct": 49.54,
+        "accuracyEngineN": 12538,
+        "accuracyEngineCi95": [
+          48.66,
+          50.41
+        ]
+      },
+      {
+        "slot": "Mid",
+        "n": 12549,
+        "pearsonRawMatrix": -0.002,
+        "pearsonEngineEdge": -0.0168,
+        "accuracyRawPct": 49.61,
+        "accuracyRawN": 12250,
+        "accuracyRawCi95": [
+          48.72,
+          50.49
+        ],
+        "accuracyEnginePct": 49.25,
+        "accuracyEngineN": 12487,
+        "accuracyEngineCi95": [
+          48.37,
+          50.13
+        ]
+      },
+      {
+        "slot": "Bot",
+        "n": 12549,
+        "pearsonRawMatrix": 0.0153,
+        "pearsonEngineEdge": 0.0017,
+        "accuracyRawPct": 50.46,
+        "accuracyRawN": 11937,
+        "accuracyRawCi95": [
+          49.57,
+          51.36
+        ],
+        "accuracyEnginePct": 50.16,
+        "accuracyEngineN": 12422,
+        "accuracyEngineCi95": [
+          49.28,
+          51.04
+        ]
+      },
+      {
+        "slot": "Support",
+        "n": 12549,
+        "pearsonRawMatrix": 0.0258,
+        "pearsonEngineEdge": 0.0074,
+        "accuracyRawPct": 51.31,
+        "accuracyRawN": 12063,
+        "accuracyRawCi95": [
+          50.41,
+          52.2
+        ],
+        "accuracyEnginePct": 50,
+        "accuracyEngineN": 12236,
+        "accuracyEngineCi95": [
+          49.11,
+          50.89
+        ]
+      }
+    ],
+    "pearsonSumRawMatrix": -0.0152,
+    "pearsonSumEngineEdge": -0.0122,
+    "bucketsSumEngineEdge": [
+      {
+        "range": "[-1000000000, -60)",
+        "n": 2918,
+        "blueWinPct": 53.32,
+        "ci95": [
+          51.51,
+          55.13
+        ]
+      },
+      {
+        "range": "[-60, -30)",
+        "n": 1592,
+        "blueWinPct": 53.89,
+        "ci95": [
+          51.44,
+          56.33
+        ]
+      },
+      {
+        "range": "[-30, -10)",
+        "n": 1202,
+        "blueWinPct": 51.91,
+        "ci95": [
+          49.09,
+          54.73
+        ]
+      },
+      {
+        "range": "[-10, 10)",
+        "n": 1239,
+        "blueWinPct": 53.35,
+        "ci95": [
+          50.57,
+          56.11
+        ]
+      },
+      {
+        "range": "[10, 30)",
+        "n": 1165,
+        "blueWinPct": 51.07,
+        "ci95": [
+          48.2,
+          53.94
+        ]
+      },
+      {
+        "range": "[30, 60)",
+        "n": 1577,
+        "blueWinPct": 51.36,
+        "ci95": [
+          48.9,
+          53.82
+        ]
+      },
+      {
+        "range": "[60, 1000000000)",
+        "n": 2856,
+        "blueWinPct": 51.82,
+        "ci95": [
+          49.99,
+          53.65
+        ]
+      }
+    ],
+    "bucketsSumRawMatrix": [
+      {
+        "range": "[-1000000000, -60)",
+        "n": 1527,
+        "blueWinPct": 55.08,
+        "ci95": [
+          52.57,
+          57.55
+        ]
+      },
+      {
+        "range": "[-60, -30)",
+        "n": 2013,
+        "blueWinPct": 53.3,
+        "ci95": [
+          51.12,
+          55.47
+        ]
+      },
+      {
+        "range": "[-30, -10)",
+        "n": 1805,
+        "blueWinPct": 51.19,
+        "ci95": [
+          48.89,
+          53.49
+        ]
+      },
+      {
+        "range": "[-10, 10)",
+        "n": 1940,
+        "blueWinPct": 52.89,
+        "ci95": [
+          50.66,
+          55.1
+        ]
+      },
+      {
+        "range": "[10, 30)",
+        "n": 1750,
+        "blueWinPct": 51.6,
+        "ci95": [
+          49.26,
+          53.94
+        ]
+      },
+      {
+        "range": "[30, 60)",
+        "n": 2018,
+        "blueWinPct": 51.54,
+        "ci95": [
+          49.35,
+          53.71
+        ]
+      },
+      {
+        "range": "[60, 1000000000)",
+        "n": 1496,
+        "blueWinPct": 51.94,
+        "ci95": [
+          49.4,
+          54.46
+        ]
+      }
+    ]
+  }
+}
