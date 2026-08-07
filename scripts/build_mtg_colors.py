@@ -7,10 +7,14 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CHAMPIONS_JSON = ROOT / "data" / "champions.json"
+CHAMPIONS_JSON = ROOT / "public" / "data" / "champions.json"
 OUT_PATHS = [
     ROOT / "data" / "mtg-colors.json",
     ROOT / "public" / "data" / "mtg-colors.json",
+]
+SYNC_PATHS = [
+    ROOT / "public" / "data" / "champions.json",
+    ROOT / "public" / "data" / "champions-index.json",
 ]
 
 # Base par famille (W, U, B, R, G) — somme = 24
@@ -35,6 +39,22 @@ FAMILY_COLORS: dict[str, tuple[int, int, int, int, int]] = {
     "jungle_offensive": (2, 3, 6, 10, 3),
     "global_pick": (3, 8, 4, 4, 5),
     "specialist": (3, 5, 5, 6, 5),
+    "adc_short_allin": (2, 1, 6, 11, 4),
+    "ovni": (2, 7, 6, 6, 3),
+}
+
+# Junglers assassins / farmers classés jungle_defensive — identité B-dominante
+JUNGLE_SLAYER_COLORS = (1, 2, 10, 7, 4)
+JUNGLE_SLAYERS = {
+    "Evelynn",
+    "Kayn",
+    "Rengar",
+    "Maître Yi",
+    "Kha'Zix",
+    "Shaco",
+    "Viego",
+    "Bel'Veth",
+    "Nocturne",
 }
 
 # Ajustements par champion (delta W, U, B, R, G)
@@ -122,6 +142,7 @@ CHAMP_OVERRIDES: dict[str, tuple[int, int, int, int, int]] = {
     "Mel": (0, 5, 2, 4, -1),
     "Naafiri": (-1, 1, 4, 5, -1),
     "Briar": (-1, 0, 3, 7, -1),
+    "Zeri": (-2, -1, -1, 7, -3),
 }
 
 COLOR_META = {
@@ -173,13 +194,15 @@ def identity_label(dominant: list[str]) -> str:
         return "WUBRG"
     if len(dominant) == 1:
         return dominant[0]
-    return "".join(dominant[:2])
+    return "".join(sorted(dominant[:2], key="WUBRG".index))
 
 
 def build_for_champion(champ: dict) -> dict:
     fam = champ.get("championFamily") or {}
     key = fam.get("key") or "specialist"
     base = FAMILY_COLORS.get(key, FAMILY_COLORS["specialist"])
+    if key == "jungle_defensive" and champ["name"] in JUNGLE_SLAYERS:
+        base = JUNGLE_SLAYER_COLORS
     override = CHAMP_OVERRIDES.get(champ["name"], (0, 0, 0, 0, 0))
     w, u, b, r, g = clamp_colors(*(a + o for a, o in zip(base, override)))
 
@@ -202,8 +225,34 @@ def build_for_champion(champ: dict) -> dict:
         "G": g,
         "dominant": dom,
         "identity": identity_label(dom),
-        "vector": [w / 24, u / 24, b / 24, r / 24, g / 24],
+        "vector": [round(v / 24, 4) for v in (w, u, b, r, g)],
     }
+
+
+def sync_color_identity(champions: dict[str, dict]) -> None:
+    for path in SYNC_PATHS:
+        if not path.exists():
+            print(f"skip missing {path}")
+            continue
+        data = json.loads(path.read_text(encoding="utf-8"))
+        synced = 0
+        for c in data.get("champions", []):
+            col = champions.get(c["name"])
+            if not col:
+                continue
+            c["colorIdentity"] = {
+                "W": col["W"],
+                "U": col["U"],
+                "B": col["B"],
+                "R": col["R"],
+                "G": col["G"],
+                "dominant": col["dominant"],
+                "identity": col["identity"],
+                "vector": col["vector"],
+            }
+            synced += 1
+        path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        print(f"Synced colorIdentity: {path.name} ({synced} champions)")
 
 
 def main() -> None:
@@ -213,7 +262,7 @@ def main() -> None:
         champions[c["name"]] = build_for_champion(c)
 
     out = {
-        "version": "1",
+        "version": "2",
         "source": "oracle.txt + familles + heuristiques Kazewa",
         "totalPoints": 24,
         "colors": COLOR_META,
@@ -221,14 +270,16 @@ def main() -> None:
         "champions": champions,
     }
 
-    for path in OUT_PATHS:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(out, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"Wrote {path} ({len(champions)} champions)")
-
     bad = [n for n, c in champions.items() if sum(c[k] for k in "WUBRG") != 24]
     if bad:
         raise SystemExit(f"Color sum != 24: {bad[:5]}")
+
+    for path in OUT_PATHS:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        print(f"Wrote {path} ({len(champions)} champions)")
+
+    sync_color_identity(champions)
 
 
 if __name__ == "__main__":

@@ -39,21 +39,34 @@ function main() {
     const arr = new Int16Array(n * n);
     for (let ia = 0; ia < n; ia++) {
       const a = profiles.get(names[ia]);
-      for (let ib = 0; ib < n; ib++) {
-        if (ia === ib) continue;
+      for (let ib = ia + 1; ib < n; ib++) {
         const b = profiles.get(names[ib]);
-        const edge = LML.computeLaneKitEdge(a, b, slot);
-        const margin = clamp(edge.margin, -127, 127);
+        const fwd = LML.computeLaneKitEdge(a, b, slot).margin;
+        const rev = LML.computeLaneKitEdge(b, a, slot).margin;
+        const net = fwd - rev;
+        const margin = clamp(Math.sign(net) * Math.ceil(Math.abs(net) / 2), -127, 127);
         arr[ia * n + ib] = margin;
-        total++;
-        if (margin !== 0) nonZero++;
+        arr[ib * n + ia] = -margin;
+        total += 2;
+        if (margin !== 0) nonZero += 2;
+      }
+    }
+    for (let ia = 0; ia < n; ia++) {
+      for (let ib = 0; ib < n; ib++) {
+        const m = arr[ia * n + ib];
+        if (ia === ib && m !== 0) {
+          throw new Error(`diagonale non nulle: ${names[ia]} ${slot} = ${m}`);
+        }
+        if (m !== -arr[ib * n + ia]) {
+          throw new Error(`antisymétrie violée: ${names[ia]} vs ${names[ib]} ${slot} (${m} / ${arr[ib * n + ia]})`);
+        }
       }
     }
     margins[slot] = [...arr];
   }
 
   const payload = {
-    version: "20250611-36",
+    version: "20260806-antisym",
     generatedAt: new Date().toISOString(),
     championCount: n,
     champs: names,
@@ -78,7 +91,7 @@ function main() {
     ["Darius", "Malphite", "Top", "win"],
     ["Ashe", "Caitlyn", "Bot", "lose"],
     ["Malphite", "Darius", "Top", "lose"],
-    ["Zed", "Lux", "Mid", "win"],
+    ["Morgana", "Blitzcrank", "Support", "win"],
   ];
   for (const [a, b, slot, expect] of checks) {
     const ia = champIndex[a];
@@ -88,6 +101,8 @@ function main() {
     console.log(`  ${ok ? "OK" : "FAIL"} ${a} vs ${b} ${slot}: margin=${m}`);
     if (!ok) process.exitCode = 1;
   }
+  const quinnDarius = margins.Top[champIndex.Quinn * n + champIndex.Darius];
+  console.log(`  ${quinnDarius >= 0 ? "OK" : "WARN"} Quinn vs Darius Top: margin=${quinnDarius}`);
 }
 
 function clamp(x, lo, hi) {

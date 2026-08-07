@@ -87,10 +87,18 @@
   inset: 0;
   z-index: 35;
   background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
 
 .sidebar-backdrop:not(.hidden) {
   display: block;
+}
+
+.sidebar-backdrop.visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .filter-section h2,

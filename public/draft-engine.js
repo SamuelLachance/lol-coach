@@ -42,7 +42,7 @@
   const HOVER_SLOT_PRIORITY = ["Bot", "Jungle", "Mid", "Support", "Top"];
   const PICK_SLOT_PRIORITY = HOVER_SLOT_PRIORITY;
   const SLOT_LABELS = { Bot: "ADC", Jungle: "Jungle", Mid: "Mid", Support: "Support", Top: "Top" };
-  const MIN_LANE_PLAY_RATE = 10;
+  const MIN_LANE_PLAY_RATE = global.LoLLaneViability?.MIN_LANE_RATE ?? 10;
 
   const MTG_COLORS = ["W", "U", "B", "R", "G"];
   const COLOR_LABELS = { W: "Blanc", U: "Bleu", B: "Noir", R: "Rouge", G: "Vert" };
@@ -157,7 +157,30 @@
   }
 
   function available(allChamps, s, all = []) {
-    return allChamps.filter((c) => !taken(s, all).has(c.name));
+    const takenNames = taken(s, all);
+    return allChamps.filter((c) => !takenNames.has(c.name));
+  }
+
+  /** Mémoïse LoLDraftScoring.evaluateTeam le temps d'un rendu (le « before » est partagé entre candidats). */
+  function withEvaluateTeamMemo(fn) {
+    const sc = SC();
+    if (!sc?.evaluateTeam) return fn();
+    const orig = sc.evaluateTeam;
+    const cache = new Map();
+    sc.evaluateTeam = (names, ctx) => {
+      const key = `${(names || []).join("|")}\0${(ctx?.oppNames || []).join("|")}\0${ctx?.slotsLeft ?? ""}`;
+      let hit = cache.get(key);
+      if (hit === undefined) {
+        hit = orig(names, ctx);
+        cache.set(key, hit);
+      }
+      return hit;
+    };
+    try {
+      return fn();
+    } finally {
+      sc.evaluateTeam = orig;
+    }
   }
 
   function sidePicks(s, side) { return s.picks[side] || []; }
@@ -558,12 +581,14 @@
     return normalizeFocus(raw);
   }
 
-  function recommendationCacheKey(s, side, all, step) {
+  function recommendationCacheKey(s, side, all, step, target) {
     return [
       s.id,
       s.stepIndex,
       side,
       step?.type,
+      JSON.stringify(target || null),
+      s.fearless ? Array.from(fearlessUsed(all, s.id)).join(",") : "",
       JSON.stringify(s.focus),
       JSON.stringify(s.hoverSource),
       JSON.stringify(s.hoverPick),
@@ -580,21 +605,21 @@
     const target = normalizeRecommendTarget(opts.focusTarget) || getRecommendationTarget(s);
     const pickFocus = (target?.type === "pick" || target?.type === "swap") && target.slot;
     const side = target?.side || forSide || step.side;
-    const cacheKey = recommendationCacheKey(s, side, all, step);
+    const cacheKey = recommendationCacheKey(s, side, all, step, target);
     if (!opts.skipCache && recommendationCache?.key === cacheKey && recommendationCache.limit >= limit) {
       return { ...recommendationCache.result, items: recommendationCache.result.items.slice(0, limit) };
     }
 
     if ((step.type === "ban" || target?.type === "ban") && !pickFocus) {
       const banPhase = step.banPhase || 1;
-      const items = avail
+      const items = withEvaluateTeamMemo(() => avail
         .map((c) => {
           const { score, reasons, disqualified } = scoreBan(c, s, side, byName, meta);
           return { champion: c, score, reasons, disqualified };
         })
         .filter((item) => !item.disqualified && item.score > -1000)
         .sort((a, b) => b.score - a.score)
-        .slice(0, limit);
+        .slice(0, limit));
       const result = { type: "ban", side, items, forSide: side };
       recommendationCache = { key: cacheKey, limit, result };
       return result;
@@ -605,7 +630,7 @@
     const candidates = focusSlot
       ? laneViableForSlot(avail, meta, focusSlot)
       : pickCandidatesForSide(s, side, avail, meta);
-    const items = candidates
+    const items = withEvaluateTeamMemo(() => candidates
       .map((c) => {
         if (focusSlot) {
           const r = scorePickForSlot(c, s, side, focusSlot, byName, meta);
@@ -616,7 +641,7 @@
       })
       .filter((item) => item.score > -1000)
       .sort((a, b) => b.score - a.score)
-      .slice(0, limit);
+      .slice(0, limit));
 
     const slotLabel = SLOT_LABELS[hint] || hint;
     const result = {
@@ -633,18 +658,48 @@
     return result;
   }
 
+  let blindAdcCache = null;
+  /** ADC blind-safe générés depuis les données : Marksman tier S/A jouant Bot. */
+  function blindSafeAdcNames(byName, meta) {
+    const cacheKey = `${byName?.size ?? 0}:${Object.keys(meta || {}).length}`;
+    if (blindAdcCache && blindAdcCache.byName === byName && blindAdcCache.meta === meta && blindAdcCache.key === cacheKey) {
+      return blindAdcCache.names;
+    }
+    const tierOrder = { S: 0, A: 1 };
+    const champs = [];
+    for (const c of new Set(byName?.values?.() || [])) {
+      if (!(c.tags || []).includes("Marksman")) continue;
+      if (!(c.tierMeta in tierOrder)) continue;
+      if (!playsSlotFor(c, meta, "Bot")) continue;
+      champs.push(c);
+    }
+    champs.sort(
+      (a, b) => (tierOrder[a.tierMeta] - tierOrder[b.tierMeta]) || a.name.localeCompare(b.name, "fr")
+    );
+    const names = champs.map((c) => c.name);
+    blindAdcCache = { byName, meta, key: cacheKey, names };
+    return names;
+  }
+
   function getDraftCoachHint(s, side, byName, meta) {
     const slot = preferredBlindSlot(s, side);
     const label = SLOT_LABELS[slot] || slot;
     const n = sidePickCount(s, side) + 1;
     const order = pickOrderForSide(side).map((sl) => SLOT_LABELS[sl] || sl).join(" → ");
     const sideLabel = side === "blue" ? "Bleu" : "Rouge";
+    const blindAdcs = blindSafeAdcNames(byName, meta);
 
     if (isTeamFirstPick(s, side)) {
-      if (side === "blue") return "B1 Bleu : ADC OP · Jungle OP · ou flex (Cours 3)";
+      if (side === "blue") {
+        const top3 = blindAdcs.slice(0, 3).join("/");
+        return `B1 Bleu : ADC OP${top3 ? ` (${top3})` : ""} · Jungle OP · ou flex (Cours 3)`;
+      }
       return `R1 Rouge : ${label} · ordre coach ${order}`;
     }
-    if (slot === "Bot" && n === 1) return `Pick ${n} ${sideLabel} : ADC blind (Cait/Varus/Aphelios/Jinx/Xayah)`;
+    if (slot === "Bot" && n === 1) {
+      const top5 = blindAdcs.slice(0, 5).join("/");
+      return `Pick ${n} ${sideLabel} : ADC blind${top5 ? ` (${top5})` : ""}`;
+    }
     if (slot === "Bot" && enemyPickBySlot(s, side).Bot) {
       return `Pick ${n} ${sideLabel} : ADC counter vs ${enemyPickBySlot(s, side).Bot}`;
     }
@@ -682,20 +737,22 @@
   }
 
   function applyAction(s, action, all = [], ctx = {}) {
-    s.history.push(JSON.stringify({ stepIndex: s.stepIndex, bans: s.bans, picks: s.picks }));
     const step = getStep(s);
     if (!step) return { ok: false, error: "Draft terminé." };
     if (taken(s, all).has(action.championName)) {
       if (s.fearless && fearlessUsed(all, s.id).has(action.championName)) return { ok: false, error: "Champion indisponible (fearless)." };
       return { ok: false, error: "Champion déjà pris ou banni." };
     }
+    const snapshot = JSON.stringify({ stepIndex: s.stepIndex, bans: s.bans, picks: s.picks });
     if (step.type === "ban") {
       const idx = action.banIndex ?? step.banIndex;
       if (idx == null || idx < 0 || idx >= BANS_PER_TEAM) return { ok: false, error: "Case ban invalide." };
       if (s.bans[step.side][idx]) return { ok: false, error: "Case ban déjà remplie." };
+      s.history.push(snapshot);
       s.bans[step.side][idx] = action.championName;
     } else {
       if (!ctx.byName) return { ok: false, error: "Données manquantes." };
+      s.history.push(snapshot);
       clearFromBoard(s, action.championName);
       const champData = getData(ctx.byName, ctx.metaMap, action.championName);
       const metaMap = ctx.metaMap || {};
@@ -763,28 +820,28 @@
 
   function swapPickSlots(s, side, a, b) {
     normalizeSession(s);
-    const comp = pickBySlot(s, side);
-    const na = comp[a]; const nb = comp[b];
-    if (!na && !nb) return { ok: false, error: "Postes vides." };
+    const pa = pickAtSlot(s, side, a);
+    const pb = pickAtSlot(s, side, b);
+    if (!pa && !pb) return { ok: false, error: "Postes vides." };
     s.history.push(JSON.stringify({ stepIndex: s.stepIndex, bans: s.bans, picks: s.picks }));
-    s.picks[side] = s.picks[side].filter((p) => p.slot !== a && p.slot !== b);
-    if (nb) s.picks[side].push({ name: nb, slot: a });
-    if (na) s.picks[side].push({ name: na, slot: b });
+    if (pa) { pa.slot = b; pa.pinned = true; }
+    if (pb) { pb.slot = a; pb.pinned = true; }
     s.updatedAt = Date.now();
     invalidateRecommendationCache();
     const label = (sl) => SLOT_LABELS[sl] || sl;
     let message;
-    if (na && nb) message = `${na} ↔ ${nb} échangés (${label(a)} ↔ ${label(b)})`;
-    else if (na) message = `${na} déplacé → ${label(b)}`;
-    else message = `${nb} déplacé → ${label(a)}`;
+    if (pa && pb) message = `${pa.name} ↔ ${pb.name} échangés (${label(a)} ↔ ${label(b)})`;
+    else if (pa) message = `${pa.name} déplacé → ${label(b)}`;
+    else message = `${pb.name} déplacé → ${label(a)}`;
     return { ok: true, message };
   }
 
   function manualAssign(s, action, all = [], ctx = {}) {
-    s.history.push(JSON.stringify({ stepIndex: s.stepIndex, bans: s.bans, picks: s.picks }));
     normalizeSession(s);
+    const snapshot = JSON.stringify({ stepIndex: s.stepIndex, bans: s.bans, picks: s.picks });
     const { type, side, name, slot: hintSlot, banIndex } = action;
     if (!name) {
+      s.history.push(snapshot);
       if (type === "ban" && banIndex != null) s.bans[side][banIndex] = null;
       else if (type === "pick" && hintSlot) {
         s.picks[side] = s.picks[side].filter((p) => p.slot !== hintSlot);
@@ -798,14 +855,17 @@
     if (taken(s, all).has(name) && !s.bans[side].includes(name) && !sidePicks(s, side).some((p) => p.name === name)) {
       return { ok: false, error: "Indisponible." };
     }
-    clearFromBoard(s, name);
     if (type === "ban") {
-      let idx = banIndex ?? s.bans[side].findIndex((n) => !n);
+      const idx = banIndex ?? s.bans[side].findIndex((n) => !n || n === name);
       if (idx < 0 || idx >= BANS_PER_TEAM) return { ok: false, error: "Bans pleins." };
+      s.history.push(snapshot);
+      clearFromBoard(s, name);
       s.bans[side][idx] = name;
     } else {
       const list = sidePicks(s, side).filter((p) => p.name !== name);
-      if (list.length >= 5 && !pickBySlot(s, side)[hintSlot]) return { ok: false, error: "Picks pleins." };
+      if (list.length >= 5 && !list.some((p) => p.slot === hintSlot)) return { ok: false, error: "Picks pleins." };
+      s.history.push(snapshot);
+      clearFromBoard(s, name);
       const champData = getData(ctx.byName, ctx.metaMap, name);
       const metaMap = ctx.metaMap || {};
       if (hintSlot) {
@@ -816,7 +876,10 @@
         relayoutAll(s, ctx);
       }
       const placed = s.picks[side].find((p) => p.name === name);
-      if (!placed) return { ok: false, error: "Placement impossible." };
+      if (!placed) {
+        Object.assign(s, JSON.parse(s.history.pop()));
+        return { ok: false, error: "Placement impossible." };
+      }
       resyncStepIndex(s);
       s.updatedAt = Date.now();
       invalidateRecommendationCache();
@@ -945,10 +1008,10 @@
     return { ourComp: fill(pickBySlot(s, ourSide(s))), enemyComp: fill(pickBySlot(s, enemySide(s))) };
   }
 
-  function analyzeLive(s, meta) {
+  function analyzeLive(s, meta, byName = null) {
     const our = sidePicks(s, ourSide(s)).map((p) => p.name);
     const en = sidePicks(s, enemySide(s)).map((p) => p.name);
-    const ev = evaluateTeam(our, { metaMap: meta, oppNames: en, slotsLeft: 5 - our.length });
+    const ev = evaluateTeam(our, { byName, metaMap: meta, oppNames: en, slotsLeft: 5 - our.length });
     const notes = [];
     const plan = detectCompPlan(ev.vs || []);
     if (plan.label) notes.push(`Plan : ${plan.label} (${plan.completeness}%)`);
@@ -961,18 +1024,21 @@
     const st = steps[s.stepIndex];
     if (!st) return "Draft terminé";
     const side = st.side === "blue" ? "Bleu" : "Rouge";
-    const banSteps = steps.filter((x) => x.type === "ban");
-    const pickSteps = steps.filter((x) => x.type === "pick");
+    const done = steps.slice(0, s.stepIndex);
     if (st.type === "ban") {
+      const banNo = done.filter((x) => x.type === "ban").length + 1;
+      const banTotal = steps.filter((x) => x.type === "ban").length;
       const phase = st.banPhase === 2 ? "Phase 2" : "Phase 1";
-      return `Ban ${phase} · ${(st.banIndex ?? 0) + 1}/5 (${side}) — ${s.stepIndex + 1}/${banSteps.length}`;
+      return `Ban ${phase} · ${banNo}/${banTotal} (${side})`;
     }
-    return `Pick ${s.stepIndex - banSteps.length + 1}/${pickSteps.length} — ${side}`;
+    const pickNo = done.filter((x) => x.type === "pick").length + 1;
+    const pickTotal = steps.filter((x) => x.type === "pick").length;
+    return `Pick ${pickNo}/${pickTotal} — ${side}`;
   }
 
   function formatSummary(s) {
     normalizeSession(s);
-    return [`5 bans · 2 phases · Ranked SR`, s.fearless ? "Fearless" : null].filter(Boolean).join(" · ");
+    return [`Draft tournoi · 5 bans · 2 phases`, s.fearless ? "Fearless" : null].filter(Boolean).join(" · ");
   }
 
   function assignmentFromComp(comp) {
@@ -981,15 +1047,13 @@
   function namesFromComp(comp) { return SLOTS.map((sl) => comp[sl]).filter(Boolean); }
 
   function winProbFromScores(ourTotal, enemyTotal) {
-    const sum = ourTotal + enemyTotal;
-    if (sum > 0) {
-      const our = ourTotal / sum;
-      return { our, enemy: 1 - our };
-    }
-    const margin = ourTotal - enemyTotal;
+    const margin = (ourTotal || 0) - (enemyTotal || 0);
+    const sc = SC();
+    const logistic = sc?.winProbFromMargin || sc?.duelWinProbFromMargin;
+    if (logistic) return logistic(margin);
     if (margin === 0) return { our: 0.5, enemy: 0.5 };
     const raw = 1 / (1 + Math.exp(-margin / 42));
-    const our = Math.min(0.93, Math.max(0.07, raw));
+    const our = Math.min(0.85, Math.max(0.15, raw));
     return { our, enemy: 1 - our };
   }
 
@@ -1104,7 +1168,7 @@
     suggestSlot, bestSlotForChampion, resolvePickSlot, relayoutAllPickSlots: relayoutAll, optimizeTeamLayout: optimizeLayout,
     getRecommendations, invalidateRecommendationCache, isBlueFirstPick, isTeamFirstPick, nextBlindSlot,
     allowedSlotsForNextPick, layoutAllowedSlots, recommendedSlotForPick, preferredBlindSlot,
-    isBlindPickPhase, isLaneMatchupKnown, getDraftCoachHint,
+    isBlindPickPhase, isLaneMatchupKnown, getDraftCoachHint, blindSafeAdcNames, withEvaluateTeamMemo,
     dynamicHoverPriority, defaultHoverPick, resolveHoverPick, refreshDraftHover, activePickSide,
     alignCoachPickFocus, needsCoachPickAlign, coachPickTarget, coachFocusOverridesUserLock,
     applyAction, recordAction, manualAssign, clearSlot, actionLabel, suggestNextFocus, refreshAutoPickFocus, syncLegacySlots,

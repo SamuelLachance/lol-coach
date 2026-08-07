@@ -1,14 +1,5 @@
 /* ─── MTG pastilles + toolbar compact ─────────────────────────────────────── */
 
-:root {
-  --mtg-w: #f8f4e8;
-  --mtg-u: #3b9fd9;
-  --mtg-b: #5a5a6e;
-  --mtg-r: #e85d3a;
-  --mtg-g: #2fa866;
-  --sidebar-w: clamp(168px, 11vw, 196px);
-}
-
 /* Pastilles — taille = degré de couleur (weight /24) */
 .mtg-pastilles {
   display: inline-flex;
@@ -525,7 +516,7 @@
 }
 
 .mtg-harmony-tag--enemy {
-  background: rgba(224, 93, 93, 0.12);
+  background: rgba(var(--team-enemy-rgb), 0.12);
   color: #e8a0a0;
 }
 
@@ -646,7 +637,7 @@
 .card-matchup-item.counter {
   background: var(--danger-soft);
   color: #f0a0a0;
-  border: 1px solid rgba(224, 93, 93, 0.15);
+  border: 1px solid rgba(var(--team-enemy-rgb), 0.15);
 }
 
 .card-matchup-item.counter .card-matchup-hint {

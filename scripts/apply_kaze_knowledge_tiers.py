@@ -37,7 +37,7 @@ def main() -> None:
         payload["tierListVersion"] = data.get("version", "kaze-md")
         payload["tierListScope"] = data.get("scope", "kaze-md")
         payload["tierListSource"] = data.get("source", [])
-        path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         print(f"{path.name}: applied kaze knowledge tiers to {len(payload['champions'])} champions")
 
 

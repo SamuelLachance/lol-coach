@@ -2,7 +2,6 @@
 """Regénère items.json depuis Data Dragon (légendaires SR ranked uniquement)."""
 
 import json
-import re
 import sys
 import urllib.request
 from pathlib import Path
@@ -13,8 +12,11 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from fetch_ddragon import (  # noqa: E402
     DATA,
     PUBLIC_DATA,
+    clean_item_description,
     is_build_catalog_item,
+    item_category,
     item_shop_role,
+    item_tier,
 )
 
 CHAMPIONS_JSON = PUBLIC_DATA / "champions.json"
@@ -49,16 +51,16 @@ def main() -> None:
         seen_names.add(name)
         total = item.get("gold", {}).get("total", 0)
         tags = item.get("tags", [])
-        desc = re.sub(r"<[^>]+>", "", item.get("description", ""))[:220]
+        desc = clean_item_description(item.get("description", ""))
         items.append({
             "id": item_id,
             "name": name,
-            "tier": 5,
+            "tier": item_tier(total, tags),
             "gold": total,
             "description": desc,
             "icon": f"https://ddragon.leagueoflegends.com/cdn/{version}/img/item/{item_id}.png",
             "tags": tags,
-            "category": "Légendaire",
+            "category": item_category(total, tags),
             "shopRole": item_shop_role(tags),
             "map": "Summoner's Rift",
         })
@@ -73,7 +75,7 @@ def main() -> None:
 
     for folder in (DATA, PUBLIC_DATA):
         folder.mkdir(parents=True, exist_ok=True)
-        (folder / "items.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        (folder / "items.json").write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
     print(f"{len(items)} objets légendaires SR -> {PUBLIC_DATA / 'items.json'}")
 

@@ -5,7 +5,6 @@
   const STORAGE_KEY = "lol-patch-config-v2";
   const DEFAULTS_STORAGE_KEY = "lol_coach_patch_defaults";
   const SITE_DEFAULTS_URL = "data/patch-defaults.json";
-  const ADMIN_PASSWORD = "24372";
   const SLOTS = ["Top", "Jungle", "Mid", "Bot", "Support"];
   const TIERS = ["S", "A", "B", "C", "D"];
 
@@ -162,99 +161,6 @@
     return resolveDefaultConfig(champions);
   }
 
-  function pushAsSiteDefaults(config, champions) {
-    const snapshot = mergeWithBase(JSON.parse(JSON.stringify(config)), champions);
-    snapshot.updatedAt = Date.now();
-    siteDefaults = snapshot;
-    try {
-      localStorage.setItem(DEFAULTS_STORAGE_KEY, JSON.stringify(snapshot));
-    } catch {
-      /* quota ou mode privé */
-    }
-    return snapshot;
-  }
-
-  function getPatchDefaultsApiUrl() {
-    const cfg = global.LoLSiteConfig || {};
-    if (cfg.PATCH_DEFAULTS_API) return cfg.PATCH_DEFAULTS_API;
-    if (cfg.hosting === "github-pages" || cfg.hosting === "cloudflare-tunnel") {
-      return cfg.patchDefaultsTunnelApi || "http://lolcoach.gotdns.ch/api/patch-defaults";
-    }
-    return "/api/patch-defaults";
-  }
-
-  function ensurePatchDefaultsSubmitFrame() {
-    let frame = document.getElementById("patch-defaults-submit-frame");
-    if (!frame) {
-      frame = document.createElement("iframe");
-      frame.id = "patch-defaults-submit-frame";
-      frame.name = "patch-defaults-submit-frame";
-      frame.hidden = true;
-      frame.title = "Publication des défauts patch";
-      document.body.appendChild(frame);
-    }
-    return frame;
-  }
-
-  function pushSiteDefaultsViaForm(apiUrl, payload) {
-    ensurePatchDefaultsSubmitFrame();
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = apiUrl;
-    form.target = "patch-defaults-submit-frame";
-    form.style.display = "none";
-
-    const pwd = document.createElement("input");
-    pwd.type = "hidden";
-    pwd.name = "password";
-    pwd.value = payload.password;
-    form.appendChild(pwd);
-
-    const defs = document.createElement("input");
-    defs.type = "hidden";
-    defs.name = "defaults";
-    defs.value = JSON.stringify(payload.defaults);
-    form.appendChild(defs);
-
-    document.body.appendChild(form);
-    form.submit();
-    form.remove();
-
-    return {
-      ok: true,
-      written: true,
-      deploy: { deployed: true, method: "form-post", pending: true },
-    };
-  }
-
-  async function pushSiteDefaultsToServer(config, password) {
-    const apiUrl = getPatchDefaultsApiUrl();
-    const payload = { password, defaults: config };
-    const canFetchJson =
-      apiUrl.startsWith("/") ||
-      (typeof location !== "undefined" && apiUrl.startsWith(location.origin)) ||
-      apiUrl.startsWith("https://");
-
-    if (canFetchJson) {
-      const res = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(data.error || data.message || `HTTP ${res.status}`);
-      }
-      return data;
-    }
-
-    return pushSiteDefaultsViaForm(apiUrl, payload);
-  }
-
-  function verifyAdminPassword(input) {
-    return String(input || "") === ADMIN_PASSWORD;
-  }
-
   global.LoLPatch = {
     STORAGE_KEY,
     DEFAULTS_STORAGE_KEY,
@@ -264,10 +170,6 @@
     load,
     save,
     fetchSiteDefaults,
-    pushAsSiteDefaults,
-    getPatchDefaultsApiUrl,
-    pushSiteDefaultsToServer,
-    verifyAdminPassword,
     createDefaultConfig,
     mergeWithBase,
     applyToChampion,

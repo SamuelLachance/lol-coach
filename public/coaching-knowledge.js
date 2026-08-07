@@ -4,7 +4,11 @@
  */
 (function (global) {
   function norm(name) {
-    return String(name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+    return String(name || "")
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "");
   }
 
   const PICK_ORDER_BLUE = ["Bot", "Jungle", "Mid", "Support", "Top"];
@@ -14,7 +18,7 @@
   const FIRST_PICK_JUNGLE = ["Jarvan IV", "Vi", "Lee Sin", "Elise", "Pantheon", "Sejuani", "Maokai", "Nocturne"];
   const FLEX_PICKS = [
     "Gragas", "Pantheon", "Sylas", "Galio", "Karma", "Lucian", "Viego", "Ekko", "Morgana", "Lux",
-    "Seraphine", "Neeko", "Sett", "Swain", "Maokai", "Jax", "Jayce", "Orianna", "Yasuo", "Miss Fortune",
+    "Séraphine", "Neeko", "Sett", "Swain", "Maokai", "Jax", "Jayce", "Orianna", "Yasuo", "Miss Fortune",
   ];
   const TANK_JUNGLE = ["Sion", "Malphite", "Maokai", "Nautilus", "Ornn", "Shen", "Zac", "Sejuani", "Dr. Mundo"];
   const ENCHANTER_SUPPORTS = ["Karma", "Janna", "Milio", "Soraka", "Yuumi", "Nami", "Lulu"];
@@ -24,7 +28,7 @@
     "Jarvan IV", "Nilah", "Fiddlesticks", "Galio", "Amumu", "Kennen",
   ];
   const HYPERCARRY_ADC = ["Kog'Maw", "Jinx", "Twitch", "Zeri", "Vayne"];
-  const HYPERCARRY_JUNGLE = ["Master Yi", "Bel'Veth", "Kindred", "Gwen", "Briar"];
+  const HYPERCARRY_JUNGLE = ["Maître Yi", "Bel'Veth", "Kindred", "Gwen", "Briar"];
   const HYPERCARRY_TOP = ["Kayle", "Fiora", "Gwen", "Camille"];
   const STABLE_TANK_MIDS = ["Galio", "Nautilus", "Cho'Gath", "Sion", "Ornn", "Morgana"];
   const GLOBAL_CORE = [
@@ -46,19 +50,19 @@
     ["Renekton", "Ziggs"],
   ];
 
-  /** engage | disengage | range — do not mix families (Lol_Database7) */
+  /** engage | disengage | range — familles disjointes, un seul tag par champion (Lol_Database7) */
   const FAMILY_TAGS = {
     engage: new Set(
       [
         "Renekton", "Lee Sin", "Vi", "Jarvan IV", "Malphite", "Ornn", "Shen", "Leona", "Nautilus", "Rell",
         "Rakan", "Alistar", "Amumu", "Sejuani", "Zac", "Wukong", "Pantheon", "Ambessa", "Nocturne", "Elise",
-        "Kled", "Pyke", "Draven", "Lucian", "Braum", "Yasuo", "Diana", "Kennen", "Miss Fortune", "Orianna",
+        "Kled", "Pyke", "Draven", "Lucian", "Yasuo", "Diana", "Kennen", "Miss Fortune", "Orianna",
       ].map(norm)
     ),
     disengage: new Set(
       [
         "Janna", "Karma", "Lulu", "Milio", "Soraka", "Yuumi", "Nami", "Braum", "Tahm Kench", "Thresh",
-        "Morgana", "Zilean", "Ezreal", "Caitlyn", "Varus", "Ashe", "Jhin", "Ziggs", "Xerath", "Hwei",
+        "Morgana", "Zilean",
       ].map(norm)
     ),
     range: new Set(
@@ -99,8 +103,8 @@
   const COMBO_GRAPH = {
     Yasuo: { partners: ["Malphite", "Diana", "Nautilus", "Rell", "Orianna", "Trundle", "Gragas", "Rakan"], pivot: true },
     Orianna: { partners: ["Malphite", "Nocturne", "Rell", "Miss Fortune", "Rengar", "Jarvan IV", "Rakan", "Vi"], pivot: true },
-    "Miss Fortune": { partners: ["Amumu", "Rell", "Malphite", "Rakan", "Zoe", "Annie", "Jarvan IV"], pivot: true },
-    Zilean: { partners: ["Udyr", "Hecarim", "Tryndamere", "Rammus", "Darius", "Olaf", "Master Yi"] },
+    "Miss Fortune": { partners: ["Amumu", "Rell", "Malphite", "Rakan", "Zoé", "Annie", "Jarvan IV"], pivot: true },
+    Zilean: { partners: ["Udyr", "Hecarim", "Tryndamere", "Rammus", "Darius", "Olaf", "Maître Yi"] },
     Braum: { partners: ["Lucian", "Tristana", "Akshan", "Xin Zhao", "Bel'Veth", "Katarina", "Azir", "Pantheon", "Fiora", "Ezreal"] },
     Camille: { partners: ["Galio", "Shen", "Twisted Fate", "Nocturne", "Talon", "Ryze", "Rengar"] },
     Cassiopeia: { partners: ["Jarvan IV", "Singed", "Teemo", "Twitch", "Sivir", "Karma"], pivot: true },
@@ -110,7 +114,7 @@
     Karthus: { partners: ["Garen", "Zed", "Talon", "Qiyana", "Akshan", "Pyke"] },
     Kennen: { partners: ["Zilean", "Amumu", "Rell", "Karma", "Sivir", "Diana", "Aurora"], pivot: true },
     Leona: { partners: ["Twitch", "Brand", "Teemo", "Cassiopeia", "Singed", "Malzahar", "Lillia", "Fizz"], pivot: true },
-    "Master Yi": { partners: ["Taric", "Lulu", "Morgana", "Zilean", "Kayle", "Yuumi"] },
+    "Maître Yi": { partners: ["Taric", "Lulu", "Morgana", "Zilean", "Kayle", "Yuumi"] },
     "Twisted Fate": { partners: ["Nocturne", "Pantheon", "Draven", "Morgana", "Vayne", "Kog'Maw", "Kayle", "Gangplank"] },
     Vi: { partners: ["Ahri", "Taliyah", "Fizz", "Orianna", "LeBlanc", "Vex", "Akali", "Ekko"], pivot: true },
     Yuumi: { partners: ["Twitch", "Garen", "Dr. Mundo", "Darius", "Hecarim", "Olaf", "Warwick"] },
@@ -119,7 +123,7 @@
     Alistar: { partners: ["Yasuo", "Kalista", "Veigar"] },
     Anivia: { partners: ["Poppy", "Qiyana", "Talon", "Vayne"] },
     Azir: { partners: ["Braum", "Maokai"] },
-    Bard: { partners: ["Nunu", "Fiddlesticks", "Caitlyn", "Cho'Gath", "Galio", "Lee Sin", "Sett", "Ekko"] },
+    Bard: { partners: ["Nunu et Willump", "Fiddlesticks", "Caitlyn", "Cho'Gath", "Galio", "Lee Sin", "Sett", "Ekko"] },
     "Bel'Veth": { partners: ["Yuumi", "Braum", "Lulu", "Shen"] },
     Draven: { partners: ["Renata Glasc", "Twisted Fate", "Janna", "Pyke", "Nautilus"], pivot: true },
     Fiddlesticks: { partners: ["Nocturne", "Twisted Fate", "Rell", "Amumu", "Senna"] },
@@ -138,13 +142,13 @@
     Xayah: { partners: ["Rakan"] },
     Amumu: { partners: ["Miss Fortune", "Kennen", "Galio", "Fiddlesticks"] },
     "Jarvan IV": { partners: ["Orianna", "Miss Fortune", "Cassiopeia", "Galio", "Vi", "Azir"] },
-    Lulu: { partners: ["Kog'Maw", "Jinx", "Twitch", "Master Yi", "Bel'Veth", "Kayle"] },
+    Lulu: { partners: ["Kog'Maw", "Jinx", "Twitch", "Maître Yi", "Bel'Veth", "Kayle"] },
     Nautilus: { partners: ["Varus", "Samira", "Draven", "Kalista"] },
     Maokai: { partners: ["Azir", "Aphelios", "Heimerdinger"] },
     Viktor: { partners: ["Veigar", "Alistar"] },
     Poppy: { partners: ["Anivia", "Veigar"] },
     Tristana: { partners: ["Braum", "Darius"] },
-    Kaisa: { partners: ["Galio", "Rell", "Alistar", "Rakan"] },
+    "Kai'Sa": { partners: ["Galio", "Rell", "Alistar", "Rakan"] },
   };
 
   const WEIGHTS = { family: 3.2, combo: 2.0, trinity: 1.4, lane: 1.2, counter: 1.0, anti: 2.5, mix: 3.0 };
@@ -155,7 +159,7 @@
   }
 
   function pickOrderForSide(side) {
-    return PICK_ORDER_BLUE.slice();
+    return (side === "red" ? PICK_ORDER_RED : PICK_ORDER_BLUE).slice();
   }
 
   function getPartners(name) {
@@ -178,16 +182,30 @@
     return links;
   }
 
+  function comboLinked(a, b) {
+    const pa = getPartners(a).partners;
+    const pb = getPartners(b).partners;
+    return pa.some((p) => norm(p) === norm(b)) || pb.some((p) => norm(p) === norm(a));
+  }
+
+  function comboPairCount(names) {
+    let pairs = 0;
+    for (let i = 0; i < names.length; i++) {
+      for (let j = i + 1; j < names.length; j++) {
+        if (comboLinked(names[i], names[j])) pairs++;
+      }
+    }
+    return pairs;
+  }
+
   function trinityBonus(candidate, teamNames) {
     const all = teamNames.concat(candidate);
     if (all.length < 2) return { score: 0, reasons: [] };
-    let totalLinks = 0;
-    for (const n of all) totalLinks += countComboLinks(n, all.filter((x) => norm(x) !== norm(n)));
-    const direct = countComboLinks(candidate, teamNames);
-    if (all.length >= 3 && totalLinks >= 3) return { score: 42, reasons: ["Trinité 3+ liens combo"] };
+    const direct = teamNames.filter((ally) => comboLinked(candidate, ally)).length;
+    if (!direct) return { score: 0, reasons: [] };
+    if (all.length >= 3 && comboPairCount(all) >= 3) return { score: 42, reasons: ["Trinité 3+ liens combo"] };
     if (direct >= 2) return { score: 28, reasons: ["Duo combo fort"] };
-    if (direct >= 1 && teamNames.length >= 1) return { score: 12, reasons: ["Lien combo"] };
-    return { score: 0, reasons: [] };
+    return { score: 12, reasons: ["Lien combo"] };
   }
 
   function detectTemplate(teamNames) {
@@ -290,8 +308,13 @@
     const tags = new Set(all.map(familyTagFor).filter(Boolean));
     if (tags.size <= 1) return { score: 0, reasons: [] };
 
-    const hasEngage = [...tags].includes("engage");
-    const hasRange = [...tags].includes("range");
+    const archetype = detectArchetypeComp(all);
+    if (archetype && inList(candidate, archetype.champs)) {
+      return { score: 0, reasons: [] };
+    }
+
+    const hasEngage = tags.has("engage");
+    const hasRange = tags.has("range");
     if (hasEngage && hasRange) {
       return { score: -48, reasons: ["Mélange engage + range — familles incompatibles"] };
     }
@@ -304,6 +327,7 @@
   function antiSynergyPenalty(candidate, teamNames) {
     let score = 0;
     const reasons = [];
+    const pairHits = new Set();
     for (const ally of teamNames) {
       for (const [a, b] of ANTI_SYNERGIES) {
         const hit =
@@ -312,12 +336,18 @@
         if (hit) {
           score -= 40;
           reasons.push(`Antisynergie ${candidate}+${ally}`);
+          pairHits.add(norm(ally));
         }
       }
     }
-    if (inList(candidate, ["Zeri"]) && teamNames.some((n) => inList(n, ["Leona", "Nautilus", "Rell"]) && !inList(n, ["Kai'Sa"]))) {
-      score -= 28;
-      reasons.push("Zeri sans follow-up dash");
+    if (inList(candidate, ["Zeri"])) {
+      const hasEngage = teamNames.some((n) => inList(n, ["Leona", "Nautilus", "Rell"]));
+      const hasDashFollow = teamNames.some((n) => inList(n, ["Kai'Sa"]));
+      const dejaCompte = teamNames.some((n) => pairHits.has(norm(n)));
+      if (hasEngage && !hasDashFollow && !dejaCompte) {
+        score -= 28;
+        reasons.push("Zeri sans follow-up dash");
+      }
     }
     return { score, reasons };
   }
@@ -357,10 +387,17 @@
   }
 
   function tankSuppAllowsAp(candidate, slot, allies) {
+    const name = typeof candidate === "string" ? candidate : candidate?.name;
     const hasTankSupp = allies.some((a) => inList(a, TANK_ENGAGE_SUPPORTS));
-    if (!hasTankSupp) return { score: 0, reasons: [] };
-    if (slot === "Mid") return { score: 24, reasons: ["Tank supp → AP mid OK"] };
-    if (slot === "Top") return { score: 16, reasons: ["Tank supp → bruiser top OK"] };
+    if (!hasTankSupp || !name) return { score: 0, reasons: [] };
+    const profile = global.LoLChampionClasses?.getProfile?.(name);
+    if (!profile) return { score: 0, reasons: [] };
+    if (slot === "Mid" && profile.primaryClass === "Mage") {
+      return { score: 24, reasons: ["Tank supp → AP mid OK"] };
+    }
+    if (slot === "Top" && profile.primaryClass === "Fighter") {
+      return { score: 16, reasons: ["Tank supp → bruiser top OK"] };
+    }
     return { score: 0, reasons: [] };
   }
 
@@ -409,7 +446,7 @@
     const deny = denyComboBanScore(champName, enemyNames);
     let score = deny.score;
     const reasons = [...deny.reasons];
-    if (enemyNeedsTank && inList(champName, TANK_JUNGLE.concat(["Ornn", "Sion", "Malphite", "Maokai", "Nautilus", "Shen", "Zac", "Sejuani", "Dr. Mundo", "Cho'Gath", "K'Sante", "Poppy"]))) {
+    if (enemyNeedsTank && inList(champName, TANK_JUNGLE.concat(["Ornn", "Sion", "Malphite", "Maokai", "Nautilus", "Shen", "Zac", "Sejuani", "Dr. Mundo", "Cho'Gath", "K'Santé", "Poppy"]))) {
       score += 28;
       reasons.push("Deny tank — comp sans front");
     }
@@ -450,13 +487,15 @@
       }
     }
     if (anti.score) {
-      score += Math.round(anti.score * WEIGHTS.anti);
-      breakdown.anti = anti.score;
+      const contrib = Math.round(anti.score * WEIGHTS.anti);
+      score += contrib;
+      breakdown.anti = contrib;
       reasons.push(...anti.reasons.slice(0, 1));
     }
     if (mix.score) {
-      score += Math.round(mix.score * WEIGHTS.mix);
-      breakdown.mix = mix.score;
+      const contrib = Math.round(mix.score * WEIGHTS.mix);
+      score += contrib;
+      breakdown.mix = contrib;
       reasons.push(...mix.reasons.slice(0, 1));
     }
 

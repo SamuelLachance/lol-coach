@@ -1,6 +1,5 @@
 # Données sources (le site servi inclut public/data/)
 /data/
-/docs/
 /config/server.json
 
 # Logs et caches

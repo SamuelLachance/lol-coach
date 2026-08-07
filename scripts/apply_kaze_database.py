@@ -103,7 +103,7 @@ def apply_champions(colors: dict, vs_data: dict) -> None:
                 merge_kaze_matchups(c, vs_data, by_name)
         data["kazeDatabase"] = True
         data["mtgColorsVersion"] = colors.get("version", "1")
-        path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         print(f"Updated champions: {path.name}")
 
 
@@ -136,7 +136,7 @@ def apply_tactics(colors: dict, draft_md: str, db_md: str) -> None:
         meta["mtgColors"] = color_system
         meta.pop("coachNotes", None)
         meta.pop("kazeSource", None)
-        path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(meta, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         print(f"Updated tactics-meta: {path.name}")
 
 
@@ -168,7 +168,7 @@ def apply_guide(draft_md: str) -> None:
         guide = load_json(path)
         base = [s for s in guide.get("sections", []) if s.get("id") not in ("kaze-colors-draft",)]
         guide["sections"] = base + [new_sec]
-        path.write_text(json.dumps(guide, ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(guide, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         print(f"Updated guide: {path.name}")
 
 

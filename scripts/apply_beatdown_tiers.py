@@ -49,7 +49,7 @@ def main() -> None:
             champ["tierAnalysis"] = analysis
         payload["tierListVersion"] = data.get("version", "beatdown-v2")
         payload["tierListScope"] = data.get("scope", "")
-        path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         print(f"{path.name}: beatdown tiers applied ({len(payload.get('champions', []))} champs)")
 
 

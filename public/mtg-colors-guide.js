@@ -4,13 +4,31 @@
 (function (global) {
   const WHEEL = ["W", "U", "B", "R", "G"];
 
-  const COLOR_LOL_EXAMPLES = {
-    W: "Lulu, Braum, Sejuani, Taric — peel, frontline, protect the carry",
-    U: "Orianna, Azir, TF, Xerath — contrôle, setup, zone, tempo lent",
-    B: "Pyke, Evelynn, Kassadin — picks, snowball, fin de partie",
-    R: "Draven, Renekton, Lee Sin — aggro, tempo, fight early",
-    G: "Kog'Maw, Kayle, Nasus — scaling, durée, win condition late",
+  const COLOR_EXAMPLE_THEMES = {
+    W: "peel, frontline, protect the carry",
+    U: "contrôle, setup, zone, tempo lent",
+    B: "picks, snowball, fin de partie",
+    R: "aggro, tempo, fight early",
+    G: "scaling, durée, win condition late",
   };
+
+  function topChampionsByColor(code, limit = 4) {
+    const champs = global.LoLCoach?.state?.allChampions?.length
+      ? global.LoLCoach.state.allChampions
+      : global.LoLCoach?.state?.champions || [];
+    return champs
+      .filter((c) => (c.colorIdentity?.[code] || 0) > 0)
+      .sort((a, b) => (b.colorIdentity?.[code] || 0) - (a.colorIdentity?.[code] || 0))
+      .slice(0, limit)
+      .map((c) => c.name);
+  }
+
+  function colorExampleLine(code) {
+    const names = topChampionsByColor(code);
+    const theme = COLOR_EXAMPLE_THEMES[code] || "";
+    if (!names.length) return theme;
+    return theme ? `${names.join(", ")} — ${theme}` : names.join(", ");
+  }
 
   const FAMILY_SAMPLES = [
     ["support_enchanter", "W élevé — peel & buffs"],
@@ -43,7 +61,7 @@
             <p class="mtg-guide-philo">${esc(m.philosophy)}</p>
           </div>
         </div>
-        <p class="mtg-guide-examples">${esc(COLOR_LOL_EXAMPLES[code] || "")}</p>
+        <p class="mtg-guide-examples">${esc(colorExampleLine(code))}</p>
       </article>`;
     }).join("");
   }

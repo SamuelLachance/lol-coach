@@ -27,6 +27,10 @@
 
   const SPELL_SHIELD = new Set(["Morgana", "Sivir", "Nocturne", "Olaf", "Malzahar", "Briar"].map(norm));
   const HOOK_CC = new Set(["Blitzcrank", "Nautilus", "Thresh", "Pyke", "Morgana"].map(norm));
+  /** Mobilité réelle que le texte des sorts FR ne laisse pas détecter (ombres, bonds sans mot-clé…). */
+  const EXTRA_MOBILITY = new Set(
+    ["Zed", "Kassadin", "Fizz", "Katarina", "Ekko", "Shaco", "Talon", "Qiyana", "LeBlanc", "Maître Yi", "Evelynn"].map(norm)
+  );
 
   function clamp(x, lo, hi) {
     return Math.max(lo, Math.min(hi, x));
@@ -44,13 +48,11 @@
       shield: /bouclier|shield/.test(t),
       heal: /soin|soigne|heal|régén|restaure/.test(t),
       aoe: /zone|cercle|tous les ennemis|cone|cône|rayon|radius/.test(t),
-      poke: /distance|ligne|projectile|lance/.test(t),
       antiHeal: /anti-soin|anti-soins|blessures graves|grievous/.test(t),
       execute: /exécute|exécut|seuil|execute/.test(t),
       spellShield: /anti-magie|rideau de feu|sceau|spell.?shield/.test(t),
       percentHp: /% des pv|% pv|pourcentage.*vie|pv max|points de vie max|percent/.test(t),
-      untargetable: /intouchable|invuln|invulnér|inattaquable/.test(t),
-      dashBlock: /anti-dash|interrompt.*dash|empêche.*dash|mur|bloque.*dash/.test(t),
+      dashBlock: /anti-dash|interrompt.*dash|empêche.*dash|\bmurs?\b|muraille|bloque.*dash/.test(t),
       pull: /tire|attire|ramène|traction|hook|grappin/.test(t),
       disengage: /repousse|recule|disengage|contre-engage|repouss/.test(t),
     };
@@ -69,6 +71,7 @@
     const traits = spellTraits(abilityText);
     if (SPELL_SHIELD.has(norm(name))) traits.spellShield = true;
     if (HOOK_CC.has(norm(name)) && name !== "Morgana") traits.pull = true;
+    if (EXTRA_MOBILITY.has(norm(name))) traits.mobility = true;
 
     if (/marksman|tireur|à distance/i.test(type)) {
       tags.add("marksman");
@@ -99,8 +102,13 @@
       tankiness,
       utility,
       difficulty: mp.difficulty ?? 5,
-      squishy: dp.squishy ?? tankiness <= 4,
-      tanky: dp.tanky ?? (tankiness >= 7 || tags.has("frontline")),
+      squishy:
+        !tags.has("frontline") &&
+        tankiness < 7 &&
+        (tankiness <= 4 ||
+          (tankiness <= 5 &&
+            (tags.has("mage") || tags.has("marksman") || tags.has("assassin") || tags.has("enchanter")))),
+      tanky: tankiness >= 7 || tags.has("frontline"),
       superTank: tankiness >= 8 && (tags.has("frontline") || /tank/i.test(type)),
       waveClear: dp.waveClear ?? (traits.aoe || damage >= 6),
       enemyTips: mp.enemyTips || [],
@@ -116,9 +124,33 @@
         IMMOBILE_CARRIES.has(norm(name)) ||
         (!traits.mobility && attackRange >= 500 && squishyFrom(dp, tankiness)),
       engage: tags.has("engage") || traits.knockup,
-      peel: tags.has("peel") || traits.shield || traits.heal,
-      burst: damage >= 7 || tags.has("assassin"),
-      early: damage >= 7 && tankiness <= 5,
+      peel: clamp(
+        (tags.has("peel") ? 0.45 : 0) +
+          (traits.shield ? 0.2 : 0) +
+          (traits.heal ? 0.15 : 0) +
+          (traits.disengage ? 0.2 : 0) +
+          (tags.has("enchanter") ? 0.1 : 0),
+        0,
+        1
+      ),
+      burst: clamp(
+        (tags.has("burst") ? 0.4 : 0) +
+          (tags.has("assassin") ? 0.3 : 0) +
+          (damage >= 7 ? 0.25 : damage >= 5 ? 0.1 : 0) +
+          (tags.has("high_damage") ? 0.15 : 0),
+        0,
+        1
+      ),
+      early: clamp(
+        (tags.has("assassin") ? 0.3 : 0) +
+          (tags.has("dive") ? 0.2 : 0) +
+          (tags.has("pick") ? 0.15 : 0) +
+          (damage >= 7 ? 0.2 : 0) +
+          (tankiness >= 6 && damage >= 5 ? 0.15 : 0) -
+          (tags.has("scaling") ? 0.35 : 0),
+        0,
+        1
+      ),
       scaling: tags.has("scaling") || (tags.has("marksman") && damage <= 6),
     };
   }
@@ -166,6 +198,16 @@
     if (at.attackRange > de.attackRange + 150 && de.squishy) {
       add(8, `${at.name} kite range vs ${de.name}`);
     }
+    if (
+      at.attackRange >= 500 &&
+      de.attackKind === "melee" &&
+      (de.fighter || de.tanky) &&
+      at.marksman &&
+      !de.traits.dashBlock
+    ) {
+      const reach = 14 + Math.min(6, Math.floor((at.attackRange - 400) / 60));
+      add(de.traits.mobility ? reach - 7 : reach, `${at.name} kite le juggernaut ${de.name}`);
+    }
 
     if ((at.assassin || (at.tags.has("assassin") && at.traits.mobility)) && de.squishy) {
       add(14, `${at.name} assassin vs ${de.name} fragile`);
@@ -188,12 +230,12 @@
     if (at.traits.spellShield && de.mage) add(6, `${at.name} spell-shield vs ${de.name}`);
 
     if (at.tanky && de.squishy && de.damage >= 6) add(10, `${at.name} frontline absorbe ${de.name}`);
-    if (at.tanky && de.assassin) add(8, `${at.name} tank vs assassin ${de.name}`);
-    if (at.fighter && de.assassin && at.tankiness >= de.tankiness) {
+    if (at.tanky && de.assassin && de.attackKind === "melee") add(8, `${at.name} tank vs assassin ${de.name}`);
+    if (at.fighter && de.assassin && de.attackKind === "melee" && at.tankiness >= de.tankiness) {
       add(8, `${at.name} bruiser vs ${de.name} assassin`);
     }
 
-    if ((at.marksman || at.damage >= 7) && de.superTank) {
+    if ((at.marksman || (at.damage >= 7 && !at.assassin)) && de.superTank) {
       add(10, `${at.name} DPS vs super tank ${de.name}`);
     }
     if (at.traits.execute && de.tanky) add(10, `${at.name} execute vs tank ${de.name}`);
@@ -214,8 +256,11 @@
     if (at.traits.spellShield && (de.traits.pull || de.tags.has("cc"))) {
       add(14, `${at.name} spell-shield vs hook ${de.name}`);
     }
-    if (at.traits.dashBlock && de.traits.mobility) {
+    if (at.traits.dashBlock && de.traits.mobility && de.attackKind === "melee") {
       add(14, `${at.name} anti-dash vs ${de.name}`);
+    }
+    if (at.traits.dashBlock && at.attackKind === "melee" && de.attackRange >= 500 && (de.marksman || de.mage)) {
+      add(14, `${at.name} mur coupe le poke de ${de.name}`);
     }
     if (at.traits.root && de.traits.mobility && de.fighter) {
       add(10, `${at.name} root vs bruiser mobile ${de.name}`);
@@ -289,10 +334,10 @@
         } else if (rangeDiff <= -80 && a.traits.mobility) {
           addOur(10, `${a.name} mobile vs ${d.name} poke`);
         }
-        if (a.attackRange <= 500 && d.attackRange >= 600 && a.burst && a.early) {
+        if (a.attackRange <= 500 && d.attackRange >= 600 && a.burst >= 0.5 && a.early >= 0.4) {
           addOur(14, `${a.name} all-in vs ${d.name} poke`);
         }
-        if (d.attackRange <= 500 && a.attackRange >= 600 && d.burst) {
+        if (d.attackRange <= 500 && a.attackRange >= 600 && d.burst >= 0.5) {
           addEnemy(14, `${d.name} all-in vs ${a.name} poke`);
         }
         if (a.waveClear && !d.waveClear) addOur(6, `${a.name} push prio vs ${d.name}`);
@@ -321,7 +366,7 @@
     }
 
     if (slot === "Mid") {
-      if (a.burst > d.burst + 0.15) addOur(12, `${a.name} burst > ${d.name}`);
+      if (a.burst > d.burst + 0.15 && d.squishy) addOur(12, `${a.name} burst > ${d.name}`);
       if (a.assassin && d.mage && d.squishy) addOur(14, `${a.name} assassin vs mage ${d.name}`);
       if (a.mage && d.assassin && a.traits.cc) addOur(10, `${a.name} CC vs assassin ${d.name}`);
       if (a.traits.mobility && d.mage && !d.traits.mobility) {
@@ -332,17 +377,17 @@
 
     if (slot === "Jungle") {
       const earlyDiff = a.early - d.early;
-      if (earlyDiff > 0.1) addOur(Math.round(earlyDiff * 40), `${a.name} early > ${d.name} jungle`);
+      if (earlyDiff > 0.1) addOur(Math.min(15, Math.round(earlyDiff * 15)), `${a.name} early > ${d.name} jungle`);
       if (a.burst > d.burst + 0.1) addOur(10, `${a.name} duel burst vs ${d.name}`);
       if (a.tags.has("invade") || a.family === "jungle_offensive") {
-        if (d.scaling && !d.early) addOur(8, `${a.name} invade vs scale ${d.name}`);
+        if (d.scaling && d.early < 0.3) addOur(8, `${a.name} invade vs scale ${d.name}`);
       }
       if (a.traits.mobility && d.tanky) addOur(6, `${a.name} mobile jgl vs tank ${d.name}`);
     }
 
     if (slot === "Support") {
       if (a.peel > d.peel + 0.1) addOur(14, `${a.name} peel > engage ${d.name}`);
-      if (a.engage && d.peel) addEnemy(10, `${d.name} peel vs engage ${a.name}`);
+      if (a.engage && d.peel >= 0.5) addEnemy(10, `${d.name} peel vs engage ${a.name}`);
       if (a.traits.pull && d.immobile) addOur(16, `${a.name} hook vs ${d.name} immobile`);
       if (a.traits.spellShield && d.traits.pull) addOur(18, `${a.name} black shield vs hook ${d.name}`);
       if (d.traits.spellShield && a.traits.pull) addEnemy(18, `${d.name} black shield vs hook ${a.name}`);
@@ -367,12 +412,12 @@
     const rev = kitCounterScore(profB, profA);
     const lane = laneKitModifiers(profA, profB, slot);
 
-    let our = Math.round(fwd.score * 1.15 + lane.our);
-    let enemy = Math.round(rev.score * 1.15 + lane.enemy);
+    const our = Math.round(fwd.score + lane.our);
+    const enemy = Math.round(rev.score + lane.enemy);
 
     const allHits = [
       ...fwd.hits.map((h) => ({ ...h, side: "our" })),
-      ...rev.hits.map((h) => ({ ...h, side: "enemy", reason: h.reason.replace(profB.name, profA.name).replace(profA.name, profB.name) })),
+      ...rev.hits.map((h) => ({ ...h, side: "enemy" })),
       ...lane.hits,
     ];
 
@@ -396,7 +441,7 @@
       if (r) reasons.push(r.replace(/^[^:]+:\s*/, ""));
     }
 
-    return { our, enemy, margin, reasons };
+    return { our, enemy, margin, reasons, hits: allHits };
   }
 
   function loadPrecomputed(data) {
@@ -437,15 +482,23 @@
 
     const cached = lookupMargin(kitA.name, kitB.name, slot);
     if (cached != null) {
+      if (cached === 0) {
+        return { our: 0, enemy: 0, margin: 0, reasons: [], source: "precomputed" };
+      }
       const abs = Math.abs(cached);
       const our = cached > 0 ? abs : 0;
       const enemy = cached < 0 ? abs : 0;
       const computed = computeLaneKitEdge(kitA, kitB, slot);
+      const wantSide = cached > 0 ? "our" : "enemy";
+      const sided = computed.hits.filter((h) => h.side === wantSide);
+      const reasons = [];
+      const top = pickTopReason(sided, kitA, kitB, slot);
+      if (top) reasons.push(top.replace(/^[^:]+:\s*/, ""));
       return {
         our,
         enemy,
         margin: cached,
-        reasons: computed.reasons,
+        reasons,
         source: "precomputed",
       };
     }

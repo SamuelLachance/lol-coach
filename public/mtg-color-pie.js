@@ -25,21 +25,36 @@
     ["W", "B"], ["W", "R"], ["U", "R"], ["U", "G"], ["B", "G"],
   ];
 
-  const GUILDS = {
-    WU: { name: "Azorius", colors: ["W", "U"], kind: "allied" },
-    UB: { name: "Dimir", colors: ["U", "B"], kind: "allied" },
-    BR: { name: "Rakdos", colors: ["B", "R"], kind: "allied" },
-    RG: { name: "Gruul", colors: ["R", "G"], kind: "allied" },
-    GW: { name: "Selesnya", colors: ["G", "W"], kind: "allied" },
-  };
+  function wheelIndex(c) {
+    return WHEEL.indexOf(c);
+  }
 
-  const ENEMY_DUAL = {
-    WB: { name: "Silverquill", colors: ["W", "B"], kind: "enemy" },
-    WR: { name: "Boros", colors: ["W", "R"], kind: "enemy" },
-    UR: { name: "Izzet", colors: ["U", "R"], kind: "enemy" },
-    BG: { name: "Golgari", colors: ["B", "G"], kind: "enemy" },
-    GU: { name: "Simic", colors: ["G", "U"], kind: "enemy" },
-  };
+  /** Clé canonique d'une paire : ordre roue WUBRG — sert à construire ET interroger les tables. */
+  function pairKey(a, b) {
+    return [a, b].sort((x, y) => wheelIndex(x) - wheelIndex(y)).join("");
+  }
+
+  const GUILDS = {};
+  for (const [colors, name] of [
+    [["W", "U"], "Azorius"],
+    [["U", "B"], "Dimir"],
+    [["B", "R"], "Rakdos"],
+    [["R", "G"], "Gruul"],
+    [["G", "W"], "Selesnya"],
+  ]) {
+    GUILDS[pairKey(colors[0], colors[1])] = { name, colors, kind: "allied" };
+  }
+
+  const ENEMY_DUAL = {};
+  for (const [colors, name] of [
+    [["W", "B"], "Silverquill"],
+    [["W", "R"], "Boros"],
+    [["U", "R"], "Izzet"],
+    [["B", "G"], "Golgari"],
+    [["G", "U"], "Simic"],
+  ]) {
+    ENEMY_DUAL[pairKey(colors[0], colors[1])] = { name, colors, kind: "enemy" };
+  }
 
   const SHARDS = {
     Bant: { colors: ["G", "W", "U"], kind: "shard" },
@@ -57,16 +72,8 @@
     Mardu: { colors: ["R", "W", "B"], kind: "wedge" },
   };
 
-  function pairKey(a, b) {
-    return [a, b].sort().join("");
-  }
-
   const ALLIED_SET = new Set(ALLIED_PAIRS.map(([a, b]) => pairKey(a, b)));
   const ENEMY_SET = new Set(ENEMY_PAIRS.map(([a, b]) => pairKey(a, b)));
-
-  function wheelIndex(c) {
-    return WHEEL.indexOf(c);
-  }
 
   function isAdjacent(a, b) {
     const i = wheelIndex(a);
@@ -119,7 +126,9 @@
   }
 
   function activeColorsFromSum(sum, threshold = 0.12) {
-    return WHEEL.filter((c, i) => sum[i] >= threshold);
+    const total = sum.reduce((a, b) => a + (b || 0), 0);
+    const cut = threshold * Math.max(1, total);
+    return WHEEL.filter((c, i) => (sum[i] || 0) >= cut);
   }
 
   function sameSet(a, b) {
@@ -206,14 +215,16 @@
     return best;
   }
 
-  function pairRelationScore(d1, d2) {
+  function pairRelationScore(d1, d2, embraceColors) {
     if (!d1?.length || !d2?.length) return 0;
     let s = 0;
     for (const x of d1) {
       for (const y of d2) {
         if (x === y) s += 25;
         else if (isAllied(x, y)) s += 40;
-        else if (isEnemy(x, y)) s -= 60;
+        else if (isEnemy(x, y)) {
+          s += embraceColors?.includes(x) && embraceColors.includes(y) ? 20 : -60;
+        }
       }
     }
     return s;
@@ -224,10 +235,13 @@
     const id = champIdentity.toUpperCase().replace(/[^WUBRG]/g, "");
     if (!id) return 0;
     const champColors = [...new Set(id.split(""))].filter((c) => WHEEL.includes(c));
-    const champCombo = detectCombination(champColors);
-    if (teamCombo.type === "guild" && champCombo.key === teamCombo.key) return 95;
-    if (teamCombo.type === "shard" && champColors.every((c) => teamCombo.colors.includes(c))) return 80;
-    if (teamCombo.type === "wedge" && champColors.every((c) => teamCombo.colors.includes(c))) return 70;
+    if ((teamCombo.type === "guild" || teamCombo.type === "enemy_dual") && sameSet(champColors, teamCombo.colors)) return 95;
+    if (teamCombo.type === "shard" && champColors.every((c) => teamCombo.colors.includes(c))) {
+      return sameSet(champColors, teamCombo.colors) ? 80 : 40;
+    }
+    if (teamCombo.type === "wedge" && champColors.every((c) => teamCombo.colors.includes(c))) {
+      return sameSet(champColors, teamCombo.colors) ? 70 : 35;
+    }
     if (teamCombo.type === "mono" && champColors.length === 1 && champColors[0] === teamCombo.colors[0]) return 65;
     let overlap = 0;
     for (const c of champColors) if (teamCombo.colors.includes(c)) overlap += 1;
@@ -246,7 +260,32 @@
     const teamSum = sumVectors(cis.map((c) => colorVectorFrom(c)));
     const dominant = cis.length >= 3 ? teamDominantFromSum(teamSum) : dominantFromSum(teamSum);
     const active = activeColorsFromSum(teamSum);
-    const combination = bestFitCombination(active, dominant, teamSum);
+    let combination = bestFitCombination(active, dominant, teamSum);
+
+    const identityVotes = {};
+    for (const ci of cis) {
+      const cols = [...new Set(String(ci.identity || "").split(""))].filter((c) => WHEEL.includes(c));
+      if (cols.length !== 2) continue;
+      const k = pairKey(cols[0], cols[1]);
+      if (GUILDS[k] || ENEMY_DUAL[k]) identityVotes[k] = (identityVotes[k] || 0) + 1;
+    }
+    const voted = Object.entries(identityVotes).sort((a, b) => b[1] - a[1]);
+    const quorum = Math.max(2, Math.ceil(cis.length * 0.6));
+    if (voted.length && voted[0][1] >= quorum) {
+      const key = voted[0][0];
+      const def = GUILDS[key] || ENEMY_DUAL[key];
+      combination = {
+        type: GUILDS[key] ? "guild" : "enemy_dual",
+        name: def.name,
+        colors: [...def.colors],
+        key,
+        kind: def.kind,
+      };
+    }
+    const rivalVotes = voted
+      .filter(([k]) => k !== combination.key)
+      .reduce((m, [, v]) => Math.max(m, v), 0);
+
     let score = combinationScore(combination);
 
     if (combination.type === "mono" && vectors.length >= 2) score += vectors.length * 25;
@@ -267,25 +306,27 @@
       for (let j = i + 1; j < cis.length; j += 1) {
         const d1 = cis[i].dominant || dominantFromSum(colorVectorFrom(cis[i]));
         const d2 = cis[j].dominant || dominantFromSum(colorVectorFrom(cis[j]));
-        score += Math.round(pairRelationScore(d1, d2) * 2.1);
+        const duo = detectCombination(
+          [...new Set(`${cis[i].identity || ""}${cis[j].identity || ""}`.split(""))].filter((c) => WHEEL.includes(c))
+        );
+        const embrace =
+          duo.type === "guild" || duo.type === "enemy_dual"
+            ? duo.colors
+            : combination.type === "enemy_dual"
+              ? combination.colors
+              : null;
+        score += Math.round(pairRelationScore(d1, d2, embrace) * 2.1);
         for (const x of d1) {
           for (const y of d2) {
-            if (isEnemy(x, y)) {
-              if (combination.type === "wedge" || combination.type === "enemy_dual") {
-                score += 10;
-              } else {
-                conflicts.push(`${LABELS[x]} vs ${LABELS[y]} (${vectors[i].name}/${vectors[j].name})`);
-                score -= 12;
-              }
+            if (isEnemy(x, y) && !(embrace && embrace.includes(x) && embrace.includes(y))) {
+              const [cx, cy] = wheelIndex(x) <= wheelIndex(y) ? [x, y] : [y, x];
+              conflicts.push(`${LABELS[cx]} vs ${LABELS[cy]} (${vectors[i].name}/${vectors[j].name})`);
             }
           }
         }
-        if (cis[i].identity && cis[j].identity) {
-          const ci = detectCombination([...new Set(`${cis[i].identity}${cis[j].identity}`.split(""))].filter((c) => WHEEL.includes(c)));
-          if (ci.type === "guild") score += 25;
-          if (ci.type === "enemy_dual") score += 20;
-          if (ci.type === "shard" || ci.type === "wedge") score += 15;
-        }
+        if (duo.type === "guild") score += 25;
+        if (duo.type === "enemy_dual") score += 20;
+        if (duo.type === "shard" || duo.type === "wedge") score += 15;
       }
     }
 
@@ -297,45 +338,52 @@
       combination,
       teamSum,
       active,
+      rivalVotes,
     };
   }
 
-  /** Macro / comp breakdown — hundreds-scale; avoids pick-level pair penalties crushing named identities. */
+  /** Score macro d'identité — zéro-centré : équipe aléatoire ≈ 0, identité cohérente positive, mix diffus négatif. */
   function teamMacroIdentityScore(vectors) {
     const coherence = colorCoherence(vectors);
     const combo = coherence.combination;
     if (!vectors?.length || !combo) return coherence;
 
-    let score = combinationScore(combo) * 2.65;
-    if (vectors.length >= 5) score += 92;
-    else score += vectors.length * 22;
-
-    const typeBonus = {
-      guild: 78,
-      shard: 72,
-      wedge: 68,
-      enemy_dual: 62,
-      mono: 58,
+    const typeBase = {
+      guild: 70,
+      enemy_dual: 65,
+      mono: 55,
+      shard: 45,
+      wedge: 35,
+      dual: 10,
+      tricolor: -15,
+      four: -30,
+      five: -45,
     };
-    score += typeBonus[combo.type] || 0;
+    let score = typeBase[combo.type] ?? -20;
 
+    const withColors = vectors.filter((v) => v.colors);
     let alignHits = 0;
-    for (const v of vectors) {
-      if (!v.colors) continue;
+    for (const v of withColors) {
       if (identityAlignBonus(v.colors.identity, combo) >= 55) alignHits += 1;
     }
-    score += alignHits * 34;
+    const n = withColors.length || 1;
+    score += alignHits * 32 - (n - alignHits) * 10;
 
-    const softConflict = combo.type === "wedge" || combo.type === "enemy_dual";
-    const conflictMult = softConflict ? 14 : 36;
-    const conflictCap = softConflict ? 34 : combo.type === "shard" ? 138 : combo.type === "guild" ? 108 : 88;
-    score -= Math.min(conflictCap, (coherence.conflicts?.length || 0) * conflictMult);
+    if (coherence.teamSum && combo.colors?.length) {
+      const total = coherence.teamSum.reduce((a, b) => a + (b || 0), 0) || 1;
+      const inCombo = WHEEL.reduce(
+        (acc, c, i) => acc + (combo.colors.includes(c) ? coherence.teamSum[i] || 0 : 0),
+        0
+      );
+      score += Math.round((inCombo / total - combo.colors.length / 5) * 180);
+    }
 
-    score += Math.round(Math.max(-48, Math.min(96, coherence.score * 0.14)));
+    score -= (coherence.conflicts?.length || 0) * 8;
+    if ((coherence.rivalVotes || 0) >= 2) score -= (coherence.rivalVotes - 1) * 25;
 
     return {
       ...coherence,
-      score: Math.round(Math.max(85, Math.min(560, score))),
+      score: Math.round(score),
     };
   }
 
@@ -345,10 +393,20 @@
     const dom = champColors.dominant || [];
     const sum = teamSum || sumVectors(teamColors.map((c) => colorVectorFrom(c)));
     const active = activeColorsFromSum(sum);
-    const teamCombo = detectCombination(active.length ? active : dominantFromSum(sum));
+    const teamDominant = teamColors.length >= 3 ? teamDominantFromSum(sum) : dominantFromSum(sum);
+    const teamCombo = bestFitCombination(active, teamDominant, sum);
 
     for (const tc of teamColors) {
-      s += pairRelationScore(dom, tc.dominant || []);
+      const duo = detectCombination(
+        [...new Set(`${champColors.identity || ""}${tc.identity || ""}`.split(""))].filter((c) => WHEEL.includes(c))
+      );
+      const embrace =
+        duo.type === "guild" || duo.type === "enemy_dual"
+          ? duo.colors
+          : teamCombo?.type === "enemy_dual"
+            ? teamCombo.colors
+            : null;
+      s += pairRelationScore(dom, tc.dominant || [], embrace);
       const dot = colorVectorFrom(champColors).reduce(
         (acc, v, i) => acc + v * (colorVectorFrom(tc)[i] || 0),
         0
@@ -356,16 +414,17 @@
       s += Math.round(dot * 130);
     }
 
-    s += identityAlignBonus(champColors.identity, teamCombo);
+    const align = identityAlignBonus(champColors.identity, teamCombo);
+    s += align;
 
     const champActive = detectCombination(
       dom.length ? dom : [...new Set((champColors.identity || "").split(""))].filter((c) => WHEEL.includes(c))
     );
     let label = null;
     if (champActive.type === "guild") label = `Guild ${champActive.name}`;
-    else if (teamCombo.type === "shard" && identityAlignBonus(champColors.identity, teamCombo) >= 28) {
+    else if (teamCombo.type === "shard" && align >= 28) {
       label = `Shard ${teamCombo.name}`;
-    } else if (teamCombo.type === "wedge" && identityAlignBonus(champColors.identity, teamCombo) >= 24) {
+    } else if (teamCombo.type === "wedge" && align >= 24) {
       label = `Wedge ${teamCombo.name}`;
     } else if (teamCombo.type === "guild") label = `Vers ${teamCombo.name}`;
 
@@ -505,7 +564,7 @@
   /** Enemy color hosers — tension W/B, W/R, U/R, U/G, B/G */
   function colorMatchupPenalty(champColors, enemyTeamSum) {
     if (!champColors || !enemyTeamSum) return { score: 0, reasons: [] };
-    const enemyDom = dominantFromSum(enemyTeamSum, 0.28);
+    const enemyDom = teamDominantFromSum(enemyTeamSum);
     const champDom = champColors.dominant || dominantFromSum(colorVectorFrom(champColors), 0.22);
     let score = 0;
     const reasons = [];
@@ -519,7 +578,7 @@
         }
       }
     }
-    return { score, reasons: [...new Set(reasons)].slice(0, 2) };
+    return { score, reasons: score < 0 ? [...new Set(reasons)].slice(0, 2) : [] };
   }
 
   function pastillePairFromSummary(summary) {

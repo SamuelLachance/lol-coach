@@ -56,12 +56,11 @@ pip install -r requirements.txt   # une fois
 
 | Onglet | Description |
 |--------|-------------|
-| **Champions** | Pool patché, tiers, rôles, sorts, matchups heuristiques |
-| **Objets** | Légendaires ranked SR uniquement (≥3000 or, Faille de l'invocateur) |
-| **Draft** | Simulation ban/pick, recommandations, fearless |
-| **Macro** | Plan de match : prio lanes, jungle, objectifs, TF |
-| **Patch** | Pool, tiers et rôles par champion (localStorage) |
-| **Guide** | Fondamentaux macro SoloQ |
+| **Champions** | Pool patché, tiers, rôles, familles, couleurs MTG, matchups par lane |
+| **Draft** | Draft tournoi (5 bans, 2 phases), timeline de séquence, recommandations expliquées, fearless |
+| **Macro** | Plan de match complet : prio lanes, pathing jungle, objectifs, vagues, teamfight, vision, win condition |
+| **Patch** | Pool, tiers et rôles par champion (localStorage, export/import JSON) |
+| **Guide** | Fondamentaux macro et méthode Kazewa (`public/data/guide-fr.json`) |
 
 ## Données
 
@@ -69,14 +68,21 @@ pip install -r requirements.txt   # une fois
 - Matchups / pairings : analyse **exclusive** de `lol-champions-gameplay.md` (rôles, profil, sorts, conseils de jeu / jouer contre) — aucune liste meta externe
 - Scripts :
   - `scripts/fetch_ddragon.py` — relancer après chaque patch LoL
-  - `scripts/apply_matchups_from_gameplay.py` — recalcule `worstMatchups` et `bestPairings` (172 champs)
+  - `scripts/apply_matchups_from_gameplay.py` — recalcule `bestCounters` et `bestPairings` (172 champs)
+  - `node scripts/build_lane_matchups.mjs` — matrice de marges de lane 172×172×5 (antisymétrique par construction)
+  - `python scripts/verify_data.py` — contrôle de cohérence inter-fichiers (exécuté en CI)
 - **Tiers pro (draft + onglet Patch)** : mis à jour automatiquement depuis [gol.gg](https://gol.gg/champion/list/) (stats pick/ban compétitif). ProComps.gg n’expose pas d’API publique ; gol.gg est le proxy programmatique (ProComps indique des tiers basés sur le pro play).
   - Fetch manuel : `python scripts/fetch_golgg_pro_tiers.py && python scripts/apply_competitive_tiers.py`
   - **Windows** (quotidien 07:00) : `powershell -File scripts/register_daily_task.ps1` puis la tâche `LoLCoach-DailyMetaRefresh` exécute `scripts/run_daily_meta_refresh.ps1` (lane rates, builds, tiers pro).
-  - **GitHub Actions** : workflow `daily-meta-refresh.yml` (06:00 UTC) — fetch gol.gg + apply + commit sur `main`.
+  - **GitHub Actions** : workflow `daily-meta-refresh.yml` (06:00 UTC) — fetch gol.gg + apply + rebuild matrice de lane + `verify_data.py` + commit sur `main`.
   - Logs : `data/pro_tier_refresh.log`, stats brutes : `data/golgg_pro.json`, tiers : `scripts/competitive_tiers.json`.
   - Override saison : `$env:GOLGG_SEASON='S16'` avant le fetch.
 - Tiers meta : surcharge manuelle possible dans l’onglet Patch (localStorage)
+
+## Conventions et tests
+
+- `docs/FIX_CONTRACT.md` — contrat de la refonte : sémantique des counters (`bestCounters` = « champions qui battent CE champion »), antisymétrie des marges, verdict de lane `even`, piliers de scoring bornés à ±100, poids du système de couleurs MTG, normalisation des noms français.
+- `node scripts/tests/run_all.mjs` — suite complète (scoring, règles, moteur/UI, macro/MTG, CSS/HTML, données). À exécuter avant tout push.
 
 ## Projet TFM2
 

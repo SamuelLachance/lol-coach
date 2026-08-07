@@ -20,7 +20,7 @@ PATHS = [
 ]
 
 
-def load_tiers() -> tuple[dict, dict[str, str], dict[str, dict]]:
+def load_tiers() -> tuple[dict, dict[str, str], dict[str, str], dict[str, dict]]:
     if not TIERS_JSON.exists():
         raise SystemExit(f"Missing {TIERS_JSON} — run fetch_golgg_pro_tiers.py first")
     data = json.loads(TIERS_JSON.read_text(encoding="utf-8"))
@@ -67,7 +67,7 @@ def apply_to_file(
     payload["tierListSource"] = meta.get("source", "gol.gg")
     payload["tierListSourceUrl"] = meta.get("sourceUrl", "")
     payload["tierListSourceDate"] = (meta.get("updatedAt") or "")[:10]
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    path.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(f"{path.name}: pro tiers applied to {updated} champions")
 
 

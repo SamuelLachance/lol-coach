@@ -4,26 +4,19 @@
 (function (global) {
   const SLOTS = ["Top", "Jungle", "Mid", "Bot", "Support"];
 
-  function hasTag(meta, tag) {
-    return meta?.tags?.includes(tag);
-  }
-
-  function teamTags(comp, metaMap) {
-    const tags = new Set();
-    for (const slot of SLOTS) {
-      const name = comp[slot];
-      if (!name) continue;
-      (metaMap[name]?.tags || []).forEach((t) => tags.add(t));
-    }
+  /** Tags enrichis d'un champion : tags de tactics-meta + tags dérivés des compTypes (split, poke, dive). */
+  function tagsOf(name, metaMap) {
+    const m = name ? metaMap?.[name] : null;
+    const tags = new Set(m?.tags || []);
+    const compTypes = m?.compTypes || [];
+    if (compTypes.includes("split_push")) tags.add("split");
+    if (compTypes.includes("poke_siege") || compTypes.includes("poke_disengage")) tags.add("poke");
+    if (tags.has("assassin")) tags.add("dive");
     return tags;
   }
 
   function countTags(comp, metaMap, tag) {
-    return SLOTS.filter((s) => hasTag(metaMap[comp[s]], tag)).length;
-  }
-
-  function countersOf(meta) {
-    return meta?.bestCounters || meta?.worstMatchups || [];
+    return SLOTS.filter((s) => tagsOf(comp[s], metaMap).has(tag)).length;
   }
 
   function laneVerdict(ours, theirs, metaMap, slot, byName) {
@@ -33,18 +26,46 @@
     if (scoring?.scoreLaneMatchup) {
       return scoring.scoreLaneMatchup(ours, theirs, slot, byName || {}, metaMap);
     }
-    return { verdict: "lose", margin: -1, note: `${theirs} avantage — moteur matchup indisponible.` };
+    return { verdict: "unknown", margin: 0, note: "Moteur matchup indisponible." };
   }
 
   function pickAssignees(comp, metaMap, tag, max = 2) {
     const out = [];
     for (const slot of SLOTS) {
       const name = comp[slot];
-      if (!name || !hasTag(metaMap[name], tag)) continue;
+      if (!name || !tagsOf(name, metaMap).has(tag)) continue;
       out.push({ name, slot });
       if (out.length >= max) break;
     }
     return out;
+  }
+
+  /** Assignés dive sélectifs : assassins d'abord, sinon divers mobiles à gros dégâts. */
+  function pickDiveAssignees(comp, metaMap, max = 2) {
+    const out = [];
+    for (const slot of SLOTS) {
+      const name = comp[slot];
+      if (!name) continue;
+      const tags = tagsOf(name, metaMap);
+      if (tags.has("assassin") || (tags.has("dive") && tags.has("mobility") && tags.has("high_damage"))) {
+        out.push({ name, slot });
+        if (out.length >= max) break;
+      }
+    }
+    return out;
+  }
+
+  /** Profil de pathing du jungler lui-même (pas de l'équipe). */
+  function junglePathProfile(jungler, metaMap) {
+    if (!jungler) return null;
+    const tags = tagsOf(jungler, metaMap);
+    if (tags.has("assassin") || tags.has("pick") || tags.has("dive") || (tags.has("engage") && tags.has("cc"))) {
+      return "gank";
+    }
+    if (tags.has("scaling") || tags.has("enchanter") || (tags.has("mage") && !tags.has("engage"))) {
+      return "farm";
+    }
+    return null;
   }
 
   function formatAssign(assignees) {
@@ -75,9 +96,7 @@
     pick_global: "Pick / Global",
   };
 
-  function recommendMacro(comp, enemy, metaMap, byName) {
-    const ourTags = teamTags(comp, metaMap);
-    const enTags = teamTags(enemy, metaMap);
+  function recommendMacro(comp, enemy, metaMap, byName, precomputedLanes) {
     const compType = dominantCompType(comp, metaMap);
     const engage = countTags(comp, metaMap, "engage");
     const peel = countTags(comp, metaMap, "peel");
@@ -93,14 +112,18 @@
 
     // Lane priority
     const lanes = {};
-    for (const s of SLOTS) lanes[s] = laneVerdict(comp[s], enemy[s], metaMap, s, byName);
+    for (const s of SLOTS) {
+      lanes[s] = precomputedLanes?.[s] || laneVerdict(comp[s], enemy[s], metaMap, s, byName);
+    }
     const wins = SLOTS.filter((s) => lanes[s]?.verdict === "win");
     const loses = SLOTS.filter((s) => lanes[s]?.verdict === "lose");
+    const evens = SLOTS.filter((s) => lanes[s]?.verdict === "even");
 
-    if (wins.includes("Bot") && !loses.includes("Bot")) {
+    const botSideMargin = Math.round((lanes.Bot?.margin || 0) * 0.6 + (lanes.Support?.margin || 0) * 0.4);
+    if (botSideMargin >= 5 && lanes.Bot?.verdict !== "lose") {
       tactics.lanePriority = {
         value: "Bot side",
-        reason: "Bot lane gagnante — prio drake et setup dive.",
+        reason: "2v2 bot favorable (ADC + support) — prio drake et setup dive.",
         assign: pickAssignees(comp, metaMap, "scaling", 1),
       };
     } else if (wins.includes("Top")) {
@@ -115,6 +138,12 @@
         reason: "Mid prio — roams jungle, vision rivière.",
         assign: [{ name: comp.Mid, slot: "Mid" }],
       };
+    } else if (evens.length >= 2 && !loses.length) {
+      tactics.lanePriority = {
+        value: "Équilibré",
+        reason: "Matchups égaux — skill check, la prio se gagne à l'exécution et par la jungle.",
+        assign: [],
+      };
     } else {
       tactics.lanePriority = {
         value: "Équilibré",
@@ -123,19 +152,19 @@
       };
     }
 
-    // Jungle
+    // Jungle — pathing décidé par le profil du jungler lui-même
     const jungler = comp.Jungle;
-    const jMeta = metaMap[jungler];
-    if (hasTag(jMeta, "gank_jungle") || assassin >= 1) {
+    const jProfile = junglePathProfile(jungler, metaMap);
+    if (jProfile === "gank") {
       tactics.junglePath = {
         value: "Gank lvl 3",
-        reason: `${jungler || "Jungle"} profite des lanes avec prio ou CC.`,
+        reason: `${jungler || "Jungle"} a un profil gank (pick/CC) — punis les lanes avec prio.`,
         assign: [{ name: jungler, slot: "Jungle" }],
       };
-    } else if (hasTag(jMeta, "farm_jungle") || scaling >= 2) {
+    } else if (jProfile === "farm" || scaling >= 2) {
       tactics.junglePath = {
         value: "Full clear → gank",
-        reason: "Comp scale — farm efficace puis objectifs.",
+        reason: `${jungler || "Jungle"} farmeur — clear efficace puis objectifs.`,
         assign: [{ name: jungler, slot: "Jungle" }],
       };
     } else if (enAssassin >= 1) {
@@ -204,7 +233,7 @@
     } else if (compType === "poke_disengage" || compType === "poke_siege" || poke >= 2) {
       tactics.midGame = {
         value: "Siege & disengage",
-        reason: "Poke/disengage — slow push towers, never force all-in (Braum/Taric).",
+        reason: "Poke/disengage — slow push vers les tourelles, ne force jamais l'all-in (Braum/Taric).",
         assign: pickAssignees(comp, metaMap, "poke", 2),
       };
     } else if (compType === "hypercarry" || (scaling >= 2 && peel >= 1)) {
@@ -231,7 +260,7 @@
         reason: "Engage/front — cherche skirmish 4v4 mid.",
         assign: pickAssignees(comp, metaMap, "engage", 2),
       };
-    } else if (assassin >= 1 || hasTag(jMeta, "pick")) {
+    } else if (tagsOf(jungler, metaMap).has("pick")) {
       tactics.midGame = {
         value: "Pick vision / bush",
         reason: "Pick comp — vision profonde et bush control.",
@@ -273,11 +302,17 @@
         reason: "Front + peel — protège le carry backline.",
         assign: [...pickAssignees(comp, metaMap, "frontline", 1), ...pickAssignees(comp, metaMap, "peel", 1)],
       };
-    } else if (assassin >= 1 || enEngage >= 2) {
+    } else if (assassin >= 1) {
       tactics.teamfight = {
         value: "Flank / dive backline",
-        reason: "Dive ou flank sur carry adverse.",
-        assign: pickAssignees(comp, metaMap, "dive", 2),
+        reason: "Assassins — flank et dive sur le carry adverse.",
+        assign: pickDiveAssignees(comp, metaMap, 2),
+      };
+    } else if (enEngage >= 2) {
+      tactics.teamfight = {
+        value: "Front-to-back + peel",
+        reason: "Engage ennemi lourd — front-to-back, peel et disengage sur le carry.",
+        assign: [...pickAssignees(comp, metaMap, "peel", 1), ...pickAssignees(comp, metaMap, "disengage", 1)],
       };
     } else if (poke >= 2) {
       tactics.teamfight = {
@@ -294,7 +329,7 @@
     }
 
     // Vision
-    if (assassin >= 1 || hasTag(jMeta, "pick")) {
+    if (assassin >= 1 || tagsOf(jungler, metaMap).has("pick")) {
       tactics.vision = {
         value: "Deep enemy jungle",
         reason: "Pick comp — deep wards pour picks.",
@@ -355,15 +390,7 @@
     if (tactics.winCondition) parts.push(tactics.winCondition.value);
     if (tactics.lanePriority) parts.push(tactics.lanePriority.value);
     if (tactics.junglePath) parts.push(tactics.junglePath.value);
-    return parts.length ? parts : ["Jouer les forces de la comp", "Contrôle vision", "Objectifs on tempo"];
-  }
-
-  function buildWinPlan(tactics, comp) {
-    const parts = [];
-    if (tactics.winCondition) parts.push(tactics.winCondition.value);
-    if (tactics.lanePriority) parts.push(tactics.lanePriority.value);
-    if (tactics.junglePath) parts.push(tactics.junglePath.value);
-    return parts.length ? parts : ["Jouer les forces de la comp", "Contrôle vision", "Objectifs on tempo"];
+    return parts.length ? parts : ["Jouer les forces de la comp", "Contrôle vision", "Objectifs au bon tempo"];
   }
 
   const SLOT_LABELS = {
@@ -388,7 +415,7 @@
         role: "Cover split + tempo opposé",
         early: ["Path vers la side du split si prio ; invade côté faible.", "Herald pour le top split si lane gagnante."],
         mid: ["Crée de la pression côté opposé au carry adverse.", "Track le jungler — punir le rotate sur ton split."],
-        teamfight: ["Start l'objectif pendant que top split ; smite sécurisé.", "Ne 5v5 pas si le split est la win condition."],
+        teamfight: ["Start l'objectif pendant que top split ; smite sécurisé.", "Ne force pas le 5v5 si le split est la win condition."],
         avoid: ["Forcer un 5v5 mid sans side pressure", "Gank bot au détriment du plan split"],
       },
       Mid: {
@@ -401,7 +428,7 @@
       Bot: {
         role: "Safe farm bot-side",
         early: ["Farm safe — la map joue autour du split top.", "Prio bot seulement si jungle cover."],
-        mid: ["Reste bot-side avec support ; plates si lane safe.", "Ne chase pas les picks isolés sans vision."],
+        mid: ["Reste bot-side avec support ; plates si lane safe.", "Ne poursuis pas les picks isolés sans vision."],
         teamfight: ["Backline safe pendant 4v4 ; DPS sur front ennemi engagé.", "Position max range — tu n'es pas le wincon macro."],
         avoid: ["Face-check river sans vision", "Overextend sans TP cover"],
       },
@@ -431,15 +458,15 @@
       Mid: {
         role: "AOE / zone derrière front",
         early: ["Prio wave pour roam avec jungle.", "Ne trade pas 1v1 si tu es le scaling AOE."],
-        mid: ["Group mid — tu scales le fight 5v5.", "Poke avant engage si mage ; attend le go frontline."],
-        teamfight: ["Position derrière frontline ; AOE sur groupe engagé.", "Ne front pas — DPS zone en sécurité."],
+        mid: ["Group mid — tu scales le fight 5v5.", "Poke avant l'engage si mage ; attends le go de la frontline."],
+        teamfight: ["Position derrière la frontline ; AOE sur le groupe engagé.", "Ne front pas — zone en sécurité avec ton DPS."],
         avoid: ["Face-check sans frontline", "Engager avant le tank"],
       },
       Bot: {
         role: "Backline DPS",
-        early: ["Farm avec prio jungle ; plates si lane gagnante.", "Ne die pas — tu es le DPS late."],
+        early: ["Farm avec prio jungle ; plates si lane gagnante.", "Ne meurs pas — tu es le DPS late."],
         mid: ["Group mid pour skirmish avec l'équipe.", "Position arrière derrière frontline."],
-        teamfight: ["DMS le front le plus proche puis carry ; kiting.", "Ne flash in — laisse l'engage venir."],
+        teamfight: ["DPS le front le plus proche puis le carry ; kite.", "Ne flash pas dedans — laisse l'engage venir."],
         avoid: ["Frontline sans peel", "Fight avant item spike"],
       },
       Support: {
@@ -453,16 +480,16 @@
     hypercarry: {
       Top: {
         role: "Frontline / peel zone",
-        early: ["Ne die pas — la comp scale autour de l'ADC.", "Hold side ; TP défensif plutôt qu'agressif."],
+        early: ["Ne meurs pas — la comp scale autour de l'ADC.", "Hold side ; TP défensif plutôt qu'agressif."],
         mid: ["Peel zone mid ; ne split pas sauf si hyper safe.", "Group pour protéger le farm bot."],
-        teamfight: ["Absorb cooldowns sur le carry ; zone devant l'ADC.", "Ne chase — protège la backline."],
+        teamfight: ["Absorb cooldowns sur le carry ; zone devant l'ADC.", "Ne poursuis pas — protège la backline."],
         avoid: ["Split push", "Dive backline sans peel sur l'ADC"],
       },
       Jungle: {
         role: "Protect bot-side / peel",
         early: ["Full clear puis cover bot ; counter-gank si dive threat.", "Ne force pas l'invade — le temps joue pour vous."],
         mid: ["Farm efficace ; shadow bot-side avant drake.", "Peel sur divers/assassins au lieu de engage."],
-        teamfight: ["Exhaust/ peel sur le diver ennemi ; smite défensif.", "Ne engage pas — la win condition est l'ADC."],
+        teamfight: ["Exhaust/peel sur le diver ennemi ; smite défensif.", "N'engage pas — la win condition est l'ADC."],
         avoid: ["Force fight early 5v5", "Gank top au détriment du bot"],
       },
       Mid: {
@@ -483,7 +510,7 @@
         role: "Peel total sur le carry",
         early: ["Babysit bot ; exhaust sur gankers.", "Pink bot-side + deny dive setup."],
         mid: ["Ne roam pas sans cover ADC farm.", "Ardent/enchanter peel — exhaust sur threat #1."],
-        teamfight: ["Peel priority sur assassin/diver ; Locket/exhaust.", "Ne engage pas — ta job est de garder l'ADC en vie."],
+        teamfight: ["Priorité peel sur l'assassin/diver ; Locket/exhaust.", "N'engage pas — ton job est de garder l'ADC en vie."],
         avoid: ["Roaming mid long", "Engager un 5v5 sans items ADC"],
       },
     },
@@ -491,7 +518,7 @@
       Top: {
         role: "Frontline légère / soak poke",
         early: ["Trade poke si ranged ; sinon farm safe.", "TP pour group mid poke."],
-        mid: ["Slow push mid puis poke tourelle.", "Ne engage pas — laisse l'ennemi venir."],
+        mid: ["Slow push mid puis poke tourelle.", "N'engage pas — laisse l'ennemi venir."],
         teamfight: ["Soak poke ; disengage si all-in.", "Front léger — ne dive pas."],
         avoid: ["All-in", "Chase après poke"],
       },
@@ -513,100 +540,152 @@
         role: "Poke DPS / siege",
         early: ["Poke lane ; plates à distance.", "Farm safe si lane lose."],
         mid: ["Siege bot-side puis rotate mid.", "Poke tourelles — ne force pas fight."],
-        teamfight: ["Poke puis recule ; DMS si front engage.", "Position max range toujours."],
-        avoid: ["All-in short range", "Fight sans disengage support"],
+        teamfight: ["Poke puis recule ; DPS si le front engage.", "Position à distance max en permanence."],
+        avoid: ["All-in courte portée", "Fight sans disengage support"],
       },
       Support: {
         role: "Disengage / anti-engage",
-        early: ["Anti-engage tools up ; vision river.", "Ne engage pas — poke comp."],
-        mid: ["Disengage si dive ; exhaust sur engage.", "Pink siege line."],
-        teamfight: ["Disengage après poke ; Braum/Taric style.", "Ne flash forward — recule et re-poke."],
+        early: ["Outils anti-engage prêts ; vision rivière.", "N'engage pas — comp poke."],
+        mid: ["Disengage si dive ; exhaust sur l'engage.", "Pink sur la ligne de siege."],
+        teamfight: ["Disengage après le poke ; style Braum/Taric.", "Ne flash pas en avant — recule et re-poke."],
         avoid: ["Hard engage", "Forcer all-in"],
       },
     },
     poke_siege: {
-      Top: { role: "Front soak / split léger", early: ["Hold side ; TP group pour siege.", "Ne die pas avant mid game."], mid: ["Slow push side pendant siege mid.", "Join group pour poke tourelle."], teamfight: ["Soak ; siege derrière poke.", "Disengage si all-in."], avoid: ["All-in", "Split deep sans TP"] },
+      Top: { role: "Front soak / split léger", early: ["Hold side ; TP pour grouper au siege.", "Ne meurs pas avant le mid game."], mid: ["Slow push side pendant le siege mid.", "Rejoins le groupe pour poke la tourelle."], teamfight: ["Soak ; siege derrière le poke.", "Disengage si all-in."], avoid: ["All-in", "Split deep sans TP"] },
       Jungle: { role: "Objectif trade + vision", early: ["Vision pour siege ; farm efficace.", "Trade drake/herald selon prio."], mid: ["Setup siege mid ; sweep pits.", "Ne force pas 5v5."], teamfight: ["Zone control ; smite sécurisé.", "Poke setup avant contest."], avoid: ["Force fight", "Baron sans siege"] },
-      Mid: { role: "Siege poke central", early: ["Prio wave mid.", "Poke under tower."], mid: ["Slow push mid → poke inhib line.", "Reset après chunk adverse."], teamfight: ["Siege tourelles ; poke max range.", "Recule si engage."], avoid: ["All-in", "Aram sans objectif"] },
-      Bot: { role: "Siege DPS", early: ["Poke plates.", "Farm safe."], mid: ["Rotate mid pour siege bot/inhib.", "Poke tourelles."], teamfight: ["DMS from max range ; siege.", "Ne flash in."], avoid: ["Short range all-in", "Fight sans poke"] },
-      Support: { role: "Siege setup / disengage", early: ["Vision siege line.", "Poke avec ADC."], mid: ["Pink mid ; disengage tools ready.", "Slow push setup."], teamfight: ["Disengage if all-in ; re-siege.", "Exhaust diver."], avoid: ["Hard engage", "Face-check"] },
+      Mid: { role: "Siege poke central", early: ["Prio wave mid.", "Poke sous tourelle."], mid: ["Slow push mid → poke la ligne d'inhib.", "Reset après avoir chunk l'adversaire."], teamfight: ["Siege les tourelles ; poke à distance max.", "Recule si engage."], avoid: ["All-in", "Aram sans objectif"] },
+      Bot: { role: "Siege DPS", early: ["Poke pour les plates.", "Farm safe."], mid: ["Rotate mid pour siege bot/inhib.", "Poke les tourelles."], teamfight: ["DPS à distance max ; siege.", "Ne flash pas dedans."], avoid: ["All-in courte portée", "Fight sans poke"] },
+      Support: { role: "Siege setup / disengage", early: ["Vision sur la ligne de siege.", "Poke avec l'ADC."], mid: ["Pink mid ; outils de disengage prêts.", "Setup de slow push."], teamfight: ["Disengage si all-in ; re-siege.", "Exhaust sur le diver."], avoid: ["Hard engage", "Face-check"] },
     },
     pick_global: {
       Top: {
         role: "Side pressure / TP flank",
         early: ["Trade si favorable ; sinon scale.", "TP pour pick mid/bot si global."],
         mid: ["Side pressure ; vision profonde.", "Flank angle pour pick avant objectif."],
-        teamfight: ["Flank ou TP backline après pick.", "Ne front pas seul — attend le pick."],
+        teamfight: ["Flank ou TP backline après le pick.", "Ne front pas seul — attends le pick."],
         avoid: ["5v5 sans pick setup", "Split sans vision"],
       },
       Jungle: {
         role: "Pick setup / vision profonde",
         early: ["Gank avec CC ; invade si tracking.", "Deep wards jungle ennemi."],
         mid: ["Bush control ; punir rotations isolées.", "Pick avant drake/baron."],
-        teamfight: ["Flank après vision ; flash sur carry isolé.", "Ne start baron sans pick."],
+        teamfight: ["Flank après vision ; flash sur le carry isolé.", "Ne start pas le baron sans pick."],
         avoid: ["5v5 frontal", "Objectif sans vision deep"],
       },
       Mid: {
         role: "Pick / roam global",
-        early: ["Roams avec prio ; punir overextend.", "Waveclear puis disappear."],
-        mid: ["Vision profonde ; pick mid/jungle.", "Global ult coordination."],
-        teamfight: ["Flank ; burst carry après CC chain.", "Ne show before fight."],
+        early: ["Roams avec prio ; punis les overextends.", "Waveclear puis disparais de la map."],
+        mid: ["Vision profonde ; pick mid/jungle.", "Coordonne les ults globales."],
+        teamfight: ["Flank ; burst le carry après la chaîne de CC.", "Ne te montre pas avant le fight."],
         avoid: ["Front 5v5", "Face-check"],
       },
       Bot: {
         role: "Follow-up pick / safe DPS",
         early: ["Farm safe ; follow jungle pick.", "Plates après pick bot."],
-        mid: ["Mid avec team après pick.", "Position for follow-up ult."],
-        teamfight: ["DMS carry après pick ; clean up.", "Max range until pick lands."],
+        mid: ["Group mid avec l'équipe après un pick.", "Positionne-toi pour enchaîner ton ult."],
+        teamfight: ["DPS le carry après le pick ; nettoie le fight.", "Reste à distance max jusqu'au pick."],
         avoid: ["Face-check", "5v5 sans pick"],
       },
       Support: {
         role: "Vision pick / hook angle",
         early: ["Deep wards ; roam mid avec jungle.", "Hook/CC sur rotations."],
-        mid: ["Sweep puis bush pick.", "Pink on rotation paths."],
-        teamfight: ["Pick before fight ; CC chain.", "Ne engage 5 sans pick."],
-        avoid: ["Hard 5v5 engage", "No vision roam"],
+        mid: ["Sweep puis pick depuis les bushs.", "Pinks sur les chemins de rotation."],
+        teamfight: ["Pick avant le fight ; enchaîne les CC.", "N'engage pas à 5 sans pick."],
+        avoid: ["Engage 5v5 frontal", "Roam sans vision"],
       },
     },
     all_in: {
       Top: { role: "Frontline / dive setup", early: ["Trade agressif ; prio lvl 2-3.", "Dive setup avec jungle."], mid: ["Force skirmish 4v4.", "Front engage ou soak."], teamfight: ["Dive backline ou absorb ; all-in coordonné.", "Ne recule pas mid-fight."], avoid: ["Scale passif", "Split"] },
-      Jungle: { role: "Early gank / snowball", early: ["Gank lvl 3 ; répète sur lane gagnante.", "Invade si lanes prio."], mid: ["Force fight avant scale adverse.", "Flash engage on carry."], teamfight: ["All-in avec team ; commit full.", "Smite après kill."], avoid: ["Full clear farm", "Scale late"] },
-      Mid: { role: "Burst / follow all-in", early: ["Roams agressifs ; prio wave.", "Kill pressure lvl 3-6."], mid: ["Force mid skirmish.", "Burst carry after CC."], teamfight: ["All-in backline ; commit avec flash.", "Ne poke — burst."], avoid: ["Farm scale", "Disengage"] },
-      Bot: { role: "All-in DPS", early: ["Fight lane lvl 2-3 avec support.", "Snowball plates."], mid: ["Group pour skirmish.", "Follow engage with DPS."], teamfight: ["DMS carry ; commit when CC lands.", "Flash forward if kill secured."], avoid: ["Farm safe late", "Max range kiting only"] },
-      Support: { role: "Engage / lockdown", early: ["Lvl 2 all-in bot.", "Roams mid avec CC."], mid: ["Engage on sight if ahead.", "Vision for skirmish."], teamfight: ["Hard engage ; CC chain carry.", "Commit with team."], avoid: ["Disengage", "Scale peel"] },
+      Jungle: { role: "Early gank / snowball", early: ["Gank lvl 3 ; répète sur la lane gagnante.", "Invade si les lanes ont la prio."], mid: ["Force les fights avant le scaling adverse.", "Flash-engage sur le carry."], teamfight: ["All-in avec l'équipe ; commit total.", "Smite après le kill."], avoid: ["Full clear passif", "Attendre le late"] },
+      Mid: { role: "Burst / follow all-in", early: ["Roams agressifs ; prio wave.", "Kill pressure lvl 3-6."], mid: ["Force le skirmish mid.", "Burst le carry après le CC."], teamfight: ["All-in backline ; commit avec flash.", "Ne poke pas — burst."], avoid: ["Farm passif", "Disengage"] },
+      Bot: { role: "All-in DPS", early: ["Fight la lane lvl 2-3 avec ton support.", "Snowball les plates."], mid: ["Group pour les skirmishs.", "Suis l'engage avec ton DPS."], teamfight: ["DPS le carry ; commit quand le CC touche.", "Flash offensif seulement si le kill est assuré."], avoid: ["Farm safe passif", "Rester à distance max sans commit"] },
+      Support: { role: "Engage / lockdown", early: ["All-in lvl 2 bot.", "Roams mid avec CC."], mid: ["Engage à vue si en avance.", "Vision pour les skirmishs."], teamfight: ["Hard engage ; enchaîne les CC sur le carry.", "Commit avec l'équipe."], avoid: ["Disengage", "Peel passif"] },
     },
     lane_tempo: {
-      Top: { role: "Lane prio / plates", early: ["Win lane ; plates + herald.", "TP agressif si ahead."], mid: ["Side prio ; rotate if ahead.", "Snowball lead."], teamfight: ["Front if ahead ; dive if snowball.", "Convert lead to inhib."], avoid: ["Scale passif", "Throw lead"] },
-      Jungle: { role: "Snowball lanes / tempo", early: ["Gank winning lanes ; invade.", "Herald for plates."], mid: ["Force fights while ahead.", "Track and punish farm."], teamfight: ["Frontline if fed ; close game.", "Baron early if ahead."], avoid: ["Farm when ahead", "Scale"] },
-      Mid: { role: "Roams / tempo", early: ["Prio wave ; roam bot/top.", "Plates mid + side."], mid: ["Mid prio ; force skirmish.", "Snowball before enemy scale."], teamfight: ["Carry if fed ; zone or burst.", "Close before late."], avoid: ["Farm scale", "Late game"] },
-      Bot: { role: "Tempo carry", early: ["Win bot ; plates + drake.", "Fight with support lvl 2."], mid: ["Group mid with lead.", "Siege with lead."], teamfight: ["DPS from ahead ; close game.", "Don't throw lead."], avoid: ["Scale late", "Passive farm"] },
-      Support: { role: "Roaming tempo", early: ["Roams after bot prio.", "Deep wards for invades."], mid: ["Mid roams ; vision for skirmish.", "Engage when ahead."], teamfight: ["Engage if ahead ; peel if even.", "Close game."], avoid: ["Babysit scale", "Late peel only"] },
-    },
-    _default: {
-      Top: { role: "Side laner", early: ["Farm/trade selon matchup.", "TP pour objectifs."], mid: ["Side pressure ou group selon comp.", "Vision top side."], teamfight: ["Front ou flank selon build.", "Suivre le call objectif."], avoid: ["Overextend sans vision"] },
-      Jungle: { role: "Jungle flex", early: ["Path selon lanes prio.", "Vision rivière."], mid: ["Objectifs on tempo.", "Track enemy jg."], teamfight: ["Follow team call.", "Smite contest."], avoid: ["Invade solo"] },
-      Mid: { role: "Mid flex", early: ["Prio wave.", "Roams si prio."], mid: ["Group ou side selon comp.", "Waveclear."], teamfight: ["Position selon champion.", "Follow engage."], avoid: ["Face-check"] },
-      Bot: { role: "ADC", early: ["Farm safe.", "Plates si cover."], mid: ["Group ou farm selon comp.", "Position arrière."], teamfight: ["Backline DPS.", "Kiting."], avoid: ["Face-check"] },
-      Support: { role: "Support", early: ["Vision bot.", "Roams si prio."], mid: ["Vision objectifs.", "Peel ou engage selon comp."], teamfight: ["Rôle utility.", "Exhaust/CC."], avoid: ["Face-check bush"] },
+      Top: { role: "Lane prio / plates", early: ["Gagne ta lane ; plates + herald.", "TP agressif si en avance."], mid: ["Prio side ; rotate si en avance.", "Snowball ton avance."], teamfight: ["Front si en avance ; dive si snowball.", "Convertis l'avance en inhibiteur."], avoid: ["Scale passif", "Jeter l'avance"] },
+      Jungle: { role: "Snowball lanes / tempo", early: ["Gank les lanes gagnantes ; invade.", "Herald pour les plates."], mid: ["Force les fights tant que tu es en avance.", "Track le jungler adverse et punis son farm."], teamfight: ["Frontline si fed ; ferme la partie.", "Baron tôt si en avance."], avoid: ["Farmer en étant en avance", "Attendre le late"] },
+      Mid: { role: "Roams / tempo", early: ["Prio wave ; roam bot/top.", "Plates mid + side."], mid: ["Prio mid ; force les skirmishs.", "Snowball avant le scaling adverse."], teamfight: ["Carry si fed ; zone ou burst.", "Ferme avant le late game."], avoid: ["Farm passif", "Miser sur le late"] },
+      Bot: { role: "Tempo carry", early: ["Gagne la bot ; plates + drake.", "Fight avec ton support au lvl 2."], mid: ["Group mid avec l'avance.", "Siege avec l'avance."], teamfight: ["DPS en avance ; ferme la partie.", "Ne jette pas l'avance."], avoid: ["Attendre le late", "Farm passif"] },
+      Support: { role: "Roaming tempo", early: ["Roams après la prio bot.", "Wards profondes pour les invades."], mid: ["Roams mid ; vision pour les skirmishs.", "Engage quand vous êtes en avance."], teamfight: ["Engage si en avance ; peel si égalité.", "Ferme la partie."], avoid: ["Babysitter en attendant le scale", "Peel passif uniquement"] },
     },
   };
 
-  function pickGuide(compType, slot) {
-    return COMP_SLOT_GUIDE[compType]?.[slot] || COMP_SLOT_GUIDE._default[slot];
+  /** Guide de secours dérivé des tags réels du champion (remplace l'ancien _default générique). */
+  function tagDerivedGuide(slot, tags) {
+    const early = [];
+    const mid = [];
+    const teamfight = [];
+    const avoid = [];
+    let role = SLOT_LABELS[slot] || slot;
+
+    if (tags.has("split")) {
+      role = "Split pusher";
+      early.push("Push ta vague en priorité — plates et pression side.");
+      mid.push("Side lane opposée à l'objectif ; force une réponse adverse.");
+      teamfight.push("Split pendant le 4v4 ; rejoins seulement pour finir le fight.");
+      avoid.push("Grouper mid sans raison");
+    }
+    if (tags.has("poke")) {
+      role = tags.has("support") ? "Poke / disengage" : "Poke / siege";
+      early.push("Poke à distance ; ne force pas l'all-in.");
+      mid.push("Slow push puis siege les tourelles derrière ton poke.");
+      teamfight.push("Poke à distance max ; recule si engage.");
+      avoid.push("All-in courte portée");
+    }
+    if (tags.has("assassin")) {
+      role = "Assassin / flank";
+      early.push("Cherche le kill pressure lvl 3-6 ; roam si prio.");
+      mid.push("Vision profonde ; punis les rotations isolées.");
+      teamfight.push("Flank ; burst le carry adverse après le CC.");
+      avoid.push("Engager en premier de face");
+    }
+    if (tags.has("engage") && !tags.has("poke")) {
+      early.push("Trade pour la prio ; prépare les setups de gank.");
+      mid.push("Cherche l'angle d'engage avant les objectifs.");
+      teamfight.push("Engage quand l'équipe est prête ; enchaîne les CC.");
+      avoid.push("Engager sans follow-up");
+    }
+    if (tags.has("frontline") && !tags.has("assassin")) {
+      if (role === (SLOT_LABELS[slot] || slot)) role = "Frontline";
+      teamfight.push("Absorbe les cooldowns devant tes carries ; zone l'objectif.");
+      avoid.push("Chase isolé sans vision");
+    }
+    if (tags.has("scaling")) {
+      early.push("Farm safe — le temps joue pour toi.");
+      mid.push("Prends les ressources sans risque avant tes spikes d'items.");
+      teamfight.push("Position arrière ; DPS le front le plus proche puis le carry.");
+      avoid.push("Fight avant ton spike d'items");
+    }
+    if (tags.has("peel") && (slot === "Support" || tags.has("enchanter"))) {
+      if (role === (SLOT_LABELS[slot] || slot)) role = "Peel / protection";
+      mid.push("Garde tes outils de peel pour la menace principale.");
+      teamfight.push("Peel ton carry ; exhaust/CC sur le diver.");
+    }
+
+    if (!early.length) early.push("Farm/trade selon le matchup.", "Vision de ta zone.");
+    if (!mid.length) mid.push("Group ou side selon le plan d'équipe.", "Joue les objectifs au bon tempo.");
+    if (!teamfight.length) teamfight.push("Suis le call d'équipe ; position selon ton champion.");
+    if (!avoid.length) avoid.push("Face-check sans vision");
+
+    return { role, early, mid, teamfight, avoid };
   }
 
-  function refineRoleLabel(slot, meta, compType, baseRole) {
-    const tags = meta?.tags || [];
+  function pickGuide(compType, slot, tags) {
+    return COMP_SLOT_GUIDE[compType]?.[slot] || tagDerivedGuide(slot, tags || new Set());
+  }
+
+  function refineRoleLabel(slot, tags, compType, baseRole) {
     if (compType === "hypercarry" && slot === "Bot") return "Hypercarry — win condition";
-    if (compType === "split_push" && tags.includes("split")) return "Split pusher principal";
-    if (tags.includes("split") && (slot === "Top" || slot === "Mid")) return "Split pusher";
-    if (tags.includes("frontline") && slot === "Top") return "Frontline top";
-    if (tags.includes("engage") && slot === "Support") return "Engage support";
-    if (tags.includes("peel") && slot === "Support") return "Peel / protection";
-    if (tags.includes("assassin") && slot === "Mid") return "Assassin / flank mid";
-    if (tags.includes("assassin") && slot === "Jungle") return "Pick jungle";
-    if (tags.includes("scaling") && slot === "Bot") return "Carry scale";
-    if (tags.includes("poke") && (slot === "Mid" || slot === "Bot")) return "Poke / siege";
+    if (compType === "split_push" && tags.has("split")) return "Split pusher principal";
+    if (tags.has("split") && (slot === "Top" || slot === "Mid")) return "Split pusher";
+    if (tags.has("frontline") && slot === "Top") return "Frontline top";
+    if (tags.has("engage") && slot === "Support") return "Engage support";
+    if (tags.has("peel") && slot === "Support") return "Peel / protection";
+    if (tags.has("assassin") && slot === "Mid") return "Assassin / flank mid";
+    if (tags.has("assassin") && slot === "Jungle") return "Pick jungle";
+    if (tags.has("scaling") && slot === "Bot") return "Carry scale";
+    if (tags.has("poke") && (slot === "Mid" || slot === "Bot")) return "Poke / siege";
     return baseRole;
   }
 
@@ -615,28 +694,30 @@
     const meta = metaMap[name];
     const enemyName = enemyComp[slot];
     const compType = tactics.compType || "_default";
-    const guide = pickGuide(compType, slot);
+    const tagSet = tagsOf(name, metaMap);
+    const guide = pickGuide(compType, slot, tagSet);
     const early = [...(guide.early || [])];
     const mid = [...(guide.mid || [])];
     const teamfight = [...(guide.teamfight || [])];
     const avoid = [...(guide.avoid || [])];
-    const tags = meta?.tags || [];
 
     if (lane?.verdict === "lose" && enemyName) {
       early.unshift(`Matchup défavorable vs ${enemyName} — joue safe, scale avec le plan ${tactics.compTypeLabel || "d'équipe"}.`);
     } else if (lane?.verdict === "win" && enemyName) {
       early.unshift(`Lane favorable vs ${enemyName} — convertis en plates/vision sans overextend.`);
+    } else if (lane?.verdict === "even" && enemyName) {
+      early.unshift(`Matchup égal vs ${enemyName} — skill check : joue propre, cherche l'écart via jungle et vision.`);
     } else if (lane?.note) {
       early.push(lane.note);
     }
 
-    if (tags.includes("split") && compType !== "split_push" && slot === "Top") {
+    if (tagSet.has("split") && compType !== "split_push" && slot === "Top") {
       mid.push("Tu peux side lane si la comp le permet — communique avec l'équipe.");
     }
-    if (tags.includes("scaling") && compType === "hypercarry" && slot !== "Bot" && slot !== "Support") {
+    if (tagSet.has("scaling") && compType === "hypercarry" && slot !== "Bot" && slot !== "Support") {
       mid.push("Protège le bot-side — le temps joue pour votre carry.");
     }
-    if (hasTag(meta, "gank_jungle") && slot === "Jungle") {
+    if (slot === "Jungle" && junglePathProfile(name, metaMap) === "gank") {
       early.push("Profil gank — répète sur les lanes avec prio/CC.");
     }
     if (tactics.lanePriority?.value === "Bot side" && (slot === "Bot" || slot === "Support")) {
@@ -653,7 +734,7 @@
       slot,
       slotLabel: SLOT_LABELS[slot] || slot,
       champion: name,
-      roleLabel: refineRoleLabel(slot, meta, compType, guide.role),
+      roleLabel: refineRoleLabel(slot, tagSet, compType, guide.role),
       early: [...new Set(early)].slice(0, 5),
       mid: [...new Set(mid)].slice(0, 5),
       teamfight: [...new Set(teamfight)].slice(0, 5),
@@ -663,10 +744,11 @@
     };
   }
 
-  function buildRoleAdvice(ourComp, enemyComp, metaMap, tactics, byName) {
+  function buildRoleAdvice(ourComp, enemyComp, metaMap, tactics, byName, precomputedLanes) {
     const slots = {};
     for (const slot of SLOTS) {
-      const lane = laneVerdict(ourComp[slot], enemyComp[slot], metaMap, slot, byName);
+      const lane =
+        precomputedLanes?.[slot] || laneVerdict(ourComp[slot], enemyComp[slot], metaMap, slot, byName);
       slots[slot] = buildSlotAdvice(slot, ourComp, enemyComp, metaMap, tactics, lane);
     }
     return {
@@ -676,16 +758,22 @@
     };
   }
 
-  function recommend(ourComp, enemyComp, metaMap, championsByName) {
-    const byName = championsByName || {};
+  /** Verdicts de lane calculés une seule fois — réutilisables par l'UI via recommend().lanes. */
+  function computeLanes(ourComp, enemyComp, metaMap, byName) {
     const lanes = {};
     for (const s of SLOTS) {
       lanes[s] = laneVerdict(ourComp[s], enemyComp[s], metaMap, s, byName);
     }
+    return lanes;
+  }
 
-    const tactics = recommendMacro(ourComp, enemyComp, metaMap, byName);
+  function recommend(ourComp, enemyComp, metaMap, championsByName) {
+    const byName = championsByName || {};
+    const lanes = computeLanes(ourComp, enemyComp, metaMap, byName);
+
+    const tactics = recommendMacro(ourComp, enemyComp, metaMap, byName, lanes);
     const winPlan = buildWinPlan(tactics, ourComp);
-    const roleAdvice = buildRoleAdvice(ourComp, enemyComp, metaMap, tactics, byName);
+    const roleAdvice = buildRoleAdvice(ourComp, enemyComp, metaMap, tactics, byName, lanes);
 
     return { lanes, tactics, winPlan, roleAdvice };
   }
@@ -695,6 +783,7 @@
     SLOT_LABELS,
     recommend,
     laneVerdict,
+    computeLanes,
     buildRoleAdvice,
   };
 })(typeof window !== "undefined" ? window : globalThis);

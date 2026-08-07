@@ -35,7 +35,6 @@
       familyFilter: "all",
       compFilter: "all",
       search: "",
-      itemTierFilter: "all",
       patchSearch: "",
       patchPoolFilter: "all",
       draftPoolSearch: "",
@@ -116,6 +115,7 @@
     }
 
     if (changed) {
+      save(session);
       try {
         localStorage.removeItem(LEGACY_PATCH_KEY);
         localStorage.removeItem(LEGACY_DRAFT_KEY);
@@ -144,6 +144,7 @@
       },
       patch: raw?.patch || null,
     };
+    delete session.ui.itemTierFilter;
     return migrateLegacy(session);
   }
 

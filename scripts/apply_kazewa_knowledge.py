@@ -128,7 +128,7 @@ def apply_guide(md: str) -> None:
         base = [s for s in guide.get("sections", []) if not s.get("id", "").startswith("kazewa-")]
         guide["sections"] = base + new_sections
         guide["kazewaKnowledge"] = str(KNOWLEDGE_MD.name)
-        path.write_text(json.dumps(guide, ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(guide, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         print(f"Updated guide: {path.name} (+{len(new_sections)} sections)")
 
 
@@ -141,7 +141,7 @@ def apply_tactics_meta(_md: str) -> None:
         meta.pop("coachNotes", None)
         meta.pop("kazewaSource", None)
         meta.pop("kazeSource", None)
-        path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(meta, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         print(f"Updated tactics-meta: {path.name} (coachNotes retirés)")
 
 

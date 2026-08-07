@@ -1,25 +1,5 @@
 /* ─── LoL Coach · layout épuré, plein écran, grande typo ───────────────── */
 
-:root {
-  --header-h: 72px;
-  --sidebar-w: clamp(168px, 11vw, 196px);
-  --radius: 18px;
-  --space-xs: 0.5rem;
-  --space-sm: 0.75rem;
-  --space-md: 1.25rem;
-  --space-lg: 1.75rem;
-  --space-xl: 2.5rem;
-  --text-body: clamp(1rem, 0.35vw + 0.95rem, 1.125rem);
-  --text-label: clamp(0.8125rem, 0.2vw + 0.78rem, 0.9375rem);
-  --text-title: clamp(1.35rem, 1.2vw + 1rem, 2rem);
-  --text-display: clamp(1.75rem, 2vw + 1rem, 2.75rem);
-  --icon-card: clamp(84px, 7vw, 112px);
-  --icon-detail: clamp(88px, 6vw, 112px);
-  --icon-pool: clamp(56px, 4vw, 72px);
-  --icon-draft: clamp(52px, 3.5vw, 68px);
-  --touch-min: 44px;
-}
-
 html {
   font-size: 100%;
 }
@@ -164,24 +144,6 @@ body {
 }
 
 /* Hero compact — voir ui-mtg.css (.champions-toolbar) */
-
-.champion-grid {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 142px), 1fr));
-  gap: 0.72rem;
-}
-
-@media (min-width: 1200px) {
-  .champion-grid {
-    grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
-    gap: 0.8rem;
-  }
-}
-
-@media (min-width: 1600px) {
-  .champion-grid {
-    grid-template-columns: repeat(auto-fill, minmax(154px, 1fr));
-  }
-}
 
 .champion-card {
   border-radius: var(--radius);
@@ -352,19 +314,6 @@ body {
   padding: var(--space-md) clamp(1rem, 2vw, 2.5rem);
 }
 
-.items-grid {
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
-  gap: var(--space-md);
-}
-
-.item-card {
-  padding: var(--space-md);
-}
-
-.item-card-name {
-  font-size: var(--text-body);
-}
-
 /* ─── Mobile ───────────────────────────────────────────────────────────────── */
 
 @media (max-width: 900px) {
@@ -382,10 +331,6 @@ body {
 
   .main {
     padding: var(--space-sm) var(--space-md) calc(var(--space-xl) + 4rem);
-  }
-
-  .champion-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
 
   .sidebar:not(.hidden) {

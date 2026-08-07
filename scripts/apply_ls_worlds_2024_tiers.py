@@ -72,7 +72,7 @@ def main() -> None:
         payload["tierListScope"] = data.get("scope", "")
         payload["tierListSource"] = data.get("source", [])
         payload["tierListSourceDate"] = data.get("sourceDate", "2024-09-25")
-        path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         print(f"{path.name}: LS Worlds 2024 tiers applied to {updated}/{len(payload['champions'])} champions")
 
 

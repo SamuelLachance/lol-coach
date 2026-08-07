@@ -22,9 +22,6 @@
     ["Malphite", "Yasuo"],
     ["Gragas", "Yasuo"],
     ["Jarvan IV", "Yasuo"],
-    ["Yasuo", "Malphite"],
-    ["Yasuo", "Gragas"],
-    ["Yasuo", "Jarvan IV"],
     ["Amumu", "Miss Fortune"],
     ["Orianna", "Miss Fortune"],
     ["Sejuani", "Miss Fortune"],
@@ -91,16 +88,21 @@
     return Math.max(0, Math.min(1, Number(x) || 0));
   }
 
+  function roundSym(x) {
+    const v = Number(x) || 0;
+    return Math.sign(v) * Math.round(Math.abs(v));
+  }
+
   function normalizePillar(raw, typicalAbs = 100) {
     const t = Math.max(1, Math.abs(typicalAbs) || 100);
-    const x = Math.max(-t * 2.5, Math.min(t * 2.5, Number(raw) || 0));
-    return Math.round((x / t) * PILLAR_MAX);
+    const x = Math.max(-t, Math.min(t, Number(raw) || 0));
+    return roundSym((x / t) * PILLAR_MAX);
   }
 
   function combineEqualPillars(scores) {
     const vals = scores.filter((s) => s != null && Number.isFinite(s));
     if (!vals.length) return 0;
-    return Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
+    return roundSym(vals.reduce((a, b) => a + b, 0) / vals.length);
   }
 
   function nameLookupKey(name) {
@@ -134,9 +136,8 @@
     return i >= 0 ? w[Math.min(i, w.length - 1)] : 0;
   }
 
-  function namesFrom(list, metaEntry) {
-    const raw = list || metaEntry?.bestPairings || metaEntry?.bestCounters || metaEntry?.worstMatchups || [];
-    return raw.map((x) => (typeof x === "string" ? x : x?.name)).filter(Boolean);
+  function namesFrom(list) {
+    return (list || []).map((x) => (typeof x === "string" ? x : x?.name)).filter(Boolean);
   }
 
   function playableSlots(champ, meta) {
@@ -190,7 +191,7 @@
 
     const harmony = pie.colorPickBonus(v.colors, allyColors, teamSum);
     if (harmony.score) {
-      score += Math.round(harmony.score * (w?.plan || 0.55) * 1.35);
+      score += Math.round(harmony.score * (w?.plan || 0.55));
       if (harmony.label) reasons.push(harmony.label);
       else if (harmony.teamCombo?.name) reasons.push(`Identité ${harmony.teamCombo.name}`);
     }
@@ -238,13 +239,54 @@
     }
 
     return {
-      score: Math.round(Math.max(0, Math.min(580, score))),
+      score: Math.round(Math.max(-580, Math.min(580, score))),
       detail: { coherence, beatdown },
     };
   }
 
-  /** Profil draft enrichi par champion. */
+  function threatsOf(champ, m) {
+    if (champ?.bestCounters?.length) return namesFrom(champ.bestCounters);
+    if (champ?.allCounters?.length) return namesFrom(champ.allCounters);
+    if (m?.worstMatchups?.length) return namesFrom(m.worstMatchups);
+    if (m?.bestCounters?.length) return namesFrom(m.bestCounters);
+    return [];
+  }
+
+  function damageShares(champ, m, dp, tags) {
+    const a = Number(dp.adShare) || 0;
+    const b = Number(dp.apShare) || 0;
+    if ((dp.adShare != null || dp.apShare != null) && a + b > 0) {
+      return [clamp01(a), clamp01(b)];
+    }
+    const dd = new Set(champ.tags || []);
+    if (dd.has("Marksman")) return [0.85, 0.15];
+    if (dd.has("Mage")) return [0.15, 0.85];
+    if (dd.has("Assassin")) return tags.has("mage_burst") ? [0.15, 0.85] : [0.85, 0.15];
+    if (dd.has("Fighter")) return [0.85, 0.15];
+    return [0.5, 0.5];
+  }
+
+  const PROFILE_CACHE = new WeakMap();
+
+  /** Profil draft enrichi par champion — mémoïsé par (champion, dataset). */
   function buildProfile(champ, meta) {
+    if (!champ) return buildProfileRaw({ name: "", optimalSlots: [], abilities: [] }, meta);
+    if (meta && typeof meta === "object") {
+      let byChamp = PROFILE_CACHE.get(meta);
+      if (!byChamp) {
+        byChamp = new Map();
+        PROFILE_CACHE.set(meta, byChamp);
+      }
+      const hit = byChamp.get(champ.name);
+      if (hit && hit.champ === champ) return hit;
+      const prof = buildProfileRaw(champ, meta);
+      byChamp.set(champ.name, prof);
+      return prof;
+    }
+    return buildProfileRaw(champ, meta);
+  }
+
+  function buildProfileRaw(champ, meta) {
     const name = champ.name;
     const m = meta?.[name] || {};
     const colors = getColorIdentity(champ, meta);
@@ -290,8 +332,7 @@
     const burst = clamp01(
       ((dp.dpsWeight ?? 0) / 1.25) * 0.5 + (tags.has("assassin") ? 0.4 : 0) + (spells.aoe ? 0.15 : 0)
     );
-    const ad = clamp01(dp.adShare ?? (tags.has("mage_burst") ? 0.1 : 0.85));
-    const ap = clamp01(dp.apShare ?? (tags.has("mage_burst") ? 0.85 : 0.15));
+    const [ad, ap] = damageShares(champ, m, dp, tags);
     const spellSetup = clamp01((spells.cc ? 0.35 : 0) + (spells.knockup ? 0.45 : 0));
 
     return {
@@ -300,9 +341,8 @@
       tags,
       tierMeta,
       slots,
-      pairings: namesFrom(champ.bestPairings, m),
-      counters: namesFrom(champ.bestCounters, m),
-      counteredBy: namesFrom(champ.worstMatchups, m),
+      pairings: namesFrom(champ.bestPairings?.length ? champ.bestPairings : m.bestPairings),
+      threats: threatsOf(champ, m),
       compTypes,
       familyKey,
       engage,
@@ -330,6 +370,39 @@
     return names.map((n) => buildProfile(getData(byName, meta, n), meta));
   }
 
+  /** Index inverse « qui je bats » — pour chaque T dans threats(C), victims(T) contient C. */
+  let victimsCache = { byName: null, metaMap: null, index: null };
+
+  function victimsIndex(byName, metaMap) {
+    if (victimsCache.index && victimsCache.byName === byName && victimsCache.metaMap === metaMap) {
+      return victimsCache.index;
+    }
+    const index = new Map();
+    const addAll = (name, threats) => {
+      threats.forEach((t, rank) => {
+        const key = nameLookupKey(t);
+        if (!key) return;
+        if (!index.has(key)) index.set(key, []);
+        index.get(key).push({ name, rank });
+      });
+    };
+    if (byName instanceof Map) {
+      for (const champ of new Set(byName.values())) {
+        addAll(champ.name, threatsOf(champ, metaMap?.[champ.name]));
+      }
+    } else if (metaMap) {
+      for (const [name, m] of Object.entries(metaMap)) {
+        addAll(name, threatsOf(null, m));
+      }
+    }
+    victimsCache = { byName, metaMap, index };
+    return index;
+  }
+
+  function getVictims(name, byName, metaMap) {
+    return victimsIndex(byName, metaMap).get(nameLookupKey(name)) || [];
+  }
+
   function normNameKey(name) {
     return String(name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
   }
@@ -349,7 +422,7 @@
   }
 
   /** Détection archetype comp (engage, poke, hypercarry, dive, peel, split, scaling). */
-  function detectArchetype(vs) {
+  function detectArchetypeBase(vs) {
     if (!vs.length) return { plan: null, label: "", completeness: 0, gaps: [], carry: null };
     const typeCounts = {};
     for (const v of vs) {
@@ -419,6 +492,17 @@
     };
   }
 
+  /** Détecteur unique — base + plan raffiné (mêmes règles pour draft, macro, bans, clash). */
+  function detectArchetype(vs) {
+    const arch = detectArchetypeBase(vs);
+    const plan = primaryTeamPlan(vs);
+    if (plan && plan !== arch.plan) {
+      arch.plan = plan;
+      arch.label = COMP_LABELS[plan] || plan;
+    }
+    return arch;
+  }
+
   function teamBalance(vs, slotsLeft) {
     if (!vs.length) return { score: 0, gaps: [] };
     const urg = slotsLeft <= 1 ? 2 : slotsLeft === 2 ? 1.5 : 1;
@@ -459,13 +543,7 @@
       for (let j = i + 1; j < vs.length; j++) {
         s += listScore(vs[j].name, vs[i].pairings, SYN_W);
         s += Math.round(listScore(vs[i].name, vs[j].pairings, SYN_W) * 0.85);
-        if (vs[i].spells.knockup && vs[j].spells.aoe) s += 22;
         if (vs[i].spells.peel && vs[j].carry > 0.55) s += 24;
-        const ck = CK();
-        if (ck?.countComboLinks) {
-          const links = ck.countComboLinks(vs[i].name, [vs[j].name]);
-          if (links) s += 14 + links * 10;
-        }
       }
     }
     return s;
@@ -481,8 +559,8 @@
     let ctr = 0;
     for (const u of vs) {
       for (const e of oppVs) {
-        ctr += listScore(u.name, e.counters, CTR_W);
-        ctr -= Math.round(listScore(e.name, u.counters, CTR_W) * 0.45);
+        ctr += listScore(u.name, e.threats, CTR_W);
+        ctr -= listScore(e.name, u.threats, CTR_W);
       }
     }
     let coachingAdj = 0;
@@ -514,7 +592,7 @@
       normalizePillar(ctr, 120),
       normalizePillar(arch.completeness * 1.15, 115),
       normalizePillar(coachingAdj, 90),
-      normalizePillar(mtgAdj, 220),
+      normalizePillar(mtgAdj, 440),
     ]);
     const total = Math.round(pillarTotal * TEAM_PILLAR_SCALE);
     return {
@@ -526,11 +604,9 @@
     };
   }
 
-  /** Macro tab — familles (draft.txt #1): cohérence, templates, archétypes, mix. */
+  /** Macro tab — familles (draft.txt #1): cohérence, templates, dominance de tags. */
   function macroFamilyScore(names, byName, metaMap) {
-    const vs = profiles(names, byName, metaMap);
-    const arch = detectArchetype(vs);
-    let score = Math.round(arch.completeness * 2.1);
+    let score = 0;
     const ck = CK();
     if (!ck || names.length < 2) return score;
 
@@ -539,13 +615,6 @@
       coherence += ck.familyCoherence(n, names.filter((x) => x !== n)).score;
     }
     score += Math.round(coherence / names.length);
-
-    const archetype = ck.detectArchetypeComp(names);
-    if (archetype) {
-      const archHits = archetypeHitCount(archetype, names);
-      score += archHits * 16;
-      if (archHits >= 3) score += 18;
-    }
 
     const tpl = ck.detectTemplate(names);
     if (tpl) {
@@ -557,10 +626,6 @@
       if (tplHits >= 3) score += 32;
       else if (tplHits >= 2) score += 22;
     }
-
-    let mix = 0;
-    for (const n of names) mix += ck.familyMixPenalty(n, names.filter((x) => x !== n)).score;
-    score += Math.round((mix * (ck.WEIGHTS?.mix || 3) / 3 / names.length) * 2.2);
 
     const tags = names.map((n) => {
       const key = normNameKey(n);
@@ -607,9 +672,9 @@
       for (const n of names) {
         const v = buildProfile(getData(byName, metaMap, n), metaMap);
         for (const e of oppNames) {
-          ctrEdge += listScore(e, v.counters, CTR_W);
           const ep = buildProfile(getData(byName, metaMap, e), metaMap);
-          ctrEdge -= Math.round(listScore(n, ep.counters, CTR_W) * 0.38);
+          ctrEdge += listScore(n, ep.threats, CTR_W);
+          ctrEdge -= listScore(e, v.threats, CTR_W);
         }
       }
       synergy += Math.round((ctrEdge / Math.max(1, names.length)) * 0.42);
@@ -725,7 +790,7 @@
 
   function primaryTeamPlan(vs) {
     const counts = teamTypeCounts(vs);
-    const arch = detectArchetype(vs);
+    const arch = detectArchetypeBase(vs);
     const metrics = IX()?.buildTeamMetrics?.(vs) || {};
     const poke = (counts.poke_siege || 0) + (counts.poke_disengage || 0);
     const engage = (counts.teamfight_engage || 0) + (counts.all_in || 0);
@@ -738,12 +803,13 @@
     const marksman = vs.filter((v) => v.isMarksman).length;
     const frontCount = vs.filter((v) => v.tags?.has?.("frontline")).length;
     const enchanterN = metrics.enchanter || teamEnchanterCount(vs);
+    const diveAssassins = vs.filter((v) => v.tags?.has?.("dive") || v.tags?.has?.("assassin")).length;
 
     if (poke >= 2 && poke >= engage) {
       return (counts.poke_disengage || 0) >= (counts.poke_siege || 0) ? "poke_disengage" : "poke_siege";
     }
-    // ADC protégé — un seul marksman bot (pas TF + Ezreal split)
-    if (marksman === 1 && enchanterN >= 1 && peelSum >= 1.0 && scaleSum >= 0.8) return "hypercarry";
+    // ADC protégé — un seul marksman bot, identité unique (pas de comp dive déguisée)
+    if (marksman === 1 && enchanterN >= 1 && peelSum >= 1.0 && scaleSum >= 0.8 && diveAssassins < 2) return "hypercarry";
     if (split >= 2 || metrics.split >= 2) return "split_push";
     // Pick/dive (Galio/Naafiri/Bard) — avant le tag engage d'un seul tank
     if (pick >= 2) return "pick_global";
@@ -780,20 +846,6 @@
     if (engage >= 3) bonus += 48;
     else if (engage >= 2) bonus += 26;
     if ((counts.hypercarry || 0) >= 2 && vs.some((v) => v.tags?.has?.("peel"))) bonus += 32;
-    const ck = CK();
-    if (ck?.FAMILY_TAGS) {
-      const tags = vs.map((v) => {
-        const key = normNameKey(v.name);
-        if (ck.FAMILY_TAGS.engage?.has(key)) return "engage";
-        if (ck.FAMILY_TAGS.disengage?.has(key)) return "disengage";
-        if (ck.FAMILY_TAGS.range?.has(key)) return "range";
-        return null;
-      }).filter(Boolean);
-      if (tags.length >= 3) {
-        const dom = Math.max(...["engage", "disengage", "range"].map((t) => tags.filter((x) => x === t).length));
-        if (dom / tags.length >= 0.7) bonus += 22;
-      }
-    }
     return bonus;
   }
 
@@ -825,23 +877,11 @@
     if (!ck || names.length < 2) return 0;
     let mix = 0;
     for (const n of names) mix += ck.familyMixPenalty(n, names.filter((x) => x !== n)).score;
-    let score = Math.round((mix / names.length) * 2.8);
-    const archetype = ck.detectArchetypeComp(names);
-    if (archetype) score += archetypeHitCount(archetype, names) * 28;
-    const tpl = ck.detectTemplate(names);
-    if (tpl) {
-      const hitSet = new Set(names.map(normNameKey));
-      const hits = (tpl.champs || []).filter((c) => hitSet.has(normNameKey(c))).length;
-      if (hits >= 3) score += 42;
-      else if (hits >= 2) score += 26;
-    }
-    return score;
+    return Math.round((mix / names.length) * 2.8);
   }
 
   function winConditionScore(vs, names, byName, metaMap) {
     const arch = detectArchetype(vs);
-    arch.plan = primaryTeamPlan(vs) || arch.plan;
-    arch.label = COMP_LABELS[arch.plan] || arch.label;
     let score = Math.round(arch.completeness * 6.5);
     if (arch.plan) score += 95;
     const gapCount = (arch.gaps || []).length;
@@ -857,7 +897,7 @@
       const archetype = ck.detectArchetypeComp(names);
       if (archetype) score += archetypeHitCount(archetype, names) * 58;
     }
-    const plan = primaryTeamPlan(vs);
+    const plan = arch.plan;
     if (plan) {
       const typeCounts = teamTypeCounts(vs);
       score += Math.min(120, (typeCounts[plan] || 0) * 28);
@@ -886,8 +926,6 @@
     const family = macroFamilyScore(names, byName, metaMap);
     const bal = teamBalance(vs, 0);
     const arch = detectArchetype(vs);
-    arch.plan = primaryTeamPlan(vs) || arch.plan;
-    arch.label = COMP_LABELS[arch.plan] || arch.label;
     arch.gapCount = (arch.gaps || []).length;
     const mtgBlock = macroMtgScore(names, { byName, metaMap, oppNames: [] });
     const coaching = internalCoachingScore(names) + internalIncoherencePenalty(vs) + teamPatternBonus(vs);
@@ -896,21 +934,23 @@
     const clBlock = CL()?.teamClassDiversity?.(vs) || { score: 0 };
     const clGap = CL()?.teamClassGapPenalty?.(vs) || { score: 0 };
     const classScore = Math.round(clBlock.score * 0.45 + clGap.score * 0.35);
-    const pillarTotal = combineEqualPillars([
-      normalizePillar(winCondition, 380),
-      normalizePillar(synergy, 320),
-      normalizePillar(family, 300),
-      normalizePillar(bal.score, 90),
-      normalizePillar(coaching, 130),
-      normalizePillar(mtgBlock.score, 260),
-      normalizePillar(wombo.power, 95),
-      normalizePillar(classScore, 75),
-    ]);
+    const pillars = {
+      winCondition: normalizePillar(winCondition, 380),
+      synergy: normalizePillar(synergy, 320),
+      family: normalizePillar(family, 300),
+      balance: normalizePillar(bal.score, 90),
+      coaching: normalizePillar(coaching, 130),
+      mtg: normalizePillar(mtgBlock.score, 520),
+      wombo: normalizePillar(wombo.power, 95),
+      classes: normalizePillar(classScore, 75),
+    };
+    const pillarTotal = combineEqualPillars(Object.values(pillars));
     const total = Math.round(pillarTotal * TEAM_PILLAR_SCALE);
     return {
       total,
       vs,
       archetype: arch,
+      pillars,
       breakdown: {
         synergy,
         family,
@@ -933,10 +973,10 @@
     let enemy = 0;
     const reasons = [];
 
-    const ctrUs = listScore(enemyV.name, ourV.counters, CTR_W);
-    const ctrThem = listScore(ourV.name, enemyV.counters, CTR_W);
+    const ctrUs = listScore(ourV.name, enemyV.threats, CTR_W);
+    const ctrThem = listScore(enemyV.name, ourV.threats, CTR_W);
     our += ctrUs;
-    enemy += Math.round(ctrThem * 0.52);
+    enemy += ctrThem;
     if (ctrUs >= 18) reasons.push(`${ourV.name} > ${enemyV.name}`);
     if (ctrThem >= 18) reasons.push(`${enemyV.name} > ${ourV.name}`);
 
@@ -960,10 +1000,14 @@
 
     const ck = CK();
     if (ck?.coachingSynergyScore) {
-      const syn = ck.coachingSynergyScore(ourV.name, [enemyV.name]).score;
-      if (syn < -8) {
-        enemy += Math.round(Math.abs(syn) * 0.35);
+      const synOur = ck.coachingSynergyScore(ourV.name, [enemyV.name]).score;
+      const synEnemy = ck.coachingSynergyScore(enemyV.name, [ourV.name]).score;
+      if (synOur < -8) {
+        enemy += Math.round(Math.abs(synOur) * 0.35);
         reasons.push(`Anti-synergie ${ourV.name}/${enemyV.name}`);
+      }
+      if (synEnemy < -8) {
+        our += Math.round(Math.abs(synEnemy) * 0.35);
       }
     }
 
@@ -1003,8 +1047,8 @@
     else if (tierUs >= 4) our += 4;
     else if (tierUs <= -4) enemy += 4;
 
-    if (ourV.counteredBy?.includes(enemyV.name)) enemy += 14;
-    if (enemyV.counteredBy?.includes(ourV.name)) our += 14;
+    if (ourV.threats?.includes(enemyV.name)) enemy += 14;
+    if (enemyV.threats?.includes(ourV.name)) our += 14;
 
     const cl = CL();
     if (cl?.pairClassEdge) {
@@ -1023,35 +1067,30 @@
   }
 
   function laneMatchupNote(ourName, enemyName, ourV, enemyV, margin, reasons, slot) {
+    if (Math.abs(margin) < 5) return `Matchup équilibré — skill check des deux côtés.`;
     if (reasons.length) {
-      const top = reasons.find((r) => r.includes(">")) || reasons[0];
-      if (top) return top.replace(/^[^:]+:\s*/, "");
+      const winner = margin > 0 ? ourName : enemyName;
+      const loser = margin > 0 ? enemyName : ourName;
+      const clean = reasons.map((r) => r.replace(/^[^:>]+:\s*/, ""));
+      const usable = clean.filter((r) => !r.startsWith(loser));
+      const top = usable.find((r) => r.startsWith(winner)) || usable.find((r) => r.includes(">")) || usable[0];
+      if (top) return top;
     }
     if (margin >= 14) return `${ourName} domine ${enemyName} sur ${SLOT_LABELS[slot] || slot}.`;
     if (margin >= 5) return `${ourName} favorable — prio vague et plates.`;
-    if (margin > 0) return `${ourName} léger avantage — skill check mais lane playable.`;
     if (margin <= -14) return `${enemyName} domine — joue disengage/scale.`;
-    if (margin <= -5) return `${enemyName} favorable — respecte le spike adverse.`;
-    return `${enemyName} léger avantage — farm safe et jungle prio.`;
+    return `${enemyName} favorable — respecte le spike adverse.`;
   }
 
-  /** 1v1 lane — toujours un gagnant (pas d'égal MOBA). */
+  /** 1v1 lane — win / lose / even (|marge| < 5), marge antisymétrique. */
   function scoreLaneMatchup(ourName, enemyName, slot, byName, metaMap) {
     if (!ourName || !enemyName) return { verdict: "unknown", margin: 0, note: "Lane incomplète." };
     const ourV = buildProfile(getData(byName, metaMap, ourName), metaMap);
     const enemyV = buildProfile(getData(byName, metaMap, enemyName), metaMap);
     const edge = laneMatchupEdge(ourV, enemyV, slot, { metaMap });
-    let margin = edge.our - edge.enemy;
-
-    if (margin === 0) {
-      const tierD = (TIER_PTS[ourV.tierMeta] || 10) - (TIER_PTS[enemyV.tierMeta] || 10);
-      if (tierD !== 0) margin = tierD > 0 ? 3 : -3;
-      else if (Math.abs(ourV.early - enemyV.early) > 0.04) margin = ourV.early > enemyV.early ? 2 : -2;
-      else if (Math.abs(ourV.carry - enemyV.carry) > 0.04) margin = ourV.carry > enemyV.carry ? 2 : -2;
-      else margin = ourName.localeCompare(enemyName, "fr") >= 0 ? 1 : -1;
-    }
-
-    const verdict = margin >= 0 ? "win" : "lose";
+    const back = laneMatchupEdge(enemyV, ourV, slot, { metaMap });
+    const margin = roundSym(((edge.our - edge.enemy) - (back.our - back.enemy)) / 2);
+    const verdict = margin >= 5 ? "win" : margin <= -5 ? "lose" : "even";
     return {
       verdict,
       margin,
@@ -1063,10 +1102,10 @@
     const w = JGL_GANK_WEIGHT[laneSlot] || 0.3;
     let our = 0;
     let enemy = 0;
-    const ctr = listScore(laneV.name, jungleV.counters, CTR_W);
-    const ctrBack = listScore(jungleV.name, laneV.counters, CTR_W);
+    const ctr = listScore(jungleV.name, laneV.threats, CTR_W);
+    const ctrBack = listScore(laneV.name, jungleV.threats, CTR_W);
     our += Math.round(ctr * w);
-    enemy += Math.round(ctrBack * w * 0.55);
+    enemy += Math.round(ctrBack * w);
     if (jungleV.early >= 0.45 && laneV.peel < 0.45) our += Math.round(8 * w);
     if (laneV.early >= 0.45 && jungleV.peel < 0.45) enemy += Math.round(8 * w);
     return { our, enemy };
@@ -1086,19 +1125,14 @@
     }
 
     for (const [counter, victim] of COMP_TYPE_COUNTERS) {
-      if (ourPlan === counter && enemyPlan === victim) {
-        if (skipVictimsProtectedHyper(victim, enemyVs)) continue;
-        if (counter === "teamfight_engage" && victim === "hypercarry") continue;
-        if (counter === "pick_global" && victim === "hypercarry" && isProtectedHypercarryTeam(enemyVs, victim)) continue;
-        our += counter === "teamfight_engage" ? 165 : 205;
+      const edge = counter === "teamfight_engage" ? 165 : 205;
+      if (ourPlan === counter && enemyPlan === victim && !skipVictimsProtectedHyper(victim, enemyVs)) {
+        our += edge;
         reasons.push(`Win condition : ${COMP_LABELS[counter] || counter} > ${COMP_LABELS[victim] || victim}`);
       }
-      if (enemyPlan === counter && ourPlan === victim) {
-        if (skipVictimsProtectedHyper(victim, ourVs)) continue;
-        if (counter === "teamfight_engage" && victim === "hypercarry") continue;
-        if (counter === "pick_global" && victim === "hypercarry" && isProtectedHypercarryTeam(ourVs, victim)) continue;
-        enemy += counter === "teamfight_engage" ? 165 : 205;
-        reasons.push(`Win condition : ${COMP_LABELS[counter] || counter} > ${COMP_LABELS[ourPlan] || ourPlan}`);
+      if (enemyPlan === counter && ourPlan === victim && !skipVictimsProtectedHyper(victim, ourVs)) {
+        enemy += edge;
+        reasons.push(`Win condition : ${COMP_LABELS[counter] || counter} > ${COMP_LABELS[victim] || victim}`);
       }
     }
 
@@ -1108,8 +1142,10 @@
     const ix = IX();
     if (ix?.evaluateCompClashes) {
       const clash = ix.evaluateCompClashes(ourVs, enemyVs, ourPlan, enemyPlan, ourArch, enemyArch);
-      our += Math.round(clash.our * 0.82);
-      enemy += Math.round(clash.enemy * 0.82);
+      const clashBack = ix.evaluateCompClashes(enemyVs, ourVs, enemyPlan, ourPlan, enemyArch, ourArch);
+      const net = (((clash.our - clash.enemy) - (clashBack.our - clashBack.enemy)) / 2) * 0.82;
+      if (net > 0) our += net;
+      else if (net < 0) enemy += -net;
       for (const h of clash.hits || []) {
         reasons.push(h.reason);
         hits.push({ ...h, edge: Math.round(h.edge * 0.72) });
@@ -1152,25 +1188,33 @@
     return { our, enemy, ourPlan, enemyPlan, reasons: [...new Set(reasons)], hits };
   }
 
+  /** Avantage NET antisymétrique — (edge(A,B) − edge(B,A)) / 2, attribué signé. */
+  function netEdge(fwd, bwd) {
+    return ((fwd.our - fwd.enemy) - (bwd.our - bwd.enemy)) / 2;
+  }
+
+  function creditNet(net, acc) {
+    if (net > 0) acc.our += net;
+    else if (net < 0) acc.enemy += -net;
+  }
+
   /**
    * Full cross-draft interaction matrix — every our×enemy champ + lane matchups + jungle
    * + win-condition clash + MTG beatdown + color hosers + wombo threats.
    */
   function crossDraftInteractions(ourVs, enemyVs, ourComp, enemyComp, ctx) {
     const { byName, metaMap } = ctx;
-    let ourEdge = 0;
-    let enemyEdge = 0;
+    const acc = { our: 0, enemy: 0 };
     const topPairs = [];
     const pie = MTG();
 
     for (const u of ourVs) {
       for (const e of enemyVs) {
         const pair = pairwiseChampEdge(u, e);
-        ourEdge += pair.our;
-        enemyEdge += pair.enemy;
-        const net = pair.our - pair.enemy;
+        const net = netEdge(pair, pairwiseChampEdge(e, u));
+        creditNet(net, acc);
         if (Math.abs(net) >= 12 && pair.reasons.length) {
-          topPairs.push({ our: u.name, enemy: e.name, edge: net, reason: pair.reasons[0] });
+          topPairs.push({ our: u.name, enemy: e.name, edge: Math.round(net), reason: pair.reasons[0] });
         }
       }
     }
@@ -1182,11 +1226,10 @@
       const u = buildProfile(getData(byName, metaMap, on), metaMap);
       const e = buildProfile(getData(byName, metaMap, en), metaMap);
       const lane = laneMatchupEdge(u, e, slot, ctx);
-      ourEdge += Math.round(lane.our * LANE_CROSS_DUEL_WEIGHT);
-      enemyEdge += Math.round(lane.enemy * LANE_CROSS_DUEL_WEIGHT);
-      const net = Math.round((lane.our - lane.enemy) * LANE_CROSS_DUEL_WEIGHT);
+      const net = netEdge(lane, laneMatchupEdge(e, u, slot, ctx)) * LANE_CROSS_DUEL_WEIGHT;
+      creditNet(net, acc);
       if (Math.abs(net) >= 10) {
-        topPairs.push({ our: on, enemy: en, edge: net, reason: lane.reasons[0] || `${slot} matchup` });
+        topPairs.push({ our: on, enemy: en, edge: Math.round(net), reason: lane.reasons[0] || `${slot} matchup` });
       }
     }
 
@@ -1199,8 +1242,7 @@
         if (!target) continue;
         const lv = buildProfile(getData(byName, metaMap, target), metaMap);
         const g = jungleCrossEdge(jv, lv, laneSlot);
-        ourEdge += g.our;
-        enemyEdge += g.enemy;
+        creditNet(g.our - g.enemy, acc);
       }
     }
     if (enemyJgl) {
@@ -1210,16 +1252,15 @@
         if (!target) continue;
         const lv = buildProfile(getData(byName, metaMap, target), metaMap);
         const g = jungleCrossEdge(jv, lv, laneSlot);
-        enemyEdge += g.our;
-        ourEdge += g.enemy;
+        creditNet(g.enemy - g.our, acc);
       }
     }
 
     const plan = planClashEdge(ourVs, enemyVs);
-    ourEdge += plan.our;
-    enemyEdge += plan.enemy;
+    acc.our += plan.our;
+    acc.enemy += plan.enemy;
     if (plan.reasons.length) {
-      topPairs.push({ our: plan.ourPlan || "?", enemy: plan.enemyPlan || "?", edge: plan.our - plan.enemy, reason: plan.reasons[0] });
+      topPairs.push({ our: plan.ourPlan || "?", enemy: plan.enemyPlan || "?", edge: Math.round(plan.our - plan.enemy), reason: plan.reasons[0] });
     }
     for (const h of plan.hits || []) {
       if (Math.abs(h.edge) >= 55) {
@@ -1230,8 +1271,7 @@
     const ix = IX();
     if (ix?.evaluateTeamTraitClashes) {
       const teamIx = ix.evaluateTeamTraitClashes(ourVs, enemyVs);
-      ourEdge += Math.round(teamIx.our * 0.6);
-      enemyEdge += Math.round(teamIx.enemy * 0.6);
+      creditNet(netEdge(teamIx, ix.evaluateTeamTraitClashes(enemyVs, ourVs)) * 0.6, acc);
       for (const h of teamIx.hits || []) {
         if (Math.abs(h.edge) >= 35) topPairs.push(h);
       }
@@ -1240,8 +1280,7 @@
     const cl = CL();
     if (cl?.teamClassClashEdge) {
       const classIx = cl.teamClassClashEdge(ourVs, enemyVs);
-      ourEdge += Math.round(classIx.our * 0.4);
-      enemyEdge += Math.round(classIx.enemy * 0.4);
+      creditNet(netEdge(classIx, cl.teamClassClashEdge(enemyVs, ourVs)) * 0.4, acc);
       for (const h of classIx.hits || []) {
         if (Math.abs(h.edge) >= 42) topPairs.push(h);
       }
@@ -1249,6 +1288,7 @@
 
     const ourWombo = teamWomboPower(ourVs);
     const enemyWombo = teamWomboPower(enemyVs);
+    let beatdown = null;
 
     if (pie) {
       const ourColors = ourVs.map((p) => p.colors).filter(Boolean);
@@ -1259,19 +1299,21 @@
       for (const u of ourVs) {
         const h = pie.colorMatchupPenalty(u.colors, enemySum);
         const capped = Math.max(-16, Math.min(12, h.score));
-        ourEdge += capped;
+        acc.our += capped;
         if (capped <= -10) topPairs.push({ our: u.name, enemy: "MTG", edge: capped, reason: h.reasons[0] || "Hoser couleur" });
       }
       for (const e of enemyVs) {
         const h = pie.colorMatchupPenalty(e.colors, ourSum);
-        enemyEdge += Math.max(-16, Math.min(12, h.score));
+        acc.enemy += Math.max(-16, Math.min(12, h.score));
       }
 
       const beat = pie.analyzeBeatdownMatchup(ourVs, enemyVs);
-      if (beat.alignmentBonus) {
-        ourEdge += beat.alignmentBonus;
-        if (beat.alignmentBonus < 0) enemyEdge += Math.abs(beat.alignmentBonus) * 0.65;
-        if (beat.hint) topPairs.push({ our: beat.ourRole, enemy: beat.enemyRole, edge: beat.alignmentBonus, reason: beat.hint });
+      const beatBack = pie.analyzeBeatdownMatchup(enemyVs, ourVs);
+      beatdown = beat;
+      const beatNet = ((beat.alignmentBonus || 0) - (beatBack.alignmentBonus || 0)) / 2;
+      creditNet(beatNet, acc);
+      if (beatNet && beat.hint) {
+        topPairs.push({ our: beat.ourRole, enemy: beat.enemyRole, edge: Math.round(beatNet), reason: beat.hint });
       }
     }
 
@@ -1279,48 +1321,37 @@
     if (ck?.denyComboBanScore) {
       for (const n of ourVs.map((v) => v.name)) {
         const deny = ck.denyComboBanScore(n, enemyVs.map((v) => v.name));
-        if (deny.score > 0) enemyEdge += Math.round(deny.score * 0.28);
+        if (deny.score > 0) acc.enemy += deny.score * 0.28;
       }
       for (const n of enemyVs.map((v) => v.name)) {
         const deny = ck.denyComboBanScore(n, ourVs.map((v) => v.name));
-        if (deny.score > 0) ourEdge += Math.round(deny.score * 0.28);
+        if (deny.score > 0) acc.our += deny.score * 0.28;
       }
     }
 
     topPairs.sort((a, b) => Math.abs(b.edge) - Math.abs(a.edge));
 
     return {
-      our: Math.round(ourEdge),
-      enemy: Math.round(enemyEdge),
-      matchup: Math.round(ourEdge - enemyEdge),
+      our: Math.round(acc.our),
+      enemy: Math.round(acc.enemy),
+      matchup: Math.round(acc.our - acc.enemy),
       topPairs: topPairs.slice(0, 12),
       plan,
+      beatdown,
       ourWombo,
       enemyWombo,
     };
   }
 
-  function duelWinProb(ourTotal, enemyTotal) {
-    const margin = ourTotal - enemyTotal;
-    if (Math.abs(margin) < 0.5) return { our: 0.5, enemy: 0.5 };
-    const raw = 1 / (1 + Math.exp(-margin / 30));
-    const our = Math.min(0.94, Math.max(0.06, raw));
+  /** Logistique douce sur la marge — bornée [15 %, 85 %], 50 % à marge nulle. */
+  function winProbFromMargin(margin) {
+    const m = Number(margin) || 0;
+    const our = 0.15 + 0.7 / (1 + Math.exp(-m / 250));
     return { our, enemy: 1 - our };
   }
 
-  function duelWinProbFromMargin(margin) {
-    if (Math.abs(margin) < 0.5) return { our: 0.5, enemy: 0.5 };
-    const raw = 1 / (1 + Math.exp(-margin / 26));
-    const our = Math.min(0.94, Math.max(0.06, raw));
-    return { our, enemy: 1 - our };
-  }
-
-  /** Win % shown in Macro — must match displayed point totals (648 vs 527 → ~55/45). */
   function duelWinProbFromDisplayScores(ourTotal, enemyTotal) {
-    const sum = (ourTotal || 0) + (enemyTotal || 0);
-    if (sum <= 0) return { our: 0.5, enemy: 0.5 };
-    const our = ourTotal / sum;
-    return { our, enemy: 1 - our };
+    return winProbFromMargin((Number(ourTotal) || 0) - (Number(enemyTotal) || 0));
   }
 
   /**
@@ -1339,37 +1370,25 @@
       { byName, metaMap }
     );
 
-    let winCondDelta =
+    const winCondDelta =
       (ourInternal.breakdown.winCondition || 0) - (enemyInternal.breakdown.winCondition || 0);
     const planNet = (cross.plan?.our || 0) - (cross.plan?.enemy || 0);
-    const ourSecondary =
-      ourInternal.total - (ourInternal.breakdown.winCondition || 0);
-    const enemySecondary =
-      enemyInternal.total - (enemyInternal.breakdown.winCondition || 0);
+    const secondaryKeys = ["synergy", "family", "balance", "coaching", "mtg", "wombo", "classes"];
+    const ourSecondary = combineEqualPillars(secondaryKeys.map((k) => ourInternal.pillars?.[k]));
+    const enemySecondary = combineEqualPillars(secondaryKeys.map((k) => enemyInternal.pillars?.[k]));
     const secondaryDelta = ourSecondary - enemySecondary;
     const crossNet = cross.our - cross.enemy;
     const crossWithoutPlan = crossNet - planNet;
     const ourPlan = cross.plan?.ourPlan;
     const enemyPlan = cross.plan?.enemyPlan;
-    const ourGaps = ourInternal.archetype?.gapCount ?? (ourInternal.archetype?.gaps || []).length;
-    const enemyGaps = enemyInternal.archetype?.gapCount ?? (enemyInternal.archetype?.gaps || []).length;
-    const gapDelta = enemyGaps - ourGaps;
-
-    if (Math.abs(planNet) >= 70 && planNet * winCondDelta < 0) {
-      winCondDelta = Math.round(winCondDelta * 0.42);
-    } else if (Math.abs(planNet) >= 100 && planNet * winCondDelta > 0) {
-      winCondDelta = Math.round(winCondDelta * 0.55);
-    }
 
     const marginPillars = [
-      normalizePillar(winCondDelta, 280),
-      normalizePillar(planNet, 160),
-      normalizePillar(gapDelta, 4),
-      normalizePillar(secondaryDelta, 260),
-      normalizePillar(crossWithoutPlan, 360),
-      normalizePillar(cross.matchup, 320),
+      normalizePillar(winCondDelta, 560),
+      normalizePillar(planNet, 260),
+      normalizePillar(secondaryDelta, 60),
+      normalizePillar(crossWithoutPlan, 420),
     ];
-    let margin = Math.round(combineEqualPillars(marginPillars) * DUEL_PILLAR_SCALE);
+    let margin = roundSym(combineEqualPillars(marginPillars) * DUEL_PILLAR_SCALE);
 
     const ourPeel = sumKey(ourInternal.vs, "peel");
     const enemyPeel = sumKey(enemyInternal.vs, "peel");
@@ -1400,18 +1419,18 @@
       ourEnch >= 1 &&
       enemyEnch >= 1;
     if (symmetricHyperMirror || (ourPlan === enemyPlan && bothMarksmanScale && Math.abs(ourPeel - enemyPeel) < 0.5)) {
-      margin = Math.round(margin * 0.12);
+      margin = roundSym(margin * 0.12);
     } else if (ourPlan === enemyPlan && bothMarksmanScale && ourPeel >= 1.0 && enemyPeel >= 1.0) {
-      margin = Math.round(margin * 0.1);
+      margin = roundSym(margin * 0.1);
     } else if (ourPlan === enemyPlan && ourPlan === "hypercarry") {
-      margin = Math.round(margin * 0.28);
+      margin = roundSym(margin * 0.28);
     } else if (bothMarksmanScale && Math.abs(ourPeel - enemyPeel) < 0.55 && Math.abs(ourScale - enemyScale) < 0.4) {
-      margin = Math.round(margin * 0.38);
+      margin = roundSym(margin * 0.38);
     }
 
     const displayBase = 500;
-    const ourTotal = Math.max(120, displayBase + Math.round(margin / 2));
-    const enemyTotal = Math.max(120, displayBase - Math.round(margin / 2));
+    const ourTotal = Math.max(120, displayBase + roundSym(margin / 2));
+    const enemyTotal = Math.max(120, displayBase - roundSym(margin / 2));
     const ourInteraction = Math.round(cross.our * 0.72);
     const enemyInteraction = Math.round(cross.enemy * 0.72);
 
@@ -1438,11 +1457,11 @@
       },
       margin,
       internalMargin: margin,
-      winProb: duelWinProbFromDisplayScores(ourTotal, enemyTotal),
+      winProb: winProbFromMargin(margin),
       detail: {
         cross,
         plans: { our: cross.plan?.ourPlan, enemy: cross.plan?.enemyPlan },
-        beatdown: ourInternal.mtgDetail?.beatdown || enemyInternal.mtgDetail?.beatdown,
+        beatdown: cross.beatdown,
         topInteractions: cross.topPairs,
         internalMargin: margin,
       },
@@ -1495,13 +1514,13 @@
     return { threat, reasons };
   }
 
-  function counterability(v, slot) {
-    const pool = v.counteredBy.length;
+  function counterability(v, slot, byName, meta) {
+    const pool = v.threats.filter((t) => playsSlot(getData(byName, meta, t), meta, slot)).length;
     const isAdcBlind = slot === "Bot" && v.isMarksman;
     const risk = pool * (isAdcBlind ? 5 : 11) +
       v.specialist * (isAdcBlind ? 6 : 30) +
       (v.flex < 0.35 && !isAdcBlind ? 16 : 0);
-    return { risk: isAdcBlind ? risk * 0.4 : risk, pool };
+    return { risk, pool };
   }
 
   /** Infer enemy lane assignments (explicit slot or primary/flex from data). */
@@ -1669,7 +1688,7 @@
     const ourArch = detectArchetype(profiles(allies, byName, meta));
 
     for (const a of allies) {
-      const hit = listScore(champ.name, namesFrom(getData(byName, meta, a).bestCounters, meta[a]), CTR_W);
+      const hit = listScore(champ.name, buildProfile(getData(byName, meta, a), meta).threats, CTR_W);
       if (hit) { score += hit + 6; reasons.push(`Counter ${a}`); }
     }
 
@@ -1718,7 +1737,7 @@
       }
     }
 
-    if (ourArch.carry && v.counters.includes(ourArch.carry)) {
+    if (ourArch.carry && getVictims(champ.name, byName, meta).some((x) => x.name === ourArch.carry)) {
       score += 34;
       reasons.push(`Menace carry ${ourArch.carry}`);
     }
@@ -1733,7 +1752,7 @@
       }
       if (v.flex >= 0.45) {
         score += 10;
-        reasons.push("Flex ban — cache intent");
+        reasons.push("Ban flex — masque l'intention");
       }
     }
 
@@ -1760,7 +1779,7 @@
 
     const before = evaluateTeam(allies, { byName, metaMap: meta, oppNames, slotsLeft: 5 - allies.length });
     const after = evaluateTeam(allies.concat(champ.name), { byName, metaMap: meta, oppNames, slotsLeft: 4 - allies.length });
-    const teamDelta = Math.round(after.total - before.total);
+    const balanceDelta = Math.round((after.breakdown.balance || 0) - (before.breakdown.balance || 0));
     const tierFlex =
       Math.round(TIER_PTS[v.tierMeta] * w.tier) + Math.round(v.flex * 22 * w.flex);
 
@@ -1770,11 +1789,12 @@
     let hardCap = null;
 
     if (inBlind) {
+      const { risk, pool } = counterability(v, slot, byName, meta);
       if (slot === "Bot") {
         if (v.isMarksman && (v.tierMeta === "S" || v.tierMeta === "A")) {
           blindPillar += v.tierMeta === "S" ? 72 : 52;
-          blindPillar += Math.max(0, 24 - v.counteredBy.length * 4);
-          reasons.push("Blind-safe flex ADC");
+          blindPillar += Math.max(0, 24 - pool * 6);
+          reasons.push("ADC sûr en blind");
         } else if (v.isMarksman) {
           blindPillar += 28;
           reasons.push("Blind ADC");
@@ -1804,15 +1824,10 @@
           reasons.push("Blind Mid tier S");
         }
       }
-      if (LATE_SLOTS.includes(slot) && pickN < 3) {
-        blindPillar -= 160;
-        reasons.push("Top/Sup = counter pick only");
-      }
-      const { risk, pool } = counterability(v, slot);
       if (risk >= 30 && !(slot === "Bot" && v.isMarksman && pickN === 0)) {
         blindPillar -= Math.round(risk * w.blind * (pickN === 0 ? 0.55 : 0.4));
-        if (pool >= 4 && !v.isMarksman) reasons.push(`Counterable (${pool} menaces pool)`);
-        else if (pool >= 4 && v.isMarksman) reasons.push("Pool counters — rester flex");
+        if (pool >= 4 && !v.isMarksman) reasons.push(`Facile à counter (${pool} menaces lane)`);
+        else if (pool >= 4 && v.isMarksman) reasons.push("Beaucoup de counters — rester flex");
         else if (pool >= 1 && !v.isMarksman) reasons.push("Matchup risqué en blind");
         if (v.specialist > 0.55 && !v.isMarksman) reasons.push("Spécialiste — éviter blind");
       }
@@ -1821,18 +1836,22 @@
         if (pickN === 0) reasons.push("Off-meta — éviter B1");
       }
     }
+    if (LATE_SLOTS.includes(slot) && pickN < 3 && !oppBySlot[slot]) {
+      blindPillar -= 160;
+      reasons.push("Top/Support early = risqué");
+    }
 
     let counterPillar = 0;
     if (!inBlind) {
       const oppLane = oppBySlot[slot];
       if (oppLane) {
-        const hit = listScore(champ.name, namesFrom(getData(byName, meta, oppLane).worstMatchups, meta[oppLane]), CTR_W);
-        const counterHit = listScore(oppLane, v.counters, CTR_W);
-        if (counterHit) {
-          counterPillar += Math.round(counterHit * w.counter);
-          reasons.push(`Counters enemy ${SLOT_LABELS[slot] || slot}`);
+        const beats = listScore(champ.name, buildProfile(getData(byName, meta, oppLane), meta).threats, CTR_W);
+        const beaten = listScore(oppLane, v.threats, CTR_W);
+        if (beats) {
+          counterPillar += Math.round(beats * w.counter);
+          reasons.push(`Counter ${SLOT_LABELS[slot] || slot} adverse`);
         }
-        if (hit) counterPillar -= Math.round(hit * 0.4);
+        if (beaten) counterPillar -= Math.round(beaten * w.counter);
       }
     }
 
@@ -1855,7 +1874,7 @@
       archetypePillar = Math.round(compDelta * w.plan * 0.95);
       for (const g of beforeArch.gaps) {
         if (!afterArch.gaps.includes(g)) {
-          reasons.push(`Fills ${g} gap`);
+          reasons.push(`Comble le manque ${g}`);
           break;
         }
       }
@@ -1924,14 +1943,14 @@
     }
 
     const pillarTotal = combineEqualPillars([
-      normalizePillar(teamDelta, 48),
+      normalizePillar(balanceDelta, 45),
       normalizePillar(tierFlex, 48),
       normalizePillar(blindPillar, 75),
       normalizePillar(counterPillar, 38),
       normalizePillar(synergyPillar, 38),
       normalizePillar(archetypePillar, 42),
       normalizePillar(coachingPillar, 55),
-      normalizePillar(mtg.score, 95),
+      normalizePillar(mtg.score, 190),
       normalizePillar(classPillar, 38),
       normalizePillar(lanePillar, 32),
       normalizePillar(focusPillar, 14),
@@ -1972,17 +1991,21 @@
     BLIND_SLOTS,
     LATE_SLOTS,
     SLOT_LABELS,
-    MIN_LANE_RATE: MIN_LANE_RATE(),
+    get MIN_LANE_RATE() {
+      return MIN_LANE_RATE();
+    },
     getMinLaneRate: MIN_LANE_RATE,
     TIER_PTS,
     buildProfile,
     buildVector: buildProfile,
     profiles,
+    getVictims,
     detectCompPlan: detectArchetype,
     detectArchetype,
     evaluateTeam,
     evaluateTeamInternal,
     evaluateDraftDuel,
+    winProbFromMargin,
     duelWinProbFromDisplayScores,
     crossDraftInteractions,
     evaluateTeamMacro,
@@ -2021,5 +2044,7 @@
     isWomboPair,
     scoreLaneMatchup,
     laneMatchupEdge,
+    COMP_TYPE_COUNTERS,
+    INCOMPATIBLE_COMP_PAIRS,
   };
 })(typeof window !== "undefined" ? window : globalThis);

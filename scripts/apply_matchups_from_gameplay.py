@@ -1582,9 +1582,9 @@ def main() -> None:
         }
 
     data["matchupVersion"] = "families-v6"
-    data["matchupSource"] = str(GAMEPLAY_MD)
-    data["matchupCurated"] = str(CURATED_JSON)
-    data["matchupFamilies"] = str(FAMILIES_JSON)
+    data["matchupSource"] = "gameplay-corpus v2026-06"
+    data["matchupCurated"] = "curated-matchups v2026-06"
+    data["matchupFamilies"] = "champion-families v2026-06"
 
     comp_types_export = families_meta.get("compTypes", {})
     comp_guide = {
@@ -1594,7 +1594,7 @@ def main() -> None:
 
     for path in (CHAMPIONS_JSON, PUBLIC_CHAMPIONS):
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
     for meta_path in (TACTICS_META, PUBLIC_TACTICS):
         if not meta_path.exists():
@@ -1607,7 +1607,7 @@ def main() -> None:
             pairing_names = preview_names(c.get("bestPairings", []))
             entry["bestCounters"] = counter_names
             entry["bestPairings"] = pairing_names
-            entry["worstMatchups"] = counter_names
+            entry.pop("worstMatchups", None)
             entry["tags"] = c.get("tacticTags", [])
             fam = c.get("championFamily") or {}
             entry["family"] = fam.get("key")
@@ -1615,7 +1615,7 @@ def main() -> None:
             entry["compTypes"] = fam.get("compTypes", [])
             meta["champions"][c["name"]] = entry
         meta["matchupVersion"] = "families-v5"
-        meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+        meta_path.write_text(json.dumps(meta, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
     print(f"Source: {GAMEPLAY_MD}")
     print(f"Profils MD: {len(profiles)} / {len(champs)} champions")

@@ -287,7 +287,7 @@ async def patch_defaults_handler(request: web.Request) -> web.Response:
         return web.json_response({"ok": False, "error": message}, status=400)
 
     PATCH_DEFAULTS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    content = json.dumps(defaults, indent=2, ensure_ascii=False) + "\n"
+    content = json.dumps(defaults, ensure_ascii=False, separators=(",", ":")) + "\n"
     PATCH_DEFAULTS_PATH.write_text(content, encoding="utf-8")
     deploy = deploy_patch_defaults(content)
 

@@ -28,19 +28,24 @@ jobs:
       - name: Rebuild champions index
         run: python scripts/build_champions_index.py
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Rebuild lane matchup matrix
+        run: node scripts/build_lane_matchups.mjs
+
+      - name: Verify data coherence
+        run: python scripts/verify_data.py
+
       - name: Commit tier updates
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add scripts/competitive_tiers.json public/data/champions.json public/data/champions-index.json
+          git add scripts/competitive_tiers.json public/data/champions.json public/data/champions-index.json public/data/lane-matchups.json
           if git diff --staged --quiet; then
             echo "No tier changes to commit"
           else
-            git commit -m "$(cat <<'EOF'
-chore: daily gol.gg pro tier refresh
-
-Auto-updated competitive tierMeta from gol.gg pro pick/ban stats.
-EOF
-)"
+            git commit -m "chore: daily gol.gg pro tier refresh" -m "Auto-updated competitive tierMeta from gol.gg pro pick/ban stats."
             git push
           fi

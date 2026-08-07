@@ -77,6 +77,31 @@ def is_build_catalog_item(item_id: str, item: dict) -> bool:
     return False
 
 
+def clean_item_description(html: str, limit: int = 220) -> str:
+    text = re.sub(r"<[^>]+>", " ", html or "")
+    text = re.sub(r"\s+", " ", text).strip()
+    text = re.sub(r"\s+([.,;:!?])", r"\1", text)
+    if len(text) > limit:
+        text = text[:limit].rsplit(" ", 1)[0].rstrip(" ,;:·.") + "…"
+    return text
+
+
+def item_tier(gold_total: int, tags: list[str]) -> int:
+    if "GoldPer" in tags:
+        return 2
+    if gold_total >= 3200:
+        return 5
+    if gold_total >= LEGENDARY_MIN_GOLD:
+        return 4
+    return 3
+
+
+def item_category(gold_total: int, tags: list[str]) -> str:
+    if gold_total < LEGENDARY_MIN_GOLD and ("GoldPer" in tags or "Aura" in tags):
+        return "Support"
+    return "Légendaire"
+
+
 def item_shop_role(tags: list[str]) -> str:
     tags_set = set(tags or [])
     if "SpellDamage" in tags_set or "Mana" in tags_set:
@@ -271,28 +296,39 @@ def parse_scaling(text: str) -> dict:
     return {"adRatio": ad, "apRatio": ap, "physical": physical, "magical": magical}
 
 
-def build_draft_profile(tags: list[str], stats: dict, scaling: dict, spell_text: str, tactic_tags: list[str]) -> dict:
+def damage_shares(tags: list[str], partype: str, tactic_tags: list[str]) -> tuple[float, float]:
+    tag_set = set(tags)
+    if "Marksman" in tag_set:
+        return 0.85, 0.15
+    if "Mage" in tag_set:
+        return 0.15, 0.85
+    if "Assassin" in tag_set:
+        resource = (partype or "").strip().lower()
+        if "mage_burst" in tactic_tags or resource not in {"mana", "énergie", "energy"}:
+            return 0.15, 0.85
+        return 0.85, 0.15
+    if "Fighter" in tag_set:
+        return 0.85, 0.15
+    return 0.5, 0.5
+
+
+def build_draft_profile(
+    tags: list[str], stats: dict, scaling: dict, spell_text: str, tactic_tags: list[str], partype: str = ""
+) -> dict:
     hp = stats.get("hp", 500)
     armor = stats.get("armor", 20)
     mr = stats.get("spellblock", 20)
     attack_range = stats.get("attackrange", 125)
-    ad = stats.get("attackdamage", 50)
-    ap = stats.get("mp", 0)
 
     tanky = hp >= 580 and (armor + mr) >= 60
     squishy = hp <= 540 and armor + mr <= 50 and "Tank" not in tags
 
-    ad_share = scaling["adRatio"] / max(scaling["adRatio"] + scaling["apRatio"], 1)
-    ap_share = scaling["apRatio"] / max(scaling["adRatio"] + scaling["apRatio"], 1)
-    if "Marksman" in tags or "Fighter" in tags:
-        ad_share = max(ad_share, 0.65)
-    if "Mage" in tags:
-        ap_share = max(ap_share, 0.65)
+    ad_share, ap_share = damage_shares(tags, partype, tactic_tags)
 
     damage = "Mixed"
-    if ad_share > 0.65:
+    if ad_share >= 0.65:
         damage = "AD"
-    elif ap_share > 0.65:
+    elif ap_share >= 0.65:
         damage = "AP"
 
     range_kind = "melee" if attack_range <= 200 else "ranged"
@@ -454,7 +490,9 @@ def main() -> None:
             "splash": f"https://ddragon.leagueoflegends.com/cdn/img/champion/splash/{champ_id}_0.jpg",
             "tacticTags": tactic_tags,
         }
-        champ["draftProfile"] = build_draft_profile(tags, stats, scaling, spell_text, tactic_tags)
+        champ["draftProfile"] = build_draft_profile(
+            tags, stats, scaling, spell_text, tactic_tags, detail_fr.get("partype", "")
+        )
         champions.append(champ)
         if len(champions) % 20 == 0:
             print(f"  … {len(champions)} champions")
@@ -476,16 +514,16 @@ def main() -> None:
         gold = item.get("gold", {})
         total = gold.get("total", 0)
         tags = item.get("tags", [])
-        desc = re.sub(r"<[^>]+>", "", item.get("description", ""))[:220]
+        desc = clean_item_description(item.get("description", ""))
         items.append({
             "id": item_id,
             "name": name,
-            "tier": 5,
+            "tier": item_tier(total, tags),
             "gold": total,
             "description": desc,
             "icon": f"https://ddragon.leagueoflegends.com/cdn/{version}/img/item/{item_id}.png",
             "tags": tags,
-            "category": "Légendaire",
+            "category": item_category(total, tags),
             "shopRole": item_shop_role(tags),
             "map": "Summoner's Rift",
         })
@@ -587,7 +625,7 @@ def main() -> None:
 
     for folder in (DATA, PUBLIC_DATA):
         folder.mkdir(parents=True, exist_ok=True)
-        (folder / "champions.json").write_text(json.dumps(champ_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+        (folder / "champions.json").write_text(json.dumps(champ_payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         (folder / "items.json").write_text(
             json.dumps(
                 {
@@ -597,12 +635,12 @@ def main() -> None:
                     "items": items,
                 },
                 ensure_ascii=False,
-                indent=2,
+                separators=(",", ":"),
             ),
             encoding="utf-8",
         )
-        (folder / "tactics-meta.json").write_text(json.dumps(tactics_meta, ensure_ascii=False, indent=2), encoding="utf-8")
-        (folder / "guide-fr.json").write_text(json.dumps(guide, ensure_ascii=False, indent=2), encoding="utf-8")
+        (folder / "tactics-meta.json").write_text(json.dumps(tactics_meta, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        (folder / "guide-fr.json").write_text(json.dumps(guide, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
     print(f"Done: {len(champions)} champions, {len(items)} items -> {PUBLIC_DATA}")
 

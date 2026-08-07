@@ -132,12 +132,12 @@ def main() -> None:
         build_ok = sum(1 for c in champs if c.get("coreItems"))
         data["metaRefresh"] = json.loads(META_JSON.read_text(encoding="utf-8")).get("updatedAt") if META_JSON.exists() else None
         data["buildVersion"] = "meta-v1"
-        path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         print(f"{path.name}: lane={lane_ok} builds={build_ok} profile_fallback={fallback}")
 
     if DATA_CHAMPIONS.exists() and PUBLIC_CHAMPIONS.exists() and DATA_CHAMPIONS != PUBLIC_CHAMPIONS:
         src = json.loads(DATA_CHAMPIONS.read_text(encoding="utf-8"))
-        PUBLIC_CHAMPIONS.write_text(json.dumps(src, ensure_ascii=False, indent=2), encoding="utf-8")
+        PUBLIC_CHAMPIONS.write_text(json.dumps(src, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
 
 if __name__ == "__main__":

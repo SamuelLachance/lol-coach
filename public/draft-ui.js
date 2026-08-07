@@ -8,6 +8,11 @@
 
   let coach = null;
   let saveTimer = null;
+  let flashTimer = null;
+
+  function finePointer() {
+    return win.matchMedia ? win.matchMedia("(pointer: fine)").matches : true;
+  }
 
   function saveSessionsDebounced() {
     clearTimeout(saveTimer);
@@ -181,11 +186,13 @@
       const side = cell.dataset.side;
       const banIndex = type === "ban" ? parseInt(cell.dataset.banIndex, 10) : null;
       const slot = cell.dataset.slot || null;
-      if (isCellFocused(session, type, side, banIndex, slot)) {
+      const focused = isCellFocused(session, type, side, banIndex, slot);
+      if (focused) {
         cell.classList.add("draft-cell-focused");
       } else if (isCellHovered(session, type, side, slot)) {
         cell.classList.add("draft-cell-hover");
       }
+      cell.setAttribute("aria-pressed", focused ? "true" : "false");
       if (type === "pick" && isSwapTarget(session, side, slot)) {
         cell.classList.add("draft-cell-swap-target");
       }
@@ -197,7 +204,32 @@
       const focusHint = window.LoLDraft.actionLabel(session, coach.state.byName, draftMetaMap());
       const hintSpan = spans[spans.length - 1];
       if (hintSpan && focusHint) hintSpan.textContent = focusHint;
+      syncRemoveButton(turnBox, session);
     }
+  }
+
+  /** Bouton « Retirer » (mobile : pas de clic droit) quand une case remplie est sélectionnée. */
+  function syncRemoveButton(turnBox, session) {
+    const f = session.focus;
+    const name =
+      f?.type === "swap" && f.slot && f.side
+        ? window.LoLDraft.pickBySlot(session, f.side)[f.slot]
+        : null;
+    let btn = turnBox.querySelector(".draft-remove-btn");
+    if (!name) {
+      btn?.remove();
+      return;
+    }
+    if (!btn) {
+      btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "btn-secondary btn-sm draft-remove-btn";
+      turnBox.appendChild(btn);
+    }
+    btn.dataset.side = f.side;
+    btn.dataset.slot = f.slot;
+    btn.textContent = `Retirer ${name}`;
+    btn.setAttribute("aria-label", `Retirer ${name} du poste ${f.slot}`);
   }
 
   function syncPoolFocus(session) {
@@ -222,7 +254,6 @@
     ) {
       window.LoLDraft.refreshAutoPickFocus(session);
     }
-    window.LoLDraft.invalidateRecommendationCache();
     syncBoardFocus(session);
     syncDraftCoachUI(session);
   }
@@ -303,7 +334,16 @@
       afterFocusChange(session);
       return;
     }
-    if (window.LoLDraft.pickBySlot(session, side)[slot]) return;
+    if (window.LoLDraft.pickBySlot(session, side)[slot]) {
+      const coachSide = window.LoLDraft.activePickSide(session) || side;
+      if (side === coachSide) {
+        if (!prevSrc && !prevTgt) return;
+        session.hoverSource = null;
+        session.hoverPick = null;
+        afterFocusChange(session);
+        return;
+      }
+    }
     const resolved = window.LoLDraft.resolveHoverPick(session, side, slot);
     if (
       prevSrc?.side === side &&
@@ -344,11 +384,12 @@
   function showDraftFlash(msg, kind = "success") {
     const el = coach.els.draftFlash;
     if (!el) return;
+    clearTimeout(flashTimer);
     el.classList.remove("error", "success", "warn");
     el.classList.add("visible", kind);
     el.textContent = msg;
     const delay = kind === "error" ? 2800 : kind === "warn" ? 2400 : 1800;
-    setTimeout(() => el.classList.remove("visible", "error", "success", "warn"), delay);
+    flashTimer = setTimeout(() => el.classList.remove("visible", "error", "success", "warn"), delay);
   }
 
   function handlePickCellClick(session, side, slot) {
@@ -358,13 +399,19 @@
       if (focus.side === side && focus.slot === slot) {
         session.focus = null;
       } else if (focus.side === side) {
+        const comp = window.LoLDraft.pickBySlot(session, side);
+        if (!comp[focus.slot] && !comp[slot]) {
+          session.focus = { type: "swap", side, slot };
+          saveSessionsDebounced();
+          afterFocusChange(session);
+          return;
+        }
         const result = window.LoLDraft.swapPickSlots(session, side, focus.slot, slot);
         if (!result.ok) showDraftFlash(result.error, "error");
         else showDraftFlash(result.message, "success");
         session.focus = null;
         flushSaveSessions();
         renderBoard();
-        syncDraftCoachUI(session);
         afterFocusChange(session);
         return;
       } else {
@@ -405,8 +452,13 @@
     session.hoverPick = null;
     session.hoverSource = null;
     if (payload.type === "ban" && payload.banIndex != null && !result.inOrder) {
-      session.focus = { type: "ban", side: payload.side, banIndex: payload.banIndex };
-      return;
+      const bans = session.bans[payload.side] || [];
+      let idx = bans.findIndex((b, i) => i > payload.banIndex && !b);
+      if (idx < 0) idx = bans.findIndex((b) => !b);
+      if (idx >= 0) {
+        session.focus = { type: "ban", side: payload.side, banIndex: idx };
+        return;
+      }
     }
     if (window.LoLDraft.suggestNextFocus) {
       window.LoLDraft.suggestNextFocus(session, { forceSlot: true });
@@ -459,7 +511,11 @@
 
   function pickChampion(name) {
     const session = getActiveSession();
-    if (!session || window.LoLDraft.isComplete(session)) return;
+    if (!session) return;
+    if (window.LoLDraft.isComplete(session)) {
+      showDraftFlash("Draft complète · Annuler ou Réinitialiser pour modifier · Export → Tactiques", "warn");
+      return;
+    }
 
     window.LoLDraft.resyncStepIndex(session);
 
@@ -509,6 +565,71 @@
     });
   }
 
+  /** Structure pure de la frise (testable sans DOM) — 20 étapes B/P dans l'ordre réel. */
+  function buildTimelineSteps(session) {
+    if (!session || !window.LoLDraft) return [];
+    const steps = window.LoLDraft.getSteps(session);
+    const banCount = { blue: 0, red: 0 };
+    const pickCount = { blue: 0, red: 0 };
+    const picksInOrder = {
+      blue: (session.picks?.blue || []).slice().sort((a, b) => (a.order || 0) - (b.order || 0)),
+      red: (session.picks?.red || []).slice().sort((a, b) => (a.order || 0) - (b.order || 0)),
+    };
+    return steps.map((st, i) => {
+      let label;
+      let name = null;
+      let phase;
+      if (st.type === "ban") {
+        const idx = st.banIndex ?? banCount[st.side];
+        label = `B${idx + 1}`;
+        name = session.bans?.[st.side]?.[idx] || null;
+        banCount[st.side] += 1;
+        phase = st.banPhase === 2 ? "ban2" : "ban1";
+      } else {
+        const idx = pickCount[st.side];
+        label = `P${idx + 1}`;
+        name = picksInOrder[st.side][idx]?.name || null;
+        pickCount[st.side] += 1;
+        phase = i < 12 ? "pick1" : "pick2";
+      }
+      const state = i < session.stepIndex ? "done" : i === session.stepIndex ? "current" : "upcoming";
+      return { index: i, type: st.type, side: st.side, label, name, state, phase };
+    });
+  }
+
+  function renderDraftTimeline(session) {
+    const steps = buildTimelineSteps(session);
+    if (!steps.length) return "";
+    let prevPhase = null;
+    const chips = steps
+      .map((st) => {
+        const champ = st.name ? coach.state.byName?.get(st.name) : null;
+        const sideLabel = st.side === "blue" ? "Bleu" : "Rouge";
+        const typeLabel = st.type === "ban" ? "Ban" : "Pick";
+        const title = `${typeLabel} ${st.label.slice(1)} ${sideLabel}${st.name ? ` — ${st.name}` : ""}${st.state === "current" ? " (en cours)" : ""}`;
+        const phaseStart = prevPhase !== null && st.phase !== prevPhase;
+        prevPhase = st.phase;
+        const icon = st.state === "done" && champ && coach.championIconHtml
+          ? coach.championIconHtml(champ, { size: "ban" })
+          : "";
+        return `<span role="listitem"
+          class="draft-tl-chip draft-tl-${st.side} draft-tl-${st.type} is-${st.state}${phaseStart ? " draft-tl-phase-start" : ""}"
+          title="${coach.escapeHtml(title)}" aria-label="${coach.escapeHtml(title)}"
+          ${st.state === "current" ? 'aria-current="step"' : ""}>
+          ${icon}<span class="draft-tl-tag">${st.label}</span>
+        </span>`;
+      })
+      .join("");
+    return `<div class="draft-timeline" role="list" aria-label="Séquence de draft">${chips}</div>`;
+  }
+
+  function nextGameNumber(sessions) {
+    const nums = sessions
+      .map((s) => parseInt((String(s.name || "").match(/(\d+)\s*$/) || [])[1], 10))
+      .filter(Number.isFinite);
+    return (nums.length ? Math.max(...nums) : sessions.length) + 1;
+  }
+
   function renderSessionBar() {
     const el = coach.els.draftSessionBar || document.getElementById("draft-session-bar");
     if (!el) return;
@@ -516,7 +637,7 @@
     const session = getActiveSession();
     if (session) window.LoLDraft.normalizeSession(session);
     const canEdit = session && window.LoLDraft.canEditFormat(session);
-    const total = session ? window.LoLDraft.totalSteps(session) : 16;
+    const total = session ? window.LoLDraft.totalSteps(session) : 20;
     const sessionCount = coach.state.draftSessions.length;
     const canDelete = sessionCount > 1;
     const options = coach.state.draftSessions
@@ -530,8 +651,8 @@
       <div class="draft-session-controls">
         <select id="draft-session-select" class="draft-select-compact" aria-label="Choisir la partie">${options}</select>
         <button type="button" class="btn-secondary btn-sm" id="draft-new-game">+ Nouvelle</button>
-        <button type="button" class="btn-secondary btn-sm" id="draft-rename-game" title="Renommer">✎</button>
-        <button type="button" class="btn-secondary btn-sm draft-delete-game${canDelete ? "" : " is-disabled"}" id="draft-delete-game" title="${canDelete ? "Supprimer cette partie" : "Au moins une partie doit rester"}"${canDelete ? "" : " disabled"}>🗑</button>
+        <button type="button" class="btn-secondary btn-sm" id="draft-rename-game" title="Renommer" aria-label="Renommer la partie">✎</button>
+        <button type="button" class="btn-secondary btn-sm draft-delete-game${canDelete ? "" : " is-disabled"}" id="draft-delete-game" title="${canDelete ? "Supprimer cette partie" : "Au moins une partie doit rester"}" aria-label="${canDelete ? "Supprimer cette partie" : "Au moins une partie doit rester"}"${canDelete ? "" : " disabled"}>🗑</button>
       </div>
       <div class="draft-side-toggle">
         <span class="draft-side-label">Nous sommes</span>
@@ -543,10 +664,10 @@
           <input type="checkbox" id="draft-fearless"${session?.fearless ? " checked" : ""}${canEdit ? "" : " disabled"} />
           <span>Fearless</span>
         </label>
-        <span class="draft-format-hint">Ranked SR · 5 bans · 2 phases</span>
+        <span class="draft-format-hint">Draft tournoi · 5 bans · 2 phases</span>
       </div>
       <div class="draft-progress-wrap">
-        <div class="draft-step-label">${coach.escapeHtml(window.LoLDraft.stepLabel(session || { stepIndex: total, bansPerTeam: 5 }))}</div>
+        ${session ? renderDraftTimeline(session) : ""}
         <div class="draft-progress"><div class="draft-progress-fill" style="width:${Math.round(((session?.stepIndex || 0) / total) * 100)}%"></div></div>
         ${session ? `<div class="draft-format-badge">${coach.escapeHtml(window.LoLDraft.formatSummary(session))}</div>` : ""}
       </div>
@@ -567,7 +688,7 @@
       renderAll();
     });
     el.querySelector("#draft-new-game")?.addEventListener("click", () => {
-      const n = coach.state.draftSessions.length + 1;
+      const n = nextGameNumber(coach.state.draftSessions);
       const prev = coach.state.draftSessions[coach.state.draftSessions.length - 1];
       const nextSide = ourSideForNextGame(prev);
       const s = window.LoLDraft.createSession(`Game ${n}`, nextSide, {
@@ -640,6 +761,7 @@
       <button type="button"
         class="draft-cell draft-ban-cell${name ? " filled" : " empty"}${focused ? " draft-cell-focused" : ""}"
         data-focus-type="ban" data-side="${side}" data-ban-index="${banIndex}"
+        aria-pressed="${focused ? "true" : "false"}"
         aria-label="Ban ${phaseLabel} ${banIndex + 1}${name ? ` : ${name}` : ""}">
         <span class="draft-cell-tag">B${banIndex + 1}</span>
         ${
@@ -708,6 +830,7 @@
         <button type="button"
           class="draft-cell draft-pick-cell${name ? " filled" : " empty"}${focused ? " draft-cell-focused" : ""}${swapTarget ? " draft-cell-swap-target" : ""}"
           data-focus-type="pick" data-side="${side}" data-slot="${slot}"
+          aria-pressed="${focused ? "true" : "false"}"
           aria-label="Pick ${slot}${name ? ` : ${name}` : ""}">
           <span class="draft-cell-tag">${SLOT_ICONS[slot]} ${slot}${pickMeta?.order ? ` · P${pickMeta.order}` : ""}</span>
           ${
@@ -729,7 +852,7 @@
         <div class="draft-section-label">Bans · 2 phases</div>
         <div class="draft-bans-row">${renderBanRow(side, session)}</div>
         ${renderTeamColorBar(side, session)}
-        <div class="draft-section-label">Picks · ordre d'équipe (P1→P5) · glisser-déposer OK</div>
+        <div class="draft-section-label">Picks · ordre d'équipe (P1→P5)${finePointer() ? " · glisser-déposer OK" : ""}</div>
         <div class="draft-slots-grid">${slots}</div>
       </div>`;
   }
@@ -759,10 +882,30 @@
     renderAll();
   }
 
+  let hoverRafId = null;
+  let pendingHover = null;
+
+  function queueHoverPick(side, slot) {
+    pendingHover = { side, slot };
+    if (hoverRafId != null) return;
+    const raf = win.requestAnimationFrame || ((fn) => setTimeout(fn, 16));
+    hoverRafId = raf(() => {
+      hoverRafId = null;
+      const session = getActiveSession();
+      if (!session || !pendingHover) return;
+      setHoverPick(session, pendingHover.side, pendingHover.slot);
+    });
+  }
+
   function bindBoardEvents(container) {
     if (container.dataset.bound === "1") return;
     container.dataset.bound = "1";
     container.addEventListener("click", (e) => {
+      const removeBtn = e.target.closest(".draft-remove-btn");
+      if (removeBtn && container.contains(removeBtn)) {
+        removeSelectedPick(removeBtn.dataset.side, removeBtn.dataset.slot);
+        return;
+      }
       const cell = e.target.closest(".draft-cell[data-focus-type]");
       if (!cell || !container.contains(cell)) return;
       const session = getActiveSession();
@@ -778,10 +921,24 @@
     container.addEventListener("mouseenter", (e) => {
       const cell = e.target.closest(".draft-cell[data-focus-type='pick']");
       if (!cell || !container.contains(cell)) return;
+      queueHoverPick(cell.dataset.side, cell.dataset.slot);
+    }, true);
+    container.addEventListener("focusin", (e) => {
+      const cell = e.target.closest(".draft-cell[data-focus-type='pick']");
+      if (!cell || !container.contains(cell)) return;
+      queueHoverPick(cell.dataset.side, cell.dataset.slot);
+    });
+    container.addEventListener("keydown", (e) => {
+      if (e.key !== "Escape") return;
       const session = getActiveSession();
       if (!session) return;
-      setHoverPick(session, cell.dataset.side, cell.dataset.slot);
-    }, true);
+      if (!session.focus && !session.hoverPick && !session.hoverSource) return;
+      session.focus = null;
+      session.hoverPick = null;
+      session.hoverSource = null;
+      saveSessionsDebounced();
+      afterFocusChange(session);
+    });
     container.addEventListener("mouseleave", (e) => {
       if (!container.contains(e.relatedTarget)) {
         const session = getActiveSession();
@@ -789,6 +946,25 @@
       }
     });
     bindBoardDragDrop(container);
+  }
+
+  function removeSelectedPick(side, slot) {
+    const session = getActiveSession();
+    if (!session || !side || !slot) return;
+    const result = window.LoLDraft.clearSlot(
+      session,
+      { type: "pick", side, slot, banIndex: null },
+      allSessions(),
+      draftCtx()
+    );
+    if (!result.ok) {
+      showDraftFlash(result.error, "error");
+      return;
+    }
+    session.focus = { type: "pick", side, slot };
+    showDraftFlash(`${result.cleared} retiré`, "success");
+    flushSaveSessions();
+    renderAll();
   }
 
   function bindBoardDragDrop(container) {
@@ -865,6 +1041,26 @@
     });
   }
 
+  function captureBoardFocus(el) {
+    const active = document.activeElement;
+    if (!active || !el.contains(active) || !active.dataset?.focusType) return null;
+    return {
+      focusType: active.dataset.focusType,
+      side: active.dataset.side || null,
+      slot: active.dataset.slot || null,
+      banIndex: active.dataset.banIndex ?? null,
+    };
+  }
+
+  function restoreBoardFocus(el, saved) {
+    if (!saved?.focusType) return;
+    const sel =
+      saved.focusType === "ban"
+        ? `.draft-cell[data-focus-type="ban"][data-side="${saved.side}"][data-ban-index="${saved.banIndex}"]`
+        : `.draft-cell[data-focus-type="pick"][data-side="${saved.side}"][data-slot="${saved.slot}"]`;
+    el.querySelector(sel)?.focus({ preventScroll: true });
+  }
+
   function renderBoard() {
     const el = coach.els.draftBoard || document.getElementById("draft-board");
     const session = getActiveSession();
@@ -874,6 +1070,10 @@
     const ourSideId = window.LoLDraft.ourSide(session);
     const enemySideId = window.LoLDraft.enemySide(session);
     const focusHint = window.LoLDraft.actionLabel(session, coach.state.byName, draftMetaMap());
+    const defaultHint = finePointer()
+      ? "1. Case · 2. Champion · clic droit = retirer"
+      : "1. Case · 2. Champion · bouton Retirer pour libérer";
+    const savedFocus = captureBoardFocus(el);
 
     el.innerHTML = `
       ${renderTeamColumn(ourSideId, session, "Notre équipe")}
@@ -885,13 +1085,16 @@
               ? "<strong>Terminé</strong><span>Export → Tactiques</span>"
               : `<strong>${window.LoLDraft.isOurTurn(session) ? "Notre tour" : "Tour adversaire"}</strong>`
           }
-          <span>${focusHint ? coach.escapeHtml(focusHint) : "1. Case · 2. Champion · clic droit = retirer"}</span>
+          <span>${focusHint ? coach.escapeHtml(focusHint) : defaultHint}</span>
         </div>
       </div>
       ${renderTeamColumn(enemySideId, session, "Adversaire")}
     `;
 
     bindBoardEvents(el);
+    const turnBox = el.querySelector(".draft-turn-box");
+    if (turnBox) syncRemoveButton(turnBox, session);
+    restoreBoardFocus(el, savedFocus);
   }
 
   function renderPoolAlphabetical(champions) {
@@ -912,10 +1115,12 @@
       allSessions(),
       6,
       null,
-      { skipCache: true, focusTarget }
+      { focusTarget }
     );
     if (!rec.items?.length) return "";
-    const hintText = rec.coachHint || "Top picks calculés · glisser-déposer sur une case";
+    const hintText =
+      rec.coachHint ||
+      (finePointer() ? "Top picks calculés · glisser-déposer sur une case" : "Top picks calculés · toucher pour placer");
     const slotKey = focusTarget ? `${focusTarget.side}-${focusTarget.slot}` : "auto";
     return `
       <div class="draft-suggest-wrap" data-suggest-slot="${coach.escapeHtml(slotKey)}">
@@ -993,24 +1198,28 @@
         ? new Set(window.LoLDraft.laneViableForSlot(filtered, metaMap, recTarget.slot).map((c) => c.name))
         : null;
       const scores = new Map();
-      for (const c of filtered) {
-        const r = window.LoLDraft.scorePickForSlot(
-          c,
-          session,
-          recTarget.side,
-          recTarget.slot,
-          coach.state.byName,
-          metaMap
-        );
-        scores.set(c.name, r.score);
-      }
+      const computeScores = () => {
+        for (const c of filtered) {
+          const r = window.LoLDraft.scorePickForSlot(
+            c,
+            session,
+            recTarget.side,
+            recTarget.slot,
+            coach.state.byName,
+            metaMap
+          );
+          scores.set(c.name, r.score);
+        }
+      };
+      if (window.LoLDraft.withEvaluateTeamMemo) window.LoLDraft.withEvaluateTeamMemo(computeScores);
+      else computeScores();
       filtered = [...filtered].sort((a, b) => {
         const aV = laneViable ? laneViable.has(a.name) : true;
         const bV = laneViable ? laneViable.has(b.name) : true;
         if (aV !== bV) return aV ? -1 : 1;
         const diff = (scores.get(b.name) || 0) - (scores.get(a.name) || 0);
         if (diff !== 0) return diff;
-        return (coach.tierRank(b) - coach.tierRank(a)) || a.name.localeCompare(b.name, "fr");
+        return (coach.tierRank(a.tierMeta) - coach.tierRank(b.tierMeta)) || a.name.localeCompare(b.name, "fr");
       });
     }
 
@@ -1076,11 +1285,17 @@
 
     const gridEl = el.querySelector(".draft-pool-grid");
     if (gridEl) {
+      const active = document.activeElement;
+      const focusedChamp = active && gridEl.contains(active) ? active.dataset?.champ || null : null;
       const scrollTop = preserveScroll ? gridEl.scrollTop : 0;
       gridEl.innerHTML = filtered.length
         ? renderPoolGrid(filtered, sortSlot)
         : `<p class="muted draft-pool-empty">Aucun champion disponible${role && role !== "all" ? " pour ce poste" : ""}.</p>`;
       if (preserveScroll) gridEl.scrollTop = scrollTop;
+      if (focusedChamp) {
+        const escaped = win.CSS?.escape ? win.CSS.escape(focusedChamp) : focusedChamp.replace(/"/g, '\\"');
+        gridEl.querySelector(`.draft-pool-card[data-champ="${escaped}"]`)?.focus({ preventScroll: true });
+      }
       bindPoolCards(gridEl);
     }
   }
@@ -1101,13 +1316,14 @@
     const actionText = window.LoLDraft.actionLabel(session, coach.state.byName, draftMetaMap());
     const hasFocus = Boolean(session.focus);
     const roleFilters = window.LoLPoolRoles?.renderRoleFilterChips(role) || "";
+    const searchFocused = document.activeElement?.id === "draft-pool-search";
 
     el.innerHTML = `
       <div class="draft-pool-header">
         <h2 class="draft-pool-title">Champions</h2>
         <span class="draft-pool-count">${poolCountLabel(filtered.length, role, sortSlot)}</span>
       </div>
-      <p class="draft-pool-lead muted">Clic poste → autre poste = échanger/déplacer · clic poste + champion = placer/remplacer · filtre optionnel · <strong>clic droit</strong> = retirer.</p>
+      <p class="draft-pool-lead muted">Clic poste → autre poste = échanger/déplacer · clic poste + champion = placer/remplacer · filtre optionnel · ${finePointer() ? "<strong>clic droit</strong> = retirer" : "bouton <strong>Retirer</strong> = libérer la case"}.</p>
       ${
         actionText
           ? `<div class="draft-pool-action${hasFocus ? " focus-ready" : ""}">${coach.escapeHtml(actionText)}</div>`
@@ -1116,7 +1332,7 @@
       ${roleFilters}
       ${renderSuggestChips(session)}
       <div class="draft-pool-toolbar">
-        <input type="search" class="draft-pool-search" placeholder="Rechercher…" value="${coach.escapeHtml(searchQuery)}" id="draft-pool-search" />
+        <input type="search" class="draft-pool-search" placeholder="Rechercher…" value="${coach.escapeHtml(searchQuery)}" id="draft-pool-search" aria-label="Rechercher un champion dans le pool" />
       </div>
       <div class="draft-pool-grid draft-pool-grid-alpha">
         ${filtered.length ? renderPoolGrid(filtered, sortSlot) : `<p class="muted draft-pool-empty">Aucun champion disponible${role && role !== "all" ? " pour ce poste" : ""}.</p>`}
@@ -1125,6 +1341,14 @@
 
     bindPoolEvents(el);
     refreshSuggestChips(session);
+    if (searchFocused) {
+      const input = el.querySelector("#draft-pool-search");
+      if (input) {
+        input.focus({ preventScroll: true });
+        const end = input.value.length;
+        input.setSelectionRange?.(end, end);
+      }
+    }
   }
 
   function init(LoLCoach) {
@@ -1154,5 +1378,5 @@
     renderAll();
   }
 
-  win.LoLDraftUI = { init, onViewShow, renderAll };
+  win.LoLDraftUI = { init, onViewShow, renderAll, buildTimelineSteps, nextGameNumber };
 })(typeof window !== "undefined" ? window : globalThis);

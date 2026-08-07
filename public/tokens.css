@@ -1,0 +1,108 @@
+/* ─── LoL Coach · tokens canoniques (chargé en premier, unique :root) ─────────
+   Breakpoints du site :
+   ≤600px  mobile (1 colonne, selects 2/rangée)
+   ≤900px  tablette (tab-bar, tiroir filtres, header compact)
+   ≥1200px grand écran (layouts draft/macro centrés)
+   ≥1600px très grand écran (largeur max étendue)
+──────────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  color-scheme: dark;
+
+  /* Surfaces */
+  --surface-0: #07080b;
+  --surface-1: #0c0e14;
+  --surface-2: #121620;
+  --surface-3: #1a2030;
+  --surface-glass: rgba(12, 14, 20, 0.82);
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.14);
+
+  /* Texte */
+  --text-primary: #eef1f8;
+  --text-secondary: #8a94a8;
+  --text-tertiary: #8a93a6;
+
+  /* Accent global (bleu) */
+  --accent: #6ea8ff;
+  --accent-bright: #93c5fd;
+  --accent-soft: rgba(110, 168, 255, 0.14);
+  --accent-border: rgba(110, 168, 255, 0.35);
+
+  /* Or (tiers, familles) */
+  --gold: #c4a035;
+  --gold-bright: #dfc25b;
+  --gold-soft: rgba(196, 160, 53, 0.12);
+  --gold-border: rgba(196, 160, 53, 0.42);
+
+  /* États */
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.12);
+  --success: #4ade80;
+  --success-soft: rgba(74, 222, 128, 0.12);
+  --accent-danger: #e85d5d;
+  --accent-ok: #6bc97a;
+  --accent-warn: #e8a838;
+
+  /* Camps (draft / macro / coach) */
+  --team-our: rgb(110, 231, 183);
+  --team-our-rgb: 110, 231, 183;
+  --team-enemy: rgb(224, 93, 93);
+  --team-enemy-rgb: 224, 93, 93;
+
+  /* Classes de champion */
+  --guerrier: #e05d5d;
+  --mage: #5b9cf5;
+  --support: #4caf82;
+  --distance: #f0a030;
+  --assassin: #b06cf0;
+
+  /* Couleurs MTG */
+  --mtg-w: #f8f4e8;
+  --mtg-u: #3b9fd9;
+  --mtg-b: #5a5a6e;
+  --mtg-r: #e85d3a;
+  --mtg-g: #2fa866;
+
+  /* Géométrie */
+  --radius: 18px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+  --shadow-panel: -12px 0 48px rgba(0, 0, 0, 0.55);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --detail-width: min(420px, 100vw);
+  --header-h: 60px;
+  --sidebar-w: 220px;
+  --tab-bar-h: 4.25rem;
+  --touch-min: 44px;
+
+  /* Espacement + typo fluide */
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1.25rem;
+  --space-lg: 1.75rem;
+  --space-xl: 2.5rem;
+  --text-body: clamp(1rem, 0.35vw + 0.95rem, 1.125rem);
+  --text-label: clamp(0.8125rem, 0.2vw + 0.78rem, 0.9375rem);
+  --text-title: clamp(1.35rem, 1.2vw + 1rem, 2rem);
+  --text-display: clamp(1.75rem, 2vw + 1rem, 2.75rem);
+  --icon-card: clamp(84px, 7vw, 112px);
+  --icon-detail: clamp(88px, 6vw, 112px);
+  --icon-pool: clamp(56px, 4vw, 72px);
+  --icon-draft: clamp(52px, 3.5vw, 68px);
+
+  /* Polices */
+  --font-mono: ui-monospace, "Cascadia Mono", "JetBrains Mono", monospace;
+
+  /* Alias hérités */
+  --bg: var(--surface-0);
+  --bg-elevated: var(--surface-1);
+  --bg-card: var(--surface-2);
+  --bg-card-hover: var(--surface-3);
+  --border: var(--line);
+  --text: var(--text-primary);
+  --text-muted: var(--text-secondary);
+}

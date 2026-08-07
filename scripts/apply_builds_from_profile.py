@@ -170,7 +170,7 @@ def main() -> None:
         data = json.loads(path.read_text(encoding="utf-8"))
         n = apply_builds(data.get("champions", []), valid)
         data["buildVersion"] = "profile-v1"
-        path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+        path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         print(f"{path.name}: builds applied to {n} champions")
 
 
