@@ -7,7 +7,7 @@
   "seasons": [
     "S16"
   ],
-  "updatedAt": "2026-10-09T12:24:56.440315+00:00",
+  "updatedAt": "2026-10-10T11:43:46.201586+00:00",
   "tierNotes": {
     "S": "Pilier pro (gol.gg) — pick/ban dominant sur la saison compétitive en cours.",
     "A": "Très présent en pro — pick/ban régulier selon meta et draft.",
@@ -36,8 +36,8 @@
     "Lucian": "S",
     "Syndra": "S",
     "Gnar": "S",
-    "Yunara": "S",
-    "K'Santé": "A",
+    "K'Santé": "S",
+    "Yunara": "A",
     "Wukong": "A",
     "Sion": "A",
     "Caitlyn": "A",
@@ -74,8 +74,8 @@
     "Ziggs": "B",
     "Dr. Mundo": "B",
     "Skarner": "B",
-    "LeBlanc": "B",
     "Milio": "B",
+    "LeBlanc": "B",
     "Sylas": "B",
     "Zaahen": "B",
     "Malphite": "B",
@@ -126,8 +126,8 @@
     "Kog'Maw": "C",
     "Ivern": "C",
     "Darius": "C",
-    "Aurelion Sol": "C",
     "Kha'Zix": "C",
+    "Aurelion Sol": "C",
     "Swain": "C",
     "Zed": "C",
     "Elise": "C",
@@ -199,6 +199,7 @@
       "Gnar",
       "Jarvan IV",
       "Jayce",
+      "K'Santé",
       "Karma",
       "Lucian",
       "Nautilus",
@@ -210,8 +211,7 @@
       "Syndra",
       "Varus",
       "Vi",
-      "Xin Zhao",
-      "Yunara"
+      "Xin Zhao"
     ],
     "A": [
       "Ahri",
@@ -224,7 +224,6 @@
       "Corki",
       "Galio",
       "Jhin",
-      "K'Santé",
       "Kai'Sa",
       "Lee Sin",
       "Lulu",
@@ -240,7 +239,8 @@
       "Taliyah",
       "Vayne",
       "Viktor",
-      "Wukong"
+      "Wukong",
+      "Yunara"
     ],
     "B": [
       "Aatrox",
