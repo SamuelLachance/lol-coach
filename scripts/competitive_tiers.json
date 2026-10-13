@@ -7,7 +7,7 @@
   "seasons": [
     "S16"
   ],
-  "updatedAt": "2026-10-12T14:07:58.790912+00:00",
+  "updatedAt": "2026-10-13T13:20:56.328483+00:00",
   "tierNotes": {
     "S": "Pilier pro (gol.gg) — pick/ban dominant sur la saison compétitive en cours.",
     "A": "Très présent en pro — pick/ban régulier selon meta et draft.",
@@ -39,8 +39,8 @@
     "K'Santé": "S",
     "Yunara": "A",
     "Wukong": "A",
-    "Sion": "A",
     "Caitlyn": "A",
+    "Sion": "A",
     "Neeko": "A",
     "Lulu": "A",
     "Lee Sin": "A",
@@ -55,8 +55,8 @@
     "Naafiri": "A",
     "Corki": "A",
     "Alistar": "A",
-    "Anivia": "A",
     "Jhin": "A",
+    "Anivia": "A",
     "Sivir": "A",
     "Olaf": "A",
     "Vayne": "A",
@@ -83,8 +83,8 @@
     "Qiyana": "B",
     "Yorick": "B",
     "Shen": "B",
-    "Ornn": "B",
     "Jax": "B",
+    "Ornn": "B",
     "Mel": "B",
     "Xayah": "B",
     "Yone": "B",
