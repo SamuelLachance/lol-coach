@@ -7,7 +7,7 @@
   "seasons": [
     "S16"
   ],
-  "updatedAt": "2026-10-14T10:59:27.741341+00:00",
+  "updatedAt": "2026-10-15T10:41:58.261894+00:00",
   "tierNotes": {
     "S": "Pilier pro (gol.gg) — pick/ban dominant sur la saison compétitive en cours.",
     "A": "Très présent en pro — pick/ban régulier selon meta et draft.",
@@ -33,8 +33,8 @@
     "Akali": "S",
     "Cassiopeia": "S",
     "Xin Zhao": "S",
-    "Lucian": "S",
     "Syndra": "S",
+    "Lucian": "S",
     "Gnar": "S",
     "K'Santé": "S",
     "Yunara": "A",
@@ -79,8 +79,8 @@
     "Sylas": "B",
     "Zaahen": "B",
     "Trundle": "B",
-    "Malphite": "B",
     "Qiyana": "B",
+    "Malphite": "B",
     "Yorick": "B",
     "Shen": "B",
     "Jax": "B",
@@ -113,8 +113,8 @@
     "Cho'Gath": "C",
     "Gragas": "C",
     "Smolder": "C",
-    "Kled": "C",
     "Lissandra": "C",
+    "Kled": "C",
     "Yuumi": "C",
     "Draven": "C",
     "Shyvana": "C",
