@@ -7,7 +7,7 @@
   "seasons": [
     "S16"
   ],
-  "updatedAt": "2026-10-18T10:12:38.653768+00:00",
+  "updatedAt": "2026-10-19T11:49:40.208269+00:00",
   "tierNotes": {
     "S": "Pilier pro (gol.gg) — pick/ban dominant sur la saison compétitive en cours.",
     "A": "Très présent en pro — pick/ban régulier selon meta et draft.",
@@ -33,8 +33,8 @@
     "Akali": "S",
     "Cassiopeia": "S",
     "Xin Zhao": "S",
-    "Lucian": "S",
     "Syndra": "S",
+    "Lucian": "S",
     "Gnar": "S",
     "K'Santé": "S",
     "Yunara": "A",
@@ -95,11 +95,11 @@
     "Pyke": "B",
     "Miss Fortune": "B",
     "Tristana": "B",
-    "Hwei": "B",
     "Renata Glasc": "B",
+    "Hwei": "B",
     "Kennen": "B",
-    "Zoé": "B",
     "Zeri": "B",
+    "Zoé": "B",
     "Sejuani": "B",
     "Fiora": "B",
     "Maokai": "B",
