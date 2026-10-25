@@ -7,7 +7,7 @@
   "seasons": [
     "S16"
   ],
-  "updatedAt": "2026-10-24T10:05:59.764643+00:00",
+  "updatedAt": "2026-10-25T10:31:16.864748+00:00",
   "tierNotes": {
     "S": "Pilier pro (gol.gg) — pick/ban dominant sur la saison compétitive en cours.",
     "A": "Très présent en pro — pick/ban régulier selon meta et draft.",
@@ -30,8 +30,8 @@
     "Karma": "S",
     "Ambessa": "S",
     "Akali": "S",
-    "Pantheon": "S",
     "Cassiopeia": "S",
+    "Pantheon": "S",
     "Xin Zhao": "S",
     "Syndra": "S",
     "Lucian": "S",
@@ -117,8 +117,8 @@
     "Kled": "C",
     "Draven": "C",
     "Yuumi": "C",
-    "Shyvana": "C",
     "Volibear": "C",
+    "Shyvana": "C",
     "Lux": "C",
     "Blitzcrank": "C",
     "Rengar": "C",
